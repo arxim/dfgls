@@ -1,0 +1,24 @@
+body {
+    background-image: url(../images/header_background.png);
+    background-repeat: repeat-x;
+    margin: 0px;
+}
+div#header_left {
+    background-image: url(../images/header_left_background.png);
+    float: left;
+    width: 600px; /*620px; 374*/
+    height: 48px; /*150px;*/
+    background-repeat: no-repeat;
+    padding-top: 84px;
+    padding-left: 1px;
+}
+div#header_right {
+    background-image: url(../images/header_right_background.png);
+    float: right;
+    text-align: right;
+    width: 144px; /*160px*/
+    height: 48px; /*150px;*/
+    background-repeat: no-repeat;
+    padding-top: 84px;
+    padding-right: 16px;
+}

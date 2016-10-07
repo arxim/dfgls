@@ -1,0 +1,118 @@
+<%-- 
+    Document   : ProcessImportBill
+    Created on : 30 ต.ค. 2551, 13:04:52
+    Author     : admin
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../error.jsp"%>
+
+<%@page import="java.sql.*"%>
+
+<%@page import="df.jsp.Guard"%>
+<%@page import="df.jsp.LabelMap"%>
+<%@page import="df.bean.db.conn.DBConnection"%>
+<%@page import="df.bean.db.table.TRN_Error"%>
+<%@page import="df.bean.obj.util.JDate"%>
+<%@page import="df.bean.db.table.Batch"%>
+<%@page import="df.bean.process.ProcessUtil"%>
+<%@ include file="../../_global.jsp" %>
+
+<%
+            //
+            // Verify permission
+            //
+
+            if (!Guard.checkPermission(session, Guard.PAGE_PROCESS_DEMO)) {
+                response.sendRedirect("../message.jsp");
+                return;
+            }
+
+            //
+            // Initial LabelMap
+            //
+
+            if (session.getAttribute("LANG_CODE") == null) {
+                session.setAttribute("LANG_CODE", LabelMap.LANG_EN);
+            }   
+            
+            String insert = request.getParameter("insert");
+            if("insert".equalsIgnoreCase(insert)){
+            	String[] code = request.getParameterValues("arr_loginname");
+            	String[] password = request.getParameterValues("arr_password");
+            	String[] hospital = request.getParameterValues("arr_hospital");
+            	String[] name = request.getParameterValues("arr_name");
+            	
+            	DBConnection con = new DBConnection();
+            	con.connectToLocal();
+            	con.beginTrans();
+            	String sql = "";
+            	try{
+                	for(int i=0 ; i < code.length ; i++){
+                		sql = "INSERT INTO USERS(HOSPITAL_CODE,LOGIN_NAME,PASSWORD, NAME, USER_GROUP_CODE,ACTIVE,LANG_CODE) "
+                		+" VALUES('"+hospital[i]+"','" + code[i] + "','" + password[i] + "','" 
+                		+new String(name[i].getBytes("ISO8859-1"),"utf-8") + "','5','1','E')";
+                		con.executeUpdate(sql);
+                		//out.print(sql + "<br>");
+                	}
+                	con.commitTrans();
+                	out.print("Success !");
+            	}catch (Exception e){
+            		con.rollBackTrans();	
+            	}finally{
+                	con.Close();
+                	if(0==0){ return; }            		
+            	}
+            }
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>${labelMap.TITLE_MAIN}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
+        <script type="text/javascript" src="../../javascript/util.js"></script>
+        <script type="text/javascript" src="../../javascript/ajax.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../css/calendar.css" />
+        <script type="text/javascript" src="../../javascript/calendar.js"></script>
+        <script type="text/javascript" src="../../javascript/md5.js"></script>
+    </head>
+    <body>
+    	<% 
+    	DBConnection con = new DBConnection();
+    	con.connectToLocal();
+    	ResultSet rs = con.executeQuery("SELECT DP.CODE, DP.NAME_THAI, DP.HOSPITAL_CODE FROM DOCTOR_PROFILE DP LEFT JOIN USERS U ON DP.HOSPITAL_CODE = U.HOSPITAL_CODE AND DP.CODE = U.LOGIN_NAME WHERE DP.ACTIVE='1' AND DP.HOSPITAL_CODE  = '"+session.getAttribute("HOSPITAL_CODE")+"' AND U.LOGIN_NAME IS NULL");
+    	%>
+        <form id="mainForm" name="mainForm" method="post">
+            <table class="data" id="dataTable" name="dataTable">
+            	<%
+            	int i = 1; 
+            	while(rs.next())
+            	{
+            		%>
+		                <tr>
+		                    <td class="row<%=i % 2%> alignCenter"><%=rs.getString("CODE") %></td>
+		                    <td class="row<%=i % 2%> alignLeft"><%=rs.getString("NAME_THAI") %></td>
+		                    <td class="row<%=i % 2%> alignCenter">"
+		                    	<span id="id_<%=rs.getString("CODE")%>"></span>
+				                <input type="hidden" name="arr_loginname" value="<%=rs.getString("CODE") %>"/>		                
+				                <input type="hidden" name="arr_name" value="<%=rs.getString("NAME_THAI") %>"/>	
+				                <input type="hidden" name="arr_hospital" value="<%=rs.getString("HOSPITAL_CODE") %>"/>
+			                   	<script language="javascript">
+			                   		var d = document.getElementById("id_<%=rs.getString("CODE")%>");
+			                   		d.innerHTML = "<input type='text' name='arr_password' value='"+ hex_md5("<%=rs.getString("CODE")%>") +"'/>";
+			                   	</script>	 		                    	
+		                    </td>
+		                    <td class="row<%=i % 2%> alignCenter">E</td>
+		                </tr>           
+                	<% 
+                	i++;
+                }
+                %>
+            </table>
+            <input type="hidden" name="insert" value="insert"/>
+            <input type="submit" name="submit" value=" Save " />
+        </form>
+    </body>
+</html>

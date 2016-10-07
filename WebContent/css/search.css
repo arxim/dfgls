@@ -1,0 +1,28 @@
+body {
+    margin: 0px;
+}
+div#header, table.data, table.form {
+    width: 800px;
+}
+div#header {
+    background-color: #c0c0c0;
+    height: 79px;
+}
+div#header_left {
+    background-image: url(../images/search_header_left_background.png);
+    float: left;
+    width: 108px;
+    height: 79px;
+    background-repeat: no-repeat;
+}
+div#header_right {
+    background-image: url(../images/search_header_right_background.png);
+    float: right;
+    text-align: right;
+    width: 176px;
+    height: 79px;
+    background-repeat: no-repeat;
+}
+table.data, table.form {
+    margin: 0px;
+}

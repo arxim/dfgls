@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="ExpenseDeductMain"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="year" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2010"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="month" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["03"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["z"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="next_month" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["04"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="path_show" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="next_year" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2010"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT SM.DOCTOR_CODE,
+(SELECT NAME_THAI FROM DOCTOR WHERE CODE=SM.DOCTOR_CODE)AS DOCTOR_NAME,
+(SELECT DOCTOR_PROFILE_CODE FROM DOCTOR WHERE CODE=SM.DOCTOR_CODE)AS DOCTOR_PROFILE_CODE,
+(SELECT DP.NAME_THAI FROM DOCTOR D, DOCTOR_PROFILE DP WHERE DP.CODE=D.DOCTOR_PROFILE_CODE AND D.CODE=SM.DOCTOR_CODE)AS PROFILE_NAME,
+CASE WHEN (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END AS DR_SUM_AMT,  
+CASE WHEN (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END AS GUARANTEE_AMOUNT,  
+CASE WHEN (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END AS EXPENSE_AMOUNT,  
+(
+(CASE WHEN (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END)  
++(CASE WHEN (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END) 
++(CASE WHEN (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END)
+) AS TOTAL_AMOUNT,
+CASE WHEN (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END AS DR_TAX_406,
+CASE WHEN (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END AS EXPENSE_TAX,
+(
+(CASE WHEN (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END )
++(CASE WHEN (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END )
+) AS TOTAL_TAX
+FROM SUMMARY_MONTHLY SM,DOCTOR D 
+WHERE SM.HOSPITAL_CODE=D.HOSPITAL_CODE  
+AND SM.DOCTOR_CODE=D.CODE  
+AND D.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor}
+--AND SM.MM=TED.MM AND SM.MM=SG.MM
+--AND SM.YYYY=TED.YYYY AND SM.YYYY=SG.YYYY
+AND SM.HOSPITAL_CODE=$P{hospital_code}
+AND SM.MM=$P{month}  AND SM.YYYY=$P{year}  
+--AND TED.NOTE NOT LIKE 'EXP_DIS%'
+GROUP BY SM.DOCTOR_CODE
+HAVING 
+(
+(CASE WHEN (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_SUM_AMT FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END)  
++(CASE WHEN (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT GUARANTEE_AMOUNT FROM SUMMARY_GUARANTEE WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END) 
++(CASE WHEN (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END)
+)<0
+OR 
+(
+(CASE WHEN (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) IS NULL THEN 0.00 ELSE (SELECT DR_TAX_406 FROM SUMMARY_MONTHLY WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year}) END )
++(CASE WHEN (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') IS NULL THEN 0.00 ELSE (SELECT SUM(TAX_AMOUNT*EXPENSE_SIGN) FROM TRN_EXPENSE_DETAIL WHERE DOCTOR_CODE=SM.DOCTOR_CODE AND MM=$P{month} AND YYYY=$P{year} AND NOTE NOT LIKE 'EXP_DIS%') END )
+)<0
+ORDER BY SM.DOCTOR_CODE]]></queryString>
+
+	<field name="DOCTOR_CODE" class="java.lang.String"/>
+	<field name="DOCTOR_NAME" class="java.lang.String"/>
+	<field name="DOCTOR_PROFILE_CODE" class="java.lang.String"/>
+	<field name="PROFILE_NAME" class="java.lang.String"/>
+	<field name="DR_SUM_AMT" class="java.math.BigDecimal"/>
+	<field name="GUARANTEE_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="EXPENSE_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="TOTAL_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="DR_TAX_406" class="java.math.BigDecimal"/>
+	<field name="EXPENSE_TAX" class="java.math.BigDecimal"/>
+	<field name="TOTAL_TAX" class="java.math.BigDecimal"/>
+
+
+		<group  name="group_header" isStartNewPage="true" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{DOCTOR_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="20"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="76"
+						y="0"
+						width="166"
+						height="17"
+						key="textField-6"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["("+$F{DOCTOR_PROFILE_CODE}+")    "+$F{PROFILE_NAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="95"
+						height="17"
+						key="staticText-23"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Doctor Profile :]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="group_exp" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{DOCTOR_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="39"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="42"
+						y="5"
+						width="200"
+						height="17"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["("+$F{DOCTOR_CODE}+") "+$F{DOCTOR_NAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="2"
+						y="5"
+						width="40"
+						height="17"
+						key="staticText-25"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Doctor :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="447"
+						y="5"
+						width="63"
+						height="17"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{GUARANTEE_AMOUNT}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="305"
+						y="21"
+						width="65"
+						height="17"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_TAX_406}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="374"
+						y="5"
+						width="73"
+						height="17"
+						key="staticText-26"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Total Guarantee :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="242"
+						y="21"
+						width="58"
+						height="17"
+						key="staticText-28"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Total Tax :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="305"
+						y="5"
+						width="65"
+						height="17"
+						key="textField-7"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_SUM_AMT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="242"
+						y="5"
+						width="64"
+						height="17"
+						key="staticText-29"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Total Amount :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="718"
+						y="5"
+						width="63"
+						height="17"
+						key="textField-8"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL_AMOUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="643"
+						y="5"
+						width="75"
+						height="17"
+						key="staticText-30"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Result Revenue :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="580"
+						y="5"
+						width="63"
+						height="17"
+						key="textField-9"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EXPENSE_AMOUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="513"
+						y="5"
+						width="67"
+						height="17"
+						key="staticText-31"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Total Expense :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="643"
+						y="22"
+						width="67"
+						height="17"
+						key="staticText-32"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Result Tax :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="513"
+						y="22"
+						width="67"
+						height="17"
+						key="staticText-33"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Total Expense :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="580"
+						y="22"
+						width="63"
+						height="17"
+						key="textField-10"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EXPENSE_TAX}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="718"
+						y="22"
+						width="63"
+						height="17"
+						key="textField-11"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{TOTAL_TAX}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="group_main" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{DOCTOR_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="18"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="1"
+						y="1"
+						width="780"
+						height="17"
+						key="subreport-1"/>
+					<subreportParameter  name="doctor_code">
+						<subreportParameterExpression><![CDATA[$F{DOCTOR_CODE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="month">
+						<subreportParameterExpression><![CDATA[$P{month}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="year">
+						<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="hospital_code">
+						<subreportParameterExpression><![CDATA[$P{hospital_code}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{path_show}+"ExpenseDeductList.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="group_detail" isStartNewColumn="true" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{DOCTOR_PROFILE_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="17"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="2"
+						y="0"
+						width="780"
+						height="17"
+						key="subreport-2"/>
+					<subreportParameter  name="doctor_profile_code">
+						<subreportParameterExpression><![CDATA[$F{DOCTOR_PROFILE_CODE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="month">
+						<subreportParameterExpression><![CDATA[$P{month}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="year">
+						<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="hospital_code">
+						<subreportParameterExpression><![CDATA[$P{hospital_code}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="next_month">
+						<subreportParameterExpression><![CDATA[$P{next_month}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="next_year">
+						<subreportParameterExpression><![CDATA[$P{next_year}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="doctor_code">
+						<subreportParameterExpression><![CDATA[$F{DOCTOR_CODE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{path_show}+"ExpenseDeductDis.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="56"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="2"
+						y="35"
+						width="71"
+						height="15"
+						key="staticText-3"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[งวดเดือน / ปี]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="97"
+						y="35"
+						width="8"
+						height="15"
+						key="staticText-4"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[/]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="75"
+						y="35"
+						width="21"
+						height="15"
+						key="textField-1"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{month}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="106"
+						y="35"
+						width="56"
+						height="15"
+						key="textField-2"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{year}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="323"
+						y="35"
+						width="72"
+						height="15"
+						key="textField-3"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="402"
+						y="35"
+						width="49"
+						height="15"
+						key="textField-4"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="564"
+						y="35"
+						width="44"
+						height="15"
+						key="staticText-5"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Print Date:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" pattern="EEEEE dd MMMMM yyyy HH:mm:ss" isBlankWhenNull="false" evaluationTime="Report" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="615"
+						y="35"
+						width="163"
+						height="15"
+						key="textField-5"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="1"
+						width="527"
+						height="29"
+						key="staticText-24"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="18" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[รายงานสรุปค่าใช้จ่ายไม่พอหัก]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="53"
+						width="779"
+						height="2"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="17"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="156"
+						height="15"
+						key="staticText-22"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[<ExpenseDeductMain.jrxml>]]></text>
+				</staticText>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

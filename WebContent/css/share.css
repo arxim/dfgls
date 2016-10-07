@@ -1,0 +1,208 @@
+* { 
+  font-family: Arial,Helvetica,sans-serif,Tahoma,"Microsoft Sans Serif";
+}
+body {
+    font-size: 11px;
+    background-color: #dde4e8;
+    margin: 20px;
+    color: #333;
+	background-color: #dde4e8;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom:10px;
+    margin-left: 13px;
+    margin-top: 10px;      	 	
+}
+
+body, a {
+    color: #333;
+}
+
+a img {
+    border: 0px;
+}
+a {
+    font-weight: bold;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+hr {
+    margin: 20px 0px;
+}
+.alignLeft {
+    text-align: left;
+}
+.alignRight {
+    text-align: right;
+}
+.alignCenter {
+    text-align: center;
+}
+.valignTop {
+    vertical-align: top;
+}
+div.clearFloat {
+    clear: both;
+}
+.center {
+    margin: 0px auto;
+}
+p.langBar {
+    text-align: right;
+}
+p.msg {
+    font-size: 110%;
+    font-weight: bold;
+    padding: 150px 50px;
+    text-align: center;
+}
+table.data, table.form {
+    border: 1px solid #999;
+    background-color: #dde4e8;
+    /*background-color: #eee;*/
+    margin: 0px auto;
+    width: 800px;
+}
+table.data th {
+    background-color: #666;
+    color: #fff;
+    padding: 10px;
+    font-size: 110%;
+}
+table.data td.sub_head {
+    background-color: #888;
+    color: #eee;
+    padding: 10px;
+    font-size: 105%;
+    font-weight: bold;
+    text-align: center;
+}
+table.data td, table.data td.row0 {
+    background-color: #eee;
+    color: 444;
+    border: 1px solid #d5d5d5;
+    padding: 5px 10px;
+}
+table.data td.row1 {
+    background-color: #e5e5e5;
+    color: 333;
+    border: 1px solid #cecece;
+}
+
+table.data_free_width, table.form {
+    border: 1px solid #999;
+    background-color: #dde4e8;
+    /*background-color: #eee;*/
+    margin: 0px auto;
+}
+table.data_free_width th {
+    background-color: #666;
+    color: #fff;
+    padding: 10px;
+    font-size: 110%;
+}
+table.data_free_width td.sub_head {
+    background-color: #888;
+    color: #eee;
+    padding: 10px;
+    font-size: 105%;
+    font-weight: bold;
+    text-align: center;
+}
+table.data_free_width td, table.data td.row0 {
+    background-color: #eee;
+    color: 444;
+    border: 1px solid #d5d5d5;
+    padding: 5px 10px;
+}
+table.data_free_width td.row1 {
+    background-color: #e5e5e5;
+    color: 333;
+    border: 1px solid #cecece;
+}
+
+table.form {
+    width: 800px;
+}
+table.form th {
+    background-color: #666;
+    color: #fff;
+    padding: 10px;
+    font-size: 110%;
+    text-align: left;
+}
+table.form th.buttonBar, table.data th.buttonBar {
+    padding: 5px;
+    text-align: right;
+}
+table.form td {
+    padding: 5px 10px;
+}
+table.form td.label {
+    background-color: #ccc;
+    color: #333;
+    border: 1px solid #b8b8b8;
+    text-align: right;
+    padding: 2px 8px 2px 5px;
+    width: 170px;
+}
+table.form td.labelRequest {
+    background-color: #ccc;
+    color:#003399;
+    border: 1px solid #b8b8b8;
+    text-align: right;
+    padding: 2px 8px 2px 5px;
+    width: 170px;
+}
+table.form td.input {
+    background-color: #eee;
+    color: 444;
+    border: 1px solid #c8c8c8;
+}
+table.form label {
+    font-weight: bold;
+}
+label {
+    font-weight: bold;
+}
+table.form td.input {
+    padding: 2px;
+}
+input.veryShort, select.veryShort, textarea.veryShort {
+    width: 50px;
+}
+input.short, select.short, textarea.short {
+    width: 100px;
+}
+input.medium, select.medium, textarea.medium {
+    width: 180px;
+}
+input.mediumMax, select.mediumMax, textarea.mediumMax {
+    width: 300px;
+}
+input.long, select.long, textarea.long {
+    width: 450px;
+}
+input.button {
+    padding: 0px 5px;
+    width: 60px;
+}
+input.image_button {
+    vertical-align: text-bottom;
+}
+input[readonly] {
+    background-color: #ddd;
+    /*color: #fff;*/
+}
+.indicateRequired, .indicateInvalid {
+    background-color: #ffffcc;
+}
+option.inActive {
+    color: #ccc;
+}
+input[type='text'].inputMoney{
+    text-align:right;
+    width: 60px;
+}

@@ -1,0 +1,534 @@
+package df.bean.interfacefile;
+import java.io.*;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.poifs.filesystem.*;
+
+import df.bean.db.conn.DBConnection;
+import java.sql.SQLException;
+import df.bean.db.conn.DBConn;
+import df.bean.process.ProcessUtil;
+import df.bean.db.table.Batch;
+import df.bean.db.table.TRN_Error;
+import df.bean.obj.util.JDate;
+
+public class ImportTimeTableBean extends InterfaceTextFileBean
+{
+	private String hospital_code;
+	DBConn cdb;
+	DBConnection cc = new DBConnection();
+	String result = "";
+	String user_name=this.getUserName();
+	String batch_year="", batch_month="";
+	//private String processName="Import Excel Expense";
+	private String remarkMessage="", sqlMessage="";
+	
+	public void setHospital(String s){
+    	//1-hospitalCode
+		this.hospital_code = s;
+    	
+    }
+
+    @Override
+    public boolean insertData(String fn, DBConnection da) {
+		System.out.println("Start Import Excel TimeTable");
+		String[][] ExpArr = null;
+    	int num=0;
+    	boolean statusSave=true, status=false, statusShow=true;
+		String processName="ImportTimeTable";
+		TRN_Error.setUser_name(this.getUserName());
+		TRN_Error.setHospital_code(this.hospital_code);
+    	try {
+    		cc.connectToLocal();
+    		cdb = new DBConn();
+            if (cdb.getStatement() == null) {
+                cdb.setStatement();
+            }
+        } catch (SQLException ex) {
+            this.result = ""+ex;
+            this.setMessage(this.result);
+            System.out.println(ex);
+        }
+    	try{
+	    	FileInputStream fileName=new FileInputStream(fn);
+	    	// เปิด excel file
+	    	POIFSFileSystem fs = new POIFSFileSystem(fileName);
+	    	// เปิด workbook
+	    	HSSFWorkbook workbook = new HSSFWorkbook(fs);
+	    	// ดึง sheet ที่ต้องการออกมา
+	    	HSSFSheet sheet = workbook.getSheetAt(0);
+	    	HSSFRow tempRow; HSSFCell tempCell;
+	    	int numRow=0, numCell=0;
+	    	// get row
+	    	numRow=sheet.getLastRowNum();
+	    	if(statusShow){System.out.println("numRow="+numRow);}
+	    	tempRow = sheet.getRow( 2 );
+	    	numCell=tempRow.getLastCellNum();
+        	if(statusShow){System.out.println("numCell="+numCell);}
+        	ExpArr=new String[numRow][numCell];
+        	int numNoSave=0;
+    		int numSave=0;
+    		
+    		for(int r=2;r<=numRow;r++)
+	    	{
+	    		//if(statusShow){System.out.println("r="+r);}
+	    		
+	    		// get row
+	    		tempRow = sheet.getRow( r );
+	    		//count number of Cell
+	    		int rr=r+1;
+	    		String YYYY="", MM="", 
+	    		guaranteeDrCode="", guaranteeCode="",
+	    		guaranteeTypeCode="", admissionTypeCode="", 
+	    		startDate="", startTime="", 
+	    		earlyTime="", endDate="",
+	    		endTime="", lateTime="",
+	    		typeGuarantee="", guaranteeSource="", 
+	    		msgError="";
+	    		
+	    		double guaranteeAmount=0, overAllocatePct=0, guaranteeAllocatePct=0;
+	    		//number row
+	    		this.setMessage("row="+rr+" : ");
+	    		msgError=this.getMessage();
+	    		if(statusShow){ System.out.println("row="+rr);}
+	    		if(statusShow){ System.out.println("1-Hospital Code="+this.hospital_code);}
+	    		if(statusShow){ System.out.println("20-User ID="+this.getUserName());}
+	    		
+	        	//Search Batch from Database for get YYYY and MM
+	        	ProcessUtil proUtil = new ProcessUtil();
+				Batch b = new Batch(this.hospital_code, da);
+				batch_year = b.getYyyy();//7-yyyy
+				batch_month = b.getMm();//8-mm
+				
+				if(statusShow){ System.out.println("7-YYYY="+batch_year);}
+				if(statusShow){ System.out.println("6-MM="+batch_month);}
+				
+				boolean statusGuaranteeDrCode=false, statusGuaranteeTypeCode=false,
+				statusAdmissionTypeCode=false, statusStartDate=false, statusStartTime=false,
+				statusEndDate=false, statusEndTime=false, statusTypeGuarantee=false,
+				statusGuaranteeAmount=false, statusGuaranteeAllocatePct=false,
+				statusOverAllocatePct=false, statusGuaranteeSource=false;
+				/*
+				setMessage("Query Expense Condition from excel Excepiton : "+e+"query="+sql);
+	    		if(statusShow){ System.out.println(this.getMessage());}
+	    		TRN_Error.writeErrorLog(cc.getConnection(), processName,  this.getMessage(), "", sql,"");
+	    							
+				 */
+				
+				//get data from excel file
+		    	//2-guaranteeDrCode
+		    	try
+			    {   
+		    		guaranteeDrCode=String.valueOf(tempRow.getCell((short) 0));
+		    		if(statusShow){ System.out.println("2-Guarantee Dr Code="+guaranteeDrCode);}
+		    		statusGuaranteeDrCode=true;
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบรหัสแพทย์, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+		    	}
+			    //4-guaranteeTypeCode
+			    try
+			    {
+			    	guaranteeTypeCode=String.valueOf(tempRow.getCell((short) 1));
+			    	if(statusShow){ System.out.println("4-Guarantee Type Code="+guaranteeTypeCode);}
+			    	if(!guaranteeTypeCode.equals("MLY") && !guaranteeTypeCode.equals("DLY") && !guaranteeTypeCode.equals("MD"))
+			    	{
+			    		setMessage("ประเภทไม่ถูกต้อง, ");
+			    		msgError+=getMessage();
+			    		if(statusShow){ System.out.println(msgError);}
+			    	}
+			    	else
+			    	{
+						if(guaranteeTypeCode.equals("MD")){
+							guaranteeTypeCode = "MLY";
+						}
+			    		statusGuaranteeTypeCode=true;
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบประเภท, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+		    	}
+			    //5-admissionTypeCode
+			    try
+			    {
+			    	admissionTypeCode=String.valueOf(tempRow.getCell((short) 2));
+			    	if(statusShow){ System.out.println("5-admission Type code="+admissionTypeCode);}
+			    	if(!admissionTypeCode.equals("U") && !admissionTypeCode.equals("I") && !admissionTypeCode.equals("O"))
+			    	{
+			    		setMessage("ประเภท Admission ไม่ถูกต้อง, ");
+			    		msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}
+			    	else
+			    	{
+			    		statusAdmissionTypeCode=true;
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบประเภท Admission, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+		    	}
+			  //8-startDate
+			    try
+			    {
+			    	startDate=String.valueOf(tempRow.getCell((short) 3));
+			    	if(statusShow){ System.out.println("8-Before Start Date="+startDate);}
+			    	try
+			    	{
+				    	String[] arrStartDate = null;
+				    	arrStartDate = startDate.split("[/]");
+				    	if(statusShow){ System.out.println("8-total Date="+arrStartDate.length);}
+				    	if(statusShow){ System.out.println("8-After Start Date DD="+arrStartDate[0].toString());}
+				    	if(statusShow){ System.out.println("8-After Start Date MM="+arrStartDate[1].toString());}
+				    	if(statusShow){ System.out.println("8-After Start Date YYYY="+arrStartDate[2].toString());}
+				    	if(arrStartDate.length==3)
+				    	{
+				    		if(statusShow){ System.out.println("8-After Start Date="+arrStartDate[0].toString()+"-"+arrStartDate[1].toString()+"-"+arrStartDate[2].toString());}
+				    		int iYear = Integer.parseInt(arrStartDate[2]);
+				    		if(Double.parseDouble(arrStartDate[0])<32 && Double.parseDouble(arrStartDate[1])<13 && (iYear < 2500 && iYear > 2000)){
+				    			startDate=arrStartDate[2]+arrStartDate[1]+arrStartDate[0];
+				    			statusStartDate=true;
+				    		}else{
+				    			setMessage("รูปแบบของวันที่ Start Date ไม่ถูกต้อง, ");
+						    	msgError+=getMessage();
+					    		//if(statusShow){ System.out.println(msgError);}
+			    	        }
+				    	}
+				    	else
+				    	{
+				    		setMessage("รูปแบบของวันที่ Start Date ไม่ถูกต้อง, ");
+					    	msgError+=getMessage();
+				    		//if(statusShow){ System.out.println(msgError);}
+		    	        }
+			    	}
+			    	catch(Exception e)
+			    	{
+			    		setMessage("รูปแบบของวันที่ Start Date ไม่ถูกต้อง, ");
+				    	msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบ Start Date, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+    	        }
+			  //11-endDate
+			    try
+			    {
+			    	endDate=String.valueOf(tempRow.getCell((short) 4));
+			    	if(statusShow) { System.out.println("11-Before End Date="+endDate);}
+			    	try
+			    	{
+				    	String[] arrEndDate = null;
+				    	arrEndDate = endDate.split("[/]");
+				    	if(arrEndDate.length==3)
+				    	{
+				    		if(statusShow){ System.out.println("11-After End Date="+arrEndDate[0]+"-"+arrEndDate[1]+"-"+arrEndDate[2]);}
+				    		
+				    		int iYear = Integer.parseInt(arrEndDate[2]);
+				    		if(Double.parseDouble(arrEndDate[0])<32 && Double.parseDouble(arrEndDate[1])<13 && (iYear < 2500 && iYear > 2000))
+				    		{
+				    			endDate=arrEndDate[2]+arrEndDate[1]+arrEndDate[0];
+				    			statusEndDate=true;
+				    		}
+				    		else
+				    		{
+				    			setMessage("รูปแบบของวันที่ End Date ไม่ถูกต้อง, ");
+						    	msgError+=getMessage();
+					    		//if(statusShow){ System.out.println(msgError);}
+					    	}
+				    			
+				    	}
+				    	else
+				    	{
+				    		setMessage("รูปแบบของวันที่ End Date ไม่ถูกต้อง, ");
+					    	msgError+=getMessage();
+				    		//if(statusShow){ System.out.println(msgError);}
+				    	}
+			    	}
+			    	catch(Exception e)
+			    	{
+			    		setMessage("รูปแบบของวันที่ End Date ไม่ถูกต้อง, ");
+				    	msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	System.out.println(e);
+			    	setMessage("ไม่พบ End Date, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+		    	}
+			  //9-startTime
+			    try
+			    {
+			    	startTime=String.valueOf(tempRow.getCell((short) 5));
+			    	if(statusShow) { System.out.println("9-Start Time="+startTime);}
+			    	
+			    	if(startTime.length() != 4){
+			    		setMessage("รูปแบบ Start Time ไม่ถูกต้อง :"+startTime+", ");
+				    	msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}else{
+			    		startTime = startTime+"00";
+			    		//10-earlyTime
+			    		earlyTime=startTime;
+			    		statusStartTime=true;
+			    		if(statusShow) { System.out.println("10-Early Time="+earlyTime);}
+				    	
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบ Start Time, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+			    }
+			  //3-guaranteeCode
+			  if(statusStartDate==true && statusStartTime==true){
+				  if(guaranteeTypeCode.equals("MLY")){
+					  guaranteeCode = this.batch_year+this.batch_month;
+				  }else{
+					  guaranteeCode=startDate+startTime+"00";
+				  }
+				  if(statusShow) { System.out.println("3-Guarantee Code"+guaranteeCode);}
+			  }
+			  //12-endTime
+			    try
+			    {
+			    	endTime=String.valueOf(tempRow.getCell((short) 6));
+			    	if(statusShow) { System.out.println("12-End time="+endTime);}
+			    	
+			    	if(endTime.length() != 4)
+			    	{
+			    		setMessage("รูปแบบ End Time ไม่ถูกต้อง : "+endTime+", ");
+				    	msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}
+			    	else
+			    	{
+			    		endTime = endTime+"00";
+			    		lateTime=endTime;
+			    		statusEndTime=true;
+			    	}
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบ End Time, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+			    }
+			  //14-guaranteeAmount
+			    try
+			    {
+			    	typeGuarantee=String.valueOf(tempRow.getCell((short) 10));
+			    	if(statusShow) { System.out.println("14-Type Guarantee="+typeGuarantee);}
+			    	if(statusShow) { System.out.println("14-Amount="+String.valueOf(tempRow.getCell((short) 9)));}
+			    	if(statusShow) { System.out.println("14-Hour="+String.valueOf(tempRow.getCell((short) 7)));}
+			    	if(statusShow) { System.out.println("14-AmountHour="+String.valueOf(tempRow.getCell((short) 8)));}
+			    	
+			    	if(typeGuarantee.equals("GA") || typeGuarantee.equals("OT"))
+			    	{
+			    		double totalHour=0, totalAmount=0;
+			    		boolean statusHour=true, statusAmount=true;
+			    		if(!(String.valueOf(tempRow.getCell((short) 7)).equals("") || String.valueOf(tempRow.getCell((short) 7)).equals("null")) 
+			    		&& !(String.valueOf(tempRow.getCell((short) 8)).equals("") || String.valueOf(tempRow.getCell((short) 8)).equals("null")))
+			    		{
+			    			//System.out.println("okkkkkkkkk");
+			    			try
+			    			{
+			    				totalHour=Double.parseDouble(String.valueOf(tempRow.getCell((short) 7)));
+				    		}
+			    			catch(Exception e)
+			    			{
+			    				statusHour=false;
+			    			}
+			    			try
+			    			{
+			    				totalAmount=Double.parseDouble(String.valueOf(tempRow.getCell((short) 8)));
+					    	}
+			    			catch(Exception e)
+			    			{
+			    				statusAmount=false;
+			    			}
+			    			
+			    			if(statusHour==true && statusAmount==true)
+			    			{
+			    				guaranteeAmount=totalHour*totalAmount;
+			    				statusGuaranteeAmount=true;
+			    			}
+			    			else
+			    			{
+			    				setMessage("จำนวนเงินรวมไม่ถูกต้อง, 7777");
+						    	msgError+=getMessage();
+					    		//if(statusShow){ System.out.println(msgError);}
+			    			}
+			    		}
+			    		else
+			    		{
+			    			try
+				    		{
+				    			guaranteeAmount=Double.parseDouble(String.valueOf(tempRow.getCell((short) 9)));
+				    			if(statusShow) { System.out.println("14-Guarantee Amount="+guaranteeAmount);}
+						    	
+				    			statusGuaranteeAmount=true;
+				    		}
+				    		catch(Exception e)
+				    		{
+				    			setMessage("จำนวนเงินรวมไม่ถูกต้อง, "+e);
+						    	msgError+=getMessage();
+					    		//if(statusShow){ System.out.println(msgError);}
+				    		}
+			    		}
+			    	}
+			    	else
+			    	{
+			    		setMessage("ประเภทของการันตีไม่ถูกต้อง, ");
+				    	msgError+=getMessage();
+			    		//if(statusShow){ System.out.println(msgError);}
+			    	}
+			    	
+			    }
+			    catch(Exception e)
+			    {
+			    	setMessage("ไม่พบประเภทของการันตี, ");
+			    	msgError+=getMessage();
+		    		//if(statusShow){ System.out.println(msgError);}
+			    }	
+			    //16-guaranteeAllocatePct
+			    try
+			    {
+			    	guaranteeAllocatePct=Double.parseDouble(String.valueOf(tempRow.getCell((short) 11)));
+			    	if(statusShow){ System.out.println("16-Guarantee Allocate PCT="+guaranteeAllocatePct);}
+			    	statusGuaranteeAllocatePct=true;
+			    }
+			    catch(Exception e)
+			    {
+			    	statusGuaranteeAllocatePct=false;
+			    }
+			    //15-overAllocatePct
+			    try{
+			    	overAllocatePct=Double.parseDouble(String.valueOf(tempRow.getCell((short) 12)));
+			    	if(statusShow){ System.out.println("15-Over Allocate PCT="+overAllocatePct);}
+			    	statusOverAllocatePct=true;
+			    }catch(Exception e){
+			    	statusOverAllocatePct=false;
+			    }
+			    //Guarantee Source
+			    try{
+			    	guaranteeSource=String.valueOf(tempRow.getCell((short) 13));
+			    	if(guaranteeSource.equals("null") || guaranteeSource.equals("NULL")){
+			    		guaranteeSource = "";
+			    	}
+			    	if(statusShow){ System.out.println("Guarantee Source="+guaranteeSource);}
+			    	statusGuaranteeSource=true;
+			    }catch(Exception e){
+			    	statusGuaranteeSource=false;
+			    }			    
+			    if(statusShow){ System.out.println(msgError);
+			    /*
+			    System.out.println("statusGuaranteeDrCode=="+statusGuaranteeDrCode+" && statusGuaranteeTypeCode=="+statusGuaranteeTypeCode
+			    		+" && statusAdmissionTypeCode=="+statusAdmissionTypeCode+"	&& statusStartDate=="+statusStartDate
+			    		+" && statusStartTime=="+statusStartTime+" && statusEndDate=="+statusEndDate
+			    		+" && statusEndTime=="+statusEndTime+" && statusGuaranteeAmount=="+statusGuaranteeAmount);
+			    */
+			    }
+			    if(statusGuaranteeDrCode==true && statusGuaranteeTypeCode==true && statusAdmissionTypeCode==true 
+			    		&& statusStartDate==true && statusStartTime==true && statusEndDate==true 
+			    		&& statusEndTime==true && statusGuaranteeAmount==true && statusGuaranteeSource==true)
+			    {
+			    	
+			    	//Save Data From Excel File
+			    	String sql_insert="";
+			    	sql_insert="INSERT INTO STP_GUARANTEE "
+			    	+"(HOSPITAL_CODE, GUARANTEE_DR_CODE, GUARANTEE_CODE,"
+			    	+" GUARANTEE_TYPE_CODE, ADMISSION_TYPE_CODE, MM,"
+			    	+" YYYY, START_DATE, START_TIME,"
+			    	+" EARLY_TIME, END_DATE, END_TIME,"
+			    	+" LATE_TIME, ";
+			    	if(typeGuarantee.equals("GA")){
+			    		sql_insert+="GUARANTEE_AMOUNT,";
+			    	}else{
+			    		sql_insert+="GUARANTEE_EXCLUDE_AMOUNT,";
+			    	}
+			    	sql_insert+="OVER_ALLOCATE_PCT, GUARANTEE_ALLOCATE_PCT, ACTIVE,"
+			    	+" UPDATE_DATE, UPDATE_TIME, USER_ID, GUARANTEE_SOURCE)"
+			    	+" VALUES('"+this.hospital_code+"', '"+guaranteeDrCode+"', '"+guaranteeCode+"',"
+			    	+" '"+guaranteeTypeCode+"', '"+admissionTypeCode+"', '"+batch_month+"',"
+			    	+" '"+batch_year+"', '"+startDate+"', '"+startTime+"',"
+			    	+" '"+earlyTime+"', '"+endDate+"', '"+endTime+"',"
+			    	+" '"+lateTime+"', "+guaranteeAmount;
+			    	if(statusOverAllocatePct==true){
+			    		sql_insert+=","+overAllocatePct;
+			    	}else{
+			    		sql_insert+=","+"0";
+			    	}
+			    	if(statusGuaranteeAllocatePct==true){
+			    		sql_insert+=","+guaranteeAllocatePct;
+			    	}else{
+			    		sql_insert+=","+"0";
+			    	}
+			    	//sql_insert+=", "+overAllocatePct+", "+guaranteeAllocatePct+
+			    	sql_insert+=", '1',"
+			    	+" '"+JDate.getDate()+"', '"+JDate.getTime()+"',"
+			    	+" 'excelimport', '"+guaranteeSource+"')";
+			    	if(statusShow){System.out.println("sql_insert="+sql_insert);}
+					 	try
+						{
+					 		cdb.insert(sql_insert);
+					 		//cdb.commitDB();
+					 		numSave++;
+						}catch(Exception e){
+					 		if(statusShow){System.out.println("Insert Expense for Excel Excepiton : "+e+"query="+sql_insert);}
+					    	TRN_Error.writeErrorLog(cc.getConnection(), processName,  e.toString(), "", "","");
+					 		//cdb.rollDB();
+					 		numNoSave++;
+					 		
+					 	}
+				    }
+				    else
+				    {
+				    	//save error log
+				    	TRN_Error.writeErrorLog(cc.getConnection(), processName,  msgError, "", "","");
+				    	numNoSave++;
+				    }
+	    	}
+			System.out.println("numNoSave="+numNoSave+" numRow="+numRow);
+			int showNumRow=0;
+			showNumRow=numRow-1;
+		    if(numSave == showNumRow) {	   	cdb.commitDB();	    }
+		    else{	cdb.rollDB(); 	}
+			if(statusShow){
+				System.out.println("สรุปการ Import TimeTable จาก Flat File Excel วันที่ "+JDate.getDate()+" เวลา "+JDate.getTime());
+				System.out.println("Save Complete="+numSave);
+				System.out.println("Save Incomplete="+numNoSave);
+			}
+			setMessage(" : Data Total="+showNumRow+" Complete="+numSave+" Incomplete="+numNoSave);
+			status= true;
+    	}
+		catch(Exception e)
+    	{
+    		setMessage("Can't open file excel");
+    		System.out.println(e);
+    		TRN_Error.writeErrorLog(cc.getConnection(), processName,  this.getMessage(), e.toString(), sqlMessage,"");
+    		status= false;
+    	}
+    	
+    	return status;
+    }
+	@Override
+    public boolean exportData(String fn, String hp, String type, String year, String month, DBConn d, String path) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+	
+}

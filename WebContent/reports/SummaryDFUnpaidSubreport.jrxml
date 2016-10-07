@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="SummaryDFUnpaidSubreport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="595"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="from_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["00000000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["20090331"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["0109634"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_of_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["99999999"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="department_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="payor_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT S.DOCTOR_CODE, 
+ISNULL(SUM(S.DR_AMT),0) AS DR_AMT,
+ISNULL(SUM(S.DR_TAX_400+S.DR_TAX_401+S.DR_TAX_402+S.DR_TAX_406),0) AS DR_TAX_AMT
+FROM TRN_DAILY S LEFT OUTER JOIN DOCTOR D ON (S.DOCTOR_CODE = D.CODE
+AND S.HOSPITAL_CODE = D.HOSPITAL_CODE)
+WHERE (S.INVOICE_DATE BETWEEN $P{from_date} AND $P{to_date}) AND
+D.CODE=$P{doctor_code} AND INVOICE_TYPE <> 'ORDER' AND S.ACTIVE = '1' AND
+(S.PAY_BY_CASH = 'N' AND S.PAY_BY_AR = 'N' AND S.PAY_BY_DOCTOR = 'N' AND
+S.PAY_BY_PAYOR = 'N' AND S.PAY_BY_CASH_AR = 'N') AND
+(S.BATCH_NO = '' OR S.BATCH_NO IS NULL) AND
+S.IS_PAID <> 'N' AND D.ACTIVE = '1' AND S.ORDER_ITEM_ACTIVE = '1' AND
+S.PAYOR_OFFICE_CODE LIKE $P{payor_code} AND
+S.PATIENT_DEPARTMENT_CODE LIKE $P{department_code} AND
+S.HOSPITAL_CODE LIKE $P{hospital_code}
+GROUP BY S.DOCTOR_CODE]]></queryString>
+
+	<field name="DOCTOR_CODE" class="java.lang.String"/>
+	<field name="DR_AMT" class="java.math.BigDecimal"/>
+	<field name="DR_TAX_AMT" class="java.math.BigDecimal"/>
+
+	<variable name="SUM_DR_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_TAX_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_AMT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="Doctor" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_TAX_AMT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="Doctor" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_AMT_3" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_TAX_AMT_3" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_AMT_4" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_DR_TAX_AMT_4" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
+	</variable>
+
+		<group  name="Doctor" >
+			<groupExpression><![CDATA[$F{DOCTOR_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="435"
+						y="0"
+						width="104"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_AMT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="0"
+						y="0"
+						width="184"
+						height="15"
+						key="staticText-1"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[Total Unpaid DF]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

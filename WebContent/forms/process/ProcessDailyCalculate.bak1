@@ -1,0 +1,260 @@
+<%@page contentType="text/html" language="java" pageEncoding="UTF-8" errorPage="../error.jsp"%>
+
+<%@page import="java.sql.*"%>
+<%@page import="df.jsp.Guard"%>
+<%@page import="df.jsp.LabelMap"%>
+<%@page import="df.bean.db.conn.DBConnection"%>
+<%@page import="df.bean.db.table.TRN_Error"%>
+<%@page import="df.bean.obj.util.JDate"%>
+<%@page import="df.bean.db.table.Batch"%>
+<%@page import="df.bean.obj.doctor.DoctorList"%>
+<%@page import="df.bean.obj.Item.DrMethodAllocation"%>
+<%@page import="df.bean.db.table.TrnDaily"%>
+<%@page import="df.bean.obj.doctor.CareProvider"%>
+<%@ include file="../../_global.jsp" %>
+<%@page import="df.bean.obj.util.Utils "%>
+<%@page import="df.bean.process.ProcessDailyCalculateBean"%>
+
+<%
+      // Verify permission
+      if (!Guard.checkPermission(session, Guard.PAGE_PROCESS_DEMO)) {
+          response.sendRedirect("../message.jsp");
+          return;
+      }
+
+      // Initial LabelMap
+      if (session.getAttribute("LANG_CODE") == null) { 
+    	  session.setAttribute("LANG_CODE", LabelMap.LANG_EN);
+      }
+      
+      LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
+      labelMap.add("TITLE_MAIN", "Method Allocate Process", "การคำนวณส่วนแบ่งเบื้องต้น");
+      labelMap.add("COL_0", "No.", "ลำดับ");
+      labelMap.add("COL_1", "Invoice No.", "เลขที่ใบแจ้งหนี้");
+      labelMap.add("COL_2", "Line No.", "ลำดับที่");
+      labelMap.add("COL_3", "Doctor", "แพทย์");
+      labelMap.add("COL_4", "Status", "สถานะ");
+      request.setAttribute("labelMap", labelMap.getHashMap());
+      String startDateStr = JDate.showDate(JDate.getDate());
+      String endDateStr = JDate.showDate(JDate.getDate());
+      String hospitalCode = session.getAttribute("HOSPITAL_CODE").toString();
+      String runsdata = "";
+      ProcessDailyCalculateBean pc = null;
+      //System.out.println(request.getParameter("LINE_NO")+":"+request.getParameter("ROW"));
+      if(request.getParameter("RUN")== null){
+    	  runsdata="SELECT";
+      }else{
+    	  runsdata=request.getParameter("RUN");
+      }
+      if(runsdata.equals("RUN")){
+    	pc = new ProcessDailyCalculateBean();
+    	//System.out.println(request.getParameter("ROW")+"<>"+request.getParameter("LINE_NO"));
+    	/*
+        if(request.getParameter("ROW").equals("2")){
+      		pc = new ProcessDailyCalculateBean();
+        }
+        if(pc==null){
+        	System.out.println("Object is null");
+        }
+        */
+		pc.setProcess("calulate",request.getParameter("HOSPITAL_CODE"), request.getParameter("START_DATE"), request.getParameter("END_DATE"), request.getParameter("INVOICE_NO"),request.getParameter("LINE_NO"));
+		out.print(pc.processRequest());    		
+      }else if(runsdata.equals("SELECT")){
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>${labelMap.TITLE_MAIN}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
+        <link type="text/css" href="../../css/themes/custom-theme/jquery.ui.all.css" rel="stylesheet" media="screen"/>
+        <link rel="stylesheet" type="text/css" href="../../css/calendar.css" />
+        <script type="text/javascript" src="../../javascript/util.js"></script>
+        <script type="text/javascript" src="../../javascript/ajax.js"></script>
+        <script type="text/javascript" src="../../javascript/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="../../javascript/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="../../javascript/calendar.js"></script>
+        <script type="text/javascript">
+
+        var xmlhttp;
+		function AJAX_Send_Request(){
+	        if (currentRowID <= toRowID ) {
+	            table.rows[currentRowID].cells[4].innerHTML = '<img src="../../images/processing_icon.gif" alt="" />';
+	            var target = "ProcessDailyCalculate.jsp?"
+	                    + "ROW="+currentRowID
+	                    + "&HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
+	                    + "&INVOICE_NO=" + table.rows[currentRowID].cells[1].innerHTML
+	                    + "&LINE_NO=" +table.rows[currentRowID].cells[2].innerHTML
+	                    + "&RUN=RUN"
+	                    + "&START_DATE=" + document.mainForm.START_DATE.value
+	                    + "&END_DATE=" + document.mainForm.END_DATE.value;
+	            xmlhttp=GetXmlHttpObject();
+	
+	            if (xmlhttp==null)
+	            {
+	             alert ("Your browser does not support Ajax HTTP");
+	             return;
+	            }
+	            	    xmlhttp.onreadystatechange=getOutput;
+	            	    xmlhttp.open("POST",target,true);
+	            	    xmlhttp.send(null);
+	         	    //
+	        }else {
+	            document.mainForm.RUN.disabled = false;
+	            document.mainForm.STOP.disabled = true;
+	            document.mainForm.CLOSE.disabled = false;
+	            alert("Process Complete");
+	        }
+}
+
+function getOutput()
+{
+  if (xmlhttp.readyState==4)
+  {
+   var xmlDoc = trim(xmlhttp.responseText);
+   //alert(trim(xmlDoc));
+                    if (xmlDoc== null) {
+                        alert("Exception in update process");
+                        return;
+                    }
+   
+                    if (xmlDoc == "0") {
+                        table.rows[currentRowID].cells[4].innerHTML = '<img src="../../images/failed_icon.gif" alt="" />';
+                    }else{
+                        table.rows[currentRowID].cells[4].innerHTML = '<img src="../../images/succeed_icon.gif" alt="" />';
+                    }
+  	document.getElementById("PROGRESS").innerHTML = (currentRowID - 1) + " / " + numRow;
+	currentRowID++;
+	 AJAX_Send_Request();
+  }
+
+}
+function trim(stringToTrim) {
+	return stringToTrim.replace(/^\s+|\s+$/g,"");
+}
+
+function GetXmlHttpObject()
+{
+    if (window.XMLHttpRequest)
+    {
+       return new XMLHttpRequest();
+    }
+    if (window.ActiveXObject)
+    {
+      return new ActiveXObject("Microsoft.XMLHTTP");
+    }
+ return null;
+}
+            var fromRowID = 0;
+            var toRowID = 0;
+            var numRow = 0;
+            var currentRowID = 0;
+            var table = document.getElementById("dataTable"); 
+            
+            function RUN_Click() {
+                table = document.getElementById("dataTable"); 
+                fromRowID = currentRowID = 2;
+                toRowID = document.getElementById("dataTable").rows.length - 1;
+                document.mainForm.RUN.disabled = true;
+                document.mainForm.STOP.disabled = false;
+                document.mainForm.CLOSE.disabled = true;
+                document.getElementById("PROGRESS").innerHTML = (currentRowID - 1) + " / " + numRow;
+                AJAX_Send_Request();
+            }
+            function STOP_Click(){}
+		</script>
+	</head>
+    <body>    
+	<form id="mainForm" name="mainForm" method="post" action="ProcessDailyCalculate.jsp">
+	<table class="form">
+ 		<tr><th colspan="4">${labelMap.TITLE_MAIN}</th></tr>
+		<tr>
+        	<td class="label"><label for="START_DATE">${labelMap.START_DATE}</label></td>
+            <td class="input">
+            	<input type="text" id="START_DATE" name="START_DATE" class="short" value="<%=request.getParameter("START_DATE") == null ? startDateStr : request.getParameter("START_DATE")%>" />
+                <input name="image1" type="image" class="image_button" onclick="displayDatePicker('START_DATE'); return false;" src="../../images/calendar_button.png" alt="" />
+            </td>
+            <td class="label"><label for="END_DATE">${labelMap.END_DATE}</label></td>
+            <td class="input">
+            	<input type="text" id="END_DATE" name="END_DATE" class="short" value="<%=request.getParameter("END_DATE") == null ? endDateStr : request.getParameter("END_DATE")%>" />
+                <input name="image2" type="image" class="image_button" onclick="displayDatePicker('END_DATE'); return false;" src="../../images/calendar_button.png" alt="" />
+            </td>
+		</tr>
+        <tr>
+        	<th colspan="4" class="buttonBar">
+        	    <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'ProcessDailyCalculate.jsp?RUN=SELECT&START_DATE=' + document.mainForm.START_DATE.value + '&END_DATE=' +  document.mainForm.END_DATE.value; return false;" />
+	            <input type="button" id="RUN" name="RUN" class="button" value="${labelMap.RUN}" onclick="RUN_Click()" disabled="disabled" />
+	            <input type="button" id="STOP" name="STOP" class="button" value="Stop" onclick="STOP_Click()" disabled="disabled" />
+	            <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
+			</th>
+        </tr>
+	</table>
+    <hr></hr>
+    <table class="data" id="dataTable">
+		<tr>
+             <th colspan="5" class="alignLeft">
+                <div style="float: left;">${labelMap.TITLE_MAIN}</div>
+                <div style="float: right;" id="PROGRESS" name="PROGRESS"></div>
+            </th>
+        </tr>
+        <tr>
+            <td class="sub_head"><%=labelMap.get("COL_0")%></td>
+            <td class="sub_head"><%=labelMap.get("COL_1")%></td>
+            <td class="sub_head"><%=labelMap.get("COL_2")%></td>
+            <td class="sub_head"><%=labelMap.get("COL_3")%></td>
+            <td class="sub_head"><%=labelMap.get("COL_4")%></td>
+        </tr>
+<%
+	DBConnection con = new DBConnection();
+	con.connectToLocal();
+	
+	String sql = "SELECT DISTINCT INVOICE_NO, LINE_NO, DOCTOR_CODE "+
+	"FROM TRN_DAILY " +
+    "WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' " +
+    "AND (TRANSACTION_DATE >= '" + JDate.saveDate(request.getParameter("START_DATE")) + "' " +     // #20071123# this.getStartComputeDate()
+    "AND TRANSACTION_DATE <= '" + JDate.saveDate(request.getParameter("END_DATE")) + "') " +  // #20071123# this.getEndComputeDate()
+    "AND (BATCH_NO IS NULL OR BATCH_NO = '') " +
+    "AND ACTIVE = '1' " +
+    "AND AMOUNT_AFT_DISCOUNT <> 0 " +
+    "AND (COMPUTE_DAILY_DATE IS NULL OR COMPUTE_DAILY_DATE = '') "+
+	"ORDER BY INVOICE_NO";
+    
+    ResultSet rs = con.executeQuery(sql);
+	int i = 1;
+	while (rs.next()) {
+%>
+		<tr>   <!-- style="display:  none;" -->
+		    <td class="row alignRight"><%=i%></td>
+		    <td class="row alignLeft"><%=rs.getString("INVOICE_NO")%></td>
+		    <td class="row alignLeft"><%=rs.getString("LINE_NO")%></td> 
+		    <td class="row alignLeft"><%=rs.getString("DOCTOR_CODE")%></td> 
+		    <td class="row alignCenter"><img src="../../images/waiting_icon.gif" alt=""/></td>
+		</tr>
+<%
+		i ++;
+		}
+        if (rs != null) {
+            rs.close();
+        }
+        con.Close();
+
+%>
+	<script>
+		numRow = <%=i - 1%>;
+	    document.getElementById("PROGRESS").innerHTML = "0 / " + numRow;
+	</script>
+	</table>
+<%
+    if (i > 1) {
+        out.print("<script type=\"text/javascript\">document.mainForm.RUN.disabled = false;</script>"); 
+        }  
+%>
+	</form>
+	<script>
+	
+	</script>
+	</body>
+</html>
+<%
+  }
+%>
