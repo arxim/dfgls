@@ -206,7 +206,7 @@
 
                     // Data found
                     document.mainForm.DEFAULT_LOCATION_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
-                    document.mainForm.GL_CODE.value = getXMLNodeValue(xmlDoc, "GL_CODE");
+                    //document.mainForm.GL_CODE.value = getXMLNodeValue(xmlDoc, "GL_CODE");
                     
                 }
             }

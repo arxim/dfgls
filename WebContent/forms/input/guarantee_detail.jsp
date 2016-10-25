@@ -139,7 +139,7 @@
                 stpGuaranteeRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 stpGuaranteeRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
                 stpGuaranteeRec.addField("NOTE", Types.VARCHAR, request.getParameter("NOTE"));
-                stpGuaranteeRec.addField("IS_INCLUDE_LOCATION", Types.VARCHAR, request.getParameter("IS_INCLUDE_LOCATION"));
+                stpGuaranteeRec.addField("IS_INCLUDE_LOCATION", Types.VARCHAR, request.getParameter("GUARANTEE_LOCATION_CODE").equals("")?"" :request.getParameter("IS_INCLUDE_LOCATION"));
                 stpGuaranteeRec.addField("INCLUDE_PER_TIME" , Types.NUMERIC , request.getParameter("INCLUDE_AMOUNT_PER_HOUR"));
                 stpGuaranteeRec.addField("INCLUDE_OF_TIME" , Types.NUMERIC , request.getParameter("INCLUDE_HOUR"));
                 
@@ -856,7 +856,7 @@
                 <tr>
                     <td class="labelRequest"><label for="GUARANTEE_TYPE_CODE">${labelMap.G_TYPE_CODE} *</label></td>
 					<td colspan="" class="input">
-                        <%= DBMgr.generateDropDownList("GUARANTEE_TYPE_CODE", "medium", "inActive", "SELECT CODE, DESCRIPTION, ACTIVE FROM GUARANTEE_TYPE WHERE ACTIVE = '1' ORDER BY DESCRIPTION", "DESCRIPTION", "CODE", DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_TYPE_CODE")) %>
+                        <%= DBMgr.generateDropDownList("GUARANTEE_TYPE_CODE", "medium", "inActive", "SELECT CODE, DESCRIPTION, ACTIVE FROM GUARANTEE_TYPE WHERE ACTIVE = '1' ORDER BY DESCRIPTION", "DESCRIPTION", "CODE", DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_TYPE_CODE")=="" ?"DLY" :DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_TYPE_CODE")) %>
 					</td>
 					<td class="labelRequest"><label for="ADMISSION_TYPE_CODE">${labelMap.ADMISSION} *</label></td>
                     <td colspan="" class="input">

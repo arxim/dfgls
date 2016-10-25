@@ -169,6 +169,8 @@
                 doctorRec.addField("GUARANTEE_PER_HOUR", Types.NUMERIC, request.getParameter("GUARANTEE_PER_HOUR"));
                 doctorRec.addField("EXTRA_PER_HOUR", Types.NUMERIC, request.getParameter("EXTRA_PER_HOUR"));
                 doctorRec.addField("DOCTOR_GROUP_CODE", Types.VARCHAR, request.getParameter("DOCTOR_GROUP_CODE"));
+                doctorRec.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
+                doctorRec.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 
                 // for log
                 doctorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -208,6 +210,8 @@
                 doctorRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
                 doctorRecLog.addField("EMAIL", Types.VARCHAR, request.getParameter("EMAIL"));
                 doctorRecLog.addField("DOCTOR_TAX_CODE", Types.VARCHAR, request.getParameter("INCLUDE_REVENUE_CODE"));
+                doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
+                doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
 
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
@@ -1026,9 +1030,9 @@
 	                </td>
 	               	<td class="input">
 	               		<select id="TAX_402_METHOD" name="TAX_402_METHOD" class="medium">
-	                        <option value=""<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>-- Not specified --</option>
+	                        <option value="" >-- Not specified --</option>
 	                        <option value="SUM"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("SUM") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_SUM}</option>
-	                        <option value="STP"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("STP") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_STEP}</option>
+	                        <option value="STP"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("STP")||DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_STEP}</option>
 	                        <option value="3"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("3") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_3}</option>
 	                        <option value="14"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("14") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_14}</option>
 	                        <option value="15"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("15") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_15}</option>
@@ -1040,7 +1044,7 @@
 	               	<td class="input">
 	               		<select id="TAX_406_METHOD" name="TAX_406_METHOD" class="medium">
 	                        <option value=""<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>-- Not specified --</option>
-	                        <option value="SUM"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("SUM") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_SUM}</option>
+	                        <option value="SUM"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("SUM")|| DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_SUM}</option>
 	                        <option value="STP"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("STP") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_STEP}</option>
 	                        <option value="3"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("3") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_3}</option>
 	                        <option value="14"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("14") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_14}</option>
