@@ -3,7 +3,7 @@ package df.bean.db.table;
 import java.sql.SQLException;
 import df.bean.db.conn.DBConnection;
 
-public class Department  extends ABSTable{
+public class Department extends ABSTable{
 
     private String code;
     private String description;

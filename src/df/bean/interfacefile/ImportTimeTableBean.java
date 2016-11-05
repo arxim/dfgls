@@ -62,19 +62,23 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 	    	HSSFWorkbook workbook = new HSSFWorkbook(fs);
 	    	HSSFSheet sheet = workbook.getSheetAt(0);
 	    	HSSFRow tempRow;
-	    	
     		String sql_insert="";
-	    	sql_insert ="INSERT INTO STP_GUARANTEE VALUES";
-	    	
 	    	for (int r = 2; r <= sheet.getPhysicalNumberOfRows(); r++) {
+	    		System.out.println(r);
 	    		tempRow = sheet.getRow(r);
-	    		if((tempRow != null) ){
-	    			sql_insert +="(";
-	    			if(tempRow.getCell((short) 0)!=null && tempRow.getCell((short) 0).toString()!="" ){
+	    		if((tempRow != null)){
+	    			if(tempRow.getCell((short) 0)!=null && tempRow.getCell((short) 0).toString()!=""){
+	    				//System.out.println(tempRow.getCell((short) 0));
+	    				sql_insert ="INSERT INTO STP_GUARANTEE VALUES";
+		    			sql_insert +="(";
 	    				//HOSPITAL_CODE
 						sql_insert += "'"+this.hospital_code+"',";
 						//GUARANTEE_DR_CODE
-						sql_insert += "'"+tempRow.getCell((short) 0)+"',";
+						if((tempRow.getCell((short) 0).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							sql_insert += "LTRIM(RTRIM("+"'"+tempRow.getCell((short) 0)+"')),";
+						}else{
+							sql_insert += "#"+tempRow.getCell((short) 0)+",";
+						}
 						//GUARANTEE_CODE
 						if(tempRow.getCell((short) 1).toString().equals("DLY")){
 							sql_insert += "'"+JDate.saveDate(tempRow.getCell((short) 3).toString())+tempRow.getCell((short) 5).toString()+"',";
@@ -96,20 +100,52 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						//YYYY
 						sql_insert +="'"+ JDate.saveDate(tempRow.getCell((short) 3).toString()).substring(0, 4)+"',";
 						//START_DATE
-						sql_insert +="'"+ JDate.saveDate(tempRow.getCell((short) 3).toString())+"',";
+						if((tempRow.getCell((short) 3).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							sql_insert +="LTRIM(RTRIM("+"'"+ JDate.saveDate(tempRow.getCell((short) 3).toString())+"')),";
+						}else{
+							sql_insert +="#"+ JDate.saveDate(tempRow.getCell((short) 3).toString())+",";
+						}
 						//START_TIME
-						sql_insert +="'"+ tempRow.getCell((short) 5).toString()+"',";
+						if((tempRow.getCell((short) 5).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 5).toString()+"')),";
+						}else{
+							sql_insert +="#"+ tempRow.getCell((short) 5).toString()+",";
+						}
 						//EARLY_TIME
-						sql_insert +="'"+ tempRow.getCell((short) 5).toString()+"',";
+						if((tempRow.getCell((short) 7).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							if(tempRow.getCell((short) 7).toString()!= null  && tempRow.getCell((short) 7).toString()!= ""){
+								sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 7).toString()+"')),";
+							}else{
+								sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 5).toString()+"')),";
+							}
+						}else{
+							sql_insert +="#"+ tempRow.getCell((short) 7).toString()+",";
+						}
 						//END_DATE
-						sql_insert += "'"+JDate.saveDate(tempRow.getCell((short) 4).toString())+"',";
+						if((tempRow.getCell((short) 4).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							sql_insert +="LTRIM(RTRIM("+"'"+ JDate.saveDate(tempRow.getCell((short) 4).toString())+"')),";
+						}else{
+							sql_insert +="#"+ JDate.saveDate(tempRow.getCell((short) 4).toString())+",";
+						}
 						//END_TIME
-						sql_insert +="'"+ tempRow.getCell((short) 6).toString()+"',";
+						if((tempRow.getCell((short) 6).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 6).toString()+"')),";
+						}else{
+							sql_insert +="#"+ tempRow.getCell((short) 6).toString()+",";
+						}
 						//LATE_TIME
-						sql_insert +="'"+ tempRow.getCell((short) 6).toString()+"',";
+						if((tempRow.getCell((short) 8).getCellType()== HSSFCell.CELL_TYPE_STRING)){
+							if(tempRow.getCell((short) 8).toString()!= null  && tempRow.getCell((short) 8).toString()!= ""){
+								sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 8).toString()+"')),";
+							}else{
+								sql_insert +="LTRIM(RTRIM("+"'"+ tempRow.getCell((short) 6).toString()+"')),";
+							}
+						}else{
+							sql_insert +="#"+ tempRow.getCell((short) 8).toString()+",";
+						}
 						//GUARANTEE_AMOUNT,GUARANTEE_EXCLUDE_AMOUNT
 						if(tempRow.getCell((short) 10).toString().equals("GA")){
-						sql_insert += tempRow.getCell((short) 9)+"',";
+						sql_insert +="'"+tempRow.getCell((short) 9)+"',";
 						}else{
 						sql_insert +="0.00,";
 						}
@@ -124,17 +160,17 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 							sql_insert +="0.00,";
 							}
 						//OVER_ALLOCATE_PCT
-						if(tempRow.getCell((short) 5).toString()!= null  && tempRow.getCell((short) 5).toString()!= ""){
+						if(tempRow.getCell((short) 12).toString()!= null  && tempRow.getCell((short) 12).toString()!= ""){
 							sql_insert += tempRow.getCell((short) 12)+" ,";
-						}else{
-							sql_insert +="100 ,";
-						}
-						//GUARANTEE_ALLOCATE_PCT
-						if(tempRow.getCell((short) 5).toString()!= null && tempRow.getCell((short) 5).toString()!= ""){
-							sql_insert += tempRow.getCell((short) 11)+" ,";
-						}else{
+							}else{
 							sql_insert +="100,";
-						}
+							}
+						//GUARANTEE_ALLOCATE_PCT
+						if(tempRow.getCell((short) 11).toString()!= null && tempRow.getCell((short) 11).toString()!= ""){
+							sql_insert += tempRow.getCell((short) 11)+" ,";
+							}else{
+							sql_insert +="100,";
+							}
 						//ACTIVE
 						sql_insert +="'1',";
 						//UPDATE_DATE
@@ -157,9 +193,9 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 							sql_insert += "'"+tempRow.getCell((short) 13)+"',";
 						}
 						//AMOUNT_OF_TIME
-						sql_insert +=tempRow.getCell((short) 7)+",";
+						sql_insert += "0.00,";
 						//AMOUNT_PER_TIME
-						sql_insert +=tempRow.getCell((short) 8)+",";
+						sql_insert +="0.00,";
 						//INCLUDE_OF_TIME
 						sql_insert +="0.00,";
 						//INCLUDE_PER_TIME
@@ -173,10 +209,10 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						//NOTE
 						sql_insert +="'',";
 						//IS_GUARANTEE_DAILY
-						if(tempRow.getCell((short) 1).toString()=="DLY"){
-							sql_insert +="'Y',";
-						}else{
+						if(tempRow.getCell((short) 1).toString().equals("MLY")|| tempRow.getCell((short) 1).toString().equals("MLA")){
 							sql_insert +="'N',";
+						}else{
+							sql_insert +="'Y',";
 						}
 						//IS_PROCESS	
 						sql_insert +="'',";
@@ -244,44 +280,29 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						sql_insert +="0.00 ,";
 						//SUM_TAX_400	
 						sql_insert +="0.00 ";
+						sql_insert += ")";
 		    			count++;
-	    			}//END COUT OF DATA 
-	    			else{
-	    				break;
-	    			}
-	    			sql_insert += "),";
+	    			}else{break;}
+		    		try {
+		    			System.out.print(sql_insert);
+						cdb.insert(sql_insert);
+					} catch (Exception e){
+						status= false;
+						this.setMessage("Import Time Table :"+e.toString());
+			    		TRN_Error.writeErrorLog(new DBConnection(),processName,"row:"+count+"  source:"+fn, e.toString(), sqlMessage,"");
+					}
 	    		}
+	    	}//End Loop
+	    	if(status){
+	    		cdb.commitDB();
+	    		this.setMessage(" Complete" +count+" Row");
+	    	}else{
+	    		cdb.rollDB();
+	    		this.setMessage(" Plaese check your data!! ");
 	    	}
-	    	//INSERT INTO DB 
-	    	try {
-	    		//System.out.println(count +"  "+sql_insert.substring(0, sql_insert.length()-2));
-	    		Batch b = new Batch(this.hospital_code, d);
-	    		String sql_checkGuarantee = "SELECT * FROM SUMMARY_GUARANTEE WHERE YYYY+MM = "+b.getYyyy()+b.getMm()+"'  AND HOSPITAL_CODE = '"+this.hospital_code+"'";
-	    		
-	    		int sumGuarantee = cdb.countRow(sql_checkGuarantee);
-	    		System.out.println(sql_checkGuarantee);
-	    		System.out.println("sumGuarantee  : "+sumGuarantee);
-	    		if(sumGuarantee>0){
-	    			System.out.println("Can not ImportTimeTable");
-	    		}else{   
-	    			String sql_deleteTimeTable = "DELETE STP_GUARANTEE WHERE YYYY+MM ='"+b.getYyyy()+b.getMm()+"'  AND HOSPITAL_CODE = '"+this.hospital_code+"'";
-	    			System.out.println(sql_deleteTimeTable);
-	    			//delete before insert data
-	    		    cdb.insert(sql_deleteTimeTable);
-	    		    cdb.commitDB();
-	    		   System.out.println(sql_insert.substring(0, sql_insert.length()-2));
-	    			cdb.insert(sql_insert.substring(0, sql_insert.length()-2));
-	    			cdb.commitDB();
-	    		}
 
-    			System.out.println(sql_insert.substring(0, sql_insert.length()-2));
-	    		System.out.println(count);
-	    		this.setMessage( ":  "+ count +" Rows");
-	    	}catch(Exception e){
-	    		System.err.println(e);
-	    		this.setMessage( ":  Cannot insert duplicate data");
-	    	}
-	 
+    		cdb.closeDB("");	    	
+	    	
     	}catch(Exception e)
     	{
     		System.out.println("Error : "+e);
@@ -298,7 +319,5 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 	@Override
     public boolean exportData(String fn, String hp, String type, String year, String month, DBConn d, String path) {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-	
-	
+    }	
 }

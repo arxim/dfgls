@@ -64,7 +64,7 @@ public class ProcessDischargeSummary{
 		connsb.connectToLocal(); 	
 		connsb.beginTrans();
 		DBConnection connihd=new DBConnection();
-		connihd.connectToLocal(); 	
+		connihd.connectToLocal();
 		String sql="SELECT * FROM INT_HIS_DISCHARGE WHERE HOSPITAL_CODE='"+this.hospitalcode+"' AND YYYY='"+batch.getYyyy()+"' AND MM='"+batch.getMm()+"'";
 		ResultSet rsforind=connihd.executeQuery(sql);
 		while(rsforind.next()){

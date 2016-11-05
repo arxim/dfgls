@@ -69,7 +69,7 @@ public class ImportTransactionBean extends InterfaceTextFileBean {
                         //rs.updateString("PATIENT_NAME",sub_data[6].trim());
                         rs.updateString("PATIENT_NAME",new String(sub_data[6].trim().getBytes(),"TIS-620"));
                         rs.updateString("EPISODE_NO",sub_data[7].trim());
-                        rs.updateString("PAYOR_CODE",sub_data[8].trim());
+                        rs.updateString("PAYOR_CODE",sub_data[8].trim().toString().replace("#", "_"));
                         rs.updateString("PAYOR_NAME",new String(sub_data[9].trim().getBytes(),"TIS-620"));
                         rs.updateString("PAYOR_CATEGORY_CODE",sub_data[10].trim());
                         rs.updateString("PAYOR_CATEGORY_DESC",new String(sub_data[11].trim().getBytes(),"TIS-620"));
@@ -255,7 +255,7 @@ public class ImportTransactionBean extends InterfaceTextFileBean {
                          rs.updateString("HN_NO", sub_data[5].trim());
                          rs.updateString("PATIENT_NAME",new String(sub_data[6].trim().getBytes(),"TIS-620"));
                          rs.updateString("EPISODE_NO",sub_data[7].trim());
-                         rs.updateString("PAYOR_CODE",sub_data[8].trim());
+                         rs.updateString("PAYOR_CODE",sub_data[8].trim().toString().replace("#", "_"));
                          rs.updateString("PAYOR_NAME",new String(sub_data[9].trim().getBytes(),"TIS-620"));
                          rs.updateString("PAYOR_CATEGORY_CODE",sub_data[10].trim());
                          rs.updateString("PAYOR_CATEGORY_DESC",new String(sub_data[11].trim().getBytes(),"TIS-620"));

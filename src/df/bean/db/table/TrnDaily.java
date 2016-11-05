@@ -1148,6 +1148,7 @@ public class TrnDaily extends ABSTable {
                     + " IS_GUARANTEE_FROM_ALLOC "//UPDATE BY NOP 2011-01-06
             + " FROM " + this.getTableName(); 
             sql = sql + " where HOSPITAL_CODE='" + this.getHospitalCode() + "'";
+            sql = sql + " and INVOICE_TYPE <> 'ORDER' ";
             sql = sql + " and INVOICE_NO='" + this.getInvoiceNo() + "'";
             sql = sql + " and TRANSACTION_DATE='" + this.getTransactionDate() + "'";
             sql = sql + " and INVOICE_DATE = '" + this.getInvoiceDate() + "'";

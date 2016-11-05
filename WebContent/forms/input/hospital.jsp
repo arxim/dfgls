@@ -652,14 +652,12 @@
                     </td>
                     <td class="label"><label for="GUARANTEE_DAY">${labelMap.GUARANTEE_DAY}</label></td>
                     <td class="input">
-                        <input type="radio" id="GUARANTEE_DAY_1" name="GUARANTEE_DAY" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+                        <input type="radio" id="GUARANTEE_DAY_1" name="GUARANTEE_DAY" value="VER"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("VER") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
                         <label for="GUARANTEE_DAY_1">${labelMap.GUARANTEE_DAY_1}</label>
-                        <input type="radio" id="GUARANTEE_DAY_0" name="GUARANTEE_DAY" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+                        <input type="radio" id="GUARANTEE_DAY_0" name="GUARANTEE_DAY" value="INV"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("INV") ? " checked=\"checked\"" : "" %> />
                         <label for="GUARANTEE_DAY_0">${labelMap.GUARANTEE_DAY_0}</label>
                     </td>
                 </tr>
-                
-                
                 
                 <!-- edit -->
                  <tr>

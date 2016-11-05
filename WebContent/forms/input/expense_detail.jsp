@@ -67,6 +67,9 @@
         stpExpenseRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
         stpExpenseRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
         stpExpenseRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+        stpExpenseRec.addField("BATCH_NO", Types.VARCHAR, "");
+        stpExpenseRec.addField("PAYMENT_DATE", Types.VARCHAR, "");
+        stpExpenseRec.addField("PAYMENT_TERM", Types.VARCHAR, "");
         stpExpenseRec.addField("DEPARTMENT_CODE", Types.VARCHAR, request.getParameter("DEPARTMENT_CODE").toString());
         stpExpenseRec.addField("LOCATION_CODE", Types.VARCHAR, request.getParameter("LOCATION_CODE").toString());
 

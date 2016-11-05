@@ -114,7 +114,7 @@ public class GuaranteeRollbackBeanNew {
 
 		String sq4 = "UPDATE TRN_DAILY SET  YYYY = '', MM = '', PAY_BY_CASH = 'N', RECEIPT_NO = '', RECEIPT_DATE = '' "
 		+ "WHERE  TRANSACTION_DATE LIKE '"+year+""+month+"%' "
-		+ "AND (RECEIPT_NO = 'DISCHARGE' OR RECEIPT_NO = 'ADVANCE') "
+		+ "AND (RECEIPT_NO != 'DISCHARGE' OR RECEIPT_NO != 'ADVANCE') "
 		+ "AND GUARANTEE_TERM_MM = '" + month + "' "
 		+ "AND GUARANTEE_TERM_YYYY = '" +  year + "' "
 		+ "AND GUARANTEE_NOTE NOT LIKE '%EXTRA%' "

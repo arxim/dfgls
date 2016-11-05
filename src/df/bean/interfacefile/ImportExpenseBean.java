@@ -45,22 +45,28 @@ public class ImportExpenseBean extends InterfaceTextFileBean {
                 if(i>0){
                     temp = (String)a.get(i);
                     sub_data = temp.split("[|]");
-                    System.out.println(sub_data.length);
                     rs.moveToInsertRow();
                     setMessage("Employee ID = "+sub_data[1]+" Doc No = "+sub_data[2]+" Date = "+sub_data[3].trim());
+                    System.out.println(this.getMessage()+" count = "+i);
                     rs.updateString("HOSPITAL_CODE",sub_data[0].trim());
                     rs.updateString("DOCTOR_CODE",getDoctorCode(sub_data[1].trim(),sub_data[0].trim()));
                     rs.updateString("EMPLOYEE_ID",sub_data[1].trim());
                     rs.updateString("DOC_NO",sub_data[2].trim());
                     rs.updateString("LINE_NO", ""+fn.substring(fn.length()-8, fn.length())+i);
                     rs.updateString("DOC_DATE",sub_data[3].trim());
-                    rs.updateDouble("AMOUNT",Double.parseDouble(""+sub_data[4].trim()));                    
+                    rs.updateDouble("AMOUNT",Double.parseDouble(""+sub_data[4].trim()));    
+                    rs.updateDouble("TAX_AMOUNT",this.taxType.equals("400")?0 :Double.parseDouble(""+sub_data[4].trim()));
                     rs.updateString("EXPENSE_SIGN","-1");
                     rs.updateString("EXPENSE_ACCOUNT_CODE", this.accountCode);
                     rs.updateString("EXPENSE_CODE",this.expenseCode);
                     rs.updateString("TAX_TYPE_CODE", this.taxType);
                     rs.updateString("YYYY",b.getYyyy());
                     rs.updateString("MM",b.getMm());
+                    rs.updateString("SUPPLIER_CODE","");
+                    rs.updateString("INVOICE_TYPE_DESCRIPTION", "Invoice");
+                    rs.updateString("BATCH_NO","");
+                    rs.updateString("PAYMENT_DATE","");
+                    rs.updateString("PAYMENT_TERM","");
                     try{
                     	rs.updateString("NOTE","CO ค่ารักษาพยาบาล :"+new String(sub_data[7].trim().getBytes(),"TIS-620")+"  HN:"+sub_data[5].trim()+
                     	", Episode:"+sub_data[6].trim());
@@ -164,14 +170,16 @@ public class ImportExpenseBean extends InterfaceTextFileBean {
         			 "WHERE HOSPITAL_CODE = '"+hospital_code+"' " +
         			 "AND OLD_DEPT_CODE = '"+department_code+"'";
         try{
-        	System.out.println(stm);
         	d.setStatement();
             a = d.query(stm);
-            dept = a[0][0];
+            if(a.length==0){
+            	dept=department_code;
+            }else{
+            	dept = a[0][0];
+            }
         }catch(Exception e){
             System.out.println(e);
         }
-        System.out.println(dept);
         return dept;
     }
 

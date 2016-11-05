@@ -125,11 +125,13 @@
             DataRecord doctorDepartmentRec = null, orderItemRec = null, doctorRec = null, doctorExecuteRec = null, doctorPrivateRec=null, doctorResultRec = null;
             
             if (request.getParameter("INVOICE_NO") != null && request.getParameter("LINE_NO") != null) {
+            	System.out.println("TEST : 1");
                 query = "SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + 
                 		"' AND INVOICE_NO = '" + request.getParameter("INVOICE_NO") +
                 		"' AND TRANSACTION_DATE = '" + request.getParameter("TRANSACTION_DATE") + 
                 		"' AND INVOICE_TYPE = '" + request.getParameter("INVOICE_TYPE") + 
                     	"' AND LINE_NO = '" + DBMgr.toSQLString( request.getParameter("LINE_NO")) + "'";
+                System.out.println("TEST : 1  "+query);
                 trnDailyRec = DBMgr.getRecord(query);
                 MODE = MODE_UPDATE_DETAIL;
             }else if (request.getParameter("INVOICE_NO") != null) {
@@ -203,7 +205,7 @@
 
                     con = new DBConnection();
                     con.connectToLocal();
-                    
+                    System.out.println("cmd : "+cmd);
                     if (con.executeUpdate(cmd) > 0) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/invoice.jsp?INVOICE_NO=" + request.getParameter("INVOICE_NO")));// + "&INVOICE_DATE=" + request.getParameter("INVOICE_DATE")));
                     }else {
@@ -221,7 +223,7 @@
                     trnDailyRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                     trnDailyRec.addField("INVOICE_NO", Types.VARCHAR, request.getParameter("INVOICE_NO"), true);
                     trnDailyRec.addField("INVOICE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("INVOICE_DATE")), true);
-                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"));
+                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"),true);
                 	
                     if (MODE != MODE_UPDATE_DETAIL_SUBMIT) {
                     	

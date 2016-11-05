@@ -160,7 +160,8 @@ public class ProcressMatchTable {
                     String[] arrDt = dt.split("\\|");
                     for(int k = 0 ; k < arrDt.length ; k++){            
                         guarantee_code = this.StartDate(arrDt[k] + arr[i][4]);
-                        sqlInsert = "INSERT INTO STP_GUARANTEE(GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, HOSPITAL_CODE, IS_GUARANTEE_DAILY, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE) " +
+                        sqlInsert = 
+                        "INSERT INTO STP_GUARANTEE(GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, HOSPITAL_CODE, IS_GUARANTEE_DAILY, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE) " +
                         "VALUES('"+arr[i][8]+"','"+arr[i][9]+"','"+ this.getHpCode() +"','Y','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','"+ arr[i][2] +"','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"', '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"')";
                         try{
                         	conn.insert(sqlInsert);

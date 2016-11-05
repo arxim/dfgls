@@ -112,6 +112,7 @@
 	    "AND AMOUNT_AFT_DISCOUNT <> 0 " +
 	    "AND DOCTOR_CODE NOT LIKE '99999%' "+
 	    "AND (COMPUTE_DAILY_DATE IS NULL OR COMPUTE_DAILY_DATE = '') "+
+	    "AND INVOICE_TYPE <> 'ORDER' "+
 		"ORDER BY INVOICE_NO";
 		System.out.println("Select Data to JavaScript : "+sql);
 		ResultSet rs = con.executeQuery(sql);

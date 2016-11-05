@@ -7,6 +7,7 @@
 <%@page import="df.bean.db.DBMgr"%>
 <%@page import="df.bean.db.DataRecord"%>
 <%@page import="df.bean.obj.util.JDate"%>
+
 <%@page import="df.bean.obj.util.JNumber"%>
 <%@ include file="../../_global.jsp" %>
 
@@ -178,18 +179,6 @@
             }else if (request.getParameter("GUARANTEE_DR_CODE") != null && request.getParameter("ADMISSION_TYPE_CODE") != null && request.getParameter("GUARANTEE_TYPE_CODE") != null && request.getParameter("MM") != null && request.getParameter("YYYY") != null && request.getParameter("START_DATE") != null && request.getParameter("START_TIME") != null && request.getParameter("END_DATE") != null && request.getParameter("END_TIME") != null) {
                 // Edit
                 MODE = DBMgr.MODE_UPDATE;
-            	//System.out.println("edit update");
-            			/*
-            	        "SELECT SG.*, CASE WHEN SG.GUARANTEE_SOURCE = '' THEN DR.GUARANTEE_SOURCE ELSE SG.GUARANTEE_SOURCE END AS SOURCE_AMOUNT, "+
-                		"CASE WHEN SG.GUARANTEE_DAY = '' THEN CASE WHEN DR.GUARANTEE_DAY = '' THEN HP.GUARANTEE_DAY ELSE DR.GUARANTEE_DAY END ELSE "+
-                		"SG.GUARANTEE_DAY END AS GDAY "+
-                		"FROM STP_GUARANTEE SG "+
-                		"LEFT OUTER JOIN DOCTOR DR ON SG.HOSPITAL_CODE = DR.HOSPITAL_CODE AND SG.GUARANTEE_DR_CODE = DR.CODE "+
-                		"LEFT OUTER JOIN HOSPITAL HP ON SG.HOSPITAL_CODE = HP.CODE "+
-                		"WHERE HOSPITAL_CODE = '%1$s' AND GUARANTEE_DR_CODE = '%2$s' AND ADMISSION_TYPE_CODE = '%3$s' "+
-                		"AND GUARANTEE_TYPE_CODE = '%4$s' AND MM = '%5$s' AND YYYY = '%6$s' AND START_DATE = '%7$s' AND START_TIME = '%8$s' "+
-                		"AND END_DATE = '%9$s' AND END_TIME = '%10$s' AND GUARANTEE_CODE='%11$s' ",
-                		*/
                 String query = String.format(
                 		"SELECT * "+
                 		"FROM STP_GUARANTEE "+
@@ -218,7 +207,6 @@
                 response.sendRedirect("../message.jsp");
             }
             
-            //out.println(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_TYPE_CODE"));
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -579,37 +567,6 @@
                     }
                 }				
            	}
-           	//+++++++++++???????###*****&&&&&@@@@
-			/* function AJAX_GUARANTEE_AMOUNT(){
-				var start_date = document.mainForm.START_DATE.value;
-				var end_date = document.mainForm.END_DATE.value;
-				var start_time = document.mainForm.START_TIME.value;
-				var end_time = document.mainForm.END_TIME.value;
-
-				var amount_per_time = 0;
-				if(document.mainForm.AMOUNT_PER_TIME.value != '') { 
-					 amount_per_time  =  document.mainForm.AMOUNT_PER_TIME.value;
-				}
-				var target = "../../GetHourTimeSrvl?start_date=" + start_date + "&end_date=" + end_date + "&start_time=" + start_time + "&end_time=" + end_time + "&amount_per_time=" + amount_per_time;
-				//alert(target);
-				AJAX_Request(target, AJAX_Handle_GUARANTEE_AMOUNT); // ให้ทำ  function AJAX_Handle_GUARANTEE_AMOUNT
-			}
-			 
-           function AJAX_Handle_GUARANTEE_AMOUNT(){
-                if (AJAX_IsComplete()) {
-                    var xmlDoc = AJAX.responseXML;
-                    //alert(getXMLNodeValue(xmlDoc, "STATUS"));
-                    if (getXMLNodeValue(xmlDoc, "STATUS")!= 0 ) {
-                    	if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
-                    		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
-                    		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
-                    	}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
-                    		document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
-                    		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
-                    	}
-                    }
-                }				
-           	} */
            	
            	function AJAX_GUARANTEE_AMOUNT(ga_type,val,action){
 				var start_date = document.mainForm.START_DATE.value;
@@ -617,79 +574,76 @@
 				var start_time = document.mainForm.START_TIME.value;
 				var end_time = document.mainForm.END_TIME.value;
 				var dr_code = document.mainForm.GUARANTEE_DR_CODE.value;
-				var amount_per_time = 0;
-				//alert(dr_code);
-				if(action == "select"){
-					if(document.mainForm.AMOUNT_PER_TIME.value != '') { 
-						 amount_per_time  =  document.mainForm.AMOUNT_PER_TIME.value;
-					}
-					var target = "../../GetHourTimeSrvl?start_date=" + start_date + "&end_date=" + end_date + "&start_time=" + start_time + "&end_time=" + end_time + "&ga_type="+ga_type+"&dr_code="+dr_code+ "&amount_per_time="+amount_per_time;
-					
-					AJAX_Request(target, AJAX_Handle_GUARANTEE_AMOUNT); // ให้ทำ  function AJAX_Handle_GUARANTEE_AMOUNT 
+				var amount_per_time = document.mainForm.AMOUNT_PER_TIME.value;
 				
-				}else{
-					amount_per_time = val;
-					var target = "../../GetHourTimeSrvl?start_date=" + start_date + "&end_date=" + end_date + "&start_time=" + start_time + "&end_time=" + end_time + "&amount_per_time=" + amount_per_time+ "&ga_type=TT";
-					console.log(target);
-					AJAX_Request(target, AJAX_Handle_GUARANTEE_AMOUNT); // ให้ทำ  function AJAX_Handle_GUARANTEE_AMOUNT 
-	          
-				}	
+				
+				var target = "../../GetHourTimeSrvl?start_date=" + start_date + "&end_date=" + end_date + "&start_time=" + start_time + "&end_time=" + end_time + "&ga_type="+ga_type+"&dr_code="+dr_code+ "&amount_per_time="+amount_per_time;
+					
+				AJAX_Request(target, AJAX_Handle_GUARANTEE_AMOUNT); // ให้ทำ  function AJAX_Handle_GUARANTEE_AMOUNT 
+				
+				
 			}
-			 
+            
            function AJAX_Handle_GUARANTEE_AMOUNT(){
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
-                    if (getXMLNodeValue(xmlDoc, "STATUS")!= 0 ) {
                     	if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
                     		document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
                     		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
                     		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
+                    		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
+    	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+    	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
                     	}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
                     		document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
                     		document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
                     		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
+                    		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=true;
+    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=true;
+    	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
+    	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
+    	           			document.mainForm.GUARANTEE_INCLUDE_AMOUNT.value=num_default_value;
+    	           			document.mainForm.INCLUDE_AMOUNT_PER_HOUR.value=num_default_value;
+    	           			document.mainForm.INCLUDE_HOUR.value=num_default_value;
+    	           			
+                    	}else if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
+                    		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+    	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
+    	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
                     	}
-                    }
-                }				
+                    } 
+               				
            	}
            	
            //+++++++++++++++++++++++++++++++++++++++ 20090819
            	//function chkStepSharing(){
             //}
            	function amountType(){ ///  ทำต่อตรงนี้นะครับผม
-           	 if(document.mainForm.GUARANTEE_TYPE.value == "GEA"){
-        			AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","select");
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
-        			document.mainForm.GUARANTEE_AMOUNT.readOnly=true;
-        			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;           			
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=true;
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_AMOUNT.value= "0.00";
-        			
-        		}else if(document.mainForm.GUARANTEE_TYPE.value == "GA"){
-        			//GET AMOUNT_PER_TIME
-        			AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","select");
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value= "0.00";
-        		}else{
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-        			document.mainForm.AMOUNT_PER_TIME.value=num_default_value;
-	           		}
-             //   }
-           	}
+           		if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
+           			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+               		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
+           			
+           		}else if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
+           			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+               		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
+           			
+           		}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
+           			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+               		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
+           			
+           		}else{
+           			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+               		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
+           		}
+           			
+           	}	
+           		
 
             function startDate(val){ 
                 if(val != ''){
@@ -722,7 +676,7 @@
 				}
             }
             
-            function amount_of_time(val) { 
+            /* function amount_of_time(val) { 
             	if(val != '') { 
 		           		if(document.mainForm.GUARANTEE_TYPE.value == "GA"){ // value  GUARANTEE_AMOUNT
 		          			document.mainForm.GUARANTEE_AMOUNT.readOnly = true; 
@@ -747,14 +701,12 @@
 		           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
 		           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
 		           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-		           			document.mainForm.AMOUNT_PER_TIME.value ="0.00";
 		           		}
 	                } 
-            }
+            } */
             
             //  set default value
            function setDefaultValue(num){
-            	
         	   	if($(num).val() == "" ){
         	   			 $(num).val(0);
         	   	} 
@@ -934,7 +886,7 @@
                     <td class="label">
                         <label for="AMOUNT_PER_TIME">${labelMap.AMOUNT_PER_TIME}</label>                    </td>
                     <td class="input" colspan="1">
-                        <input onkeyup="return setDefaultValue(this)" name="AMOUNT_PER_TIME" type="text" class="short alignRight" id="AMOUNT_PER_TIME" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME") %>"   onblur="return amount_of_time(this.value)"/> Baht</td>
+                        <input  name="AMOUNT_PER_TIME" type="text" class="short alignRight" id="AMOUNT_PER_TIME" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME") %>"   onblur="return amountType(this.value)"/> Baht</td>
                 	<td class="input" colspan="1">
                 		<input name="AMOUNT_OF_TIME" type="text" class="short alignRight" id="AMOUNT_OF_TIME" maxlength="13" value = "<%=DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_OF_TIME") %>" readonly="readonly" /> Hour
                 	</td>
