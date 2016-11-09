@@ -353,7 +353,7 @@ public class InterfaceExportSAPGLBean {
                "AMOUNT_AFT_DISCOUNT,ACCOUNT_CODE,RECEIPT_LOCATION,PATIENT_LOCATION,NATIONALITY_CODE, " +
                "AMOUNT_SIGN,MM,YYYY,HOSPITAL_CODE,PROCESS) " +
                "SELECT CASE WHEN EX.ADJUST_TYPE = 'CO' THEN 'COSAP|'+T.DOC_NO+'|'+T.DOC_DATE+'|'+"+
-               "T.NOTE "+
+               "SUBSTRING(T.NOTE,0,70) "+
                //"RTRIM(SUBSTRING(T.NOTE, CHARINDEX(':',T.NOTE)+1, CHARINDEX(' HN',T.NOTE)-CHARINDEX(':',T.NOTE))) "+
                "ELSE T.LINE_NO END AS LINE_NO, "+
                "T.DOCTOR_CODE, 'O', " +
@@ -379,7 +379,7 @@ public class InterfaceExportSAPGLBean {
                "AMOUNT_AFT_DISCOUNT, ACCOUNT_CODE, RECEIPT_LOCATION, PATIENT_LOCATION, NATIONALITY_CODE, " +
                "AMOUNT_SIGN, MM, YYYY, HOSPITAL_CODE, PROCESS) " +
                "SELECT CASE WHEN EX.ADJUST_TYPE = 'CO' THEN 'COSAP|'+T.DOC_NO+'|'+T.DOC_DATE+'|'+"+
-               "T.NOTE "+
+               "SUBSTRING(T.NOTE,0,70) "+
                //"RTRIM(SUBSTRING(T.NOTE, CHARINDEX(':',T.NOTE)+1, CHARINDEX(' HN',T.NOTE)-CHARINDEX(':',T.NOTE))) "+
                "ELSE T.LINE_NO END AS LINE_NO, "+
                "T.DOCTOR_CODE, 'O', " +

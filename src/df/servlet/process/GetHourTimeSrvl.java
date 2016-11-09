@@ -47,7 +47,8 @@ import df.bean.obj.util.JDate;
     	       double AMT = 0.0;
     	       double amount_diff_time = 0.0;
     	       double diff_time_val = 0.0;
-    	       try{
+    	       try
+    	       {
     	    	   DBConn conn = null;
     	   		
     	   			if(conn==null){
@@ -55,17 +56,28 @@ import df.bean.obj.util.JDate;
     	   				conn.setStatement();
     	   			}
     	   			
-    	   			String ga_type_code =ga_type.equals("GEA")?"EXTRA_PER_HOUR" :"GUARANTEE_PER_HOUR"; 
-    	   			String sql ="SELECT "+ga_type_code+" FROM DOCTOR WHERE CODE ='"+dr_code+"' AND HOSPITAL_CODE = '"+hospital_code+"' "; 
-    	   			amount_of_time =conn.getSingleData(sql); 
-    	   			System.out.println(amount_of_time+" "+ga_type_code); 
-    	   			AMT = Double.parseDouble(amount_of_time); 
-    	   			amount_diff_time = JDate.getDiffTimes(from_date, to_date, from_time, to_time); 
-    	   			diff_time_val = AMT*amount_diff_time; 
-    	   			out.print("<RESULT><STATUS>" + diff_time_val + "</STATUS><STATUS1>" + amount_diff_time + "</STATUS1><STATUS2>" + amount_of_time + "</STATUS2></RESULT>");    	   			
-    	       }catch (Exception  e) {
+    	   			if(amount_of_time.equals("0") || amount_of_time.equals("")||amount_of_time.equals("0.00")){
+    	   				String ga_type_code =ga_type.equals("GEA")?"EXTRA_PER_HOUR" :"GUARANTEE_PER_HOUR";
+    		    		String sql ="SELECT "+ga_type_code+"  FROM DOCTOR WHERE CODE ='"+dr_code+"' AND HOSPITAL_CODE = '"+hospital_code+"' ";
+    		    		amount_of_time =conn.getSingleData(sql);
+    		    		System.out.println(amount_of_time+"  "+ga_type_code);
+        	   			AMT =  Double.parseDouble(amount_of_time);    		
+    	        		amount_diff_time = JDate.getDiffTimes(from_date, to_date, from_time, to_time);
+    	        		diff_time_val = AMT*amount_diff_time;
+    	        		out.print("<RESULT><STATUS>" + diff_time_val + "</STATUS><STATUS1>" + amount_diff_time + "</STATUS1><STATUS2>" + amount_of_time + "</STATUS2></RESULT>");
+    	       
+    	   			}else{
+        	   			AMT =  Double.parseDouble(amount_of_time);    		
+    	        		amount_diff_time = JDate.getDiffTimes(from_date, to_date, from_time, to_time);
+    	        		diff_time_val = AMT*amount_diff_time;
+    	        		out.print("<RESULT><STATUS>" + diff_time_val + "</STATUS><STATUS1>" + amount_diff_time + "</STATUS1><STATUS2>" + amount_of_time + "</STATUS2></RESULT>");
+    	   			}
+    	       }
+    	       catch (Exception  e) 
+    	       {
     	    	   System.out.println(e);
     	       }
+    	        
     	    }
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

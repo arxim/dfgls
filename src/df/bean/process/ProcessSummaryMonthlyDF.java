@@ -375,6 +375,31 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
         return sql;
     }
 	
+	private String doTransferDoctorPaymentReport(){
+		return	"INSERT INTO REPORT_DF_PAYMENT "+
+				"SELECT TD.HOSPITAL_CODE, '"+this.year+this.month+"' AS TERM, TD.DOCTOR_CODE, TD.VERIFY_DATE, "+
+				"CASE WHEN TD.IS_ONWARD = 'Y' THEN '' ELSE TD.INVOICE_DATE END AS INVOICE_DATE, "+
+				"TD.HN_NO, TD.PATIENT_NAME, TD.ORDER_ITEM_DESCRIPTION, TD.AMOUNT_AFT_DISCOUNT, TD.AMOUNT_OF_DISCOUNT, TD.AMOUNT_AFT_DISCOUNT-TD.DR_AMT AS HOSPITAL_AMT, "+
+				"CASE WHEN TD.YYYY+TD.MM = '' OR (TD.YYYY+TD.MM != '' AND IS_DISCHARGE_SUMMARY = 'N') THEN 0 ELSE CASE WHEN TD.ACTIVE = '1' THEN TD.DR_AMT ELSE 0 END END AS DR_AMT, "+
+				"CASE WHEN (TD.YYYY+TD.MM != '' AND IS_DISCHARGE_SUMMARY = 'N') THEN '' ELSE TD.YYYY+TD.MM END PAY_TERM, "+
+				"CASE WHEN TD.YYYY+TD.MM = '' OR (TD.YYYY+TD.MM != '' AND IS_DISCHARGE_SUMMARY = 'N') THEN CASE WHEN TD.ACTIVE = '1' THEN TD.DR_AMT ELSE 0 END ELSE 0 END AS OUTSTANDING_AMT, "+
+				"DATEDIFF(day, TD.VERIFY_DATE, '"+this.payDate+"') AS DiffDate, "+
+				"CASE WHEN TD.IS_DISCHARGE_SUMMARY = 'N' THEN 'N' ELSE "+
+				"CASE WHEN TD.IS_DISCHARGE_SUMMARY = 'Y' THEN 'Y' ELSE '' END END AS DISCHARGE_SUMMARY, TD.EPISODE_NO, "+
+				"CASE WHEN TD.IS_ONWARD = 'Y' THEN '' ELSE TD.INVOICE_NO END AS INVOICE_NO, "+
+				"CASE WHEN MTD.NOTE != '' THEN MTD.NOTE ELSE CASE WHEN TD.IS_ONWARD = 'Y' THEN 'ON ADMISSION' ELSE '-' END "+
+				"END AS NOTE, TD.LINE_NO, TD.ACTIVE, TD.IS_ONWARD "+
+				"FROM TRN_DAILY TD "+
+				"LEFT OUTER JOIN MA_TRN_DAILY MTD ON TD.INVOICE_NO = MTD.INVOICE_NO AND TD.LINE_NO = MTD.LINE_NO "+
+				"AND MTD.UPDATE_DATE BETWEEN '"+this.year+this.month+"10' AND '"+this.payDate+"' "+
+				"WHERE TD.HOSPITAL_CODE = '"+this.hospitalCode+"' "+
+				"AND (TD.ACTIVE = '1' OR (TD.ACTIVE = '0' AND MTD.ACTIVE_OLD = '1')) "+
+				"AND (TD.YYYY+TD.MM = '"+this.year+this.month+"' OR TD.YYYY+TD.MM = '' OR (TD.YYYY+TD.MM != '' AND IS_DISCHARGE_SUMMARY = 'N')) "+
+				"AND TD.DOCTOR_CODE NOT LIKE '9999%' "+
+				"AND TD.TRANSACTION_DATE < '"+this.payDate.substring(0, 6)+"00' "+
+				"ORDER BY TD.TRANSACTION_DATE";
+	}
+	
 	private String doProcessAdjustPayment(){
 		String con = "";
 		if(this.term.equals("1")){
@@ -490,18 +515,31 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 	        	//TRN_EXPENSE_DETAIL CLOSE
 	        	//SUMMARY_PAYMENT CLOSE
 	        	//TRN_PAYMENT CLOSE
+	        	
 	            conn.executeUpdate(doTransactionClose());
 	            conn.executeUpdate(rollbackTrnGuarantee());
 	            conn.executeUpdate(doFirstTermAdjustClose());
 	            conn.executeUpdate(doSummaryClose());
 	            conn.executeUpdate(doTransactionPaymentClose());
+	           
 	        }else{
 	        	System.out.println("Initial Month End doBatchClose");
+	        	System.out.println(doTransferDoctorPaymentReport());
+	        	
 	        	conn.beginTrans();
-	            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
-	            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
-	        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
-	        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE
+	        	if(this.hospitalCode.equals("00001")){
+		        	if(conn.executeUpdate(this.doTransferDoctorPaymentReport())>0){
+			            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
+			            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
+			        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
+			        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE		        		
+		        	}
+	        	}else{
+		            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
+		            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
+		        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
+		        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE
+	        	}
 	        	//STP_GUARANTEE
 	        	try{ //MOVE X-RAY
 		        	if(conn.executeUpdate(doMoveXray())>0){
@@ -1053,7 +1091,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
         "TRN_EXPENSE_DETAIL.HOSPITAL_CODE = '"+this.hospitalCode+"' "+
         "AND TRN_EXPENSE_DETAIL.YYYY = '"+this.year+"' " +
         "AND TRN_EXPENSE_DETAIL.MM = '"+this.month+"' "+
-        "AND BATCH_NO = ''"+
+        "AND (BATCH_NO = '' OR BATCH_NO IS NULL)"+
 		"";
 	}
 	public void setUserID(String s){
@@ -1062,7 +1100,25 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 	private String doMoveOnward(){
 		//"INSERT INTO TRN_ONWARD SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_ONWARD = 'Y'";
 		String cmd_onward = 
-		"INSERT INTO TRN_ONWARD SELECT * FROM TRN_DAILY "+
+		"INSERT INTO TRN_ONWARD "+
+		"SELECT HOSPITAL_CODE, INVOICE_NO, INVOICE_DATE, RECEIPT_NO, RECEIPT_DATE, TRANSACTION_DATE, HN_NO, PATIENT_NAME, EPISODE_NO, "+
+        "NATIONALITY_CODE, NATIONALITY_DESCRIPTION, PAYOR_OFFICE_CODE, PAYOR_OFFICE_NAME, TRANSACTION_MODULE, TRANSACTION_TYPE, "+
+        "PAYOR_OFFICE_CATEGORY_CODE, PAYOR_OFFICE_CATEGORY_DESCRIPTION, IS_WRITE_OFF, LINE_NO, ADMISSION_TYPE_CODE, "+
+        "PATIENT_DEPARTMENT_CODE, PATIENT_LOCATION_CODE, RECEIPT_DEPARTMENT_CODE, RECEIPT_LOCATION_CODE, DOCTOR_DEPARTMENT_CODE, "+
+        "ORDER_ITEM_CODE, ORDER_ITEM_DESCRIPTION, DOCTOR_CODE, VERIFY_DATE, VERIFY_TIME, DOCTOR_EXECUTE_CODE, EXECUTE_DATE, EXECUTE_TIME, "+
+        "DOCTOR_RESULT_CODE, OLD_DOCTOR_CODE, RECEIPT_TYPE_CODE, AMOUNT_BEF_DISCOUNT, AMOUNT_OF_DISCOUNT, AMOUNT_AFT_DISCOUNT, "+
+        "AMOUNT_BEF_WRITE_OFF, INV_IS_VOID, REC_IS_VOID, UPDATE_DATE, UPDATE_TIME, USER_ID, BATCH_NO, YYYY, MM, DD, NOR_ALLOCATE_AMT, "+
+        "NOR_ALLOCATE_PCT, DR_AMT, OLD_DR_AMT, DR_TAX_400, DR_TAX_401, DR_TAX_402, DR_TAX_406, TAX_TYPE_CODE, DR_PREMIUM, GUARANTEE_PAID_AMT, "+
+        "GUARANTEE_AMT, GUARANTEE_CODE, GUARANTEE_DR_CODE, GUARANTEE_TYPE, GUARANTEE_DATE_TIME, GUARANTEE_TERM_MM, "+
+        "GUARANTEE_TERM_YYYY, GUARANTEE_NOTE, IS_GUARANTEE, HP_AMT, HP_PREMIUM, HP_TAX, COMPUTE_DAILY_DATE, COMPUTE_DAILY_TIME, "+
+        "COMPUTE_DAILY_USER_ID, DOCTOR_CATEGORY_CODE, EXCLUDE_TREATMENT, PREMIUM_CHARGE_PCT, PREMIUM_REC_AMT, ACTIVE, INVOICE_TYPE, "+
+        "TOTAL_BILL_AMOUNT, TOTAL_DR_REC_AMOUNT, OLD_AMOUNT, PAY_BY_CASH, PAY_BY_AR, PAY_BY_DOCTOR, PAY_BY_PAYOR, PAY_BY_CASH_AR, IS_PAID, "+
+        "ORDER_ITEM_ACTIVE, ORDER_ITEM_CATEGORY_CODE, WRITE_OFF_BILL_AMT, WRITE_OFF_RECEIPT_AMT, OLD_DR_AMT_BEF_WRITE_OFF, "+
+        "DR_AMT_BEF_WRITE_OFF, DR_PREMIUM_BEF_WRITE_OFF, HP_AMT_BEF_WRITE_OFF, HP_PREMIUM_WRITE_OFF, OLD_TAX_AMT, "+
+        "DR_TAX_406_BEF_WRITE_OFF, TAX_FROM_ALLOCATE, IS_GUARANTEE_FROM_ALLOC, IS_ONWARD, IS_PARTIAL, DR_AMT_BEF_PARTIAL, DR_TAX_BEF_PARTIAL, "+
+        "IS_DISCHARGE_SUMMARY, AMT_BEF_PARTIAL, DOCTOR_PRIVATE_CODE, NOTE, SEQ_STEP "+
+        "FROM TRN_DAILY "+
+		//"SELECT * FROM TRN_DAILY "+
 		"WHERE IS_ONWARD = 'Y' AND TRANSACTION_DATE LIKE '"+(this.year+this.month)+"%' AND "+
 		"HOSPITAL_CODE = '"+this.hospitalCode+"' AND YYYY = '' AND GUARANTEE_PAID_AMT = 0";
 		return cmd_onward;		
@@ -1076,9 +1132,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 		return cmd_del_onward;
 	}
 	private String doMoveXray(){
-		return
-		"INSERT INTO TRN_DAILY_LOG SELECT *,'','','','' FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND NOTE = 'XM'"+
-		"";
+		//OLD FOR SVNH STANDARD 
+		//return "INSERT INTO TRN_DAILY_LOG SELECT *,'','','','' FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND NOTE = 'XM'";
+		return "INSERT INTO LOG_TRN_DAILY SELECT *,'','','' FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND NOTE = 'XM'";
 	}
 	private String doDeleteXray(){
 		return

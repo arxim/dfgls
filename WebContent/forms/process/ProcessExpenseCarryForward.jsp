@@ -141,9 +141,9 @@
                     var xmlDoc = AJAX.responseXML;
                    // alert(getXMLNodeValue(xmlDoc, "STATUS"));
                     if (getXMLNodeValue(xmlDoc, "STATUS")=='YES') {
-                    	 document.mainForm.UPDATE.disabled = true;
+                    	 document.mainForm.UPDATE.disabled = false;
                     }else{
-                    	document.mainForm.UPDATE.disabled = false;
+                    	document.mainForm.UPDATE.disabled = true;
                     }
                 }				
            	}

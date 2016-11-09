@@ -24,16 +24,16 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2013"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["02"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["10"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["0114361"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["001140664"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["0114361"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["001140664"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
@@ -102,7 +102,7 @@
 			       THEN SD.GUARANTEE_PAID_AMT
 			       ELSE SD.DR_TAX_406 END
 		     END AS DR_TAX_AMT, SD.OLD_DR_AMT, SD.IS_DISCHARGE_SUMMARY
-	FROM TRN_DAILY SD LEFT OUTER JOIN DOCTOR DR ON (SD.DOCTOR_CODE = DR.CODE
+	FROM TRN_PAYMENT SD LEFT OUTER JOIN DOCTOR DR ON (SD.DOCTOR_CODE = DR.CODE
 	AND SD.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE
 	AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
@@ -111,9 +111,8 @@
 	LEFT OUTER JOIN HOSPITAL HP ON (SD.HOSPITAL_CODE = HP.CODE)
 	WHERE (DP.CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 	AND SD.DOCTOR_CODE IN 
-	(SELECT DOCTOR_CODE FROM PAYMENT_MONTHLY)
-	AND ((SD.YYYY LIKE $P{year} AND SD.MM LIKE $P{month})
-	OR (SD.GUARANTEE_TERM_YYYY LIKE $P{year} AND SD.GUARANTEE_TERM_MM LIKE $P{month} AND (SD.GUARANTEE_NOTE LIKE '%SOME%' OR SD.GUARANTEE_NOTE = 'ABSORB GUARANTEE')))
+	(SELECT DOCTOR_CODE FROM SUMMARY_PAYMENT)
+	AND ((SD.YYYY LIKE $P{year} AND SD.MM LIKE $P{month}))
 	AND SD.HOSPITAL_CODE LIKE $P{hospital_code}
 	AND DR.DOCTOR_CATEGORY_CODE LIKE $P{doctor_category}
 	AND DR.DEPARTMENT_CODE LIKE $P{doctor_department}
@@ -122,7 +121,6 @@
 	AND SD.ORDER_ITEM_CODE LIKE $P{order_item}
 	AND OI.ORDER_ITEM_CATEGORY_CODE LIKE $P{order_item_category}
 	AND SD.COMPUTE_DAILY_DATE is not null AND SD.COMPUTE_DAILY_DATE != ''
-	--AND (SD.PAY_BY_CASH='Y' OR SD.PAY_BY_AR='Y' OR SD.PAY_BY_DOCTOR='Y' OR SD.PAY_BY_PAYOR='Y' OR SD.PAY_BY_CASH_AR='Y' )
 	AND (SD.GUARANTEE_NOTE LIKE '%OLD%' OR SD.IS_PAID = 'Y')
 	)
 UNION

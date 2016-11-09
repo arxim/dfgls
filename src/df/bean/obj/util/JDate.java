@@ -347,6 +347,25 @@ public class JDate {
         ret[1] = year;
         return ret;
     }
+    static public String getPreviousBatch(String mm, String yy){
+        String month = "";
+        String year = "";
+        if(mm.equals("01")){
+        	month = "12";
+        	year = ""+(Integer.parseInt(yy)-1); 
+        }else{
+        	month = ""+(Integer.parseInt(mm)-1);
+                if(month.length()==1){
+                	month = "0"+month;
+                }
+                year = yy;
+        }
+        String ret[] = new String[2];
+        ret[0] = month;
+        ret[1] = year;
+        System.out.println(year+month);
+        return year+month;
+    }
 
     static public String getThaiYear(String year) {
         String strYear = "";

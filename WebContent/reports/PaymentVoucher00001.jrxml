@@ -24,19 +24,19 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["01500440"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["00000000"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["03"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["10"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2013"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="payment" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["01500440"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["9999999999"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
@@ -47,25 +47,25 @@
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["./"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT PM.YYYY,PM.MM, PM.TRANSACTION_DATE, PM.SUM_AMT, PM.DR_SUM_AMT, PM.HP_SUM_AMT,
-PM.EXDR_AMT, PM.EXCR_AMT * -1 AS EXCR_AMT, PM.GDR_AMT, PM.GCR_AMT, PM.ABCR_AMT, PM.REMARK,
+	<queryString><![CDATA[SELECT PM.YYYY,PM.MM, PM.PAYMENT_DATE, PM.SUM_AMT, PM.SUM_DR_AMT, PM.HP_SUM_AMT,
+PM.EXDR_AMT, PM.EXCR_AMT * -1 AS EXCR_AMT, PM.GUARANTEE_AMT, PM.EXTRA_AMT, PM.ABSORB_AMT, PM.REMARK,
 PM.DR_NET_PAID_AMT, PM.DOCTOR_CODE, DR.NAME_ENG AS NAME_THAI, PM.REF_PAID_NO, 
-CASE WHEN LEN(PM.PAYMENT_TERM_DATE) < 8 THEN PM.YYYY+'00'+PM.MM ELSE PM.PAYMENT_TERM_DATE END AS 'PAY_DATE',
-PM.DR_SUM_AMT+PM.EXDR_AMT AS REVENUE, BK.DESCRIPTION_ENG AS BANK_NAME,
+CASE WHEN LEN(PM.PAYMENT_DATE) < 8 THEN PM.YYYY+'00'+PM.MM ELSE PM.PAYMENT_DATE END AS 'PAY_DATE',
+PM.SUM_DR_AMT+PM.EXDR_AMT AS REVENUE, BK.DESCRIPTION_ENG AS BANK_NAME,
 CASE WHEN PM.EXDR_AMT-(CASE WHEN SG.SUM_TAX_402 IS NULL THEN 0 ELSE SG.SUM_TAX_402 END+CASE WHEN SG.SUM_TAX_406 IS NULL 
 THEN 0 ELSE SG.SUM_TAX_406 END) <= 0 THEN 0 ELSE PM.EXDR_AMT-(CASE WHEN SG.SUM_TAX_402 IS NULL 
 THEN 0 ELSE SG.SUM_TAX_402 END+CASE WHEN SG.SUM_TAX_406 IS NULL THEN 0 ELSE SG.SUM_TAX_406 END) END AS EXPENSE,
 --CASE WHEN PM.EXDR_AMT-(GDR_406+GDR_402) <= 0 THEN 0 ELSE PM.EXDR_AMT-(GDR_406+GDR_402) END AS EXPENSE,
-PM.DR_PREMIUM_AMT, 
+0 AS DR_PREMIUM_AMT, 
 CASE WHEN SG.SUM_TAX_402 IS NULL THEN 0 ELSE SG.SUM_TAX_402 END AS GDR_402, 
 CASE WHEN SG.SUM_TAX_406 IS NULL THEN 0 ELSE SG.SUM_TAX_406 END AS GDR_406,
 --PM.GDR_402, PM.GDR_406, 
 DP.NAME_ENG AS PROFILE_NAME,
 DR.DOCTOR_PROFILE_CODE AS PROFILE_CODE, PM.PAYMENT_MODE_CODE, PY.DESCRIPTION AS PAYMENT_METHOD,
 PM.SUM_PAY_BY_CASH, 
-CASE WHEN PM.SUM_PAY_BY_AR-PM.SUM_PATIENT_PAID_AMT <= 0 THEN 0 ELSE PM.SUM_PAY_BY_AR-PM.SUM_PATIENT_PAID_AMT END AS SUM_PAY_BY_AR,
-PM.SUM_PATIENT_PAID_AMT
-FROM PAYMENT_MONTHLY PM
+CASE WHEN PM.SUM_PAY_BY_AR-PM.SUM_PAY_BY_PATIENT <= 0 THEN 0 ELSE PM.SUM_PAY_BY_AR-PM.SUM_PAY_BY_PATIENT END AS SUM_PAY_BY_AR,
+PM.SUM_PAY_BY_PATIENT
+FROM SUMMARY_PAYMENT PM
 LEFT OUTER JOIN DOCTOR DR ON (PM.DOCTOR_CODE = DR.CODE AND PM.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
 LEFT OUTER JOIN BANK BK ON (DR.BANK_CODE = BK.CODE)
@@ -76,20 +76,20 @@ WHERE PM.YYYY LIKE $P{year} AND PM.MM LIKE $P{month}
 AND (DR.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 AND PM.PAYMENT_MODE_CODE <> 'U'
 AND PM.DR_NET_PAID_AMT <> 0
-AND LEN(PM.PAYMENT_TERM_DATE) = 8
+AND LEN(PM.PAYMENT_DATE) = 8
 ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 
 	<field name="YYYY" class="java.lang.String"/>
 	<field name="MM" class="java.lang.String"/>
-	<field name="TRANSACTION_DATE" class="java.lang.String"/>
+	<field name="PAYMENT_DATE" class="java.lang.String"/>
 	<field name="SUM_AMT" class="java.math.BigDecimal"/>
-	<field name="DR_SUM_AMT" class="java.math.BigDecimal"/>
+	<field name="SUM_DR_AMT" class="java.math.BigDecimal"/>
 	<field name="HP_SUM_AMT" class="java.math.BigDecimal"/>
 	<field name="EXDR_AMT" class="java.math.BigDecimal"/>
 	<field name="EXCR_AMT" class="java.math.BigDecimal"/>
-	<field name="GDR_AMT" class="java.math.BigDecimal"/>
-	<field name="GCR_AMT" class="java.math.BigDecimal"/>
-	<field name="ABCR_AMT" class="java.math.BigDecimal"/>
+	<field name="GUARANTEE_AMT" class="java.math.BigDecimal"/>
+	<field name="EXTRA_AMT" class="java.math.BigDecimal"/>
+	<field name="ABSORB_AMT" class="java.math.BigDecimal"/>
 	<field name="REMARK" class="java.lang.String"/>
 	<field name="DR_NET_PAID_AMT" class="java.math.BigDecimal"/>
 	<field name="DOCTOR_CODE" class="java.lang.String"/>
@@ -99,7 +99,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 	<field name="REVENUE" class="java.math.BigDecimal"/>
 	<field name="BANK_NAME" class="java.lang.String"/>
 	<field name="EXPENSE" class="java.math.BigDecimal"/>
-	<field name="DR_PREMIUM_AMT" class="java.math.BigDecimal"/>
+	<field name="DR_PREMIUM_AMT" class="java.lang.Integer"/>
 	<field name="GDR_402" class="java.math.BigDecimal"/>
 	<field name="GDR_406" class="java.math.BigDecimal"/>
 	<field name="PROFILE_NAME" class="java.lang.String"/>
@@ -108,7 +108,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 	<field name="PAYMENT_METHOD" class="java.lang.String"/>
 	<field name="SUM_PAY_BY_CASH" class="java.math.BigDecimal"/>
 	<field name="SUM_PAY_BY_AR" class="java.math.BigDecimal"/>
-	<field name="SUM_PATIENT_PAID_AMT" class="java.math.BigDecimal"/>
+	<field name="SUM_PAY_BY_PATIENT" class="java.math.BigDecimal"/>
 
 	<variable name="SUM_DR_NET_PAID_AMT_1" class="java.math.BigDecimal" resetType="Group" resetGroup="profile_code" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_NET_PAID_AMT}]]></variableExpression>
@@ -600,34 +600,6 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{GDR_402}]]></textFieldExpression>
 				</textField>
-				<subreport  isUsingCache="true">
-					<reportElement
-						x="1"
-						y="168"
-						width="538"
-						height="17"
-						key="subreport-1"/>
-					<subreportParameter  name="doctor_code">
-						<subreportParameterExpression><![CDATA[$F{DOCTOR_CODE}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="month">
-						<subreportParameterExpression><![CDATA[$P{month}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="year">
-						<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="payment">
-						<subreportParameterExpression><![CDATA[$P{payment}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="hospital_code">
-						<subreportParameterExpression><![CDATA[$P{hospital_code}]]></subreportParameterExpression>
-					</subreportParameter>
-					<subreportParameter  name="to_date">
-						<subreportParameterExpression><![CDATA[$F{YYYY}+$F{MM}+"31"]]></subreportParameterExpression>
-					</subreportParameter>
-					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "\\SummaryDFUnpaidSubreport.jasper"]]></subreportExpression>
-				</subreport>
 				<line direction="TopDown">
 					<reportElement
 						x="1"
@@ -719,7 +691,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_PATIENT_PAID_AMT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_PAY_BY_PATIENT}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -747,7 +719,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_SUM_AMT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_DR_AMT}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -761,7 +733,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_SUM_AMT}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_DR_AMT}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -851,6 +823,34 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 				<text><![CDATA[Less
 ]]></text>
 				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="1"
+						y="169"
+						width="538"
+						height="17"
+						key="subreport-1"/>
+					<subreportParameter  name="doctor_code">
+						<subreportParameterExpression><![CDATA[$F{DOCTOR_CODE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="month">
+						<subreportParameterExpression><![CDATA[$P{month}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="year">
+						<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="payment">
+						<subreportParameterExpression><![CDATA[$P{payment}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="hospital_code">
+						<subreportParameterExpression><![CDATA[$P{hospital_code}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="to_date">
+						<subreportParameterExpression><![CDATA[$F{YYYY}+$F{MM}+"31"]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "\\SummaryDFUnpaidSubreport.jasper"]]></subreportExpression>
+				</subreport>
 			</band>
 		</detail>
 		<columnFooter>

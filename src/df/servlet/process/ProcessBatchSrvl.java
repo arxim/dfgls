@@ -43,9 +43,6 @@ public class ProcessBatchSrvl extends HttpServlet {
         String payment_date = JDate.saveDate(request.getParameter("PAYMENT_DATE"));
         try {
         	ProcessSummaryMonthlyDF nb = new ProcessSummaryMonthlyDF(hos, payment_date, year, month);
-            //ProcessBatchBean pbt = new ProcessBatchBean(hos);
-            //pbt.setUser(user);
-            //pbt.setPayment_term(payment_term);
             if(payment_term.equals("1")){
             	System.out.println("Test "+hos+" Pay Date : "+payment_date+"<>"+year+month+payment_term);
             	nb.setUserID(user);
@@ -56,19 +53,6 @@ public class ProcessBatchSrvl extends HttpServlet {
             	nb.doBatchClose();
             	out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");            
             }
-            /*
-            try {
-                if(pbt.statusBatch()){
-                    out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");
-                }else{
-                    out.print("<RESULT><SUCCESS>fail</SUCCESS></RESULT>");
-                }
-            }
-            catch (Exception  e) {
-                out.print("<RESULT><SUCCESS>Error</SUCCESS></RESULT>");
-                e.printStackTrace(out);
-            }
-            */
             
         } finally {
             out.close();
