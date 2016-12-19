@@ -921,7 +921,6 @@
             }
             
             function EDIT_DETAIL_Click(lineNo, transactionDate,receiptDate,receiptNo,invoiceType) {
-            	//alert(transactionDate+"  "+receiptDate,+"  "+receiptNo);
                 window.location = 'invoice.jsp?INVOICE_NO=' + document.mainForm.INVOICE_NO.value + '&LINE_NO=' + lineNo + '&TRANSACTION_DATE=' +transactionDate +'&INVOICE_TYPE='+invoiceType+'&RECEIPT_DATE='+receiptDate+'&RECEIPT_NO='+receiptNo;
             }
             
