@@ -43,7 +43,11 @@ public class TestMain {
      */
 
     public static void main(String[] args) {
-    	System.out.println(Utils.toThaiMoney("12345.66"));
+    	Map<String, String> team1 = new HashMap<String, String>();
+    	team1.put("HOSPITAL_CODE", "00001");
+    	team1.put("INVOICE_NO", "INV0001");
+    	System.out.println(team1.size()+">>"+team1);
+    	//System.out.println(Utils.toThaiMoney("12345.66"));
     	//System.out.println(Double.parseDouble("9000000.00")+Double.parseDouble("15000000.000"));
     	//System.out.println(JNumber.showDouble(Double.parseDouble("9000000.00")+Double.parseDouble("15000000.00"),2));
     	//Double t = (Double.parseDouble("140000")*

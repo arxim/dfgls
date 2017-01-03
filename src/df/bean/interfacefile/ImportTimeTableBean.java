@@ -1,25 +1,14 @@
 package df.bean.interfacefile;
-import java.io.*;
 
+import java.io.*;
+import java.sql.SQLException;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.*;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-
-import com.lowagie.text.Row;
-
-import df.bean.db.conn.DBConnection;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import df.bean.db.conn.DBConn;
-import df.bean.process.ProcessUtil;
-import df.bean.db.table.Batch;
 import df.bean.db.table.TRN_Error;
 import df.bean.obj.util.JDate;
+import df.bean.db.conn.DBConnection;
 
 public class ImportTimeTableBean extends InterfaceTextFileBean {
 	String hospital_code;
@@ -64,7 +53,7 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 	    	HSSFRow tempRow;
     		String sql_insert="";
 	    	for (int r = 2; r <= sheet.getPhysicalNumberOfRows(); r++) {
-	    		System.out.println(r);
+	    		//System.out.println(r);
 	    		tempRow = sheet.getRow(r);
 	    		if((tempRow != null)){
 	    			if(tempRow.getCell((short) 0)!=null && tempRow.getCell((short) 0).toString()!=""){
@@ -90,8 +79,6 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						//GUARANTEE_TYPE_CODE
 						sql_insert += "'"+tempRow.getCell((short) 1)+"',";
 						//GUARANTEE_LOCATION
-						sql_insert +="'',";
-						//IS_INCLUDE_LOCATION
 						sql_insert +="'',";
 						//ADMISSION_TYPE_CODE
 						sql_insert += "'"+tempRow.getCell((short) 2)+"',";
@@ -179,63 +166,6 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						sql_insert +="'',";
 						//USER_ID
 						sql_insert +="'Import:',";
-						//OVER_GUARANTEE_AMOUNT
-						sql_insert +="0.00,";
-						//GUARANTEE_DAY
-						sql_insert +="'VER',";
-						//GUARANTEE_PERIOD
-						sql_insert +="'',";
-						//GUARANTEE_SOURCE
-						//sql_insert += "'"+tempRow.getCell((short) 13)+"',";
-						if(tempRow.getCell((short) 13) == null ){
-							sql_insert += "'AF',";
-						}else{
-							sql_insert += "'"+tempRow.getCell((short) 13)+"',";
-						}
-						//AMOUNT_OF_TIME
-						sql_insert += "0.00,";
-						//AMOUNT_PER_TIME
-						sql_insert +="0.00,";
-						//INCLUDE_OF_TIME
-						sql_insert +="0.00,";
-						//INCLUDE_PER_TIME
-						sql_insert +="0.00,";
-						//DEDUCT_ABSORB_AMOUNT
-						sql_insert +="0.00,";
-						//ABSORB_AMOUNT
-						sql_insert +="0.00,";
-						//ABSORB_REMAIN_AMOUNT
-						sql_insert +="0.00,";
-						//NOTE
-						sql_insert +="'',";
-						//IS_GUARANTEE_DAILY
-						if(tempRow.getCell((short) 1).toString().equals("MLY")|| tempRow.getCell((short) 1).toString().equals("MLA")){
-							sql_insert +="'N',";
-						}else{
-							sql_insert +="'Y',";
-						}
-						//IS_PROCESS	
-						sql_insert +="'',";
-						//GL_DEPARTMENT_CODE
-						sql_insert +="'',";
-						//OLD_ABSORB_AMOUNT
-						sql_insert +="0.00 ,";
-						//OLD_GUARANTEE_AMOUNT
-						sql_insert +="0.00,";
-						//OLD_GUARANTEE_FIX_AMOUNT	
-						sql_insert +="0.00 ,";
-						//OLD_GUARANTEE_INCLUDE_AMOUNT	
-						sql_insert +="0.00 ,";
-						//OLD_GUARANTEE_EXCLUDE_AMOUNT	
-						sql_insert +="0.00 ,";
-						//OLD_ACTIVE
-						sql_insert +="'',";	
-						//OLD_START_DATE	
-						sql_insert +="'',";
-						//OLD_END_DATE	
-						sql_insert +="'',";
-						//OLD_GUARANTEE_SOURCE	
-						sql_insert +="'',";
 						//DF406_CASH_AMOUNT
 						sql_insert +="0.00 ,";
 						//DF406_CREDIT_AMOUNT
@@ -268,6 +198,8 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						sql_insert +="0.00 ,";
 						//DF_ABSORB_AMOUNT	
 						sql_insert +="0.00 ,";
+						//OVER_GUARANTEE_AMOUNT
+						sql_insert +="0.00,";
 						//SUM_DR_OVER_AMOUNT	
 						sql_insert +="0.00 ,";
 						//SUM_HP_OVER_AMOUNT	
@@ -279,13 +211,76 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						//SUM_TAX_402	
 						sql_insert +="0.00 ,";
 						//SUM_TAX_400	
-						sql_insert +="0.00 ";
+						sql_insert +="0.00 ,";
+						//OLD_ABSORB_AMOUNT
+						sql_insert +="0.00 ,"; 
+						//OLD_GUARANTEE_AMOUNT
+						sql_insert +="0.00,";
+						//OLD_GUARANTEE_FIX_AMOUNT	
+						sql_insert +="0.00 ,";
+						//OLD_GUARANTEE_INCLUDE_AMOUNT	
+						sql_insert +="0.00 ,";
+						//OLD_GUARANTEE_EXCLUDE_AMOUNT	
+						sql_insert +="0.00 ,";
+						//OLD_ACTIVE
+						sql_insert +="'',";	
+						//OLD_START_DATE	
+						sql_insert +="'',";
+						//OLD_END_DATE	
+						sql_insert +="'',";
+						//GUARANTEE_DAY
+						sql_insert +="'VER',";
+						//IS_GUARANTEE_DAILY
+						if(tempRow.getCell((short) 1).toString().equals("MLY")|| tempRow.getCell((short) 1).toString().equals("MLA")){
+							sql_insert +="'N',";
+						}else{
+							sql_insert +="'Y',";
+						}
+						//NOTE
+						sql_insert +="'',";
+						//GUARANTEE_SOURCE
+						if(tempRow.getCell((short) 13) == null ){
+							sql_insert += "'AF',";
+						}else{
+							sql_insert += "'"+tempRow.getCell((short) 13)+"',";
+						}
+						//OLD_GUARANTEE_SOURCE	
+						sql_insert +="'',";
+						//AMOUNT_OF_TIME
+						sql_insert += "0.00,";
+						//AMOUNT_DIFF_TIME
+						sql_insert += "0.00,";
+						//AMOUNT_PER_TIME
+						sql_insert +="0.00,";
+						//GUARANTEE_PERIOD
+						sql_insert +="'',";
+						//IS_INCLUDE_LOCATION
+						sql_insert +="'',";
+						//IS_PROCESS	
+						sql_insert +="'',";
+						//ABSORB_AMOUNT
+						sql_insert +="0.00,";
+						//ABSORB_REMAIN_AMOUNT
+						sql_insert +="0.00,";
+						//DEDUCT_ABSORB_AMOUNT
+						sql_insert +="0.00,";
+						//GL_DEPARTMENT_CODE
+						sql_insert +="'',";
+						//INCLUDE_OF_TIME
+						sql_insert +="0.00,";
+						//INCLUDE_PER_TIME
+						sql_insert +="0.00,";
+						//TAX_TYPE_CODE
+						sql_insert +="''";
+						//FROM STP_GUARANTEE
+						//sql_insert +="'' ";
 						sql_insert += ")";
 		    			count++;
 	    			}else{break;}
 		    		try {
 		    			System.out.print(sql_insert);
 						cdb.insert(sql_insert);
+						status= true;
 					} catch (Exception e){
 						status= false;
 						this.setMessage("Import Time Table :"+e.toString());

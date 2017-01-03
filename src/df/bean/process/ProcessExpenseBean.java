@@ -102,19 +102,22 @@ public class ProcessExpenseBean {
     			+ " GROUP BY YYYY, MM, HOSPITAL_CODE, DOCTOR_CODE HAVING SUM(DR_AMT)< 0 "
     			+ " ORDER BY A.DOCTOR_CODE ";
     	listDr = cdb.listQueryData(sql_dr);
+    	//System.out.println(listDr);
     	for(int i=0;i<listDr.size();i++){
     		
     		   String  sql_ex = "SELECT *,AMOUNT AS OLD_AMOUNT "
     		   		+ " FROM TRN_EXPENSE_DETAIL EXD INNER JOIN EXPENSE EX ON EXD.EXPENSE_CODE = EX.CODE"
     		   		+ " WHERE EXD.DOCTOR_CODE='"+listDr.get(i).get("DOCTOR_CODE")+"' AND EXD.YYYY+EXD.MM='"+year+month+"' AND EXD.HOSPITAL_CODE='"+hospital_code+"'"
-    		   		+ " AND EXD.EXPENSE_SIGN='-1'  ORDER BY DOC_DATE,AMOUNT ASC";
+    		   		+ " AND EXD.AMOUNT > 0 AND EXD.EXPENSE_SIGN='-1'  ORDER BY DOC_DATE,AMOUNT ASC";
     		   listEx = cdb.listQueryData(sql_ex);
+    		   //System.out.println(listEx);
     		   double drAmtValue = Double.parseDouble(listDr.get(i).get("AMT"));
     		   double sumExpAmt=0;
     		   for(int j =0;j< listEx.size();j++){
     			   sumExpAmt += Double.parseDouble(listEx.get(j).get("AMOUNT"));
     		   } 
     		   double tempDrAmt = sumExpAmt+drAmtValue;
+    		   System.out.println("tempDrAmt = "+sumExpAmt+"+"+drAmtValue);
     		   for(int k =0;k< listEx.size();k++){
     			   double expAmt = Double.parseDouble(listEx.get(k).get("AMOUNT"));
     			   	  HashMap<String, String> data1 = new HashMap<String, String>();
@@ -142,18 +145,25 @@ public class ProcessExpenseBean {
 	      			  data1.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
 	      			  data1.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
 	    			  data1.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
-	    			  data1.put("TAX_TYPE_CODE",listEx.get(k).get("PAYMENT_DATE"));
-	      			  data1.put("COMPUTE_TAX_TYPE",listEx.get(k).get("BATCH_NO"));
-	      			  data1.put("DEPARTMENT_CODE", listEx.get(k).get("PAYMENT_TERM"));
-	    			  data1.put("LOCATION_CODE",listEx.get(k).get("OLD_DOCTOR_CODE"));
+	    			 // data1.put("TAX_TYPE_CODE",listEx.get(k).get("PAYMENT_DATE"));
+	    			  data1.put("TAX_TYPE_CODE",listEx.get(k).get("TAX_TYPE_CODE"));
+	      			 // data1.put("COMPUTE_TAX_TYPE",listEx.get(k).get("BATCH_NO"));
+	    			  data1.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
+	      			  data1.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
+	    			  data1.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
 	    			  data1.put("ACT", "0");
 	    			  data1.put("OLD_AMOUNT",listEx.get(k).get("OLD_AMOUNT"));
+	    			  data1.put("PAYMENT_DATE",listEx.get(k).get("PAYMENT_DATE"));
+	    			  data1.put("BATCH_NO",listEx.get(k).get("BATCH_NO"));
+	    			  data1.put("OLD_DOCTOR",listEx.get(k).get("OLD_DOCTOR"));
     			   if(tempDrAmt > 0){
 	    				  if(tempDrAmt >= expAmt){
 	 	        			  tempDrAmt= tempDrAmt - expAmt;
 	 	        			// System.out.println("ËÑ¡ä´é·Ñé§ËÁ´ : ËÑ¡ä»áÅéÇ"+listEx.get(k).get("AMOUNT")+"  àËÅ×Í·ÕèËÑ¡ä´é  :"+tempDrAmt);
 	 	    			  }else {
 	 	    				//put original  
+	 	    				  double percentTaxExp= (tempDrAmt/Double.parseDouble(listEx.get(k).get("AMOUNT")));
+	 	    				  System.out.println("percentTaxExp"+tempDrAmt+"/"+Double.parseDouble(listEx.get(k).get("AMOUNT")));
 	 	    				  listExCarryForward.add(data1);
 	 		    			  HashMap<String, String> data2 = new HashMap<String, String>();
 		        			  data2.put("YYYY",listEx.get(k).get("YYYY"));
@@ -167,7 +177,8 @@ public class ProcessExpenseBean {
 			      			  data2.put("EXPENSE_SIGN",listEx.get(k).get("EXPENSE_SIGN"));
 			      			  data2.put("EXPENSE_ACCOUNT_CODE",listEx.get(k).get("EXPENSE_ACCOUNT_CODE"));
 			      			  data2.put("AMT",""+ JNumber.showDouble(tempDrAmt, 2));
-			    			  data2.put("TAX_AMT",""+tempDrAmt);
+			    			  //data2.put("TAX_AMT",""+tempDrAmt);
+			      			  data2.put("TAX_AMT",""+(Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))==0?0 : percentTaxExp*Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))));
 			    			  data2.put("UPDATE_DATE",listEx.get(k).get("UPDATE_DATE"));
 			      			  data2.put("UPDATE_TIME",listEx.get(k).get("UPDATE_TIME"));
 			      			  data2.put("USER_ID", listEx.get(k).get("USER_ID"));
@@ -180,15 +191,20 @@ public class ProcessExpenseBean {
 			      			  data2.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
 			      			  data2.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
 			    			  data2.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
-			    			  data2.put("TAX_TYPE_CODE",listEx.get(k).get("PAYMENT_DATE"));
+			    			  data2.put("TAX_TYPE_CODE",listEx.get(k).get("TAX_TYPE_CODE"));
 			      			  data2.put("COMPUTE_TAX_TYPE",listEx.get(k).get("BATCH_NO"));
-			      			  data2.put("DEPARTMENT_CODE", listEx.get(k).get("PAYMENT_TERM"));
-			    			  data2.put("LOCATION_CODE",listEx.get(k).get("OLD_DOCTOR_CODE"));
+			      			  data2.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
+			    			  data2.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
 			    			  data2.put("ACT", "1");
 			    			  data2.put("EXP_DESP", listEx.get(k).get("DESCRIPTION"));
 			    			  data2.put("OLD_AMOUNT",listEx.get(k).get("OLD_AMOUNT"));
+			    			  data2.put("PAYMENT_DATE",listEx.get(k).get("PAYMENT_DATE"));
+			    			  data2.put("BATCH_NO",listEx.get(k).get("BATCH_NO"));
+			    			  data2.put("OLD_DOCTOR",listEx.get(k).get("OLD_DOCTOR"));
 		        			  //Â¡ÂÍ´Â¡ä»à´×Í¹Ë¹éÒ ËÑ¡ºÒ§ÊèÇ¹áÅéÇ
 		        			  double someExpCarryForword = Double.parseDouble(listEx.get(k).get("AMOUNT"))-tempDrAmt ;
+		        			  double percentTaxSomeExp= someExpCarryForword/Double.parseDouble(listEx.get(k).get("AMOUNT"));
+		        			  System.out.println("percentTaxSomeExp : "+someExpCarryForword+"/"+Double.parseDouble(listEx.get(k).get("AMOUNT")));
 		        			  HashMap<String, String> data3 = new HashMap<String, String>();
 		        			  data3.put("YYYY",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?(Integer.parseInt(listEx.get(k).get("YYYY"))+1):(Integer.parseInt(listEx.get(k).get("YYYY")))));
 		        			  data3.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
@@ -201,7 +217,8 @@ public class ProcessExpenseBean {
 			      			  data3.put("EXPENSE_SIGN",listEx.get(k).get("EXPENSE_SIGN"));
 			      			  data3.put("EXPENSE_ACCOUNT_CODE",listEx.get(k).get("EXPENSE_ACCOUNT_CODE"));
 			      			  data3.put("AMT",""+ JNumber.showDouble(someExpCarryForword, 2));
-			      			  data3.put("TAX_AMT",""+(Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))- tempDrAmt));
+			      			  //data3.put("TAX_AMT",""+(Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))- tempDrAmt));
+			      			  data3.put("TAX_AMT",""+(Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))==0?0 :percentTaxSomeExp*Double.parseDouble(listEx.get(k).get("TAX_AMOUNT"))));
 			    			  data3.put("UPDATE_DATE",listEx.get(k).get("UPDATE_DATE"));
 			      			  data3.put("UPDATE_TIME",listEx.get(k).get("UPDATE_TIME"));
 			      			  data3.put("USER_ID", listEx.get(k).get("USER_ID"));
@@ -214,12 +231,15 @@ public class ProcessExpenseBean {
 			      			  data3.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
 			      			  data3.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
 			    			  data3.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
-			    			  data3.put("TAX_TYPE_CODE",listEx.get(k).get("PAYMENT_DATE"));
-			      			  data3.put("COMPUTE_TAX_TYPE",listEx.get(k).get("BATCH_NO"));
-			      			  data3.put("DEPARTMENT_CODE", listEx.get(k).get("PAYMENT_TERM"));
-			    			  data3.put("LOCATION_CODE",listEx.get(k).get("OLD_DOCTOR_CODE"));
+			    			  data3.put("TAX_TYPE_CODE",listEx.get(k).get("TAX_TYPE_CODE"));
+			      			  data3.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
+			      			  data3.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
+			    			  data3.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
 			    			  data3.put("ACT", "1");
 			    			  data3.put("OLD_AMOUNT",listEx.get(k).get("OLD_AMOUNT"));
+			    			  data3.put("PAYMENT_DATE",listEx.get(k).get("PAYMENT_DATE"));
+			    			  data3.put("BATCH_NO",listEx.get(k).get("BATCH_NO"));
+			    			  data3.put("OLD_DOCTOR",listEx.get(k).get("OLD_DOCTOR"));
 		        			  tempDrAmt= tempDrAmt - expAmt;
 		        			  listExCarryForward.add(data2);
 		        			  listExCarryForward.add(data3);
@@ -252,15 +272,19 @@ public class ProcessExpenseBean {
 			      			  data4.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
 			    			  data4.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
 			    			  data4.put("TAX_TYPE_CODE",listEx.get(k).get("PAYMENT_DATE"));
-			      			  data4.put("COMPUTE_TAX_TYPE",listEx.get(k).get("BATCH_NO"));
-			      			  data4.put("DEPARTMENT_CODE", listEx.get(k).get("PAYMENT_TERM"));
-			    			  data4.put("LOCATION_CODE",listEx.get(k).get("OLD_DOCTOR_CODE"));
+			      			  data4.put("COMPUTE_TAX_TYPE",listEx.get(k).get("COMPUTE_TAX_TYPE"));
+			      			  data4.put("DEPARTMENT_CODE", listEx.get(k).get("DEPARTMENT_CODE"));
+			    			  data4.put("LOCATION_CODE",listEx.get(k).get("LOCATION_CODE"));
 			    			  data4.put("ACT", "1");
 			    			  data4.put("OLD_AMOUNT",listEx.get(k).get("OLD_AMOUNT"));
+			    			  data4.put("PAYMENT_DATE",listEx.get(k).get("PAYMENT_DATE"));
+			    			  data4.put("BATCH_NO",listEx.get(k).get("BATCH_NO"));
+			    			  data4.put("OLD_DOCTOR",listEx.get(k).get("OLD_DOCTOR"));
 		        			  listExCarryForward.add(data4);
     			   		}
     		   		} 
     		   }
+    	System.out.println("Show List : "+listExCarryForward);
     	
     	return listExCarryForward;
     }
@@ -268,7 +292,7 @@ public class ProcessExpenseBean {
         DBConnection con;
         con = new DBConnection();
         con.connectToLocal();
-		Batch b = new Batch("11750",con);
+		Batch b = new Batch(hospital_code,con);
 		String batch= b.getYyyy() + b.getMm();
 		NumberFormat formatter = new DecimalFormat("00");  
 		ArrayList<HashMap<String,String>> listExCarryForwardData = CalculateExpenseCarryForward(month,year,hospital_code);
@@ -280,12 +304,13 @@ public class ProcessExpenseBean {
     			//ã¹à´×Í¹ ºÒ§ÊèÇ¹áÅÐËÑ¡ËÁ´
     			 if(listExCarryForwardData.get(i).get("ACT").equals("0")){
     			 }else{
+    				 //In month
     				 sql_update += "UPDATE TRN_EXPENSE_DETAIL SET ";  
     				 sql_update +="AMOUNT = "+listExCarryForwardData.get(i).get("AMT")+" ,";
     				 sql_update +="TAX_AMOUNT = "+listExCarryForwardData.get(i).get("TAX_AMT")+" ,";
     				 sql_update +="UPDATE_DATE = '"+JDate.getDate()+"' ,";
     				 sql_update +="UPDATE_TIME = '"+JDate.getTime()+"' ,";
-    				 sql_update +="USER_ID = ':ProcessExpCarry' ";
+    				 sql_update +="USER_ID = ':ProcessExpCarry' "; 
     				 sql_update +="WHERE  HOSPITAL_CODE = '"+listExCarryForwardData.get(i).get("HOSPITAL_CODE")+"' ";
     				 sql_update +="AND LINE_NO = '"+listExCarryForwardData.get(i).get("LINE_NO")+"' ";
     				 sql_update +="AND DOCTOR_CODE = '"+listExCarryForwardData.get(i).get("DOCTOR_CODE")+"'";
@@ -344,6 +369,7 @@ public class ProcessExpenseBean {
     			 } 	    
     		 }
     	}
+    	System.out.println("INSERT : "+listExCarryForwardData);
     	 try {
 			 cdb.setStatement();
 			 cdb.insert(sql_update);

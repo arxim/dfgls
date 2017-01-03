@@ -139,7 +139,7 @@
             function AJAX_Handle_Verify_Check_Guarantee(){
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
-                   // alert(getXMLNodeValue(xmlDoc, "STATUS"));
+                    //alert(getXMLNodeValue(xmlDoc, "STATUS"));
                     if (getXMLNodeValue(xmlDoc, "STATUS")=='YES') {
                     	 document.mainForm.UPDATE.disabled = false;
                     }else{

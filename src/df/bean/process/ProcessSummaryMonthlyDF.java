@@ -42,8 +42,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
     }
     
     public static void main (String arg[]){
-    	ProcessSummaryMonthlyDF pm = new ProcessSummaryMonthlyDF("000","20150125","2015","00","test");
-    	pm.doBatchClose();
+    	ProcessSummaryMonthlyDF pm = new ProcessSummaryMonthlyDF("011","20161125","2016","11","test");
+    	pm.tranformDFData(pm.endDate);
+    	//pm.doBatchClose();
     	//pm.tranformDFData("00000000");
     }
     
@@ -69,7 +70,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "AND ((TRN_DAILY.TRANSACTION_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR ("+
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"'))"+
                trnCon+termCon+
-               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1'  AND TRN_DAILY.IS_PAID != 'N'";
+               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
+               "AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1'  AND TRN_DAILY.IS_PAID != 'N'";
          return sql;		
 	}
 	private String summaryMonthlyProcessHalfMonth(String endDate){
@@ -91,8 +93,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "AND ((TRN_DAILY.TRANSACTION_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR ("+
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"'))"+
                trnCon+termCon+
-               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' "+
-               "AND TRN_DAILY.IS_PAID != 'N'";
+               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
+               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N'";
          return sql;		
 	}
 	private String summaryMonthlyProcess(String endDate){
@@ -114,8 +116,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "AND ((TRN_DAILY.TRANSACTION_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR ("+
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR (TRN_DAILY.YYYY+TRN_DAILY.MM = '"+this.year+this.month+"'))"+
                trnCon+termCon+
-               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' "+
-               "AND TRN_DAILY.IS_PAID != 'N'";
+               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
+               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N'";
          return sql;		
 	}
 	private String monthlyProcess(String endDate){
@@ -137,7 +139,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "AND ((TRN_DAILY.TRANSACTION_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR ("+
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR (TRN_DAILY.YYYY+TRN_DAILY.MM = '"+this.year+this.month+"'))"+
                trnCon+termCon+
-               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N' ";
+               "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
+               "AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N' ";
          return sql;		
 	}
 	

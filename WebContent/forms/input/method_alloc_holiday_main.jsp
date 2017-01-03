@@ -143,7 +143,7 @@
                 </tr>                
                 <tr>
                     <th colspan="4" class="buttonBar">                        
-                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_holiday_main.jsp?YYYY=' + document.mainForm.YYYY.value+'&MM='+document.mainForm.MM.value; return false;" />
+                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_holiday_main.jsp?HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE")%>&YYYY=' + document.mainForm.YYYY.value+'&MM='+document.mainForm.MM.value; return false;" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='method_alloc_holiday_main.jsp'" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
                     </th>

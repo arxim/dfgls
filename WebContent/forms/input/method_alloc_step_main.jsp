@@ -145,7 +145,7 @@
                 </tr>
                 <tr>
                     <th colspan="4" class="buttonBar">                        
-                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_step_main.jsp?DOCTOR_CATEGORY_CODE=' + document.mainForm.DOCTOR_CATEGORY_CODE.value; return false;" />
+                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_step_main.jsp?HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE")%>&DOCTOR_CATEGORY_CODE=' + document.mainForm.DOCTOR_CATEGORY_CODE.value; return false;" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='method_alloc_step_main.jsp'" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
                     </th>
@@ -176,7 +176,7 @@
 		            int i = 0;
 		            String activeIcon, linkEdit;
 		            while (rs.next()) {
-		                linkEdit = "<a href=\"method_alloc_step.jsp?STEP_ID=" + DBMgr.getRecordValue(doctorCategoryRec, "CODE") + "&STEP_SEQ=" + rs.getString("STEP_SEQ") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
+		                linkEdit = "<a href=\"method_alloc_step.jsp?STEP_ID=" + DBMgr.getRecordValue(doctorCategoryRec, "CODE") + "&STEP_SEQ=" + rs.getString("STEP_SEQ") +  "&HOSPITAL_CODE=" +session.getAttribute("HOSPITAL_CODE").toString() +"\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
                 %>                
                 <tr>
                     <td class="row<%=i % 2%> alignCenter"><%= Util.formatHTMLString(rs.getString("STEP_SEQ"), true)%></td>

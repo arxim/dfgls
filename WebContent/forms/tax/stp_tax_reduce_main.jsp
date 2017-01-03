@@ -159,11 +159,11 @@
             	if(id==5)
             	{
 					var DoctorProfileCode = document.getElementById('DoctorProfileCode');
-					var url='../search.jsp?TABLE=DOCTOR&TABLE1=DOCTOR_PROFILE&TARGET=DOCTOR_CODE_SEARCH&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&COND=[AND (DOCTOR.DOCTOR_PROFILE_CODE=DOCTOR_PROFILE.CODE) AND (DOCTOR.ACTIVE=\''+1+'\') AND (DOCTOR.DOCTOR_PROFILE_CODE=\''+ DoctorProfileCode.value +'\') ]&HANDLE=AJAX_Refresh_DOCTOR';
+					var url='../search.jsp?TABLE=DOCTOR&TABLE1=DOCTOR_PROFILE&TARGET=DOCTOR_CODE_SEARCH&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&COND=[AND (DOCTOR.DOCTOR_PROFILE_CODE=DOCTOR_PROFILE.CODE AND DOCTOR.HOSPITAL_CODE = DOCTOR_PROFILE.HOSPITAL_CODE) AND (DOCTOR.ACTIVE=\''+1+'\') AND (DOCTOR.DOCTOR_PROFILE_CODE=\''+ DoctorProfileCode.value +'\') ]&HANDLE=AJAX_Refresh_DOCTOR';
 				}
 				else
 				{
-					var url='../search.jsp?TABLE=DOCTOR&TABLE1=DOCTOR_PROFILE&TARGET=DOCTOR_CODE_SEARCH&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&COND=[AND (DOCTOR.DOCTOR_PROFILE_CODE=DOCTOR_PROFILE.CODE) AND (DOCTOR.ACTIVE=\''+1+'\')]&HANDLE=AJAX_Refresh_DOCTOR';
+					var url='../search.jsp?TABLE=DOCTOR&TABLE1=DOCTOR_PROFILE&TARGET=DOCTOR_CODE_SEARCH&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&COND=[AND (DOCTOR.DOCTOR_PROFILE_CODE=DOCTOR_PROFILE.CODE AND DOCTOR.HOSPITAL_CODE = DOCTOR_PROFILE.HOSPITAL_CODE) AND (DOCTOR.ACTIVE=\''+1+'\')]&HANDLE=AJAX_Refresh_DOCTOR';
 				}
 				//alert(url);
 				openSearchForm(url);
@@ -193,8 +193,7 @@
                     <input type="text" id="DOCTOR_NAME_SEARCH" name="DOCTOR_NAME_SEARCH" class="mediumMax" readonly="readonly" value="<%= DBMgr.getRecordValue(doctorRec, "NAME_" + labelMap.getFieldLangSuffix()) %>" /></td>
                 </tr><tr>
                   <td class="label"><label for="LABEL_MM_YYYY">${labelMap.LABEL_MM_YYYY}</label></td>
-                  <td colspan="3" class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM",current_mm)%>
-/ <%=proUtil.selectYY("YYYY", current_year)%></td>
+                  <td colspan="3" class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM",current_mm)%> / <%=proUtil.selectYY("YYYY", current_year)%></td>
                 </tr>
                 
                 <tr>

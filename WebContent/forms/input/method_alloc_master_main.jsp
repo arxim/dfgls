@@ -138,7 +138,7 @@
                 </tr>
                 <tr>
                     <th colspan="4" class="buttonBar">                        
-                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_master_main.jsp?DOCTOR_CATEGORY_CODE=' + document.mainForm.DOCTOR_CATEGORY_CODE.value; return false;" />
+                        <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'method_alloc_master_main.jsp?HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE")%>&DOCTOR_CATEGORY_CODE=' + document.mainForm.DOCTOR_CATEGORY_CODE.value; return false;" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='method_alloc_master_main.jsp'" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
                     </th>
@@ -164,7 +164,7 @@
 		            String activeIcon, linkEdit;
 		            while (rs.next()) {
 		                activeIcon = "<img src=\"../../images/" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? "" : "in") + "active_icon.png\" alt=\"" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? labelMap.get(LabelMap.ACTIVE_1) : labelMap.get(LabelMap.ACTIVE_0)) + "\" />";
-		                linkEdit = "<a href=\"method_alloc_master_detail.jsp?DOCTOR_CATEGORY_CODE=" + DBMgr.getRecordValue(doctorCategoryRec, "CODE") + "&ADMISSION_TYPE_CODE=" + rs.getString("ADMISSION_TYPE_CODE") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
+		                linkEdit = "<a href=\"method_alloc_master_detail.jsp?DOCTOR_CATEGORY_CODE=" + DBMgr.getRecordValue(doctorCategoryRec, "CODE") + "&ADMISSION_TYPE_CODE=" + rs.getString("ADMISSION_TYPE_CODE") + "&HOSPITAL_CODE=" +session.getAttribute("HOSPITAL_CODE").toString() +"\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
                 %>                
                 <tr>
                     <td class="row<%=i % 2%> alignCenter"><%= Util.formatHTMLString(rs.getString("ADMISSION_TYPE_CODE"), true)%></td>

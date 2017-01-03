@@ -617,7 +617,7 @@ public class ViewReportSrvl extends HttpServlet {
         try{
         	if(reportfilename.equals("SummaryDFUnpaidByDetailForDoctor") && term.equals("1")){
         		to_date = year+month+"15";
-        		System.out.println("Yes");
+        		System.out.println("Yes"+to_date);
         	}
         }catch(Exception e) { }
         try{

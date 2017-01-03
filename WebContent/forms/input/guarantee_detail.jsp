@@ -76,6 +76,7 @@
             labelMap.add("BAHT_PER_HOUR", "Baht/Hour", "บาท/ช.ม.");
             
             labelMap.add("MSG_ALERT_CHECK_DATE", "Plese check date guarantee.", " กรุณาตรวจสอบวันที่การันตี");
+            labelMap.add("GUARANTEE_TAX_TYPE","Guarantee Tax Type","ประเภทภาษีการันตี");
             
             request.setAttribute("labelMap", labelMap.getHashMap());
             request.setCharacterEncoding("UTF-8");
@@ -143,6 +144,8 @@
                 stpGuaranteeRec.addField("IS_INCLUDE_LOCATION", Types.VARCHAR, request.getParameter("GUARANTEE_LOCATION_CODE").equals("")?"" :request.getParameter("IS_INCLUDE_LOCATION"));
                 stpGuaranteeRec.addField("INCLUDE_PER_TIME" , Types.NUMERIC , request.getParameter("INCLUDE_AMOUNT_PER_HOUR"));
                 stpGuaranteeRec.addField("INCLUDE_OF_TIME" , Types.NUMERIC , request.getParameter("INCLUDE_HOUR"));
+                stpGuaranteeRec.addField("TAX_TYPE_CODE" , Types.VARCHAR , request.getParameter("TAX_TYPE_CODE"));
+                
                 
                 if (MODE == DBMgr.MODE_INSERT) {
                     //REPLACE DATA
@@ -587,15 +590,15 @@
            function AJAX_Handle_GUARANTEE_AMOUNT(){
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
-                    	if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
-                    		document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
-                    		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
-                    		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
-                    		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
-    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
-    	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
-    	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-    	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
+                     if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
+                    			document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
+                        		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
+                        		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
+                        		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
+        	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
+        	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+        	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+        	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
                     	}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
                     		document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
                     		document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
@@ -617,8 +620,7 @@
     	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
     	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
                     	}
-                    } 
-               				
+                    } 		
            	}
            	
            //+++++++++++++++++++++++++++++++++++++++ 20090819
@@ -920,21 +922,40 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="label">
+                <td class="label">
                         <label for="GUARANTEE_AMOUNT">${labelMap.G_AMOUNT}</label>                    </td>
                     <td class="input">
                         <input name="GUARANTEE_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_AMOUNT" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT") %>" /> Baht</td>
-                    <td class="label"><label for="ABSORB_AMOUNT">${labelMap.ABSORB_AMOUNT}</label></td>
-                    <td class="input"><input name="ABSORB_AMOUNT" type="text" class="short alignRight" readonly="readonly" id="ABSORB_AMOUNT" maxlength="13" value="<%= JNumber.getShowMoney(Double.parseDouble(DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT").equalsIgnoreCase("") ? "0" : DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT"))) %>" /> Baht</td>
+                   
+                	 <td class="label">
+                        <label for="TAX_TYPE_CODE">${labelMap.GUARANTEE_TAX_TYPE}</label></td>
+                     <td class="input">
+                        <select id="TAX_TYPE_CODE" name="TAX_TYPE_CODE" class="medium">
+                            <option value=""<%= DBMgr.getRecordValue(stpGuaranteeRec, "TAX_TYPE_CODE").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>--- ไม่กำหนด ---</option>
+                            <option value="402" <%= DBMgr.getRecordValue(stpGuaranteeRec, "TAX_TYPE_CODE").equalsIgnoreCase("402") ? " selected=\"selected\"" : "" %>>ภาษี 40(2) </option>
+                            <option value="406"<%= DBMgr.getRecordValue(stpGuaranteeRec, "TAX_TYPE_CODE").equalsIgnoreCase("406") ? " selected=\"selected\"" : "" %>>ภาษี 40(6) </option>
+                        </select>  
+                     </td>
                 </tr>
                 <tr>
-                    <td class="label">
+                <td class="label">
                         <label for="GUARANTEE_EXCLUDE_AMOUNT">${labelMap.EXCLUDE_AMOUNT}</label></td>
                     <td class="input">
                         <input name="GUARANTEE_EXCLUDE_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_EXCLUDE_AMOUNT" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT") %>" /> Baht</td>
-                    <td class="label"><label for="ABSORB_REMAIN_AMOUNT">${labelMap.ABSORB_REMAIN_AMOUNT}</label>                    </td>
+                  
+                     <td class="label"><label for="ABSORB_AMOUNT">${labelMap.ABSORB_AMOUNT}</label></td>
+                    <td class="input"><input name="ABSORB_AMOUNT" type="text" class="short alignRight" readonly="readonly" id="ABSORB_AMOUNT" maxlength="13" value="<%= JNumber.getShowMoney(Double.parseDouble(DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT").equalsIgnoreCase("") ? "0" : DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT"))) %>" /> Baht</td>
+                </tr>
+                <tr>
+                	<td class="label">
+                        <label for="GUARANTEE_FIX_AMOUNT">${labelMap.FIX_AMOUNT}</label>                    </td>
+                    <td class="input">
+                        <input name="GUARANTEE_FIX_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_FIX_AMOUNT" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_FIX_AMOUNT") %>" /> Baht</td>
+                   
+                      <td class="label"><label for="ABSORB_REMAIN_AMOUNT">${labelMap.ABSORB_REMAIN_AMOUNT}</label>                    </td>
                     <td class="input"><input name="ABSORB_REMAIN_AMOUNT" type="text" class="short alignRight" readonly="readonly" id="ABSORB_REMAIN_AMOUNT" maxlength="13" value="<%= JNumber.getShowMoney(Double.parseDouble(DBMgr.getRecordValue(stpGuaranteeRec, "DF_ABSORB_AMOUNT").equalsIgnoreCase("") ? "0" : DBMgr.getRecordValue(stpGuaranteeRec, "DF_ABSORB_AMOUNT"))) %>" /> Baht</td>
 				</tr>
+				
 				<tr>
                     <td class="label">
                         <label for="GUARANTEE_INCLUDE_AMOUNT">${labelMap.INCLUDE_AMOUNT}</label>
@@ -949,12 +970,18 @@
                 		<input name="INCLUDE_HOUR" type="text" class="short alignRight" id="INCLUDE_HOUR" maxlength="13" value = "<%=DBMgr.getRecordValue(stpGuaranteeRec, "INCLUDE_OF_TIME") %>" /> ${labelMap.HOUR}
                 	</td>
                 </tr>				
-				<tr>                        
-                    <td class="label">
-                        <label for="GUARANTEE_FIX_AMOUNT">${labelMap.FIX_AMOUNT}</label>                    </td>
+				<tr>      
+				<td class="labelRequest"> 
+                        <label for="GUARANTEE_ALLOCATE_PCT">${labelMap.GUARANTEE_ALLOCATE_PCT} *</label>                    </td>
                     <td class="input">
-                        <input name="GUARANTEE_FIX_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_FIX_AMOUNT" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_FIX_AMOUNT") %>" /> Baht</td>
-                    <td class="label"><label for="GUARANTEE_SOURCE">${labelMap.GUARANTEE_SOURCE}</label></td>
+                        <input name="GUARANTEE_ALLOCATE_PCT" type="text" class="short alignRight" id="GUARANTEE_ALLOCATE_PCT" maxlength="13" 
+                        value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT").equalsIgnoreCase("") ||
+                        		   DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT").equalsIgnoreCase("0") ? 
+                        		   DBMgr.getRecordValue(doctorRec, "IN_GUARANTEE_PCT") : 
+                        		   DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT") %>" /> %
+                    </td> 
+                                      
+                     <td class="label"><label for="GUARANTEE_SOURCE">${labelMap.GUARANTEE_SOURCE}</label></td>
                     <td class="input">
                         <select id="GUARANTEE_SOURCE" name="GUARANTEE_SOURCE" class="medium">
                             <option value=""<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_SOURCE").equalsIgnoreCase("") && DBMgr.getRecordValue(doctorRec, "GUARANTEE_SOURCE").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>--- No Specify ---</option>
@@ -964,15 +991,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="labelRequest"> 
-                        <label for="GUARANTEE_ALLOCATE_PCT">${labelMap.GUARANTEE_ALLOCATE_PCT} *</label>                    </td>
+                    <td class="labelRequest"><label for="OVER_ALLOCATE_PCT">${labelMap.OVER_ALLOCATE_PCT} *</label></td>
                     <td class="input">
-                        <input name="GUARANTEE_ALLOCATE_PCT" type="text" class="short alignRight" id="GUARANTEE_ALLOCATE_PCT" maxlength="13" 
-                        value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT").equalsIgnoreCase("") ||
-                        		   DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT").equalsIgnoreCase("0") ? 
-                        		   DBMgr.getRecordValue(doctorRec, "IN_GUARANTEE_PCT") : 
-                        		   DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_ALLOCATE_PCT") %>" /> %
-                    </td> 
+                        <input name="OVER_ALLOCATE_PCT" type="text" class="short alignRight" id="OVER_ALLOCATE_PCT" maxlength="13" 
+                        value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT").equalsIgnoreCase("") || 
+                        		   DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT").equalsIgnoreCase("0") ?
+                        		   DBMgr.getRecordValue(doctorRec, "OVER_GUARANTEE_PCT") : 
+                        		   DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT") %>" /> %
+                        		
+                    </td>
+                    
                     <td class="label"><label for="GUARANTEE_DAY">${labelMap.GUARANTEE_DAY}</label></td>
                     <td class="input">
                         <select id="GUARANTEE_DAY" name="GUARANTEE_DAY" class="medium">
@@ -983,17 +1011,9 @@
                     </td>
                 </tr>
 			    <tr>
-			        <td class="labelRequest"><label for="OVER_ALLOCATE_PCT">${labelMap.OVER_ALLOCATE_PCT} *</label></td>
-                    <td class="input">
-                        <input name="OVER_ALLOCATE_PCT" type="text" class="short alignRight" id="OVER_ALLOCATE_PCT" maxlength="13" 
-                        value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT").equalsIgnoreCase("") || 
-                        		   DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT").equalsIgnoreCase("0") ?
-                        		   DBMgr.getRecordValue(doctorRec, "OVER_GUARANTEE_PCT") : 
-                        		   DBMgr.getRecordValue(stpGuaranteeRec, "OVER_ALLOCATE_PCT") %>" /> %
-                        		
-                    </td> 
+			         
 			        <td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td> 
-                    <td class="input">
+                    <td class="input" colspan="3">
                         <input type="radio" id="ACTIVE_1" name="ACTIVE" value="1" <%=DBMgr.getRecordValue(stpGuaranteeRec, "ACTIVE").equalsIgnoreCase("1") || DBMgr.getRecordValue(stpGuaranteeRec, "ACTIVE").equalsIgnoreCase("") ? " checked=\"checked\"" : ""%> />
                         <label for="ACTIVE_1">${labelMap.ACTIVE_1}</label>
                         <input type="radio" id="ACTIVE_0" name="ACTIVE" value="0" <%=DBMgr.getRecordValue(stpGuaranteeRec, "ACTIVE").equalsIgnoreCase("0") ? " checked=\"checked\"" : ""  %> />

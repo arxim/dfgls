@@ -55,7 +55,7 @@
             }
             String table = request.getParameter("TABLE");
             String table1=request.getParameter("TABLE1");
-            //System.out.println("table1="+table1);
+            System.out.println("table1="+table1);
            /* if(request.getParameter("TABLE1") !=null && !request.getParameter("TABLE1").equals(""))
             {
             	table1=request.getParameter("TABLE1");
@@ -197,19 +197,27 @@
 
             ResultSet rs = null;
             String query = "";
-            if (keywords != null && searchFields != null){
+            //System.out.println("keywords="+keywords);
+            //System.out.println("searchFields="+searchFields);
+            if (keywords != null && searchFields != null) 
+            {
             	//System.out.println("table111111="+table1);
-            	if(!table1.equals("null")){
+            	if(!table1.equals("null"))
+                {
+            		//System.out.println("table1 ok");
                 	query = String.format("SELECT DISTINCT TOP 300 %3$s.%1$s, %3$s.%2$s,  %3$s."+displayField_second+" FROM %3$s,%4$s WHERE %4$s.ACTIVE='1' AND %4$s.HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "'", returnField, displayField, table, table1);
-                }else if (displayField.equalsIgnoreCase(returnField)) {
+                }
+            	else if (displayField.equalsIgnoreCase(returnField)) {
                     query = String.format("SELECT DISTINCT TOP 300 %1$s,  "+displayField_second+" FROM %2$s WHERE", returnField, table);
                 }else if(returnField.equalsIgnoreCase(displayField_second)){
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s FROM %3$s WHERE", returnField, displayField, table);
                 }else if(!"".equalsIgnoreCase(displaysubfiled.toString()) && (returnField!=displayField)){
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s, %3$s, "+displayField_second+" FROM %4$s WHERE", returnField, displayField, displaysubfiled, table);
-                }else {
+                }
+                else {
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s, "+displayField_second+" FROM %3$s WHERE", returnField, displayField, table);
                 }
+                //out.println(query);
                 if(table1.equals("null"))
                 {
 	                if (beActive) {
@@ -221,30 +229,35 @@
 	                query += " ( 1 = 1 ";
                 }
                 
-                for (int i = 0; i < NUM_CONDITION; i++){
-                    if (keywords[i] != ""){
+                //query += " ( 1 = 1 AND HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE").toString()+"'";
+                //System.out.println("num_condition="+NUM_CONDITION);
+                for (int i = 0; i < NUM_CONDITION; i++) 
+                {
+                    if (keywords[i] != "") 
+                    {
                     	String searchValue="";
-                    	if(table1.equals("null")){
+                    	if(table1.equals("null"))
+                    	{
                     		searchValue=DBMgr.toSQLString(searchFields[i]);
-                        }else{
+                        }
+                    	else
+                    	{
                     		searchValue=table+"."+DBMgr.toSQLString(searchFields[i]);
                     	}
-                    	query += " AND" + String.format(" %1$s LIKE '%%%2$s%%'", searchValue, DBMgr.toSQLString(keywords[i]));
+                    	query += " AND" + String.format(" %1$s LIKE '%2$s'", searchValue, DBMgr.toSQLString(keywords[i]));
+                    	
                     }
                 }
-                //System.out.println("Test1 : "+query);                    	
-
-                if(table1.equals("null")){
-               		query += ")";
-                }
- 
+	                if(table1.equals("null"))
+	                {
+                		query += ")";
+	                }
+            //}
                 if(condition_include.toString() != "null" && condition_include.toString() != null && condition_include.toString().length() > 4){
                     condition_include = condition_include.replace('[', ' ');
                     condition_include = condition_include.replace(']', ' ');
                     query += condition_include + " ";
                 }
-                //System.out.println("Test2 : "+query);                    	
-
                 if(table1.equals("null"))
                 {
 					try{
@@ -269,7 +282,7 @@
 						query += " ORDER BY " + table+"."+ orderByField + " " + orderByDir;
 					}
                 }
-                //System.out.println(beInsideHospital+"<>"+query);                
+                
                 try{
                     rs = con.executeQuery(query);
                     System.out.println(query);

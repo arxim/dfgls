@@ -362,18 +362,18 @@ public class ProcessTax402Bean {
         }catch(Exception e){}        
 		
         if(reduce041 == 0){//if reduce not setup, check from human expense = 0
-            expense = total_income * 0.4 > 60000 ? 60000 : total_income * 0.4;
+            expense = total_income * 0.5 > 100000 ? 100000 : total_income * 0.5;
             if(humanGroup.equals("Y")){
                 humanExpense = 60000;
                 temp_income = (total_income - expense) - humanExpense;
             }else{
-                humanExpense = 30000;
+                humanExpense = 60000;
                 temp_income = (total_income - expense) - humanExpense;
             }
         }else{
             temp_income = total_income - reduce03;//step 1
             //System.out.println(temp_income+" = "+total_income+" - "+reduce03+" step 1");
-            expense = total_income * 0.4 > 60000 ? 60000 : total_income * 0.4;//step 2
+            expense = total_income * 0.5 > 100000 ? 100000 : total_income * 0.5;//step 2
             //System.out.println("expense = "+expense+" step 2");
             temp_income = temp_income - expense;//step 3
             //System.out.println("temp_income = "+temp_income+" step 3");
