@@ -125,30 +125,23 @@
             DataRecord doctorDepartmentRec = null, orderItemRec = null, doctorRec = null, doctorExecuteRec = null, doctorPrivateRec=null, doctorResultRec = null;
             
             if (request.getParameter("INVOICE_NO") != null && request.getParameter("LINE_NO") != null) {
-            	System.out.println("TEST : 1");
                 query = "SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + 
                 		"' AND INVOICE_NO = '" + request.getParameter("INVOICE_NO") +
-                		"' AND TRANSACTION_DATE = '" + request.getParameter("TRANSACTION_DATE") +
-                		"' AND RECEIPT_DATE = '" + request.getParameter("RECEIPT_DATE") +
-                		"' AND RECEIPT_NO = '" + request.getParameter("RECEIPT_NO") +
-                		//"' AND INVOICE_TYPE = '" + request.getParameter("INVOICE_TYPE") + 
-                    	"' AND LINE_NO = '" + DBMgr.toSQLString(request.getParameter("LINE_NO")) + "'";
-                System.out.println("TEST : 1  "+query);
+                		"' AND TRANSACTION_DATE = '" + request.getParameter("TRANSACTION_DATE") + 
+                		"' AND INVOICE_TYPE = '" + request.getParameter("INVOICE_TYPE") + 
+                    	"' AND LINE_NO = '" + DBMgr.toSQLString( request.getParameter("LINE_NO")) + "'";
                 trnDailyRec = DBMgr.getRecord(query);
                 MODE = MODE_UPDATE_DETAIL;
             }else if (request.getParameter("INVOICE_NO") != null) {
-            	System.out.println("TEST : 2");
                 query = "SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + 
                 		"' AND INVOICE_NO = '" + request.getParameter("INVOICE_NO") + "'";
                 trnDailyRec = DBMgr.getRecord(query);
-                System.out.println("TEST : 2  "+query);
                 MODE = MODE_UPDATE_MASTER;
             }else{
             	//System.out.println("Invoice = null");
             }
            	if (request.getParameter("MODE") != null) {
                 MODE = Byte.parseByte(request.getParameter("MODE"));
-            	System.out.println("MODE : "+MODE);
                 if (MODE == MODE_QUERY_SUBMIT) {
                     con = new DBConnection();
                     con.connectToLocal();
@@ -228,7 +221,7 @@
                     trnDailyRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                     trnDailyRec.addField("INVOICE_NO", Types.VARCHAR, request.getParameter("INVOICE_NO"), true);
                     trnDailyRec.addField("INVOICE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("INVOICE_DATE")), true);
-                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"));
+                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"),true);
                 	
                     if (MODE != MODE_UPDATE_DETAIL_SUBMIT) {
                     	
@@ -261,8 +254,8 @@
                         trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
                         trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
                     }
-                    trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, request.getParameter("RECEIPT_NO"),true);
-                    trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("RECEIPT_DATE")),true);
+                    trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, request.getParameter("RECEIPT_NO"));
+                    trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("RECEIPT_DATE")));
                     trnDailyRec.addField("HN_NO", Types.VARCHAR, request.getParameter("HN_NO"));
                     trnDailyRec.addField("PATIENT_NAME", Types.VARCHAR, request.getParameter("PATIENT_NAME"));
                     trnDailyRec.addField("EPISODE_NO", Types.VARCHAR, request.getParameter("EPISODE_NO"));
@@ -920,8 +913,8 @@
                 document.mainForm.submit();
             }
             
-            function EDIT_DETAIL_Click(lineNo, transactionDate,receiptDate,receiptNo,invoiceType) {
-                window.location = 'invoice.jsp?INVOICE_NO=' + document.mainForm.INVOICE_NO.value + '&LINE_NO=' + lineNo + '&TRANSACTION_DATE=' +transactionDate +'&INVOICE_TYPE='+invoiceType+'&RECEIPT_DATE='+receiptDate+'&RECEIPT_NO='+receiptNo;
+            function EDIT_DETAIL_Click(lineNo, transactionDate, invoiceType) {
+                window.location = 'invoice.jsp?INVOICE_NO=' + document.mainForm.INVOICE_NO.value + '&LINE_NO=' + lineNo + '&TRANSACTION_DATE=' +transactionDate +'&INVOICE_TYPE='+invoiceType;
             }
             
             function SAVE_MASTER_CLICK() {
@@ -1068,7 +1061,7 @@
             <input type="hidden" id="BATCH_DATE" name="BATCH_DATE" value="<%= BATCH_DATE %>" />
             <input type="hidden" id="HI_INVOICE_TYPE" name="HI_INVOICE_TYPE" value="<%= DBMgr.getRecordValue(trnDailyRec, "INVOICE_TYPE")%>" />
             <input type="hidden" id="HI_TRANSACTION_DATE" name="HI_TRANSACTION_DATE" value="<%= DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_DATE")%>" />
-          
+            
             <center>
 				<table width="800" border="0">
 					<tr><td align="left">
@@ -1419,7 +1412,7 @@
             //con.connectToServer();
             con.connectToLocal();
             query = "SELECT a.LINE_NO, SUBSTRING(a.VERIFY_DATE,7,2)+'/'+SUBSTRING(a.VERIFY_DATE,5,2)+'/'+SUBSTRING(a.VERIFY_DATE,1,4) as EXECUTE_DATE, "+
-            "a.ORDER_ITEM_CODE, a.DOCTOR_CODE,a.AMOUNT_AFT_DISCOUNT, a.DR_AMT, a.ACTIVE, a.ORDER_ITEM_DESCRIPTION, b.NAME_THAI, a.TRANSACTION_DATE,a.RECEIPT_DATE,a.RECEIPT_NO, "+
+            "a.ORDER_ITEM_CODE, a.DOCTOR_CODE,a.AMOUNT_AFT_DISCOUNT, a.DR_AMT, a.ACTIVE, a.ORDER_ITEM_DESCRIPTION, b.NAME_THAI, a.TRANSACTION_DATE, "+
             "a.INVOICE_TYPE "+
             "FROM TRN_DAILY as a "+
             "LEFT JOIN DOCTOR as b on b.CODE=a.DOCTOR_CODE AND b.HOSPITAL_CODE = a.HOSPITAL_CODE WHERE a.HOSPITAL_CODE = '"
@@ -1429,7 +1422,7 @@
             String activeIcon, linkEdit;
             while (rs != null && rs.next()) {
                 activeIcon = "<img src=\"../../images/" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? "" : "in") + "active_icon.png\" alt=\"" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? labelMap.get(LabelMap.ACTIVE_1) : labelMap.get(LabelMap.ACTIVE_0)) + "\" />";
-                linkEdit = "<a href=\"javascript:EDIT_DETAIL_Click('" + rs.getString("LINE_NO") + "','" +rs.getString("TRANSACTION_DATE") +"','" +rs.getString("RECEIPT_DATE") +"','" +rs.getString("RECEIPT_NO") +"','"+rs.getString("INVOICE_TYPE")+"')\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
+                linkEdit = "<a href=\"javascript:EDIT_DETAIL_Click('" + rs.getString("LINE_NO") + "','" +rs.getString("TRANSACTION_DATE") +"','"+rs.getString("INVOICE_TYPE")+"')\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
                 %>                
                 <tr>
                 	<td class="row<%=i % 2%> alignLeft"><%= Util.formatHTMLString(rs.getString("EXECUTE_DATE"), true)%></td>
