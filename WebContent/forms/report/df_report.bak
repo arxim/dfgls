@@ -72,21 +72,11 @@
             con.connectToLocal();
             String report_payment = "PaymentVoucher"+session.getAttribute("HOSPITAL_CODE").toString();
             VerifyAllowViewReportBean vr = new VerifyAllowViewReportBean();
-            String payTerm=request.getParameter("payTerm");
-            String month = request.getParameter("MM");
-            String year = request.getParameter("YYYY");
-            String status = vr.getReportPermit(session.getAttribute("HOSPITAL_CODE").toString(),payTerm,month,year);
-            System.out.println("status01 : "+status);
+            String status = vr.getReportPermit(session.getAttribute("HOSPITAL_CODE").toString());
             Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
             con.Close();
             String BATCH_DATE = b.getYyyy() + b.getMm();
-            
-            
-            
-           
-           
-            
-           
+
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -103,13 +93,11 @@
         <script type="text/javascript" src="../../javascript/util.js"></script>
         <script type="text/javascript">
             function Report_View() {
-            	window.location.replace("df_report.jsp?payTerm="+document.mainForm.term.value+"&MM="+document.mainForm.MM.value+"&YYYY="+document.mainForm.YYYY.value);
-		        
                 if(document.mainForm.REPORT_FILE_NAME.value == "None"){
                     alert("Please Select Report");
                     document.mainForm.REPORT_FILE_NAME.focus();
                 }else{
-                	if(document.mainForm.MM.value == "" || document.mainForm.YYYY.value == ""){
+					if(document.mainForm.MM.value == "" || document.mainForm.YYYY.value == ""){
 						alert("Please Select Month/Year");
 						if(document.mainForm.MM.value == ""){
 							document.mainForm.MM.focus();
@@ -118,15 +106,14 @@
 						}
 					}else{
 						if(document.mainForm.YYYY.value+document.mainForm.MM.value+document.mainForm.term.value == <%= status %>){
-							
-							document.mainForm.REPORT_DISPLAY.value = "view";
-	                    	document.mainForm.target = "_blank";
-	                    	document.mainForm.submit(); 
-						}else{
 							alert("Can't view report in this month");
+						}else{
+						  	document.mainForm.REPORT_DISPLAY.value = "view";
+	                    	document.mainForm.target = "_blank";
+	                    	document.mainForm.submit();
 						}
 					}
-				}
+                }
             }
         </script>
     </head>

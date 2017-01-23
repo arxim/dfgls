@@ -161,8 +161,8 @@ public class ProcressMatchTable {
                     for(int k = 0 ; k < arrDt.length ; k++){            
                         guarantee_code = this.StartDate(arrDt[k] + arr[i][4]);
                         sqlInsert = 
-                        "INSERT INTO STP_GUARANTEE(GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, HOSPITAL_CODE, IS_GUARANTEE_DAILY, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE, INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-                        "VALUES('"+arr[i][8]+"','"+arr[i][9]+"','"+ this.getHpCode() +"','Y','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','"+ arr[i][2] +"','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"', '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+                        "INSERT INTO STP_GUARANTEE(GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, HOSPITAL_CODE, IS_GUARANTEE_DAILY, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE, INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+                        "VALUES('"+arr[i][8]+"','"+arr[i][9]+"','"+ this.getHpCode() +"','Y','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','"+ arr[i][2] +"','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"', '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
                         try{
                         	conn.insert(sqlInsert);
                         	conn.commitDB();
@@ -179,8 +179,8 @@ public class ProcressMatchTable {
                         dt = fn.FindDateAll(arr[i][3], this.getMm(), this.getYyyy());
                         String[] arrDt = dt.split("\\|");
                         for(int k = 0 ; k < arrDt.length ; k++){
-                            sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE ,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-                            "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLY','N','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.StartDate(arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+                            sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE ,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+                            "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLY','N','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.StartDate(arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
                             try{
                             	conn.insert(sqlInsert);
                             	conn.commitDB();
@@ -194,8 +194,8 @@ public class ProcressMatchTable {
                         dt = fn.FindDateAll(arr[i][3], this.getMm(), this.getYyyy());
                         String[] arrDt = dt.split("\\|");
                         for(int k = 0 ; k < arrDt.length ; k++){
-                            sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-                            "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLD','Y','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.StartDate(arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+                            sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+                            "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLD','Y','"+ this.StartDate(arrDt[k]) +"','"+arr[i][4]+"','"+ this.StartDate(arrDt[k]) +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
                             try{
                             	conn.insert(sqlInsert);
                             	conn.commitDB();
@@ -205,8 +205,8 @@ public class ProcressMatchTable {
                             }
                         }
                     }else if(this.getTypeGuarantee().equals("MLA")){
-	                    	sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-	                    	"VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLY','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+	                    	sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+	                    	"VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MLY','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
 	                    	try{
 	                        	conn.insert(sqlInsert);
 	                        	conn.commitDB();
@@ -215,8 +215,8 @@ public class ProcressMatchTable {
 	                        	System.out.println("Error Insert Monthly/Monthly : "+e+"<Statement>"+sqlInsert);                         	
 	                        }
                     }else if(this.getTypeGuarantee().equals("MMY")){
-                    		sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-                    		"VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MMY','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+                    		sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+                    		"VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','MMY','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
 		                	try{
 		                    	conn.insert(sqlInsert);
 		                    	conn.commitDB();
@@ -225,8 +225,8 @@ public class ProcressMatchTable {
 		                    	System.out.println("Error Insert Monthly/Monthly : "+e+"<Statement>"+sqlInsert);                         	
 		                    }
                     }else if(this.getTypeGuarantee().equals("STP")){
-	                    sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE) " +
-                        "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','STP','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'')";
+	                    sqlInsert = "INSERT INTO STP_GUARANTEE(HOSPITAL_CODE, USER_ID, MM, YYYY, GUARANTEE_DR_CODE, GUARANTEE_CODE, ADMISSION_TYPE_CODE, GUARANTEE_TYPE_CODE, IS_GUARANTEE_DAILY, START_DATE, START_TIME, END_DATE, END_TIME, GUARANTEE_AMOUNT, GUARANTEE_EXCLUDE_AMOUNT, GUARANTEE_ALLOCATE_PCT, OVER_ALLOCATE_PCT, GUARANTEE_FIX_AMOUNT, GUARANTEE_INCLUDE_AMOUNT, GL_DEPARTMENT_CODE,INCLUDE_OF_TIME, INCLUDE_PER_TIME, TAX_TYPE_CODE,AMOUNT_DIFF_TIME) " +
+                        "VALUES('"+ this.getHpCode() +"','TRANSFER','"+this.getMm()+"','"+ this.getYyyy() +"', '"+ arr[i][1] +"','"+ guarantee_code +"','U','STP','N','"+ this.StartDate("01") +"','"+arr[i][4]+"','"+ this.EndDate(arr[i][4], arr[i][5], "") +"','"+ arr[i][5] +"','"+arr[i][6]+"','"+arr[i][7]+"',"+arr[i][8]+","+arr[i][9]+", '"+arr[i][10]+"', '"+arr[i][11]+"','"+arr[i][12]+"',0,0,'',0)";
                     	try{
                         	conn.insert(sqlInsert);
                         	conn.commitDB();

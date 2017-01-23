@@ -1351,7 +1351,7 @@ public class ProcessGuaranteeBeanNew {
             }else if(guarantee_table[i][18].equals("N")){
                 department = guarantee_table[i][4].equals("") || guarantee_table[i][4] == null ? "" : "AND PATIENT_DEPARTMENT_CODE != '"+guarantee_table[i][4].toString()+"' ";            	
             }else{
-            	department = "AND PATIENT_DEPARTMENT_CODE != ''";
+            	department = "AND PATIENT_DEPARTMENT_CODE != '' ";
             }
             String s = "SELECT INVOICE_NO, INVOICE_DATE, ORDER_ITEM_CODE, LINE_NO, " + //0-3
             "TRANSACTION_MODULE, YYYY, GUARANTEE_AMT, GUARANTEE_DR_CODE, GUARANTEE_CODE, " + //4-8

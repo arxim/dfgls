@@ -101,6 +101,7 @@
             labelMap.add("TAX_SUM","Summary Revenue","คำนวณรวมรายได้");
             labelMap.add("TAX_STEP","Step Allocate","คำนวณอัตราก้าวหน้า");
             labelMap.add("TAX_3","WithHolding Tax 3%","หักภาษี ณ ที่จ่าย 3%");
+            labelMap.add("TAX_5","WithHolding Tax 5%","หักภาษี ณ ที่จ่าย 5%");
             labelMap.add("TAX_14","WithHolding Tax 14%","หักภาษี ณ ที่จ่าย 14%");
             labelMap.add("TAX_15","WithHolding Tax 15%","หักภาษี ณ ที่จ่าย 15%");
             labelMap.add("TAX_402_METHOD","Tax 40(2) Calculation","การคำนวณรายได้ 40(2)");
@@ -1034,6 +1035,7 @@
 	                        <option value="SUM"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("SUM") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_SUM}</option>
 	                        <option value="STP"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("STP")||DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_STEP}</option>
 	                        <option value="3"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("3") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_3}</option>
+	                        <option value="5"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("5") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_5}</option>
 	                        <option value="14"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("14") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_14}</option>
 	                        <option value="15"<%= DBMgr.getRecordValue(doctorRec, "TAX_402_METHOD").equalsIgnoreCase("15") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_15}</option>
 	                	</select>	                	
@@ -1047,6 +1049,7 @@
 	                        <option value="SUM"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("SUM")|| DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_SUM}</option>
 	                        <option value="STP"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("STP") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_STEP}</option>
 	                        <option value="3"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("3") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_3}</option>
+	                        <option value="5"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("5") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_5}</option>
 	                        <option value="14"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("14") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_14}</option>
 	                        <option value="15"<%= DBMgr.getRecordValue(doctorRec, "TAX_406_METHOD").equalsIgnoreCase("15") ? " selected=\"selected\"" : "" %>>${labelMap.TAX_15}</option>
 	                	</select>	                	
