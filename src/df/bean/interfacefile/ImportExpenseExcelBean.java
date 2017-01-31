@@ -104,7 +104,7 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 			    		DoctorArr = cdb.query(sql_doctor);
 			    		if(statusShow){System.out.println("DoctorArr="+DoctorArr.length);}
 			    		if(DoctorArr.length == 0)
-			    		{
+			    		{  
 			    			if(statusShow){System.out.println("ไม่พบ Doctor Code="+doctorCode+" นี้ๆๆๆๆๆๆๆๆๆ");}
 			    			setMessage("Row No.="+r+" Doctor Code="+doctorCode+" notfound");
 			    			if(statusShow){System.out.println("setMessage="+this.getMessage());}
@@ -332,6 +332,8 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 					    	                //statusSave=false;
 					    	                statusTax=false;
 				    	    			}
+				    	    			
+				    	    			
 				    	    			//department code
 				    	    			departmentCode=String.valueOf(tempRow.getCell((short) 8));
 				    	    			if(statusShow){System.out.println(" departmentCode="+departmentCode); }
@@ -346,8 +348,8 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 						    	    			if(DepartmentArr.length == 0)
 						    	    			{
 						    	    				if(statusShow){System.out.println("ไม่พบ Department Code="+departmentCode+" นี้ จึงไปดึงข้อมูลจาก Doctor Code");}
+								    	               
 						    	    				statusDepartment=true;
-						    	    				
 						    	    			}
 						    	    			else
 						    	    			{
@@ -362,8 +364,8 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 						    	                //System.out.println("Excepiton Query Data Department Code in Table Department Exception : "+e+" query="+sql_department);
 						    	                setMessage("Row No.="+r+" Doctor Code="+doctorCode+" Department Code ="+departmentCode+" sql data Error");
 						    	                TRN_Error.writeErrorLog(cc.getConnection(), processName,  this.getMessage(), e.toString(), sql_department,"");
-						    	                //statusSave=false;
-						    	                statusDep=true;
+						    	                statusSave=false;
+						    	                statusDep=false;
 						    	            }
 				    	    			}
 				    	    			else
@@ -386,7 +388,9 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 					    	    						setMessage("Row No.="+r+" Doctor Code="+doctorCode+" query Department Code from table DOCTOR is notfound");
 								    	                TRN_Error.writeErrorLog(cc.getConnection(), processName,  this.getMessage(), "", sql_de_doctor,"");
 								    	                //statusSave=false;
-								    	                statusDep=false;
+								    	               // statusDep=false;
+								    	               // statusDep=false;
+								    	                statusDep=true;
 					    	    					}
 					    	    					else
 					    	    					{
@@ -396,6 +400,7 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 					    	    							departmentCode=DeDoctorArr[0][0];
 					    	    							if(statusShow){System.out.println("DeDoctorArr[0][0]="+DeDoctorArr[0][0]);}
 					    	    							statusDepToLoc=true;
+					    	    							statusDep=true;//edit this here !!/2017
 					    	    						}
 					    	    						else
 					    	    						{
@@ -403,7 +408,8 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 									    	                TRN_Error.writeErrorLog(cc.getConnection(), processName,  this.getMessage(), "", sql_de_doctor,"");
 									    	                statusDepToLoc=false;
 					    	    							//statusSave=false;
-									    	                statusDep=false;
+									    	               // statusDep=false;
+									    	                statusDep=true;
 					    	    						}
 					    	    					}
 					    	    				}
@@ -547,7 +553,6 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 		    	    					 	try
 		    	    						{
 		    	    					 		cdb.insert(sql_insert);
-		    	    					 		//cdb.commitDB();
 		    	    					 		numSave++;
 		    	    						}
 		    	    					 	catch(Exception e)

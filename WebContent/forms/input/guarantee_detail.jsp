@@ -128,6 +128,7 @@
 				
 				stpGuaranteeRec.addField("AMOUNT_PER_TIME"  ,  Types.NUMERIC ,  request.getParameter("AMOUNT_PER_TIME"));   	//  new field record
 				stpGuaranteeRec.addField("AMOUNT_OF_TIME"  ,  Types.NUMERIC ,  request.getParameter("AMOUNT_OF_TIME")); //  new field record
+				stpGuaranteeRec.addField("AMOUNT_DIFF_TIME"  ,  Types.NUMERIC ,  request.getParameter("AMOUNT_DIFF_TIME")); //  new field record
                 stpGuaranteeRec.addField("GUARANTEE_AMOUNT", Types.NUMERIC, request.getParameter("GUARANTEE_AMOUNT"));
                 stpGuaranteeRec.addField("GUARANTEE_FIX_AMOUNT", Types.NUMERIC, request.getParameter("GUARANTEE_FIX_AMOUNT"));
                 stpGuaranteeRec.addField("GUARANTEE_INCLUDE_AMOUNT", Types.NUMERIC, request.getParameter("GUARANTEE_INCLUDE_AMOUNT"));
