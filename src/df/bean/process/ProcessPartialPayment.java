@@ -203,6 +203,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 				" THEN AMOUNT_AFT_DISCOUNT" + //IF Partial allocate > amount for payment then use that amount
@@ -212,6 +213,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
 				//----AMOUNT_AFT_DISCOUNT
@@ -233,6 +235,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 				" THEN DR_AMT" + //IF Partial allocate > amount for payment then use that amount
@@ -241,6 +244,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
 				//----DR_AMT
@@ -254,6 +258,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 				" THEN DR_TAX_406" + //IF Partial allocate > amount for payment then use that amount
@@ -262,6 +267,7 @@ public class ProcessPartialPayment {
 				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
 				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
 				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END,"+ 
 				//----DR_TAX_406
@@ -404,7 +410,7 @@ public class ProcessPartialPayment {
 		this.dbConn = new DBConn();
 		ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String, String>>();
 		this.sql = "SELECT DISTINCT T.LINE_NO, T.OLD_DR_AMT, I.RECEIPT_DATE, I.RECEIPT_NO, I.TRANSACTION_DATE, "
-		+ "T.INVOICE_NO, T.INVOICE_DATE "
+		+ "T.INVOICE_NO, T.INVOICE_DATE, T.INVOICE_TYPE "
 		+ "FROM TRN_DAILY T ,INT_ERP_AR_RECEIPT I "//,INT_ERP_AR_RECEIPT I
 		+ "WHERE T.HOSPITAL_CODE ='"+this.hospitalCode+"' AND T.INVOICE_NO = I.BILL_NO "
 		+ "AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "
