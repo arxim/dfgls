@@ -26,6 +26,7 @@
 			
 			labelMap.add("REPORT_406", "หนังสือรับรองรายได้ 40(6)", "หนังสือรับรองรายได้ 40(6)");
 			labelMap.add("REPORT_402", "รายงานสรุปภาษี 40(2) รายเดือน", "รายงานสรุปภาษี 40(2) รายเดือน");
+			labelMap.add("REPORT_402_NEW", "รายงานภาษี 40(2) รายเดือน", "รายงานภาษี 40(2) รายเดือน");
 			labelMap.add("REPORT_402_FRONT", "ใบปะหน้าภาษี 40(2) รายเดือน", "ใบปะหน้าภาษี 40(2)รายเดือน");
 			labelMap.add("REPORT_402_YEARLY", "หนังสือรับรอง 50 ทวิ", "หนังสือรับรอง 50 ทวิ");			
 			labelMap.add("REPORT_SUMMARY_402_YEARLY", "รายงานสรุปภาษี 40(2)รายปี", "รายงานสรุปภาษี 40(2)รายปี");
@@ -143,7 +144,6 @@
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
-                    alert('SummaryTax402Yearly');
                     year_term.style.display = 'block';
                 	e.style.display = 'none';
                 	d.style.display = 'none';
@@ -154,10 +154,11 @@
                     year.style.display = 'block';
                 	e.style.display = 'none';
                 	d.style.display = 'none';
-                	term.style.display = 'none';
+                	term.style.display = 'block';
                 	year_term.style.display = 'none';
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY402').disabled = "";
+                    document.getElementById('PRINT_DATE').disabled = "";
                 }else{
                 	e.style.display = 'none';
                 	d.style.display = 'none';
@@ -282,7 +283,6 @@
                         <option value="SummaryTax402Yearly">${labelMap.REPORT_SUMMARY_402_YEARLY}</option>
                         <option value="Tax91_52">${labelMap.REPORT_TAX91}</option>
                     </select>
-					</td>
                 </tr>
                 <tbody id='year_term'>
 				<tr>
@@ -336,17 +336,25 @@
                 	</tr>
                 </tbody>
                 <tbody id='Tax402Year'>
+                	<!-- 
                 	<tr>
                 		<td class="label"><label>${labelMap.YYYY}</label></td>
                     	<td class="input" colspan="3" ><%=proUtil.selectYY("YYYY402", b.getYyyy())%></td>
                 	</tr>
+                	 -->
 	               	<tr>
 	                    <td class="label"><label for="DOCTOR_CODE_TO">${labelMap.DOCTOR_CODE_TO}</label></td>
-	                    <td colspan="3" class="input">
+	                    <td class="input">
 	                        <input type="text" id="DOCTOR_CODE_TO" name="DOCTOR_CODE_TO" class="short" onkeypress="return DOCTOR_CODE_TO_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_TO();" />
 	                        <input id="SEARCH_DOCTOR_CODE_TO" name="SEARCH_DOCTOR_CODE_TO" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=DOCTOR_NAME_TO&TARGET=DOCTOR_CODE_TO&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_TO'); return false;" />
 	                        <input type="text" id="DOCTOR_NAME_TO" name="DOCTOR_NAME_TO" class="mediumMax" readonly="readonly" />
 	                    </td>
+	                    <td class="label"><label for="PRINT_DATE">${labelMap.PRINT_DATE}</label></td>
+                		<td class="input">
+	                		<input name="PRINTING_DATE" type="text" class="short" id="PRINTING_DATE" maxlength="10" value="" />
+	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PRINTING_DATE'); return false;" />
+                        </td>
+	                    
 	                </tr>
                 </tbody>
                 <tr>

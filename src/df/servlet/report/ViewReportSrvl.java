@@ -231,6 +231,7 @@ public class ViewReportSrvl extends HttpServlet {
         String term = request.getParameter("TERM");
         String term_year = request.getParameter("YEAR");
         String tax_year = request.getParameter("YYYY402");
+        String printing_date = request.getParameter("PRINTING_DATE");
         String print_date = request.getParameter("PRINT_DATE");
         try{
             if( file_save.equals("") || file_save.equals(null) ){file_save = "temp";}
@@ -257,7 +258,10 @@ public class ViewReportSrvl extends HttpServlet {
         	hm.put("yyyy", Integer.parseInt(year));
         }else if("Tax402SummaryYearly".equalsIgnoreCase(reportfilename)){
         	hm.put("doctor", doctor_code_to);
-        	hm.put("year", tax_year);
+        	hm.put("year", year);
+           	hm.put("month", month);
+           	//hm.put("year", year);
+           	hm.put("print_date", JDate.saveDate(printing_date));
         }else{
         	hm.put("yyyy", year);
         	hm.put("pay_date", pay_date);
@@ -268,7 +272,7 @@ public class ViewReportSrvl extends HttpServlet {
         }else{
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
-    	System.out.println("Year : "+year+" Pay : "+pay_date);
+    	System.out.println(hospital_code+"<>"+reportfilename+" Year : "+year+" Pay : "+pay_date+" Print : "+JDate.saveDate(printing_date)+" Month : "+month+" Doctor : "+doctor_code_to);
     }
     private void reportDoctorProfileGuarantee(HttpServletRequest request, HttpServletResponse response){
         HashMap hm = new HashMap();

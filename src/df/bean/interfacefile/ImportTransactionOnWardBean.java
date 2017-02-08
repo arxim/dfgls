@@ -65,7 +65,7 @@ public class ImportTransactionOnWardBean extends InterfaceTextFileBean{
 	        	                  +" Line No = "+sub_data[34].trim()+":"
 	        	                  +new String(sub_data[6].trim().getBytes(),"TIS-620");
 	        	        this.setMessage(message);
-	        	        if(rsHospital.equals("Y")){
+	        	        if(rshosp.getString("DOCTOR_PRIVATE").toString().equals("Y")){
 	        	        	privateDoctor(rs,sub_data,billDate);
 	        	        	rs.insertRow();
 			                insert_count++;

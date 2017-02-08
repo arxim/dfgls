@@ -1351,7 +1351,9 @@ public class ProcessGuaranteeBeanNew {
             }else if(guarantee_table[i][18].equals("N")){
                 department = guarantee_table[i][4].equals("") || guarantee_table[i][4] == null ? "" : "AND PATIENT_DEPARTMENT_CODE != '"+guarantee_table[i][4].toString()+"' ";            	
             }else{
-            	department = "AND PATIENT_DEPARTMENT_CODE != '' ";
+            	//department = "AND PATIENT_DEPARTMENT_CODE != '' ";
+            	// Modify for Department in transaction has no data
+            	department = "";
             }
             String s = "SELECT INVOICE_NO, INVOICE_DATE, ORDER_ITEM_CODE, LINE_NO, " + //0-3
             "TRANSACTION_MODULE, YYYY, GUARANTEE_AMT, GUARANTEE_DR_CODE, GUARANTEE_CODE, " + //4-8
@@ -1522,9 +1524,9 @@ public class ProcessGuaranteeBeanNew {
                                 }
 
                             	transaction_table[x][19] = "0";	
-                                transaction_table[x][15] = ""+hp_amt;
+                                transaction_table[x][15] = ""+JNumber.showDouble(hp_amt, 2);
                                 transaction_table[x][11] = "0"; //GUARANTEE_PAID_AMT (FOR ABSORB ONLY)
-                                transaction_table[x][14] = ""+dr_amt; //DR_AMT
+                                transaction_table[x][14] = ""+JNumber.showDouble(dr_amt, 2); //DR_AMT
                                 guarantee_table[i][7] = "0.1";
                             }
                         } //END ELSE OVER GUARANTEE EXTRA
@@ -2537,6 +2539,7 @@ public class ProcessGuaranteeBeanNew {
         "HP_TAX = '"+Double.parseDouble(trn_daily[data_index][19])+"', "+
         "YYYY = '"+year+"', "+
         "MM = '"+month+"', "+
+        "BATCH_NO = '', "+
         "PAY_BY_CASH = 'Y', "+
         "RECEIPT_NO = 'ADVANCE', "+
         "RECEIPT_DATE = INVOICE_DATE, "+
@@ -2545,7 +2548,8 @@ public class ProcessGuaranteeBeanNew {
         "AND INVOICE_DATE = '"+trn_daily[data_index][1]+"' "+
         "AND TRANSACTION_DATE = '"+trn_daily[data_index][24]+"' "+
         "AND LINE_NO = '"+trn_daily[data_index][3]+"' "+
-        "AND BATCH_NO = '' "+
+        "AND YYYY = '' "+
+        //"AND BATCH_NO = '' "+
         "AND GUARANTEE_DR_CODE = '"+trn_daily[data_index][7]+"' "+
         "AND GUARANTEE_CODE = '"+trn_daily[data_index][8]+"' "+
         "AND GUARANTEE_TERM_MM = '" +trn_daily[data_index][9]+"' "+
@@ -2582,7 +2586,7 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("RECEIPT_NO", al.get(i).get("INVOICE_NO"));
 				al.get(i).put("RECEIPT_DATE", al.get(i).get("INVOICE_DATE"));
 				al.get(i).put("TRANSACTION_MODULE", "AR");
-				//al.get(i).put("BATCH_NO", ""); //assign value because system insert null value into row
+				al.get(i).put("BATCH_NO", "  "); //assign value because system insert null value into row
 				al.get(i).put("YYYY", this.year);
 				al.get(i).put("MM", this.month);
 				al.get(i).put("PAY_BY_CASH_AR", "Y");
@@ -2590,7 +2594,7 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
 				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percentage)/100);
 			}
-			System.out.println(d.addData(al, "TRN_DAILY"));
+			//System.out.println(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
 		}else{
 			System.out.println("Advance Some : "+al.size());
