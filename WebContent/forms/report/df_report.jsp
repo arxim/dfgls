@@ -71,21 +71,9 @@
             con = new DBConnection();
             con.connectToLocal();
             String report_payment = "PaymentVoucher"+session.getAttribute("HOSPITAL_CODE").toString();
-            VerifyAllowViewReportBean vr = new VerifyAllowViewReportBean();
-            String payTerm=request.getParameter("payTerm");
-            String month = request.getParameter("MM");
-            String year = request.getParameter("YYYY");
-            String status = vr.getReportPermit(session.getAttribute("HOSPITAL_CODE").toString(),payTerm,month,year);
-            System.out.println("status01 : "+status);
             Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
             con.Close();
-            String BATCH_DATE = b.getYyyy() + b.getMm();
-            
-            
-            
-           
-           
-            
+            String BATCH_DATE = b.getYyyy() + b.getMm();      
            
 %>
 
@@ -117,14 +105,9 @@
 							document.mainForm.YYYY.focus();
 						}
 					}else{
-						if(document.mainForm.YYYY.value+document.mainForm.MM.value+document.mainForm.term.value == <%= status %>){
-							
-							document.mainForm.REPORT_DISPLAY.value = "view";
-	                    	document.mainForm.target = "_blank";
-	                    	document.mainForm.submit(); 
-						}else{
-							alert("Can't view report in this month");
-						}
+						document.mainForm.REPORT_DISPLAY.value = "view";
+                    	document.mainForm.target = "_blank";
+                    	document.mainForm.submit();
 					}
 				}
             }

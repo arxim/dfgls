@@ -221,7 +221,7 @@
                     trnDailyRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                     trnDailyRec.addField("INVOICE_NO", Types.VARCHAR, request.getParameter("INVOICE_NO"), true);
                     trnDailyRec.addField("INVOICE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("INVOICE_DATE")), true);
-                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"),true);
+                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"));
                 	
                     if (MODE != MODE_UPDATE_DETAIL_SUBMIT) {
                     	

@@ -9,24 +9,25 @@ public class VerifyAllowViewReportBean {
     ResultSet rs;
     DBConn cdb;
     
-    public String getReportPermit(String hospital,String paymentTerm,String month,String year){
+    public boolean getReportPermit(String hospital,String paymentTerm,String month,String year){
         cdb = new DBConn();
-        String status = "",q="";
+        String q="";
+        boolean status=true;
         if(paymentTerm != null){
         	if(paymentTerm=="2" || paymentTerm.equals("2")){
-        		System.out.println(paymentTerm);
+        		
         		 q = "SELECT YYYY+MM+PAYMENT_TERM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE = '"+hospital+"' AND BATCH_NO = '"+year+month+"' AND PAYMENT_TERM='2' GROUP BY YYYY, MM, PAYMENT_TERM HAVING COUNT(*)>1";
         	}else{
-        		System.out.println(paymentTerm);
-        		q = "SELECT YYYY+MM+PAYMENT_TERM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE = '"+hospital+"' AND BATCH_NO = '"+year+month+"' AND PAYMENT_TERM='1' GROUP BY YYYY, MM, PAYMENT_TERM HAVING COUNT(*)>1";
+        		
+        		 q = "SELECT YYYY+MM+PAYMENT_TERM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE = '"+hospital+"' AND BATCH_NO = '"+year+month+"' AND PAYMENT_TERM='1' GROUP BY YYYY, MM, PAYMENT_TERM HAVING COUNT(*)>1";
         	}
         }
-       System.out.println(q);
+        System.out.println(q);
         try{
-        	cdb.setStatement();
-        	status = cdb.getSingleData(q);
-        	System.out.println(status);
-        	status = status.length()>0 ? status : "00000000" ;
+        	cdb.setStatement();   
+        	status = cdb.getSingleData(q).length()>0? true : false;
+        	//status = status.length()>0 ? status : "00000000" ;
+        	System.out.println("status from verifyPermit : "+status);
         }catch(Exception e){
         	System.out.println(e);
         }

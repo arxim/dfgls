@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="notReport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="555"
+		 columnSpacing="0"
+		 leftMargin="20"
+		 rightMargin="20"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="hospital_code" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="doctor_profile_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["01000022"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="doctor_department" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["00000000"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["99999999"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT CODE FROM HOSPITAL
+WHERE CODE = $P{hospital_code}]]></queryString>
+
+	<field name="CODE" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="48"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="212"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="88"
+						width="555"
+						height="30"
+						key="staticText-1"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="18" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[Can't view report.]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="15"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

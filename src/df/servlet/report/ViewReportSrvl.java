@@ -11,8 +11,11 @@ import df.bean.obj.util.JDate;
 import df.bean.obj.util.Variables;
 import df.bean.report.GenerateReportBean;
 import df.bean.report.ReportQuery;
+import df.bean.report.VerifyAllowViewReportBean;
+
 import java.io.*;
 import java.util.HashMap;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -621,7 +624,7 @@ public class ViewReportSrvl extends HttpServlet {
         try{
         	if(reportfilename.equals("SummaryDFUnpaidByDetailForDoctor") && term.equals("1")){
         		to_date = year+month+"15";
-        		System.out.println("Yes"+to_date);
+        		System.out.println("Yes");
         	}
         }catch(Exception e) { }
         try{
@@ -652,9 +655,17 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("payment_date", payment_date);
         hm.put("term", term);
         System.out.println("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
-        
-        if(request.getParameter("REPORT_DISPLAY").equals("view")){
-            this.reportGenerateView(hm, reportfilename, response);
+        System.out.println("Test : "+year+month+term+"Hospital_code"+hospital_code);
+        VerifyAllowViewReportBean v = new VerifyAllowViewReportBean();
+        boolean status = v.getReportPermit(hospital_code, term, month, year);
+    	if(request.getParameter("REPORT_DISPLAY").equals("view")){
+    		if(status){
+    			this.reportGenerateView(hm, reportfilename, response);
+    		}else{
+    			
+    			this.reportGenerateView(hm,"notReport" , response);
+    		}
+            
         }else{
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
