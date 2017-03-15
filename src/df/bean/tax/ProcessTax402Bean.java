@@ -189,7 +189,7 @@ public class ProcessTax402Bean {
             "ACCU_NORMAL_TAX_MONTH = '"+taxNormalAccu+"' "+   //ACCRU REVENUE
             ",SUM_NORMAL_TAX_AMT = '"+incomeNormalTotal+"' "+ //REVENUE OF THIS MONTH
             ",NORMAL_TAX_MONTH = '"+firstTaxNormal+"' "+ 	  //TAX FROM REVENUE IN MONTH
-            ",TEXT_NET_TAX_MONTH = "+Utils.toThaiMoney(taxNormal)+"' "+
+            ",TEXT_NET_TAX_MONTH = '"+Utils.toThaiMoney(taxNormal)+"' "+
             ",NET_TAX_MONTH = '"+taxNormal+"' "+
             "WHERE DOCTOR_CODE = '"+doctor+"' " +
             "AND HOSPITAL_CODE = '"+this.hospital+"' "+
