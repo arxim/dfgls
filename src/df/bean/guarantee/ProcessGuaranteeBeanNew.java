@@ -2594,7 +2594,7 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
 				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percentage)/100);
 			}
-			//System.out.println(d.addData(al, "TRN_DAILY"));
+			System.out.println(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
 		}else{
 			System.out.println("Advance Some : "+al.size());
