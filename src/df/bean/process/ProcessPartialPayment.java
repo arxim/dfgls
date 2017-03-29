@@ -507,7 +507,60 @@ public class ProcessPartialPayment {
 		return result;
 	}
 
-	public boolean rollBack(String YYYY, String MM, String hospitalCode){
+	public boolean rollBack(String startDate, String endDate, String hospitalCode){ 
+		boolean result = true; 
+		this.dbConn = new DBConn(false); 
+		String qMessage = ""; 
+
+		String updateTrn = "UPDATE TRN_DAILY SET " 
+		+ "AMOUNT_AFT_DISCOUNT = AMT_BEF_PARTIAL, " 
+		+ "DR_AMT = DR_AMT_BEF_PARTIAL, " 
+		+ "DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN DR_TAX_BEF_PARTIAL ELSE '0' END, " 
+		+ "DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN DR_TAX_BEF_PARTIAL ELSE '0' END " 
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' " 
+		+ "AND INVOICE_NO IN (" 
+		+ "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+hospitalCode+"' " 
+		//+ "AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%' " 
+		+ "AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'" 
+		+ "AND DOC_TYPE= 'R' AND IS_LAST_RECEIPT ='N') " 
+		+ "AND IS_PARTIAL = 'N' AND BATCH_NO = ''"; 
+
+		String updateIntErp = "UPDATE INT_ERP_AR_RECEIPT SET " 
+		+ "IS_LOADED = 'N' " 
+		+ "FROM INT_ERP_AR_RECEIPT I " 
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND I.DOC_TYPE= 'R' " 
+		//+ "AND I.IS_LAST_RECEIPT ='N' AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%'"; 
+		+ "AND I.IS_LAST_RECEIPT ='N' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'"; 
+
+		String deleteTrn = "DELETE TRN_DAILY " 
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' " 
+		+ "AND IS_PARTIAL = 'Y'"; 
+
+
+		try { 
+			this.dbConn.setStatement(); 
+			if(this.dbConn.getSingleData("SELECT IS_PARTIAL FROM HOSPITAL WHERE CODE = '"+hospitalCode+"'").equals("Y")){ 
+				System.out.println("Rollback Partial"); 
+				qMessage = updateTrn; 
+				dbConn.insert(updateTrn); 
+				qMessage = updateIntErp; 
+				dbConn.insert(updateIntErp); 
+				qMessage = deleteTrn; 
+				dbConn.insert(deleteTrn); 
+				dbConn.commitDB();	
+			}else{ 
+				System.out.println("No Partial Condition"); 
+			} 
+		} catch (Exception e1) { 
+			dbConn.rollDB(); 
+			result = false; 
+			System.out.println("SQLException in stetment : "+qMessage); 
+		}	
+		dbConn.closeDB("Close Connection from Partial Process"); 
+		return result; 
+	}
+	
+	public boolean rollBackOld(String YYYY, String MM, String hospitalCode){
 		boolean result = true;
 		this.dbConn = new DBConn(false);
 		String qMessage = "";
