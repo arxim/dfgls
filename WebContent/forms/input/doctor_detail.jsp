@@ -172,6 +172,7 @@
                 doctorRec.addField("DOCTOR_GROUP_CODE", Types.VARCHAR, request.getParameter("DOCTOR_GROUP_CODE"));
                 doctorRec.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRec.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
+                doctorRec.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
                 
                 // for log
                 doctorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -213,6 +214,7 @@
                 doctorRecLog.addField("DOCTOR_TAX_CODE", Types.VARCHAR, request.getParameter("INCLUDE_REVENUE_CODE"));
                 doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
+                doctorRecLog.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
 
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
@@ -269,7 +271,7 @@
                     bankBranchRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK_BRANCH WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_BRANCH_CODE") + "' AND BANK_CODE='"+DBMgr.getRecordValue(doctorRec, "BANK_CODE")+"'");
                     departmentRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE") + "'");
                     hospitalUnitRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM HOSPITAL_UNIT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "HOSPITAL_UNIT_CODE") + "'");
-                    specialTypeRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_ENG FROM SPECIAL_TYPE WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "SPECTIAL_TYPE_CODE") + "'");
+                    specialTypeRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_ENG FROM SPECIAL_TYPE WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "SPECIAL_TYPE_CODE") + "'");
                 }      
             }
             else if (request.getParameter("DOCTOR_PROFILE_CODE") != null) {
@@ -382,8 +384,7 @@
         }
 
         function AJAX_Refresh_SPECIAL_TYPE() {
-         
-         		target = "../../RetrieveData?TABLE=SPECIAL_TYPE&COND=CODE='" + document.mainForm.SPECIAL_TYPE.value + "'";
+         		var target = "../../RetrieveData?TABLE=SPECIAL_TYPE&COND=CODE='" + document.mainForm.SPECIAL_TYPE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
          		AJAX_Request(target, AJAX_Handle_Refresh_SPECIAL_TYPE);         	
         }
         
@@ -1178,7 +1179,7 @@
 					        e_text.style.color = '#333';
 					    }
 					}
-				//document.getElementById('').style.display = "none" ;
+				
 			</script>
 
     </body>
