@@ -40,13 +40,13 @@
             String startDateStr05 = JDate.showDate(JDate.getDate());
             String startDateStr07 = JDate.showDate(JDate.getDate());
             String startDateStr08 = JDate.showDate(JDate.getDate());//Receipt Transaction
-
+            
             String endDateStr01 = JDate.showDate(JDate.getDate());
             String endDateStr02 = JDate.showDate(JDate.getDate());
             String endDateStr03 = JDate.showDate(JDate.getDate());
             String endDateStr04 = JDate.showDate(JDate.getDate());
             String endDateStr05 = JDate.showDate(JDate.getDate());
-            String endDateStr08 = JDate.showDate(JDate.getDate());//Receipt Transaction
+            String endDateStr08 = JDate.showDate(JDate.getDate());//Receipt Transaction         
                                              
             LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
             labelMap.add("TITLE_MAIN", "RollBack", "ระบบ RollBack");
@@ -107,46 +107,43 @@
     </head>
     <body>
         <form id="mainForm" name="mainForm" method="post" action="ProcessPaymentMonthly.jsp">
-		<table class="data" id="dataTable" name="dataTable">
-			<tr>
-				<th colspan="5" class="alignLeft">
-					<div style="float: left;">${labelMap.TITLE_MAIN}</div>
-					<div style="float: right;" id="PROGRESS" name="PROGRESS"></div>
-				</th>
-			</tr>
-			<tr>
-				<td class="sub_head"><%=labelMap.get("COL_0")%></td>
-				<td class="sub_head"><%=labelMap.get("COL_1")%></td>
-				<td class="sub_head"><%=labelMap.get("COL_4")%></td>
-				<td class="sub_head"><%=labelMap.get("COL_3")%></td>
-				<td class="sub_head"><%=labelMap.get("COL_2")%></td>
-			</tr>
-			<tr>
-				<td class="row1 alignLeft" colspan="5"><b><%=labelMap.get("PROCESS_14")%></b>
-				</td>
-			</tr>
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro10">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_10")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM10",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY10", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('10')"></td>
-				<td class="row0 alignLeft"><div id="countPro10">..</div></td>
-			</tr>
-			<!-- 
+            <table class="data" id="dataTable" name="dataTable">
+                <tr>
+                    <th colspan="5" class="alignLeft">
+                        <div style="float: left;">${labelMap.TITLE_MAIN}</div>
+                        <div style="float: right;" id="PROGRESS" name="PROGRESS"></div>                    </th>
+                </tr>
+                <tr>
+                    <td class="sub_head"><%=labelMap.get("COL_0")%></td>
+                    <td class="sub_head"><%=labelMap.get("COL_1")%></td>
+                    <td class="sub_head"><%=labelMap.get("COL_4")%></td>
+                    <td class="sub_head"><%=labelMap.get("COL_3")%></td>
+                    <td class="sub_head"><%=labelMap.get("COL_2")%></td>
+                </tr>
+				<tr>
+                    <td class="row1 alignLeft" colspan="5">
+                        <b><%=labelMap.get("PROCESS_14")%></b>                    </td>
+                </tr>
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro10"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_10")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM10",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY10", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                     
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('10')"></td>
+                    <td class="row0 alignLeft"><div id="countPro10">..</div></td>
+                </tr>
+                <!-- 
 				<tr>
                     <td class="row0 alignCenter"><div id="ImgPro09"><img src="../../images/begin_rollback.png" ></div></td>
                     <td class="row1 alignLeft"><%=labelMap.get("PROCESS_09")%></td>
@@ -206,56 +203,46 @@
                     <td class="row0 alignLeft"><div id="countPro08">..</div></td>
                 </tr>
                 -->
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro06_06">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_06")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM06_06",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY06_06", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('06_06')"></td>
-				<td class="row0 alignLeft"><div id="countPro06_06">..</div></td>
-			</tr>
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro07">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_07")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.PAYMENT_DATE}</label></td>
-							<td><input type="text" value="<%=startDateStr07%>"
-								id="START_DATE07" name="START_DATE07" class="short"
-								value="<%=request.getParameter("START_DATE07") == null ? "" : request.getParameter("START_DATE07")%>" />
-								<input name="image1" type="image" class="image_button"
-								onclick="displayDatePicker('START_DATE07'); return false;"
-								src="../../images/calendar_button.png" alt="" /> <input
-								type="hidden" value="<%=startDateStr07%>" id="END_DATE07"
-								name="END_DATE07"
-								value="<%=request.getParameter("START_DATE07") == null ? "" : request.getParameter("START_DATE07")%>" />
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td class="row1 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="process('07')"></td>
-				<td class="row0 alignLeft"><div id="countPro07">..</div></td>
-			</tr>
-			<!-- 
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro06_06"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_06")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM06_06",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY06_06", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('06_06')" ></td>
+                    <td class="row0 alignLeft"><div id="countPro06_06">..</div></td>
+                </tr>
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro07"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_07")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                             	<td>    
+                                    <label for="aText">${labelMap.PAYMENT_DATE}</label>
+                                </td> 
+                                <td>
+                                    <input type="text" value="<%=startDateStr07%>" id="START_DATE07" name="START_DATE07" class="short" value="<%=request.getParameter("START_DATE07") == null ? "" : request.getParameter("START_DATE07")%>" />
+                                    <input name="image1" type="image" class="image_button" onclick="displayDatePicker('START_DATE07'); return false;" src="../../images/calendar_button.png" alt="" />                                
+                                    <input type="hidden" value="<%=startDateStr07%>" id="END_DATE07" name="END_DATE07" value="<%=request.getParameter("START_DATE07") == null ? "" : request.getParameter("START_DATE07")%>" />
+								</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="row1 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="process('07')"></td>
+                    <td class="row0 alignLeft"><div id="countPro07">..</div></td>                    
+                </tr>
+                <!-- 
 				<tr>
                     <td class="row0 alignCenter"><div id="ImgPro07"><img src="../../images/begin_rollback.png" ></div></td>
                     <td class="row1 alignLeft"><%=labelMap.get("PROCESS_07")%></td>
@@ -276,118 +263,113 @@
                     <td class="row0 alignLeft"><div id="countPro07">..</div></td>
                 </tr>
                 -->
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro17">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_17")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM17",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY17", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('17')"></td>
-				<td class="row0 alignLeft"><div id="countPro17">..</div></td>
-			</tr>
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro06_05">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_05")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM06_05",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY06_05", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('06_05')"></td>
-				<td class="row0 alignLeft"><div id="countPro06_05">..</div></td>
-			</tr>
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro16">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_16")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM16",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY16", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('16')"></td>
-				<td class="row0 alignLeft"><div id="countPro16">..</div></td>
-			</tr>
-			<tr>
-				<td class="row1 alignLeft" colspan="5"><b><%=labelMap.get("PROCESS_06")%></b>
-				</td>
-			</tr>
-			<tr>
-				<td class="row0 alignCenter"><div id="ImgPro15">
-						<img src="../../images/begin_rollback.png">
-					</div></td>
-				<td class="row1 alignLeft"><%=labelMap.get("PROCESS_15")%></td>
-				<td class="row0 alignCenter">
-					<table cellpadding="0" cellspacing="0" border="0">
-						<tr>
-							<td><label for="aText">${labelMap.MM}</label></td>
-							<td><%=proUtil.selectMM("", "MM15",batch.getMm())%></td>
-							<td><label>${labelMap.YYYY}</label></td>
-							<td><%=proUtil.selectYY("YY15", batch.getYyyy())%></td>
-						</tr>
-					</table>
-				</td>
-				<td class="row0 alignCenter"><input type="button"
-					value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-					id="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-					onclick="processMMYY('15')"></td>
-				<td class="row0 alignLeft"><div id="countPro15">..</div></td>
-			</tr>
-			<tr>
-				<td><input type="text" value="<%=startDateStr08%>"
-					id="START_DATE06_02" name="START_DATE06_02" class="short"
-					value="<%=request.getParameter("START_DATE06_02") == null ? "" : request.getParameter("START_DATE06_02")%>">
-						<input name="image1" type="image" class="image_button"
-						onclick="displayDatePicker('START_DATE06_02'); return false;"
-						src="../../images/calendar_button.png" alt="" /></td>
-				<td><input type="text" value="<%=endDateStr08%>"
-					id="END_DATE06_02" name="END_DATE06_02" class="short"
-					value="<%=request.getParameter("END_DATE06_02") == null ? "" : request.getParameter("END_DATE06_02")%>" />
-					<input name="image1" type="image" class="image_button"
-					onclick="displayDatePicker('END_DATE06_02'); return false;"
-					src="../../images/calendar_button.png" alt="" /></td>
-			</tr>
-		</table>
-		</td>
-		<td class="row0 alignCenter"><input type="button"
-			value="<%=labelMap.get("VALUEBUTTONPROCESS")%>"
-			name="<%=labelMap.get("NAMEBUTTONPROCESS")%>"
-			onclick="process('06_02')"></td>
-		<td class="row0 alignLeft"><div id="countPro06_02">..</div></td>
-		</tr>
-		<tr>
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro17"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_17")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM17",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY17", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                     
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('17')"></td>
+                    <td class="row0 alignLeft"><div id="countPro17">..</div></td>
+                </tr>
+				<tr>
+                    <td class="row0 alignCenter"><div id="ImgPro06_05"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_05")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM06_05",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY06_05", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('06_05')" ></td>
+                    <td class="row0 alignLeft"><div id="countPro06_05">..</div></td>
+                </tr>
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro16"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_16")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM16",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY16", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                     
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('16')"></td>
+                    <td class="row0 alignLeft"><div id="countPro16">..</div></td>
+                </tr>
+				<tr>
+                    <td class="row1 alignLeft" colspan="5">
+                        <b><%=labelMap.get("PROCESS_06")%></b>                    </td>
+                </tr>
+				<tr>
+                    <td class="row0 alignCenter"><div id="ImgPro15"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_15")%></td>
+                    <td class="row0 alignCenter">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>    
+                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
+                                <td>
+                                    <%=proUtil.selectMM("", "MM15",batch.getMm())%>                                </td>
+                                <td>
+                                    <label>${labelMap.YYYY}</label>                                </td>  
+                                <td>
+                                    <%=proUtil.selectYY("YY15", batch.getYyyy())%>                                </td>                                
+                            </tr>
+                        </table>                    </td>                
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" id="<%=labelMap.get("NAMEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('15')" ></td>
+                    <td class="row0 alignLeft"><div id="countPro15">..</div></td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="row0 alignCenter"><div id="ImgPro06_02"><img src="../../images/begin_rollback.png" ></div></td>
+                    <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_02")%></td>
+                    <td class="row0 alignCenter">  
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>
+                                    <input type="text" value="<%=startDateStr08%>" id="START_DATE06_02" name="START_DATE06_02" class="short" value="<%=request.getParameter("START_DATE06_02") == null ? "" : request.getParameter("START_DATE06_02")%>">
+                                    <input name="image1" type="image" class="image_button" onclick="displayDatePicker('START_DATE06_02'); return false;" src="../../images/calendar_button.png" alt="" />                                </td>
+                                <td>
+                                    <input type="text" value="<%=endDateStr08%>" id="END_DATE06_02" name="END_DATE06_02" class="short" value="<%=request.getParameter("END_DATE06_02") == null ? "" : request.getParameter("END_DATE06_02")%>" />
+                                    <input name="image1" type="image" class="image_button" onclick="displayDatePicker('END_DATE06_02'); return false;" src="../../images/calendar_button.png" alt="" />                                </td>
+                            </tr>
+                        </table>               
+                   </td>                
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="process('06_02')" ></td>
+                    <td class="row0 alignLeft"><div id="countPro06_02">..</div></td>
+                </tr>
+                
+                
+                
+                
+                
+                <tr>
                     <td class="row0 alignCenter"><div id="ImgPro06_03"><img src="../../images/begin_rollback.png"  /></div></td>
                     <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_03")%></td>
                     <td class="row0 alignCenter">
