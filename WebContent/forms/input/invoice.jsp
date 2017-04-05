@@ -1283,7 +1283,7 @@
                         <label for="EXECUTE_TIME"><span class="style1">${labelMap.EXECUTE_TIME} *</span></label>
                     </td>
                     <td class="input">
-					    <input name="EXECUTE_TIME" type="text" class="short" id="EXECUTE_TIME" maxlength="8" value="<%= MODE == MODE_INSERT_DETAIL ? "" : JDate.showTime(DBMgr.getRecordValue(trnDailyRec, "VERIFY_TIME")) %>" onblur="return checkKeyTime(this);" />HHMM
+					    <input name="EXECUTE_TIME" type="text" class="short" id="EXECUTE_TIME" maxlength="8" value="<%= MODE == MODE_INSERT_DETAIL ? "" : JDate.showTime(DBMgr.getRecordValue(trnDailyRec, "VERIFY_TIME")) %>" onchange="return checkKeyTime(this);" />HHMM
 					</td>
                 </tr>
                 <tr>

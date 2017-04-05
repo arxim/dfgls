@@ -391,14 +391,7 @@ public class ViewReportSrvl extends HttpServlet {
         String reportfilename = request.getParameter("REPORT_FILE_NAME");
         
         String from_date = JDate.saveDate(request.getParameter("FROM_DATE"));
-        String to_date = JDate.saveDate(request.getParameter("TO_DATE"));
-        
-        
-        String year_start = from_date.substring(0,4);
-        String month_start = from_date.substring(4,6);
-        String year_end = to_date.substring(0,4);
-        String month_end =to_date.substring(4,6);
-        
+        String to_date = JDate.saveDate(request.getParameter("TO_DATE"));        
         
         String doctor_profile_code = request.getParameter("DOCTOR_PROFILE_CODE");
         String doctor_code = request.getParameter("DOCTOR_CODE");
@@ -500,6 +493,11 @@ public class ViewReportSrvl extends HttpServlet {
             if( doc_type.equals("") || doc_type.equals(null) ){doc_type = "%";}
         }catch(Exception e){}
         
+        String year_start = from_date.substring(0,4);
+        String month_start = from_date.substring(4,6);
+        String year_end = to_date.substring(0,4);
+        String month_end =to_date.substring(4,6);
+
         hm.put("hospital_code", hospital_code);
         rq.setHospitalCode(hospital_code);
         hm.put("from_date", from_date);
