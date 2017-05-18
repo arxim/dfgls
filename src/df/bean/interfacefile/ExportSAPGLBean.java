@@ -35,17 +35,18 @@ public class ExportSAPGLBean extends InterfaceTextFileBean{
         
         String[] data_export = null;
         String data = "SELECT CASE WHEN LEN(IEP.HOSPITAL_CODE)=5 THEN SUBSTRING(IEP.HOSPITAL_CODE,3,LEN(IEP.HOSPITAL_CODE)) ELSE IEP.HOSPITAL_CODE END AS HOSPITAL_CODE,"+ 
-         		" ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, " +
+         		" ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, " +
                 " ACCOUNT, DEPT_ID, PRODUCT, SUM(MONETARY_AMOUNT) AS MONETARY_AMOUNT, CLASS_FLD, " +
                 " CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, " +
                 " CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
                 " AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE,  AC.GL_CODE AS ACCOUNT_GL_CODE " +
                 " FROM INT_ERP_GL IEP " +
+                " LEFT JOIN HOSPITAL HP ON IEP.HOSPITAL_CODE = HP.CODE "+
                 " LEFT JOIN DEPARTMENT DP ON DP.CODE =  IEP.DEPT_ID AND DP.HOSPITAL_CODE =  IEP.HOSPITAL_CODE " + 
                 " LEFT JOIN ACCOUNT AC ON AC.CODE = IEP.ACCOUNT " + 
                 " WHERE IEP.YYYY = '"+year+"' AND IEP.MM='"+month+"' AND IEP.HOSPITAL_CODE = '"+hp+"' " +
                 " AND MONETARY_AMOUNT > 0 AND TYPE='"+type+"'" +
-                " GROUP BY IEP.HOSPITAL_CODE, ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, ACCOUNT, DEPT_ID, PRODUCT, CLASS_FLD, AMOUNT_SIGN  , DP.GL_CODE ,  AC.GL_CODE"+
+                " GROUP BY IEP.HOSPITAL_CODE, ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, ACCOUNT, DEPT_ID, PRODUCT, CLASS_FLD, AMOUNT_SIGN  , DP.GL_CODE ,  AC.GL_CODE"+
                 " ORDER BY DB_CR DESC, PRODUCT;";
         try {
             setFileName(path);
@@ -86,7 +87,7 @@ public class ExportSAPGLBean extends InterfaceTextFileBean{
                 		//+ rs.getString("HOSPITAL_CODE").substring(2, 5)+"|"
                 		+ JDate.getEndMonthDate(year, month)+"."+month+"."+year+"|"
                 		+ postDate+"|"
-                		+ "THB|                         |001|"
+                		+ rs.getString("CURRENCY")+"|                         |001|"
                 		+ rs.getString("AMOUNT_SIGN")+"|"
                 		+ this.getValueNotNullGL(rs.getString("ACCOUNT_GL_CODE"))+"||||"
                 		+ this.getValueNotNullGL(rs.getString("DEPARTMENT_GL_CODE")) +"|"

@@ -41,15 +41,18 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         String tax_month = "";
         String[][] temp_data = null;
         //if(Variables.phase.equals("test")){}
-
-        //type "R00" ภงด1ก
-        if(type.equals("R00")){
+        
+        System.out.println(type);
+        //type "00" ภงด.1ก
+        if(type.equals("00")){
         	tax_month = "00";
+        	month = "13";
         }else{
         	tax_month = month;
         }
+        System.out.println(month);
         
-        String dat = "SELECT '00', H.TAXNO, '0000000000', '0000', "+//0-3
+        String dat = "SELECT '"+type+"', H.TAXNO, '0000000000', '0000', "+//0-3
         			 "CASE WHEN D.TAX_ID = '' THEN '0000000000000' ELSE D.TAX_ID END AS NATION_ID, " +//4 get from doctor
         			 "'0000000000' AS TAX_ID, " +//5 fix 0
         			 "'', D.NAME_THAI, '', SUBSTRING(D.ADDRESS1+' '+D.ADDRESS2,1,80), D.ADDRESS3, D.ZIP, "+//6-11
@@ -63,11 +66,15 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         			 "ON D.CODE = S.DOCTOR_CODE AND D.HOSPITAL_CODE = S.HOSPITAL_CODE "+
         			 "WHERE S.HOSPITAL_CODE = '"+hp+"' AND "+
         			 "S.YYYY = '"+year+"' AND S.ACTIVE = '1' AND "+
-        			 "S.MM = '"+month+"'";                
+        			 "S.MM = '"+month+"'";  
         
+        //if(type.equals("R00")){
+        //	dat = dat.replaceAll("S.MM = '"+month+"'", "S.MM = '13'");
+        //}
+        System.out.println(dat);
         try {
             setFileName(path);//set filename read
-            temp_data = d.query(dat);//get data
+            temp_data = d.query(dat);//get data            
             if(temp_data.length>0){
             	writeFileNew(setFormatFilePayroll(temp_data, type));
             	//writeFileNew(setFormatFile(temp_data, type));
@@ -146,14 +153,21 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
 	    		t[i][5] = t[i][5].replaceAll("-", "");
 	    		if(t[i][4].length()!= 13){ t[i][4] = "0000000000000"; }
 	    		if(t[i][5].length()!= 10){ t[i][5] = "0000000000"; }
+	    		
 	    		if(tax_type.equals("00")){
 	    			tax_month = "00";
 	    		}else{
 	    			tax_month = JDate.getNextMonth(t[i][12], t[i][13]);
 	    		}
 	    		//Initial Data End
-	    		
-	    		dt[i]= "2|"+ //Normal
+	    		//System.out.println(t[i][0]);
+	    		if(t[i][0].equals("00")){
+	    			dt[i]= "0|";
+	    		}
+	    		else{
+	    			dt[i]= "2|";
+	    		}
+	    		dt[i] = dt[i]+//Normal
 	    		"000000|"+//Employer ID
 	    		t[i][4]+"|"+//National ID
 	    		t[i][5]+"|"+//Tax ID

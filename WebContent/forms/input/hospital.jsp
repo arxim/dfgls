@@ -74,7 +74,7 @@
             labelMap.add("SHARING_ACCOUNT" , " Sharing Account Code " , " Sharing Account Code ");
             labelMap.add("EARNING_ACCOUNT" , " Earning Account Code " , " Earning Account Code ");
             labelMap.add("IS_ONWARD","Import Onward / Mobile Checkup","นำเข้า Onward และ Mobile Checkup");
-            labelMap.add("IS_PARTIAL","Partial Payment","แบ่งชำระหนี้]");
+            labelMap.add("IS_PARTIAL","Partial Payment","แบ่งชำระหนี้");
             labelMap.add("IS_COMBINE_BILL","Combine Bill","รวมบิล");
             labelMap.add("IS_COMBINE_BILL_0","No","ไม่รวมบิล");
             labelMap.add("IS_COMBINE_BILL_1","Yes","รวมบิล");
@@ -101,6 +101,10 @@
             
             labelMap.add("GUARANTEE_INCLUDE_EXTRA_0","No","ไม่รวม");
             labelMap.add("GUARANTEE_INCLUDE_EXTRA_1","Yes","รวม");
+            
+            labelMap.add("CURRENCY","CURRENCY","สกุลเงิน");
+            labelMap.add("CURRENCY_THB","THB","บาท");
+            labelMap.add("CURRENCY_USD","USD","ดอลลาร์");
             
             
             labelMap.add("MONTH1","January","มกราคม");
@@ -210,6 +214,7 @@
                 HOSPITALRec.addField("IS_ONWARD", Types.VARCHAR, request.getParameter("IS_ONWARD"));    
                 HOSPITALRec.addField("IS_PARTIAL", Types.VARCHAR, request.getParameter("IS_PARTIAL"));    
                 HOSPITALRec.addField("IS_JOIN_BILL", Types.VARCHAR, request.getParameter("IS_COMBINE_BILL"));    
+                HOSPITALRec.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
                 
                 //out.println(request.getParameter("MODE"));
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
@@ -747,6 +752,15 @@
                     </td>
                 </tr>
                 <!-- edit -->
+                <tr>
+                    <td class="label"><label for="CURRENCY_THB">${labelMap.CURRENCY}</label></td>
+                    <td colspan="3" class="input">
+                        <input type="radio" id="CURRENCY_THB" name="CURRENCY" value="THB"<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("THB") || DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+                        <label for="CURRENCY_THB">${labelMap.CURRENCY_THB}</label>
+                        <input type="radio" id="CURRENCY_USD" name="CURRENCY" value="USD"<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("USD") ? " checked=\"checked\"" : "" %> />
+                        <label for="CURRENCY_USD">${labelMap.CURRENCY_USD}</label>
+                    </td>
+                </tr>
                 <tr>
                     <td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td>
                     <td colspan="3" class="input">

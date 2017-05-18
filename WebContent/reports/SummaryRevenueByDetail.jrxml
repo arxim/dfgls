@@ -24,19 +24,19 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2015"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2017"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["03"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["18CAR012"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["19CARDIO001"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["18CAR012"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["19CARDIO001"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00009"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["00019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -51,7 +51,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["C:\\Users\\adm\\workspace\\dfs\\WebContent\\reports\\"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["D:\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="payment_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -101,7 +101,7 @@
 		ISNULL (STP.START_TIME , '' ) AS GUARANTEE_START_TIME , 
 		ISNULL (STP.END_DATE , '' ) AS GUARANTEE_END_DATE , 
 		ISNULL (STP.END_TIME , '' ) AS GUARANTEE_END_TIME , 
-		HP.DESCRIPTION_THAI 
+		HP.DESCRIPTION_THAI
 	FROM TRN_PAYMENT SD LEFT OUTER JOIN DOCTOR DR ON (SD.DOCTOR_CODE = DR.CODE AND SD.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
 	LEFT OUTER JOIN ORDER_ITEM OI ON (OI.CODE = SD.ORDER_ITEM_CODE	AND OI.HOSPITAL_CODE = SD.HOSPITAL_CODE)
@@ -124,6 +124,7 @@
 	--AND (SD.GUARANTEE_NOTE LIKE '%OLD%' OR SD.IS_PAID = 'Y')
 	AND SD.PAYMENT_DATE LIKE $P{payment_date}
 	AND SD.PAYMENT_TERM LIKE $P{term}
+	AND SD.IS_PAID LIKE (CASE WHEN SD.HOSPITAL_CODE = '004' OR SD.HOSPITAL_CODE = '011' OR SD.HOSPITAL_CODE = '012' OR SD.HOSPITAL_CODE = '036' THEN 'Y' ELSE	'%' END)
 	)
 UNION ALL
 	(SELECT top 3000
@@ -196,7 +197,7 @@ UNION ALL
 		STP.START_TIME AS GUARANTEE_START_TIME , 
 		STP.END_DATE AS GUARANTEE_END_DATE , 
 		STP.END_TIME AS GUARANTEE_END_TIME , 
-		HP.DESCRIPTION_THAI 
+		HP.DESCRIPTION_THAI
 	FROM STP_GUARANTEE STP 
 	LEFT OUTER JOIN DOCTOR DR ON (STP.GUARANTEE_DR_CODE = DR.CODE AND STP.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND
@@ -223,10 +224,9 @@ UNION ALL
 		STP.YYYY+STP.MM+'01' AS 'END_DATE',
 		'000000' AS 'END_TIME',
 		STP.START_DATE+STP.START_TIME AS 'DATE_TIME',
-		CASE WHEN HP402_ABSORB_AMOUNT > 0 
-			THEN (HP402_ABSORB_AMOUNT)
-			ELSE DF402_CASH_AMOUNT
-		END AS 'ABSORB_AMOUNT',
+		CASE WHEN HP402_ABSORB_AMOUNT > 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN (HP402_ABSORB_AMOUNT)
+		WHEN HP402_ABSORB_AMOUNT < 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN DF402_CASH_AMOUNT
+		ELSE 0 END AS 'ABSORB_AMOUNT',
 		'' AS 'YYYY', 
 		'' AS 'MM', 
 		DR.NAME_THAI AS 'NAME_THAI', 
@@ -253,26 +253,26 @@ UNION ALL
 		'N' AS 'IS_PARTIAL',
 		0.00 AS 'GUARANTEE_PAID_AMT',
 		'C' AS 'PAY_METHOD',
-		ISNULL((
-			 SELECT SUM(CASE WHEN TAX_TYPE_CODE = '406' THEN
-			 ISNULL(TAX_AMOUNT , 0)
-			 ELSE 0 END)
-			 FROM TRN_EXPENSE_DETAIL TED
-			 WHERE TED.HOSPITAL_CODE = STP.HOSPITAL_CODE 
-			 AND TED.LINE_NO = STP.GUARANTEE_CODE + STP.IS_INCLUDE_LOCATION + STP.GUARANTEE_LOCATION
-			 AND TED.DOCTOR_CODE = STP.GUARANTEE_DR_CODE
-			 AND TED.YYYY + TED.MM = STP.YYYY + STP.MM
-		) , 0) AS 'DR_TAX_AMT',
-		ISNULL((
-			 SELECT SUM(CASE WHEN TAX_TYPE_CODE = '402' THEN
-			 ISNULL(TAX_AMOUNT , 0)
-			 ELSE 0 END)
-			 FROM TRN_EXPENSE_DETAIL TED
-			 WHERE TED.HOSPITAL_CODE = STP.HOSPITAL_CODE 
-			 AND TED.LINE_NO = STP.GUARANTEE_CODE + STP.IS_INCLUDE_LOCATION + STP.GUARANTEE_LOCATION
-			 AND TED.DOCTOR_CODE = STP.GUARANTEE_DR_CODE
-			 AND TED.YYYY + TED.MM = STP.YYYY + STP.MM
-		) , 0) AS 'DR_TAX_402',
+		CASE WHEN ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
+			(SELECT SUM(CASE WHEN TAX_TYPE_CODE = '406' THEN
+			ISNULL(TAX_AMOUNT , 0)
+			ELSE 0 END)
+			FROM TRN_EXPENSE_DETAIL TED
+			WHERE TED.HOSPITAL_CODE = STP.HOSPITAL_CODE 
+			AND TED.LINE_NO = STP.GUARANTEE_CODE + STP.IS_INCLUDE_LOCATION + STP.GUARANTEE_LOCATION
+			AND TED.DOCTOR_CODE = STP.GUARANTEE_DR_CODE
+			AND TED.YYYY + TED.MM = STP.YYYY + STP.MM)
+		ELSE 0 END AS 'DR_TAX_AMT',
+		CASE WHEN ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
+			(SELECT SUM(CASE WHEN TAX_TYPE_CODE = '402' THEN
+			ISNULL(TAX_AMOUNT , 0)
+			ELSE 0 END)
+			FROM TRN_EXPENSE_DETAIL TED
+			WHERE TED.HOSPITAL_CODE = STP.HOSPITAL_CODE 
+			AND TED.LINE_NO = STP.GUARANTEE_CODE + STP.IS_INCLUDE_LOCATION + STP.GUARANTEE_LOCATION
+			AND TED.DOCTOR_CODE = STP.GUARANTEE_DR_CODE
+			AND TED.YYYY + TED.MM = STP.YYYY + STP.MM)
+		ELSE 0 END AS 'DR_TAX_402',
 		0.00 AS 'OLD_DR_AMT' , 
 		STP.GUARANTEE_TYPE_CODE AS GUARANTEE_TYPE_CODE , 
 		STP.GUARANTEE_CODE AS 'GUARANTEE_CODE' , 
@@ -283,7 +283,7 @@ UNION ALL
  		STP.START_TIME AS GUARANTEE_END_TIME , 
 		STP.END_DATE AS GUARANTEE_END_DATE , 
 		STP.END_TIME AS GUARANTEE_END_TIME , 
-		HP.DESCRIPTION_THAI
+		HP.DESCRIPTION_THAI	
 	FROM STP_GUARANTEE STP 
 	LEFT OUTER JOIN DOCTOR DR ON (STP.GUARANTEE_DR_CODE = DR.CODE AND STP.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND
@@ -1169,7 +1169,9 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 						width="45"
 						height="15"
 						forecolor="#000000"
-						key="staticText-16"/>
+						key="staticText-16">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("004"))]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1288,6 +1290,26 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 					</textElement>
 				<text><![CDATA[DF 40(2)]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="45"
+						height="15"
+						forecolor="#000000"
+						key="staticText-26">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("004"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[Exc. Date]]></text>
+				</staticText>
 			</band>
 		</columnHeader>
 		<detail>
@@ -1329,7 +1351,7 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equals($F{INVOICE_DATE}) ? "" : $F{INVOICE_DATE}.substring( 6, 8 )+"/"+$F{INVOICE_DATE}.substring( 4, 6 )+"/"+$F{INVOICE_DATE}.substring( 0, 4 )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("004") ? "".equals($F{VERIFY_DATE}) ? "" : $F{VERIFY_DATE}.substring( 6, 8 )+"/"+$F{VERIFY_DATE}.substring( 4, 6 )+"/"+$F{VERIFY_DATE}.substring( 0, 4 ) : "".equals($F{INVOICE_DATE}) ? "" : $F{INVOICE_DATE}.substring( 6, 8 )+"/"+$F{INVOICE_DATE}.substring( 4, 6 )+"/"+$F{INVOICE_DATE}.substring( 0, 4 )]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

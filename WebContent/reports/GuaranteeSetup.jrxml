@@ -24,31 +24,48 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["10"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["09"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2013"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["011"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT SG.GUARANTEE_DR_CODE, SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_LOCATION, 
+	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["Z"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="guarantee_department_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT SG.GUARANTEE_DR_CODE, SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_LOCATION, SG.GL_DEPARTMENT_CODE,
+DPT.DESCRIPTION AS DEPARTMENT_NAME,
 CASE WHEN SG.ADMISSION_TYPE_CODE = 'U' THEN 'ALL' ELSE SG.ADMISSION_TYPE_CODE END AS ADMISSION_TYPE_CODE,
 SG.MM, SG.YYYY, SG.START_DATE, SG.START_TIME,
 CASE WHEN SG.EARLY_TIME = '000000' OR SG.EARLY_TIME = START_TIME THEN '' ELSE SG.EARLY_TIME END AS EARLY_TIME, 
 SG.END_DATE, SG.END_TIME, 
 CASE WHEN SG.LATE_TIME = '000000' OR SG.LATE_TIME = SG.END_TIME THEN '' ELSE SG.LATE_TIME END AS LATE_TIME,
 SG.GUARANTEE_AMOUNT, SG.GUARANTEE_FIX_AMOUNT, SG.GUARANTEE_INCLUDE_AMOUNT, SG.GUARANTEE_EXCLUDE_AMOUNT,
-DR.NAME_THAI, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE 
-FROM STP_GUARANTEE SG LEFT OUTER JOIN DOCTOR DR ON SG.GUARANTEE_DR_CODE = DR.CODE 
-WHERE SG.YYYY LIKE $P{year} AND SG.MM LIKE $P{month}-- AND SG.ACTIVE = 1
---AND SG.ACTIVE = '1'
+DR.NAME_THAI, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE  , HP.DESCRIPTION_THAI
+FROM STP_GUARANTEE SG 
+LEFT OUTER JOIN DOCTOR DR ON SG.GUARANTEE_DR_CODE = DR.CODE AND SG.HOSPITAL_CODE = DR.HOSPITAL_CODE
+LEFT OUTER JOIN DEPARTMENT DPT ON SG.GL_DEPARTMENT_CODE = DPT.CODE AND SG.HOSPITAL_CODE = DPT.HOSPITAL_CODE
+INNER JOIN HOSPITAL HP ON SG.HOSPITAL_CODE = HP.CODE
+WHERE 
+(SG.GUARANTEE_DR_CODE BETWEEN $P{from_doctor} AND $P{to_doctor}) AND 
+SG.YYYY LIKE $P{year} AND SG.MM LIKE $P{month}
 AND SG.HOSPITAL_CODE LIKE $P{hospital_code}
-ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
+AND SG.GL_DEPARTMENT_CODE LIKE $P{guarantee_department_code}
+ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_DATE]]></queryString>
 
 	<field name="GUARANTEE_DR_CODE" class="java.lang.String"/>
 	<field name="GUARANTEE_TYPE_CODE" class="java.lang.String"/>
 	<field name="GUARANTEE_LOCATION" class="java.lang.String"/>
+	<field name="GL_DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="DEPARTMENT_NAME" class="java.lang.String"/>
 	<field name="ADMISSION_TYPE_CODE" class="java.lang.String"/>
 	<field name="MM" class="java.lang.String"/>
 	<field name="YYYY" class="java.lang.String"/>
@@ -65,9 +82,10 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 	<field name="NAME_THAI" class="java.lang.String"/>
 	<field name="USER_ID" class="java.lang.String"/>
 	<field name="ACTIVE" class="java.lang.String"/>
+	<field name="DESCRIPTION_THAI" class="java.lang.String"/>
 
 	<variable name="SUM_GUARANTEE_AMOUNT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[($F{ACTIVE}.equals("ACTIVE") ? $F{GUARANTEE_AMOUNT} : new BigDecimal(0.00))]]></variableExpression>
+		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_FIX_AMOUNT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
@@ -90,91 +108,117 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 	<variable name="SUM_GUARANTEE_EXCLUDE_AMOUNT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="GUARANTEE_DR_CODE" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_GUARANTEE_AMOUNT_ACTIVE" class="java.math.BigDecimal" resetType="Group" resetGroup="IS_ACTIVE" calculation="Sum">
+	<variable name="SUM_GUARANTEE_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_GUARANTEE_INCLUDE_AMOUNT_ACTIVE" class="java.math.BigDecimal" resetType="Group" resetGroup="IS_ACTIVE" calculation="Sum">
-		<variableExpression><![CDATA[$F{GUARANTEE_INCLUDE_AMOUNT}]]></variableExpression>
-	</variable>
-	<variable name="SUM_GUARANTEE_FIX_AMOUNT_ACTIVE" class="java.math.BigDecimal" resetType="Group" resetGroup="IS_ACTIVE" calculation="Sum">
+	<variable name="SUM_GUARANTEE_FIX_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_GUARANTEE_EXCLUDE_AMOUNT_ACTIVE" class="java.math.BigDecimal" resetType="Group" resetGroup="IS_ACTIVE" calculation="Sum">
+	<variable name="SUM_GUARANTEE_INCLUDE_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
+		<variableExpression><![CDATA[$F{GUARANTEE_INCLUDE_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_GUARANTEE_EXCLUDE_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
+		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_GUARANTEE_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_GUARANTEE_FIX_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_GUARANTEE_INCLUDE_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{GUARANTEE_INCLUDE_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="SUM_GUARANTEE_EXCLUDE_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
 	</variable>
 
-		<group  name="IS_ACTIVE" >
-			<groupExpression><![CDATA[$F{ACTIVE}]]></groupExpression>
+		<group  name="GL_DEPARTMENT_CODE" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{GL_DEPARTMENT_CODE}]]></groupExpression>
 			<groupHeader>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="18"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="333"
+						height="18"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GL_DEPARTMENT_CODE}+" : "+$F{DEPARTMENT_NAME}]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupHeader>
 			<groupFooter>
-			<band height="21"  isSplitAllowed="true" >
+			<band height="18"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="555"
-						y="4"
-						width="50"
+						x="546"
+						y="1"
+						width="60"
 						height="15"
 						key="textField"/>
-					<box>					<bottomPen lineWidth="0.75" lineStyle="Double"/>
-</box>
-					<textElement textAlignment="Right">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_AMOUNT_ACTIVE}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_AMOUNT_4}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="616"
-						y="4"
-						width="50"
+						x="666"
+						y="1"
+						width="60"
 						height="15"
-						key="textField-7"/>
-					<box>					<bottomPen lineWidth="0.75" lineStyle="Double"/>
-</box>
-					<textElement textAlignment="Right">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_INCLUDE_AMOUNT_ACTIVE}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_FIX_AMOUNT_4}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="676"
-						y="4"
-						width="50"
+						x="606"
+						y="1"
+						width="60"
 						height="15"
-						key="textField-8"/>
-					<box>					<bottomPen lineWidth="0.75" lineStyle="Double"/>
-</box>
-					<textElement textAlignment="Right">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_FIX_AMOUNT_ACTIVE}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_INCLUDE_AMOUNT_4}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="736"
-						y="4"
-						width="50"
+						x="726"
+						y="1"
+						width="60"
 						height="15"
-						key="textField-9"/>
-					<box>					<bottomPen lineWidth="0.75" lineStyle="Double"/>
-</box>
-					<textElement textAlignment="Right">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_EXCLUDE_AMOUNT_ACTIVE}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_EXCLUDE_AMOUNT_4}]]></textFieldExpression>
 				</textField>
-				<break>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="20"
-						width="786"
-						height="0"
-						key="element-270"/>
-				</break>
+						y="0"
+						width="333"
+						height="18"
+						key="textField-12"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GL_DEPARTMENT_CODE}+" : "+$F{DEPARTMENT_NAME}]]></textFieldExpression>
+				</textField>
 			</band>
 			</groupFooter>
 		</group>
@@ -217,7 +261,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						x="0"
 						y="18"
 						width="786"
-						height="1"
+						height="0"
 						key="line-5"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
@@ -230,7 +274,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_AMOUNT_2}]]></textFieldExpression>
 				</textField>
@@ -243,7 +287,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_FIX_AMOUNT_2}]]></textFieldExpression>
 				</textField>
@@ -256,7 +300,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_INCLUDE_AMOUNT_2}]]></textFieldExpression>
 				</textField>
@@ -269,7 +313,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_EXCLUDE_AMOUNT_2}]]></textFieldExpression>
 				</textField>
@@ -282,10 +326,97 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						key="textField-6"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Setup Total Amount"]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="Active" >
+			<groupExpression><![CDATA[$F{ACTIVE}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="18"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="546"
+						y="2"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GUARANTEE_DR_CODE}+" : "+$F{NAME_THAI}+"  Setup Total Amount"]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_AMOUNT_3}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="606"
+						y="2"
+						width="60"
+						height="15"
+						key="textField-7"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_INCLUDE_AMOUNT_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="666"
+						y="2"
+						width="60"
+						height="15"
+						key="textField-8"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_FIX_AMOUNT_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="726"
+						y="2"
+						width="60"
+						height="15"
+						key="textField-9"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_EXCLUDE_AMOUNT_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="44"
+						y="2"
+						width="502"
+						height="15"
+						key="textField-10"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Setup Total Amount of "+$F{ACTIVE}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="17"
+						width="786"
+						height="0"
+						key="line-7"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5"/>
+</graphicElement>
+				</line>
 			</band>
 			</groupFooter>
 		</group>
@@ -312,6 +443,19 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 					</textElement>
 				<text><![CDATA[รายงานข้อมูลการ Setup ค่าแพทย์การันตี/ค่าเวรแพทย์]]></text>
 				</staticText>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="563"
+						y="15"
+						width="223"
+						height="15"
+						key="textField-13"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPTION_THAI}]]></textFieldExpression>
+				</textField>
 			</band>
 		</title>
 		<pageHeader>
@@ -347,7 +491,7 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						x="1"
 						y="17"
 						width="785"
-						height="1"
+						height="0"
 						key="line-1"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
@@ -536,14 +680,27 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 					<reportElement
 						x="406"
 						y="19"
-						width="140"
+						width="77"
 						height="15"
 						key="staticText-22"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<text><![CDATA[User Info. : Status]]></text>
+				<text><![CDATA[User Info.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="483"
+						y="19"
+						width="63"
+						height="15"
+						key="staticText-23"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Status]]></text>
 				</staticText>
 			</band>
 		</pageHeader>
@@ -713,21 +870,21 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 					<reportElement
 						x="406"
 						y="0"
-						width="140"
+						width="77"
 						height="15"
 						key="textField-5"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{USER_ID}+" : "+$F{ACTIVE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{USER_ID}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
 						x="140"
 						y="8"
 						width="3"
-						height="1"
+						height="0"
 						key="line-3"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
@@ -736,10 +893,23 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 						x="252"
 						y="8"
 						width="3"
-						height="1"
+						height="0"
 						key="line-4"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="483"
+						y="0"
+						width="63"
+						height="15"
+						key="textField-11"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ACTIVE}]]></textFieldExpression>
+				</textField>
 			</band>
 		</detail>
 		<columnFooter>
@@ -747,9 +917,108 @@ ORDER BY SG.ACTIVE, SG.GUARANTEE_DR_CODE, SG.START_DATE]]></queryString>
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="17"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="46"
+						y="2"
+						width="148"
+						height="15"
+						key="staticText-19"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[GuaranteeSetup.jrxml]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="43"
+						height="15"
+						key="staticText-20"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<text><![CDATA[Report File:]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="2"
+						width="786"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 			</band>
 		</pageFooter>
+		<lastPageFooter>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="546"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_AMOUNT_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="606"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_FIX_AMOUNT_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="666"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_INCLUDE_AMOUNT_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="726"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_GUARANTEE_EXCLUDE_AMOUNT_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</lastPageFooter>
 		<summary>
 			<band height="0"  isSplitAllowed="true" >
 			</band>

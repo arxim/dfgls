@@ -24,19 +24,19 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2015"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2017"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["03"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["18CAR012"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["04DN0155"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["18CAR012"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["04DN0155"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00018"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["004"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -51,7 +51,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["C:\\Users\\arxim\\dfsv\\dfs4\\WebContent\\reports\\"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["D:\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="payment_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -63,13 +63,15 @@
 		DP.CODE AS PROFILE_CODE,
 		DP.NAME_THAI AS PROFILE_NAME,
 		2 AS 'TYPE_QUERY',
-		CASE WHEN SD.GUARANTEE_TYPE != '' THEN SUBSTRING(SD.GUARANTEE_DATE_TIME,0,9) ELSE
+		--CASE WHEN SD.GUARANTEE_TYPE != '' THEN SUBSTRING(SD.GUARANTEE_DATE_TIME,0,9) ELSE
+		CASE WHEN SD.GUARANTEE_TYPE != '' AND SD.GUARANTEE_TYPE <> 'MLY' AND SD.HOSPITAL_CODE <> '004' THEN SUBSTRING(SD.GUARANTEE_DATE_TIME,0,9) ELSE
 		SD.VERIFY_DATE END AS 'VERIFY_DATE',
 		SD.DOCTOR_CODE AS 'DOCTOR_CODE',
 		SD.VERIFY_TIME AS 'START_TIME',
 		'' AS 'END_DATE',
 		'' AS 'END_TIME',
-		SD.GUARANTEE_DATE_TIME AS 'DATE_TIME',
+		--SD.GUARANTEE_DATE_TIME AS 'DATE_TIME',
+		CASE WHEN SD.GUARANTEE_TYPE = 'MLY' AND SD.HOSPITAL_CODE = '004' THEN SD.VERIFY_DATE ELSE SD.GUARANTEE_DATE_TIME END AS 'DATE_TIME',
 		0.00 AS 'ABSORB_AMOUNT',
 		SD.YYYY AS 'YYYY', 
 		SD.MM AS 'MM', 
@@ -223,7 +225,8 @@ UNION ALL
 		'000000' AS 'START_TIME',
 		STP.YYYY+STP.MM+'01' AS 'END_DATE',
 		'000000' AS 'END_TIME',
-		STP.START_DATE+STP.START_TIME AS 'DATE_TIME',
+		--STP.START_DATE+STP.START_TIME AS 'DATE_TIME',
+		CASE WHEN STP.GUARANTEE_TYPE_CODE = 'MLY' AND STP.HOSPITAL_CODE = '004' THEN STP.START_DATE ELSE STP.START_DATE+STP.START_TIME END AS 'DATE_TIME',
 		CASE WHEN HP402_ABSORB_AMOUNT > 0 
 			THEN (HP402_ABSORB_AMOUNT)
 			ELSE DF402_CASH_AMOUNT
@@ -771,7 +774,7 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_T
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GUARANTEE_TYPE_CODE}.contains("M") ? "Monthly Guarantee" :  $F{GUARANTEE_TYPE_CODE}.equals("DLY") ? "Daily Guarantee" : $F{GUARANTEE_TYPE_CODE}.equals("EXT") ? "Special Consult" : $F{GUARANTEE_TYPE_CODE}.equals("STP") ? "Step Sharing" : "ค่าแพทย์นอกเวลา"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GUARANTEE_TYPE_CODE}.equals("MLD") || $F{GUARANTEE_TYPE_CODE}.equals("MLY") || $F{GUARANTEE_TYPE_CODE}.equals("MMY") ? "Monthly Guarantee" :  $F{GUARANTEE_TYPE_CODE}.equals("DLY") ? "Daily Guarantee" : $F{GUARANTEE_TYPE_CODE}.equals("EXT") ? "Special Consult" : $F{GUARANTEE_TYPE_CODE}.equals("STP") ? "Step Sharing" : "ค่าแพทย์นอกเวลา"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1170,7 +1173,9 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 						width="45"
 						height="15"
 						forecolor="#000000"
-						key="staticText-16"/>
+						key="staticText-16">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("004"))]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1289,6 +1294,26 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 					</textElement>
 				<text><![CDATA[DF 40(2)]]></text>
 				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="2"
+						width="45"
+						height="15"
+						forecolor="#000000"
+						key="staticText-26">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("004"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[Exc. Date]]></text>
+				</staticText>
 			</band>
 		</columnHeader>
 		<detail>
@@ -1330,7 +1355,7 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equals($F{INVOICE_DATE}) ? "" : $F{INVOICE_DATE}.substring( 6, 8 )+"/"+$F{INVOICE_DATE}.substring( 4, 6 )+"/"+$F{INVOICE_DATE}.substring( 0, 4 )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("004") ? "".equals($F{VERIFY_DATE}) ? "" : $F{VERIFY_DATE}.substring( 6, 8 )+"/"+$F{VERIFY_DATE}.substring( 4, 6 )+"/"+$F{VERIFY_DATE}.substring( 0, 4 ) : "".equals($F{INVOICE_DATE}) ? "" : $F{INVOICE_DATE}.substring( 6, 8 )+"/"+$F{INVOICE_DATE}.substring( 4, 6 )+"/"+$F{INVOICE_DATE}.substring( 0, 4 )]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

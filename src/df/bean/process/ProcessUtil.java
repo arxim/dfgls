@@ -23,6 +23,27 @@ public class ProcessUtil {
         }
         return strReturn;
     }
+    
+    public String selectMM402(String type,String name,String Def){
+        String strReturn = "";        
+        if("T".equals(type.toString())){
+            strReturn = this.selectMM402TH(name, Def);
+        }else{
+            strReturn = this.selectMM402EN(name, Def);
+        }
+        return strReturn;
+    }
+    
+    public String selectMMTaxReduce(String type,String name,String Def){
+        String strReturn = "";        
+        if("T".equals(type.toString())){
+            strReturn = this.selectMMTaxReduceTH(name, Def);
+        }else{
+            strReturn = this.selectMMTaxReduceEN(name, Def);
+        }
+        return strReturn;
+    }
+    
     private String selectMMTH(String name,String Def){
         String[] mthTh = {"มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"};
         String strReturn = "";        
@@ -41,6 +62,44 @@ public class ProcessUtil {
         strReturn+= "</select>";
         return strReturn;
     }
+    
+    private String selectMM402TH(String name,String Def){
+        String[] mthTh = {"มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม","รายปี"};
+        String strReturn = "";        
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }
+    private String selectMMTaxReduceTH(String name,String Def){
+        String[] mthTh = {"มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม","ทุกเดือน"};
+        String strReturn = "";        
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }
+    
     public String selectMonth(String name, String Def){
         String[] mthTh = {"January","February","March","April","May","June","July","August","September","October","November","December"};
         String strReturn = "";        
@@ -82,6 +141,45 @@ public class ProcessUtil {
         strReturn+= "</select>";
         return strReturn;
     }   
+    
+    private String selectMM402EN(String name,String Def){
+        String[] mthTh = {"January","February","March","April","May","June","July","August","September","October","November","December","Yearly"};
+        String strReturn = "";        
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }   
+    
+    private String selectMMTaxReduceEN(String name,String Def){
+        String[] mthTh = {"January","February","March","April","May","June","July","August","September","October","November","December","All"};
+        String strReturn = "";        
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }   
+    
     public String selectMMS(String type,String name,String Def){
         String strReturn = "";        
         if("T".equals(type.toString())){

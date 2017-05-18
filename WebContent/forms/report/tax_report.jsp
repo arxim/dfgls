@@ -293,7 +293,7 @@
                 <tbody id='term'>
 				<tr>
                     <td class="label"><label>${labelMap.MM}</label></td>
-                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
+                    <td class="input"><%=proUtil.selectMM402(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
                     <td class="label"><label>${labelMap.YYYY}</label></td>
                     <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
                 </tr>
