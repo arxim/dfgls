@@ -653,7 +653,7 @@ public class ProcessGuaranteeBeanNew {
     		for(int i = 0; i < arr_guarantee.length; i++){
     			update_guarantee = "UPDATE STP_GUARANTEE SET GUARANTEE_AMOUNT = '"+arr_guarantee[i][3]+"' " +
     					"WHERE HOSPITAL_CODE = '"+hospital_code+"' "+
-    					"AND YYYY = '"+year+"' AND MM = '"+month+"' " +
+    					"AND YYYY = '"+year+"' AND MM = '"+month+"' AND IS_GUARANTEE_DAILY = 'Y' " +
     					"AND GUARANTEE_DR_CODE = '"+arr_guarantee[i][0]+"' "+
     					"AND GUARANTEE_CODE = '"+arr_guarantee[i][1]+"' "+
     					"AND ADMISSION_TYPE_CODE = '"+arr_guarantee[i][2]+"'";
