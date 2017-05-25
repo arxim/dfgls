@@ -2011,8 +2011,8 @@ String report = "";
                 <input type="hidden" name="c10[]" value="<%=amountReduce%>">
                 <tr bgcolor="#FFFFFF">
                       <td align="left">4.<%=num %>. <%=Util.formatHTMLString(rs.getString("MASTER_REDUCE_NAME"), true)%> </td>
-                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" maxlength="8" onblur="c07();"/></td>
-                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" maxlength="8" onblur="c08();"/></td>
+                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" onchange="c07();"/></td>
+                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" onchange="c08();"/></td>
                   </tr>              
                 	 
                 <%
