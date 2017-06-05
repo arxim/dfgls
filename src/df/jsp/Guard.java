@@ -57,6 +57,7 @@ public class Guard {
     public static short PAGE_INPUT_GROUP = 32;
     public static short PAGE_INPUT_LOCATION = 33;
     public static short PAGE_INPUT_TAX_METHOD = 34;
+    public static short PAGE_INPUT_SPECIAL_TYPE = 35;
 
     //
     // Permission for web page in process module [100 - 199]

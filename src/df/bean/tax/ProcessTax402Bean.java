@@ -94,8 +94,9 @@ public class ProcessTax402Bean {
 	                    "AND AJ.YYYY = '"+this.year+"' AND AJ.MM = '"+this.month+"' AND (AJ.BATCH_NO IS NULL OR AJ.BATCH_NO = '' OR AJ.BATCH_NO = '"+this.year+this.month+"') "+
 	                    "GROUP BY AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE "+
 	                    ") Q "+
-	                    "WHERE SUM_TAX_402+EXDR_402-EXCR_402 > 0 "+
-	                    "GROUP BY HOSPITAL_CODE, DOCTOR_CODE ";	                    
+	                    //"WHERE SUM_TAX_402+EXDR_402-EXCR_402 > 0 "+
+	                    "GROUP BY HOSPITAL_CODE, DOCTOR_CODE "+
+	                    "HAVING SUM((SUM_TAX_402+EXDR_402)-EXCR_402) > 0 ";	                    
         try {
         	if(Variables.IS_TEST){
             	System.out.println(stm);        		

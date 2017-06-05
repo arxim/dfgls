@@ -214,7 +214,7 @@
                     response.sendRedirect("../message.jsp");
                     return;
                 }else if (MODE == MODE_INSERT_MASTER_DETAIL_SUBMIT || MODE == MODE_INSERT_DETAIL_SUBMIT || MODE == MODE_UPDATE_DETAIL_SUBMIT) {
-                    trnDailyRec = new DataRecord("TRN_DAILY");
+                	trnDailyRec = new DataRecord("TRN_DAILY");
                     oldTrnDailyRec = new DataRecord("TRN_DAILY");
         			trnDailyLogRec = new DataRecord("LOG_TRN_DAILY");
 
@@ -297,10 +297,10 @@
                         trnDailyRec.addField("DD", Types.VARCHAR, "");
                     }else{
                         trnDailyRec.addField("RECEIPT_TYPE_CODE", Types.VARCHAR, "AR");
-                        trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, "");
-                        trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, "");
-                        trnDailyRec.addField("YYYY", Types.VARCHAR, "");
-                        trnDailyRec.addField("MM", Types.VARCHAR, "");
+                        trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("RECEIPT_DATE")));
+                        trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, request.getParameter("RECEIPT_NO"));
+                        trnDailyRec.addField("YYYY", Types.VARCHAR, request.getParameter("RECEIPT_NO").equals("") ? "" : b.getYyyy());
+                        trnDailyRec.addField("MM", Types.VARCHAR, request.getParameter("RECEIPT_NO").equals("") ? "" : b.getMm());
                         trnDailyRec.addField("DD", Types.VARCHAR, "");
                     }
                     trnDailyRec.addField("NOR_ALLOCATE_AMT", Types.NUMERIC, "0");
@@ -365,6 +365,7 @@
                         }
                     }else {
                         if ( DBMgr.updateRecord(trnDailyRec) ) {
+                        	System.out.println("testttttt");
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", String.format("input/invoice.jsp?INVOICE_NO=%1$s", trnDailyRec.getField("INVOICE_NO").getValue())));
                         }else {
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));

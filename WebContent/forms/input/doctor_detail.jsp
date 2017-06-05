@@ -266,12 +266,12 @@
                 }
                 else {
                     MODE = DBMgr.MODE_UPDATE;
-                    doctorCategoryRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DOCTOR_CATEGORY WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DOCTOR_CATEGORY_CODE") + "'");
-                    bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_CODE") + "'");
+                    doctorCategoryRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DOCTOR_CATEGORY WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DOCTOR_CATEGORY_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
+                    bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_CODE") + "' ");
                     bankBranchRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK_BRANCH WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_BRANCH_CODE") + "' AND BANK_CODE='"+DBMgr.getRecordValue(doctorRec, "BANK_CODE")+"'");
-                    departmentRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE") + "'");
-                    hospitalUnitRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM HOSPITAL_UNIT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "HOSPITAL_UNIT_CODE") + "'");
-                    specialTypeRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_ENG FROM SPECIAL_TYPE WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "SPECIAL_TYPE_CODE") + "'");
+                    departmentRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
+                    hospitalUnitRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM HOSPITAL_UNIT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "HOSPITAL_UNIT_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
+                    specialTypeRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_ENG FROM SPECIAL_TYPE WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "SPECIAL_TYPE_CODE") + "' ");
                 }      
             }
             else if (request.getParameter("DOCTOR_PROFILE_CODE") != null) {
@@ -384,7 +384,7 @@
         }
 
         function AJAX_Refresh_SPECIAL_TYPE() {
-         		var target = "../../RetrieveData?TABLE=SPECIAL_TYPE&COND=CODE='" + document.mainForm.SPECIAL_TYPE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
+         		var target = "../../RetrieveData?TABLE=SPECIAL_TYPE&COND=CODE='" + document.mainForm.SPECIAL_TYPE.value + "' ";
          		AJAX_Request(target, AJAX_Handle_Refresh_SPECIAL_TYPE);         	
         }
         

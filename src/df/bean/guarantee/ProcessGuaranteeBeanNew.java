@@ -1644,6 +1644,11 @@ public class ProcessGuaranteeBeanNew {
         return status;
     }
     
+    private boolean calculatePreviousExtra(){
+    	
+    	return true;
+    }
+    
     private boolean calculatePreviousGuarantee(){
         boolean status = true;
         boolean admis_status = true;
@@ -2178,7 +2183,7 @@ public class ProcessGuaranteeBeanNew {
 					" SELECT DISTINCT SG.YYYY , SG.MM  , 'ProcessGuarantee'  , SG.GUARANTEE_DR_CODE , SG.HOSPITAL_CODE ,  (START_DATE+START_TIME) " + 
 					" , EP.CODE  , EP.SIGN , EP.ACCOUNT_CODE , SG.DEDUCT_ABSORB_AMOUNT ,  SG.DEDUCT_ABSORB_AMOUNT , ''  " +
 					" , ''  , '' , '' , '' , SG.YYYY+SG.MM , SG.START_DATE  , 'Absorb Guarantee : Monthly To Year ' + (SG.START_DATE + '' + SG.START_TIME) " + 
-					" , EP.TAX_TYPE_CODE , '' , DR.DEPARTMENT_CODE , '' , '' , '' , '' , '2', SG.GUARANTEE_DR_CODE " +
+					" , EP.TAX_TYPE_CODE , '' , DR.DEPARTMENT_CODE, '', '', '', '2', SG.GUARANTEE_DR_CODE " +
 					" FROM STP_GUARANTEE SG " +
 					" LEFT OUTER JOIN DOCTOR DR ON SG.GUARANTEE_DR_CODE  =  DR.GUARANTEE_DR_CODE AND  SG.HOSPITAL_CODE  =  DR.HOSPITAL_CODE " +
 					" LEFT OUTER JOIN DEPARTMENT DP ON DR.DEPARTMENT_CODE  = DR.DEPARTMENT_CODE AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE " + 

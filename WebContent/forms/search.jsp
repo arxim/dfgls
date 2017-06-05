@@ -200,7 +200,7 @@
             if (keywords != null && searchFields != null){
             	//System.out.println("table111111="+table1);
             	if(!table1.equals("null")){
-                	query = String.format("SELECT DISTINCT TOP 300 %3$s.%1$s, %3$s.%2$s,  %3$s."+displayField_second+" FROM %3$s,%4$s WHERE %4$s.ACTIVE='1' AND %4$s.HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "'", returnField, displayField, table, table1);
+                	query = String.format("SELECT DISTINCT TOP 300 %3$s.%1$s, %3$s.%2$s,  %3$s."+displayField_second+" FROM %3$s,%4$s WHERE %4$s.ACTIVE='1' AND %4$s.HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' AND %3$s.HOSPITAL_CODE =%4$s.HOSPITAL_CODE", returnField, displayField, table, table1);
                 }else if (displayField.equalsIgnoreCase(returnField)) {
                     query = String.format("SELECT DISTINCT TOP 300 %1$s,  "+displayField_second+" FROM %2$s WHERE", returnField, table);
                 }else if(returnField.equalsIgnoreCase(displayField_second)){

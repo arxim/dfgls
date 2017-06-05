@@ -454,12 +454,37 @@ String report = "";
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="../../css/calendar.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/jquery-ui.css" />
         <script type="text/javascript" src="../../javascript/calendar.js"></script>
 		<script type="text/javascript" src="../../javascript/util.js"></script>
         <script type="text/javascript" src="../../javascript/ajax.js"></script>
         <script type="text/javascript" src="../../javascript/search_form.js"></script>
         <script type="text/javascript" src="../../javascript/data_table.js"></script>
-<script language="javascript">
+        <!-- link rel="stylesheet" href="href="../../css/jquery-ui.css" /-->
+	   	<!-- link rel="stylesheet" href="/resources/demos/style.css"-->
+	  	<script type="text/javascript" src="../../javascript/jquery-1.12.4.js"></script>
+	  	<script type="text/javascript" src="../../javascript/jquery-ui.js"></script>
+		<script language="javascript">
+			$(function() {
+				  $("#dialog").dialog({
+				     autoOpen: false,
+				     modal: true,
+				     buttons : {
+				          "Confirm" : function() {
+				        	  $(this).dialog("close");
+							  setTimeout(function(){ SAVE_Click(); }, 100);           
+				          },
+				          "Cancel" : function() {
+				            $(this).dialog("close");
+				          }
+				        }
+				      });
+			
+				  $("#bt_save").on("click", function(e) {
+				      e.preventDefault();
+				      $("#dialog").dialog("open");
+				  });
+			});
     //parent.toggleFrame();
     //++++++++++++++ Script ++++++++++++
     //document.getElementById('mytab')
@@ -699,6 +724,7 @@ String report = "";
              			return false;
              		}
              	}
+             	//confirm("<%=labelMap.get(LabelMap.CONFIRM_TAX_REDUCE)%>")
            if(true)
            {            
         		document.mainForm.submit();
@@ -963,7 +989,7 @@ String report = "";
 			mainForm.SPOUSE_TYPE1[0].checked=false;
     		mainForm.SPOUSE_TYPE1[1].checked=false;
     		mainForm.SPOUSE_TYPE1[2].checked=false;
-			mainForm.c02.value=30000.00;
+			mainForm.c02.value=60000.00;
 			//คู่สมรสอายุตั้งแต่ 65 ปีขึ้นไปและมีเงินได้รวมคำนวณ 190,000 บาท
 			mainForm.b05.disabled=false;
 			
@@ -1071,7 +1097,7 @@ String report = "";
     		mainForm.SPOUSE_TYPE1[1].checked=false;
     		mainForm.SPOUSE_TYPE1[2].checked=false;
 			
-			mainForm.c02.value=30000.00;
+			mainForm.c02.value=60000.00;
 			
 			mainForm.a08_011.disabled=true;
 	    	mainForm.a101.disabled=true;
@@ -1460,6 +1486,7 @@ String report = "";
 		}
 		else
 		{
+			//alert(c09.length);
 			for (var i = 0; i < c09.length; i++) 
 		    { 
 			    if(parseFloat(c10[i].value) !=0)
@@ -1486,6 +1513,7 @@ String report = "";
 				if(parseFloat(c08.value) > parseFloat(c10.value))
 				{
 					alert("กรอกจำนวนเงินได้คู่สมรสได้ไม่เกิน "+c10.value);
+					c08.value = "";
 					c08.focus();
 				}
 			}
@@ -1499,6 +1527,7 @@ String report = "";
 					if(parseFloat(c08[i].value) > parseFloat(c10[i].value))
 					{
 						alert("กรอกจำนวนเงินได้คู่สมรสได้ไม่เกิน "+c10[i].value);
+						c08[i].value = "";
 						c08[i].focus();
 					}
 				}
@@ -2011,8 +2040,8 @@ String report = "";
                 <input type="hidden" name="c10[]" value="<%=amountReduce%>">
                 <tr bgcolor="#FFFFFF">
                       <td align="left">4.<%=num %>. <%=Util.formatHTMLString(rs.getString("MASTER_REDUCE_NAME"), true)%> </td>
-                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" onchange="c07();"/></td>
-                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" onchange="c08();"/></td>
+                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" maxlength="8" onchange="c07();"/></td>
+                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" maxlength="8" onchange="c08();"/></td>
                   </tr>              
                 	 
                 <%
@@ -2029,12 +2058,14 @@ String report = "";
             <tr>
                 <td align="center" height="28">
                 
-                 	<input type="button" name="bt_save" id="bt_save" value="บันทึก" onClick="SAVE_Click()" />
+                 	<input type="button" name="bt_save" id="bt_save" value="บันทึก"  />
                  	<input type="reset" name="bt_reset" id="bt_reset" value="ล้าง"/>
                     <input type="button" name="bt_close" id="bt_close" value="ปิดหน้าจอ" onClick="window.location='../tax/stp_tax_reduce_main.jsp'"/>                </td>
             </tr>
         </table>
-
+		<div id="dialog" title="คำเตือน">
+		  <font size="3">การแจ้งสิทธิ์ลดหย่อนทางภาษีเป็นหน้าที่ความรับผิดชอบของผู้มีเงินได้ในการให้ข้อมูลถูกต้องตามความจริง   </font>
+		</div>
         </form>
 	</body>
 </html>
