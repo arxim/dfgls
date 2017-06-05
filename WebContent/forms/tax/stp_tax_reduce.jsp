@@ -724,7 +724,6 @@ String report = "";
              			return false;
              		}
              	}
-             	//confirm("<%=labelMap.get(LabelMap.CONFIRM_TAX_REDUCE)%>")
            if(true)
            {            
         		document.mainForm.submit();
