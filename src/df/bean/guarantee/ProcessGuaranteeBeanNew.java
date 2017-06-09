@@ -1643,10 +1643,16 @@ public class ProcessGuaranteeBeanNew {
         System.out.println("\nGuarantee Calculate Finish Ending Time "+JDate.getTime());
         return status;
     }
-    
-    private boolean calculatePreviousExtra(){
-    	
-    	return true;
+    private String calculateExtraPreviousGuarantee(){ 
+    	String sql = "UPDATE TRN_DAILY SET GUARANTEE_NOTE = 'OLD EXTRA' " 
+    	+ "FROM TRN_DAILY T " 
+    	+ "LEFT OUTER JOIN ( " 
+    	+ "SELECT * FROM STP_GUARANTEE " 
+    	+ "WHERE HOSPITAL_CODE='"+this.hospital_code+"' AND YYYY+MM='"+JDate.getPreviousBatch(this.month, this.year)+"' AND ACTIVE='1' " 
+    	+ "AND GUARANTEE_EXCLUDE_AMOUNT >0 )G ON T.HOSPITAL_CODE = G.HOSPITAL_CODE AND T.DOCTOR_CODE = G.GUARANTEE_DR_CODE " 
+    	+ "WHERE T.HOSPITAL_CODE ='"+this.hospital_code+"' AND ( T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' AND T.VERIFY_DATE < '"+this.year+this.month+"'00') " 
+    	+ "AND T.VERIFY_DATE+T.VERIFY_TIME BETWEEN G.START_DATE+G.START_TIME AND G.END_DATE+G.END_TIME "; 
+    	return sql;
     }
     
     private boolean calculatePreviousGuarantee(){
@@ -1668,14 +1674,14 @@ public class ProcessGuaranteeBeanNew {
         "LEFT OUTER JOIN DOCTOR DR ON T.DOCTOR_CODE = DR.CODE AND T.HOSPITAL_CODE = DR.HOSPITAL_CODE "+
         "WHERE T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' " +
         "AND T.VERIFY_DATE < '"+this.year+this.month+"' AND T.VERIFY_DATE != '' " +
-        "AND T.VERIFY_TIME <> '' "+
-        "AND T.HOSPITAL_CODE = '"+this.hospital_code+"' " +
-        "AND T.IS_GUARANTEE = 'Y' AND INVOICE_TYPE <> 'ORDER' "+
+        "AND T.VERIFY_TIME <> '' AND T.HOSPITAL_CODE = '"+this.hospital_code+"' " +
+        "AND T.IS_GUARANTEE = 'Y' AND INVOICE_TYPE <> 'ORDER' AND GUARANTEE_NOTE != 'OLD EXTRA' "+
         "AND T.GUARANTEE_NOTE = '' AND IS_ONWARD <> 'Y' AND T.BATCH_NO = '' "+
         "ORDER BY YYYY DESC, VERIFY_DATE+VERIFY_TIME ASC";
         
         try {
         	System.out.println("Select Previous Guarantee : "+JDate.getTime());
+        	cdb.insert(calculateExtraPreviousGuarantee());
         	cdb.insert(t);
 			transaction_table = cdb.query(sql_trn);
         } catch (Exception ex) {
