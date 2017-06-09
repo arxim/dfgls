@@ -113,6 +113,7 @@
 
             String[] taxGT = {labelMap.get("taxG_d"),labelMap.get("taxG_h")};
             String[] taxValue = {"0","1"};
+            String remark;
 
             request.setCharacterEncoding("UTF-8");
             DataRecord doctorRec = null, doctorProfileRec = null, doctorCategoryRec = null, bankRec = null, bankBranchRec = null, departmentRec = null, specialTypeRec = null  ,  hospitalUnitRec = null;
@@ -219,7 +220,7 @@
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
                 	doctorRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
-                    if (DBMgr.insertRecord(doctorRec)) {
+                	if (DBMgr.insertRecord(doctorRec)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/doctor_setup.jsp?CODE=" + doctorRec.getField("DOCTOR_PROFILE_CODE").getValue()));
                     } 
                     else {
@@ -228,23 +229,44 @@
                 }else if (MODE == DBMgr.MODE_UPDATE) {
                 	Boolean act = false;
                 	//if(1==1){
-                		if(!request.getParameter("BANK_ACCOUNT_NO").equalsIgnoreCase(request.getParameter("TEMP_BANK_ACCOUNT_NO"))){
-                			act = true;
-                		}else if(!request.getParameter("BANK_ACCOUNT_NAME").equalsIgnoreCase(request.getParameter("TEMP_BANK_ACCOUNT_NAME"))){
-                			act = true;
-                		}else if(!request.getParameter("BANK_CODE").equalsIgnoreCase(request.getParameter("TEMP_BANK_CODE"))){
-                			act = true;
-                		}else if(!request.getParameter("BANK_BRANCH_CODE").equalsIgnoreCase(request.getParameter("TEMP_BANK_BRANCH_CODE"))){
-                			act = true;
-                		}
-                		if(act || request.getParameter("ACTIVE").equals(null)){
-                			//out.println("Active = '';");
-                			doctorRecLog.addField("ACTIVE", Types.VARCHAR, "");
-                			doctorRec.addField("ACTIVE", Types.VARCHAR, "");
-                		}else{
-                			doctorRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
-                			doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
-                		}
+               		if(!request.getParameter("BANK_ACCOUNT_NO").equalsIgnoreCase(request.getParameter("TEMP_BANK_ACCOUNT_NO"))){
+               			act = true;
+               		}else if(!request.getParameter("BANK_ACCOUNT_NAME").equalsIgnoreCase(request.getParameter("TEMP_BANK_ACCOUNT_NAME"))){
+               			act = true;
+               		}else if(!request.getParameter("BANK_CODE").equalsIgnoreCase(request.getParameter("TEMP_BANK_CODE"))){
+               			act = true;
+               		}else if(!request.getParameter("BANK_BRANCH_CODE").equalsIgnoreCase(request.getParameter("TEMP_BANK_BRANCH_CODE"))){
+               			act = true;
+               		}
+               		if(act || request.getParameter("ACTIVE").equals(null)){
+               			//out.println("Active = '';");
+               			doctorRecLog.addField("ACTIVE", Types.VARCHAR, "");
+               			doctorRec.addField("ACTIVE", Types.VARCHAR, "");
+               		}else{
+               			doctorRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+               			doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+               		}
+               		DataRecord doctor = DBMgr.getRecord("SELECT HOSPITAL_CODE, DOCTOR_PROFILE_CODE, CODE, NAME_THAI, NAME_ENG, TAX_ID, LICENSE_ID, FROM_DATE, TO_DATE, ADDRESS1, ADDRESS2, ADDRESS3, ZIP, "+
+               				"DOCTOR_TYPE_CODE, DOCTOR_CATEGORY_CODE, HOSPITAL_UNIT_CODE, DEPARTMENT_CODE, PAYMENT_MODE_CODE, GUARANTEE_DAY, GUARANTEE_DR_CODE, GUARANTEE_SOURCE, "+
+               				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_CODE, BANK_BRANCH_CODE, "+
+               				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
+               				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, ACTIVE                FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+               		System.out.println(doctor.getSize());
+               		System.out.println(doctorRec.getSize());
+               		
+               		remark = "แก้ไข ";
+               		for(int i = 0; i < doctorRec.getSize(); i++){
+               			if(!doctor.getValueOfIndex(i).getValue().equalsIgnoreCase(doctorRec.getValueOfIndex(i).getValue())
+               					&& !doctorRec.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !doctorRec.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !doctorRec.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				System.out.println("แก้ไข"+doctorRec.getValueOfIndex(i).getName());
+               				remark += doctorRec.getValueOfIndex(i).getName()+", ";
+               			}
+               			//System.out.println("doctor: "+doctor.getValueOfIndex(i).getName()+","+doctor.getValueOfIndex(i).getValue());
+               			//System.out.println(i+": "+doctorRec.getValueOfIndex(i).getName()+", "+doctorRec.getValueOfIndex(i).getValue());
+               		}
+               		doctorRecLog.addField("REMARK", Types.VARCHAR, remark);
                 	
                     DBMgr.insertRecord(doctorRecLog);
                     
