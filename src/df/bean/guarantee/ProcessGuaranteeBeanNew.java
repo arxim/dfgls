@@ -1650,7 +1650,7 @@ public class ProcessGuaranteeBeanNew {
     	+ "SELECT * FROM STP_GUARANTEE " 
     	+ "WHERE HOSPITAL_CODE='"+this.hospital_code+"' AND YYYY+MM='"+JDate.getPreviousBatch(this.month, this.year)+"' AND ACTIVE='1' " 
     	+ "AND GUARANTEE_EXCLUDE_AMOUNT >0 )G ON T.HOSPITAL_CODE = G.HOSPITAL_CODE AND T.DOCTOR_CODE = G.GUARANTEE_DR_CODE " 
-    	+ "WHERE T.HOSPITAL_CODE ='"+this.hospital_code+"' AND ( T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' AND T.VERIFY_DATE < '"+this.year+this.month+"'00') " 
+    	+ "WHERE T.HOSPITAL_CODE ='"+this.hospital_code+"' AND ( T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' AND T.VERIFY_DATE < '"+this.year+this.month+"00') " 
     	+ "AND T.VERIFY_DATE+T.VERIFY_TIME BETWEEN G.START_DATE+G.START_TIME AND G.END_DATE+G.END_TIME "; 
     	return sql;
     }

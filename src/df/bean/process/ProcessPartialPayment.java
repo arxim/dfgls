@@ -427,6 +427,7 @@ public class ProcessPartialPayment {
 					+ "AND (I.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') "
 					+ "AND I.DOC_TYPE= 'R' AND I.IS_LAST_RECEIPT ='N' AND T.IS_PARTIAL='N' AND T.BATCH_NO = '' "
 					+ "AND T.YYYY = '' "
+					+ "AND T.ACTIVE = '1' "
 					//+ "AND I.IS_LOADED = 'N' "
 					+ "ORDER BY T.INVOICE_NO, T.LINE_NO";
 					try {
