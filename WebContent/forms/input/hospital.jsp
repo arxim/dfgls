@@ -106,6 +106,10 @@
             labelMap.add("CURRENCY_THB","THB","บาท");
             labelMap.add("CURRENCY_USD","USD","ดอลลาร์");
             
+            labelMap.add("DF_ALLOC_TAX_402","DF Allocate Full Tax 40(2)","คำนวณภาษี 40(2) จากรายการค่าแพทย์");
+            labelMap.add("DF_ALLOC_TAX_402_0","No","ไม่คำนวณ");
+            labelMap.add("DF_ALLOC_TAX_402_1","Yes","คำนวณ");
+            
             labelMap.add("DOCTOR_PRIVATE","Doctor Private","Doctor Private");
             labelMap.add("DOCTOR_PRIVATE_0","No","No");
             labelMap.add("DOCTOR_PRIVATE_1","Yes","Yes");
@@ -219,6 +223,7 @@
                 HOSPITALRec.addField("IS_JOIN_BILL", Types.VARCHAR, request.getParameter("IS_COMBINE_BILL"));  
                 HOSPITALRec.addField("DOCTOR_PRIVATE", Types.VARCHAR, request.getParameter("DOCTOR_PRIVATE"));
                 HOSPITALRec.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
+                HOSPITALRec.addField("IS_DF_ALLOC_TAX_402", Types.VARCHAR, request.getParameter("DF_ALLOC_TAX_402"));
                 
                 //out.println(request.getParameter("MODE"));
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
@@ -775,16 +780,17 @@
                         <label for="CURRENCY_USD">${labelMap.CURRENCY_USD}</label>
                     </td>
                </tr>
-               <!-- edit >
+               < edit >
                 <tr>
-                    <td class="label"><label for="CURRENCY_THB">${labelMap.CURRENCY}</label></td>
+                    <td class="label"><label for="DF_ALLOC_TAX_402_1">${labelMap.DF_ALLOC_TAX_402}</label></td>
                     <td colspan="3" class="input">
-                        <input type="radio" id="CURRENCY_THB" name="CURRENCY" value="THB"<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("THB") || DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="CURRENCY_THB">${labelMap.CURRENCY_THB}</label>
-                        <input type="radio" id="CURRENCY_USD" name="CURRENCY" value="USD"<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("USD") ? " checked=\"checked\"" : "" %> />
-                        <label for="CURRENCY_USD">${labelMap.CURRENCY_USD}</label>
+                        <input type="radio" id="DF_ALLOC_TAX_402_1" name="DF_ALLOC_TAX_402" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+                        <label for="DF_ALLOC_TAX_402_1">${labelMap.DF_ALLOC_TAX_402_1}</label>
+                        <input type="radio" id="DF_ALLOC_TAX_402_0" name="DF_ALLOC_TAX_402" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+                        <label for="DF_ALLOC_TAX_402_0">${labelMap.DF_ALLOC_TAX_402_0}</label>
                     </td>
-                </tr-->
+                </tr>
+                
                 <tr>
                     <td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td>
                     <td colspan="3" class="input">

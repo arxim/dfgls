@@ -35,6 +35,7 @@ public class Guard {
     public static short PAGE_INPUT_ADMISSION_TYPE = 10;
     public static short PAGE_INPUT_DEPARTMENT = 11;
     public static short PAGE_INPUT_DOCTOR_CATEGORY = 12;
+    public static short PAGE_INPUT_EXPENSE = 13;
     public static short PAGE_INPUT_ORDER_ITEM = 14;
     public static short PAGE_INPUT_TAX_TYPE = 15;
     public static short PAGE_INPUT_GUARANTEE_TYPE = 16;
@@ -46,8 +47,7 @@ public class Guard {
     public static short PAGE_INPUT_RECEIPT = 22;
     public static short PAGE_INPUT_GUARANTEE_MAIN = 23;
     public static short PAGE_INPUT_GUARANTEE_DETAIL = 24;
-    public static short PAGE_INPUT_USER_GROUP = 25;    public static short PAGE_INPUT_EXPENSE = 13;
-
+    public static short PAGE_INPUT_USER_GROUP = 25;        
     public static short PAGE_INPUT_ORDER_ITEM_CATEGORY = 26;
     public static short PAGE_INPUT_DOCTOR_TYPE = 27;
     public static short PAGE_INPUT_EXPENSE_PERIOD = 28;
@@ -58,6 +58,7 @@ public class Guard {
     public static short PAGE_INPUT_LOCATION = 33;
     public static short PAGE_INPUT_TAX_METHOD = 34;
     public static short PAGE_INPUT_SPECIAL_TYPE = 35;
+    public static short PAGE_INPUT_RESIDENT_TYPE = 36;
 
     //
     // Permission for web page in process module [100 - 199]

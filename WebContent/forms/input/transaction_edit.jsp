@@ -66,6 +66,7 @@
             labelMap.add("DOCTOR_CODE", "Doctor Code", "รหัสแพทย์");
             labelMap.add("ORDER_ITEM_CODE", "Order Item Code", "รายการรักษา");
             labelMap.add("HN_NO", "HN No", "HN No");
+            labelMap.add("RESIDENT_TYPE", "Resident Type", "Resident Type");
             labelMap.add("Status", "Act", "สถานะ");
             labelMap.add("LINE_NO", "Line No", "Line No");
             labelMap.add("AMOUNT_AFT_DISCOUNT", "Amount", "จำนวนเงิน");
@@ -85,7 +86,7 @@
             // Process request
             //
             request.setCharacterEncoding("UTF-8");
-            DataRecord payorOfficeRec = null, doctorRec = null, hnNoRec = null, orderRec = null;
+            DataRecord payorOfficeRec = null, doctorRec = null, hnNoRec = null, orderRec = null, residentRec = null;
             String query = "";
             
             int table_row=0;
@@ -103,6 +104,11 @@
             if (request.getParameter("HN_NO") != null && !request.getParameter("HN_NO").equalsIgnoreCase("")) {
                 query = "SELECT HN_NO, PATIENT_NAME FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND HN_NO = '" + request.getParameter("HN_NO") + "'";
                 hnNoRec = DBMgr.getRecord(query);
+            }
+            
+            if (request.getParameter("RESIDENT_TYPE") != null && !request.getParameter("RESIDENT_TYPE").equalsIgnoreCase("")) {
+            	query = "SELECT CODE, DESCRIPTION FROM RESIDENT_TYPE WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND CODE = '" + request.getParameter("RESIDENT_TYPE") + "'";
+                residentRec = DBMgr.getRecord(query);
             }
             
             if (request.getParameter("ORDER_ITEM_CODE") != null && !request.getParameter("ORDER_ITEM_CODE").equalsIgnoreCase("")) {
@@ -279,17 +285,48 @@
                 AJAX_Request(target, AJAX_Handle_ORDER_ITEM);
             }
             
-            function AJAX_Handle_ORDER_ITEM() {
+            function AJAX_Handle_RESIDENT_TYPE() {
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
 
                     if (!isXMLNodeExist(xmlDoc, "CODE")) {
                         // Data not found
-                        document.mainForm.ORDER_ITEM_CODE.value = "";
-                        document.mainForm.ORDER_ITEM_NAME.value = "";
+                        document.mainForm.RESIDENT_TYPE.value = "";
+                        document.mainForm.RESIDENT_TYPE.value = "";
                     } else {
                         // Data found
-                        document.mainForm.ORDER_ITEM_NAME.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
+                        document.mainForm.RESIDENT_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
+                    }
+                }
+            }
+            
+            function RESIDENT_TYPE_KeyPress(e) {
+                var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+
+                if (key == 13) {
+                    document.mainForm.RESIDENT_TYPE.blur();
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            function AJAX_Refresh_RESIDENT_TYPE() {
+                var target = "../../RetrieveData?TABLE=RESIDENT_TYPE&COND=CODE='" + document.mainForm.RESIDENT_TYPE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
+                AJAX_Request(target, AJAX_Handle_RESIDENT_TYPE);
+            }
+            
+            function AJAX_Handle_RESIDENT_TYPE() {
+                if (AJAX_IsComplete()) {
+                    var xmlDoc = AJAX.responseXML;
+
+                    if (!isXMLNodeExist(xmlDoc, "CODE")) {
+                        // Data not found
+                        document.mainForm.RESIDENT_TYPE.value = "";
+                        document.mainForm.RESIDENT_TYPE.value = "";
+                    } else {
+                        // Data found
+                        document.mainForm.RESIDENT_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
                     }
                 }
             }
@@ -494,6 +531,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="label"><label for="RESIDENT_TYPE">${labelMap.RESIDENT_TYPE}</label></td>
+                    <td colspan="3" class="input">
+                        <input type="text" id="RESIDENT_TYPE" name="RESIDENT_TYPE" class="short" value="<%= DBMgr.getRecordValue(residentRec, "CODE") %>" onkeypress="return RESIDENT_TYPE_KeyPress(event);" onblur="AJAX_Refresh_RESIDENT_TYPE();" />
+                        <input id="SEARCH_RESIDENT_TYPE" name="SEARCH_RESIDENT_TYPE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=RESIDENT_TYPE&DISPLAY_FIELD=DESCRIPTION&BEINSIDEHOSPITAL=1&TARGET=RESIDENT_TYPE&HANDLE=AJAX_Refresh_RESIDENT_TYPE'); return false;" />
+                        <input type="text" id="RESIDENT_DESCRIPTION" name="RESIDENT_DESCRIPTION" value="<%= DBMgr.getRecordValue(residentRec, "DESCRIPTION") %>" class="long" readonly="readonly" />
+                    </td>
+                </tr>
+                <tr>
                     <th colspan="6" class="buttonBar">                        
                         <input type="submit" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}"  />
                         <input type="button" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='transaction_edit.jsp'" />
@@ -561,6 +606,10 @@
                     
                     if (request.getParameter("ORDER_ITEM_CODE") != null && !request.getParameter("ORDER_ITEM_CODE").equalsIgnoreCase("")) {
                         cond += " AND ORDER_ITEM_CODE = '" + request.getParameter("ORDER_ITEM_CODE") + "'";
+                    }
+                    
+                    if (request.getParameter("RESIDENT_TYPE") != null && !request.getParameter("RESIDENT_TYPE").equalsIgnoreCase("")) {
+                        cond += " AND NATIONALITY_DESCRIPTION = '" + request.getParameter("RESIDENT_TYPE") + "'";
                     }
                     
                     if (request.getParameter("FROM_DATE") != null && !request.getParameter("FROM_DATE").equalsIgnoreCase("") && request.getParameter("TO_DATE") != null && !request.getParameter("TO_DATE").equalsIgnoreCase("")) {
