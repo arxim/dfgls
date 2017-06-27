@@ -54,11 +54,11 @@ public class InterfaceExportSAPGLBean {
                 "LEFT OUTER JOIN DOCTOR D ON (T.DOCTOR_CODE = D.CODE AND T.HOSPITAL_CODE = D.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN ORDER_ITEM OI ON (T.ORDER_ITEM_CODE = OI.CODE AND T.HOSPITAL_CODE = OI.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN HOSPITAL H ON (T.HOSPITAL_CODE = H.CODE) "+
-                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"') AND " +
+                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
                 "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
-                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND T.IS_PAID <> 'N' " +
+                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1' AND D.DOCTOR_TYPE_CODE NOT LIKE 'G%' ";
     	//System.out.println("accuDfDeditNoGuanrantee Process : "+stm);
         return stm;
@@ -88,11 +88,11 @@ public class InterfaceExportSAPGLBean {
                 "LEFT OUTER JOIN DOCTOR D ON (T.DOCTOR_CODE = D.CODE AND T.HOSPITAL_CODE = D.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN ORDER_ITEM OI ON (T.ORDER_ITEM_CODE = OI.CODE AND T.HOSPITAL_CODE = OI.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN HOSPITAL H ON (T.HOSPITAL_CODE = H.CODE) "+
-                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"') AND " +
+                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
                 "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
-                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND T.IS_PAID <> 'N' "+
+                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1' AND D.DOCTOR_TYPE_CODE LIKE 'G%'";
     	//System.out.println("accu602105DebitGuatantee Process : "+stm);
         return stm;
@@ -122,11 +122,11 @@ public class InterfaceExportSAPGLBean {
                 "LEFT OUTER JOIN DOCTOR D ON (T.DOCTOR_CODE = D.CODE AND T.HOSPITAL_CODE = D.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN ORDER_ITEM OI ON (T.ORDER_ITEM_CODE = OI.CODE AND T.HOSPITAL_CODE = OI.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN HOSPITAL H ON T.HOSPITAL_CODE = H.CODE "+
-                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"') AND " +
+                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
                 "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
-                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND T.IS_PAID <> 'N' "+
+                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1'";
     	//System.out.println("accu602103Credit Process : "+stm);
         return stm;
@@ -149,11 +149,11 @@ public class InterfaceExportSAPGLBean {
                 "LEFT OUTER JOIN DOCTOR D ON (T.DOCTOR_CODE = D.CODE AND T.HOSPITAL_CODE = D.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN ORDER_ITEM OI ON (T.ORDER_ITEM_CODE = OI.CODE AND T.HOSPITAL_CODE = OI.HOSPITAL_CODE) "+
                 "LEFT OUTER JOIN HOSPITAL H ON T.HOSPITAL_CODE = H.CODE "+
-                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"') AND " +
+                "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
-                "AND T.INVOICE_TYPE <> 'ORDER' AND T.ACTIVE = '1' AND D.ACTIVE = '1' " +
-                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND T.IS_PAID <> 'N' "+
+                "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
+                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1'";
     	//System.out.println("accu203104Credit Process : "+stm);
         return stm;

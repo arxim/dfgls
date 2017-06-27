@@ -381,9 +381,9 @@ public class ReportQuery {
     	"LEFT OUTER JOIN HOSPITAL HP ON TM.HOSPITAL_CODE = HP.CODE "+
     	"WHERE TM.HOSPITAL_CODE = '"+this.hospital_code+"' "+
     	//"AND TM.TRANSACTION_DATE <= '20140331' "+
-    	"AND (TM.BATCH_NO = '"+this.year+this.month+"' OR TM.BATCH_NO = '') "+
+        "AND (TM.BATCH_NO = '' OR TM.BATCH_NO = '"+this.year+this.month+"' OR (TM.BATCH_NO <> '' AND TM.IS_DISCHARGE_SUMMARY = 'N')) AND " +
     	"AND TM.ACTIVE = '1' AND TM.ORDER_ITEM_ACTIVE = '1' AND DR.ACTIVE = '1' "+
-    	"AND TM.IS_PAID <> 'N' AND OI.ACCOUNT_CODE NOT LIKE '0%' AND TM.INVOICE_TYPE <> 'ORDER' "+
+    	"AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N') ) AND OI.ACCOUNT_CODE NOT LIKE '0%' AND TM.INVOICE_TYPE <> 'ORDER' "+
     	"AND TM.AMOUNT_AFT_DISCOUNT > 0 " +
     	//"AND DR.PAYMENT_MODE_CODE != 'U' " +
     	"AND TM.DOCTOR_CODE NOT LIKE '99999%' "+
