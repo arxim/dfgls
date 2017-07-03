@@ -212,7 +212,7 @@ public class ProcessRollBack {
         return result;    
     }
     
-    // roll back receipt by Payor
+    // roll back receipt by Doctor
     public boolean rollBackReceiptByDoctor(String hospitalCode, String YYYY, String MM) {
         boolean result = true;
         this.conn = new DBConnection();
@@ -221,7 +221,7 @@ public class ProcessRollBack {
         
         try {
             conn.beginTrans();
-            if (result) { result = dt.rollBackUpdate(hospitalCode,YYYY, MM, "TRN_DAILY");  }
+            if (result) { result = dt.rollBackUpdate(YYYY, MM, hospitalCode, "TRN_DAILY");  }
             
         } catch (Exception ex) {
             DialogBox.ShowError("Error : " + ex.getMessage());
