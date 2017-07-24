@@ -64,6 +64,7 @@ public class ExportFileSrvl extends HttpServlet {
         String bank_type = request.getParameter("BANK_TYPE");
         String payment_date = request.getParameter("PAYMENT_DATE");
         String transaction_date = request.getParameter("TRANSACTION_DATE");
+        String filing_type = request.getParameter("FILING_TYPE");
         //path variable for upload or writefile to..
         String linux_path = getServletConfig().getServletContext().getRealPath("")+"/reports/output/";
         String windows_path = getServletConfig().getServletContext().getRealPath("")+"\\reports\\output\\";
@@ -71,6 +72,7 @@ public class ExportFileSrvl extends HttpServlet {
         //link variable for show webpage link
         String link = "./reports/output/";
         //System.out.println("Pay Type : "+pay_type);
+        //System.out.println("Filing Type : "+filing_type);
         try{
             if(pay_type != null && pay_type.length()>2){
             	pay_type = pay_type.substring(1);
@@ -78,6 +80,11 @@ public class ExportFileSrvl extends HttpServlet {
         }catch(Exception e){
         	System.out.println("Pay Type Exception : "+e);
         }
+        
+        if(!filing_type.equals("0")){
+        	filing_type = request.getParameter("filing_add_no");
+        }
+        //System.out.println("Filing Type : "+filing_type);
         path = Variables.IS_WINDOWS ? windows_path : linux_path;
         String upload_path = path+save_file+".txt";
         String bank_upload_path = getIPBankEncrypt(hospital_code)+save_file+".txt";
@@ -134,7 +141,7 @@ public class ExportFileSrvl extends HttpServlet {
             if(process_name.equals("ExportRD")){
             	//erdt.exportData(save_file, hospital_code, "", year, month, cdb2, path);
             	erdt.setPaymentDate(payment_date.replaceAll("/", ""));
-                reportGenerateFile(link + save_file+".txt", response, erdt.exportData(save_file, hospital_code, pay_type, year, month, cdb2, upload_path),erdt.getMessage());            	
+                reportGenerateFile(link + save_file+".txt", response, erdt.exportData(save_file, hospital_code, pay_type, year, month, cdb2, upload_path, filing_type),erdt.getMessage());            	
             }
         } finally { 
             //out.close();

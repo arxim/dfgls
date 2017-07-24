@@ -46,6 +46,9 @@
 	labelMap.add("RD1", "ภ.ง.ด.1","ภ.ง.ด.1");
 	labelMap.add("PAYMENT_DATE", "Payment Date", "วันที่ทำจ่าย");
 	labelMap.add("TRANSACTION_DATE", "Transaction Date", "วันที่ทำรายการ");
+	labelMap.add("FILING_TYPE", "Filing Type", "ประเภทการยื่นแบบ");
+	labelMap.add("FILING_TYPE_0", "Regular Filing", "ยื่นปกติ");
+	labelMap.add("FILING_TYPE_1", "Additional Filing", "ยื่นเพิ่มเติมครั้งที่");
 	String report = "";
     request.setAttribute("labelMap", labelMap.getHashMap());
     
@@ -79,18 +82,31 @@
             	}
 			}
 			function changeDropDownList(){
+				var radios = document.mainForm.FILING_TYPE;
+				//alert(radios.length);
 				if(document.mainForm.PROCESS_NAME.value == "ExportBank"){
 					document.mainForm.PAY_TYPE.disabled = false;
 					document.mainForm.TRANSACTION_DATE.disabled = false;
 					document.mainForm.BANK_TYPE.disabled = false;
+					document.mainForm.FILING_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = true;
+					} 
 				}else if(document.mainForm.PROCESS_NAME.value == "ExportRD"){
 					document.mainForm.PAY_TYPE.disabled = false;
 					document.mainForm.TRANSACTION_DATE.disabled = true;
 					document.mainForm.BANK_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = false;
+					} 
 				}else{
 					document.mainForm.PAY_TYPE.disabled = true;
 					document.mainForm.BANK_TYPE.disabled = true;
 					document.mainForm.TRANSACTION_DATE.disabled = false;
+					document.mainForm.FILING_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = true;
+					} 
 				}
 			}
 		</script>
@@ -180,6 +196,18 @@
                             <option value="017">${labelMap.CITI}</option>
                         </select>
 					</td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="FILING_TYPE">${labelMap.FILING_TYPE}</label><br />
+					</td>
+                    <td colspan="3" class="input" >
+                        <input onclick="document.getElementById('filing_add_no').disabled = true;" type="radio" id="1" name="FILING_TYPE" value="0" checked="checked"/>
+                        <label for="FILING_TYPE_0">${labelMap.FILING_TYPE_0}</label>
+                        <input onclick="document.getElementById('filing_add_no').disabled = false;" type="radio" id="2" name="FILING_TYPE" value="1" />
+                        <label for="FILING_TYPE_1">${labelMap.FILING_TYPE_1}</label>
+                        <input type="text"  style="width: 20px;" id="filing_add_no" name="filing_add_no" disabled="disabled"/>
+                    </td>
                 </tr>
                 <!-- 
                 <tbody id="idFormDate">

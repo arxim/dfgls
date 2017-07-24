@@ -38,6 +38,7 @@ public abstract class InterfaceTextFileBean {
 
     public abstract boolean insertData(String fn, DBConnection d);
     public abstract boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path);
+    public abstract boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path, String filing_type);
 
     protected void setConn(DBConnection db){
         this.dbconn = db;

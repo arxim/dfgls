@@ -92,4 +92,11 @@ public class ImportDischargeExcelBean extends InterfaceTextFileBean{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

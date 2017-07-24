@@ -36,7 +36,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     @Override
-    public boolean exportData(String fn, String hp, String type, String year, String month, DBConn d, String path) {
+    public boolean exportData(String fn, String hp, String type, String year, String month, DBConn d, String path, String filing_type) {
         boolean status = true;
         String tax_month = "";
         String[][] temp_data = null;
@@ -76,7 +76,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
             setFileName(path);//set filename read
             temp_data = d.query(dat);//get data            
             if(temp_data.length>0){
-            	writeFileNew(setFormatFilePayroll(temp_data, type));
+            	writeFileNew(setFormatFilePayroll(temp_data, type, filing_type));
             	//writeFileNew(setFormatFile(temp_data, type));
             }else{
             	System.out.println("Data is null");
@@ -139,7 +139,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
     	}
     	return dt;
     }
-    private String[] setFormatFilePayroll(String[][] t, String tax_type){
+    private String[] setFormatFilePayroll(String[][] t, String tax_type, String filing_type){
     	String tax_month = "";
     	String[] dt = new String[t.length];
     	try{
@@ -159,14 +159,15 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
 	    		}else{
 	    			tax_month = JDate.getNextMonth(t[i][12], t[i][13]);
 	    		}
+	    		dt[i] = filing_type+"|";
 	    		//Initial Data End
 	    		//System.out.println(t[i][0]);
-	    		if(t[i][0].equals("00")){
+	    		/*if(t[i][0].equals("00")){
 	    			dt[i]= "0|";
 	    		}
 	    		else{
 	    			dt[i]= "2|";
-	    		}
+	    		}*/
 	    		dt[i] = dt[i]+//Normal
 	    		"000000|"+//Employer ID
 	    		t[i][4]+"|"+//National ID
@@ -184,4 +185,8 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
     	}
     	return dt;
     }
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

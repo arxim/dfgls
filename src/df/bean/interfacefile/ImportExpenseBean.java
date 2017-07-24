@@ -188,4 +188,10 @@ public class ImportExpenseBean extends InterfaceTextFileBean {
     public boolean exportData(String fn, String hp, String type, String year, String month, DBConn d, String path) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

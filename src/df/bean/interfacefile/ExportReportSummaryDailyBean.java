@@ -55,4 +55,11 @@ public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
         //return status;
     }
 
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
