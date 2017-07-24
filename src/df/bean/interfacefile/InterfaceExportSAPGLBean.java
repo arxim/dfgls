@@ -57,7 +57,7 @@ public class InterfaceExportSAPGLBean {
                 "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
-                "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
+                "AND T.INVOICE_TYPE <> 'ORDER' AND D.PAYMENT_MODE_CODE <> 'U' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
                 "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1' AND D.DOCTOR_TYPE_CODE NOT LIKE 'G%' ";
     	//System.out.println("accuDfDeditNoGuanrantee Process : "+stm);
@@ -91,7 +91,7 @@ public class InterfaceExportSAPGLBean {
                 "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
-                "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
+                "AND T.INVOICE_TYPE <> 'ORDER' AND D.PAYMENT_MODE_CODE <> 'U' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
                 "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1' AND D.DOCTOR_TYPE_CODE LIKE 'G%'";
     	//System.out.println("accu602105DebitGuatantee Process : "+stm);
@@ -125,7 +125,7 @@ public class InterfaceExportSAPGLBean {
                 "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
-                "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
+                "AND T.INVOICE_TYPE <> 'ORDER' AND D.PAYMENT_MODE_CODE <> 'U' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
                 "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1'";
     	//System.out.println("accu602103Credit Process : "+stm);
@@ -152,7 +152,7 @@ public class InterfaceExportSAPGLBean {
                 "WHERE (T.BATCH_NO = '' OR T.BATCH_NO = '"+this.YYYY+this.MM+"' OR (T.BATCH_NO <> '' AND T.IS_DISCHARGE_SUMMARY = 'N')) AND " +
                 "OI.ACCOUNT_CODE NOT LIKE '0%' "+
                 "AND T.AMOUNT_AFT_DISCOUNT > 0 AND T.DOCTOR_CODE NOT LIKE '99999%' "+
-                "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
+                "AND T.INVOICE_TYPE <> 'ORDER' AND D.PAYMENT_MODE_CODE <> 'U' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
                 "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND (T.IS_PAID <> 'N' OR (T.IS_PAID = 'N' AND T.IS_DISCHARGE_SUMMARY = 'N' )) " +
                 "AND T.ORDER_ITEM_ACTIVE = '1'";
     	//System.out.println("accu203104Credit Process : "+stm);
@@ -176,7 +176,7 @@ public class InterfaceExportSAPGLBean {
                	"LEFT OUTER JOIN EXPENSE EX ON (T.EXPENSE_CODE = EX.CODE AND T.HOSPITAL_CODE = EX.HOSPITAL_CODE) "+
                	"WHERE T.YYYY = '"+this.YYYY+"' AND T.MM = '"+this.MM+"' "+
                	"AND T.AMOUNT > 0 "+
-               	"AND D.ACTIVE = '1' AND EX.AC_INTERFACE = 'Y' "+ //Update date 08/07/2009
+               	"AND D.ACTIVE = '1' AND D.PAYMENT_MODE_CODE <> 'U' AND EX.AC_INTERFACE = 'Y' "+ //Update date 08/07/2009
                	"AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' ";
     	//System.out.println("accuExpense Process : "+stm);
         return stm;
@@ -200,7 +200,7 @@ public class InterfaceExportSAPGLBean {
                "LEFT OUTER JOIN EXPENSE EX ON (T.EXPENSE_CODE = EX.CODE AND T.HOSPITAL_CODE = EX.HOSPITAL_CODE) "+
                "LEFT OUTER JOIN HOSPITAL H ON T.HOSPITAL_CODE = H.CODE "+
                "WHERE T.YYYY = '"+this.YYYY+"' AND T.MM = '"+this.MM+"' "+
-               "AND D.ACTIVE = '1' AND EX.AC_INTERFACE = 'Y' "+ //Update date 08/07/2009
+               "AND D.ACTIVE = '1' AND D.PAYMENT_MODE_CODE <> 'U' AND EX.AC_INTERFACE = 'Y' "+ //Update date 08/07/2009
                "AND T.AMOUNT > 0 "+
                "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' ";
     	//System.out.println("accu203104Expense Process : "+stm);
