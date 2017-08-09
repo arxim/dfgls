@@ -15,7 +15,6 @@ public class ProcessPartialPayment {
 	private String endDate;
 	private ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String,String>>();
 	
-	
 	public boolean processPartial(String hospitalCode, String mm, String yyyy, String startDate, String endDate){
 		boolean result = false;
 		this.hospitalCode = hospitalCode;
@@ -448,7 +447,7 @@ public class ProcessPartialPayment {
 		this.hospitalCode = hospitalCode;
 		//ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String, String>>();
 		String qMessage="";
-		boolean result =false;
+		boolean result =true;
 		//Insert Combind bill case N/N or N in month
 		String sqlCombineBill = "INSERT INTO INT_ERP_AR_RECEIPT "
 				 +"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, " 
@@ -503,7 +502,7 @@ public class ProcessPartialPayment {
 			result = false; 
 			System.out.println("SQLException in stetment : "+qMessage); 
 		}	
-		dbConn.closeDB("Close Connection from Partial Process"); 
+		//dbConn.closeDB("Close Connection from Partial Process"); 
 		return result; 
 	}
 	
