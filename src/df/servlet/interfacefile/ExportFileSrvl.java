@@ -81,7 +81,7 @@ public class ExportFileSrvl extends HttpServlet {
         	System.out.println("Pay Type Exception : "+e);
         }
         
-        if(!filing_type.equals("0")){
+        if(filing_type != null && !filing_type.equals("0")){
         	filing_type = request.getParameter("filing_add_no");
         }
         //System.out.println("Filing Type : "+filing_type);
