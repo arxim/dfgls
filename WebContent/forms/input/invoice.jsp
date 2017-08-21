@@ -124,12 +124,13 @@
             DataRecord trnDailyRec = null, trnDailyLogRec = null, oldTrnDailyRec = null, payorOfficeRec = null, payorOfficeCategoryRec = null, patientDepartmentRec = null, patientLocationRec = null, receiptDepartmentRec = null, receiptLocationRec = null, receiptTypeRec = null;
             DataRecord doctorDepartmentRec = null, orderItemRec = null, doctorRec = null, doctorExecuteRec = null, doctorPrivateRec=null, doctorResultRec = null;
             
-            if (request.getParameter("INVOICE_NO") != null && request.getParameter("LINE_NO") != null) {
+            if (request.getParameter("INVOICE_NO") != null && request.getParameter("LINE_NO") != null ) {
                 query = "SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + 
                 		"' AND INVOICE_NO = '" + request.getParameter("INVOICE_NO") +
                 		"' AND TRANSACTION_DATE = '" + request.getParameter("TRANSACTION_DATE") + 
                 		"' AND INVOICE_TYPE = '" + request.getParameter("INVOICE_TYPE") + 
                     	"' AND LINE_NO = '" + DBMgr.toSQLString( request.getParameter("LINE_NO")) + "'";
+                System.out.print(" test : "+query);
                 trnDailyRec = DBMgr.getRecord(query);
                 MODE = MODE_UPDATE_DETAIL;
             }else if (request.getParameter("INVOICE_NO") != null) {
@@ -242,17 +243,19 @@
                             trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, "000000");                            
                         }else{
                             trnDailyRec.addField("EXECUTE_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
-                            trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));                                                        
+                            trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));   
+                            
                         }
                         trnDailyRec.addField("EXECUTE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
                         trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
+                       
                     }else{
-                    	trnDailyRec.addField("TRANSACTION_DATE", Types.VARCHAR, request.getParameter("HI_TRANSACTION_DATE"), true);
+                    	trnDailyRec.addField("TRANSACTION_DATE", Types.VARCHAR, request.getParameter("HI_TRANSACTION_DATE"),true);
                         trnDailyRec.addField("LINE_NO", Types.VARCHAR, request.getParameter("LINE_NO"), true);
                         trnDailyRec.addField("EXECUTE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
                         trnDailyRec.addField("EXECUTE_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
-                        trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
-                        trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
+                        trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")),true);
+                        trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")),true);
                     }
                     trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, request.getParameter("RECEIPT_NO"));
                     trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("RECEIPT_DATE")));
@@ -365,7 +368,6 @@
                         }
                     }else {
                         if ( DBMgr.updateRecord(trnDailyRec) ) {
-                        	System.out.println("testttttt");
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", String.format("input/invoice.jsp?INVOICE_NO=%1$s", trnDailyRec.getField("INVOICE_NO").getValue())));
                         }else {
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -1062,7 +1064,7 @@
             <input type="hidden" id="BATCH_DATE" name="BATCH_DATE" value="<%= BATCH_DATE %>" />
             <input type="hidden" id="HI_INVOICE_TYPE" name="HI_INVOICE_TYPE" value="<%= DBMgr.getRecordValue(trnDailyRec, "INVOICE_TYPE")%>" />
             <input type="hidden" id="HI_TRANSACTION_DATE" name="HI_TRANSACTION_DATE" value="<%= DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_DATE")%>" />
-            
+           
             <center>
 				<table width="800" border="0">
 					<tr><td align="left">
