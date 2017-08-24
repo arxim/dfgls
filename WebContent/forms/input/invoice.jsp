@@ -416,7 +416,7 @@
                 doctorRec = DBMgr.getRecord(query);
             }
             if (DBMgr.getRecordValue(trnDailyRec, "DOCTOR_EXECUTE_CODE") != "") {
-                query = "SELECT CODE, NAME_" + labelMap.getFieldLangSuffix() + " AS NAME FROM DOCTOR WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND CODE = '" + DBMgr.getRecordValue(trnDailyRec, "DOCTOR_EXECUTE_CODE") + "'";
+                query = "SELECT CODE, NAME_" + labelMap.getFieldLangSuffix() + " AS NAME FROM DOCTOR WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND CODE = '" + DBMgr.getRecordValue(trnDailyRec, "DOCTOR_CODE") + "'";
                 doctorExecuteRec = DBMgr.getRecord(query);
             }
             if (DBMgr.getRecordValue(trnDailyRec, "DOCTOR_PRIVATE_CODE") != "") {

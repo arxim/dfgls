@@ -45,15 +45,18 @@
 
             request.setCharacterEncoding("UTF-8");
             DataRecord departmentRec = null, hospitalUnitRec = null, location = null;
+            DataRecord departmentRecLog;
             byte MODE = DBMgr.MODE_INSERT;
 			String getcode = "";
 			String codescript = "";
+			String remark = "";
             if (request.getParameter("MODE") != null) {
 
                 //out.print(request.getParameterMap().toString());
 
                 departmentRec = new DataRecord("DEPARTMENT");
-
+                departmentRecLog = new DataRecord("LOG_DEPARTMENT");
+                
                 departmentRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                 departmentRec.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
                 departmentRec.addField("DESCRIPTION", Types.VARCHAR, request.getParameter("DESCRIPTION"));
@@ -65,10 +68,22 @@
                 departmentRec.addField("DEFAULT_LOCATION_CODE", Types.VARCHAR, request.getParameter("DEFAULT_LOCATION_CODE"));
                 departmentRec.addField("GL_CODE", Types.VARCHAR, request.getParameter("GL_CODE"));
                 
-
+                //for log
+                departmentRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
+                departmentRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
+                departmentRecLog.addField("DESCRIPTION", Types.VARCHAR, request.getParameter("DESCRIPTION"));
+                departmentRecLog.addField("HOSPITAL_UNIT_CODE", Types.VARCHAR, request.getParameter("HOSPITAL_UNIT_CODE"));
+                departmentRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+                departmentRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
+                departmentRecLog.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime(), true);
+                departmentRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                departmentRecLog.addField("DEFAULT_LOCATION_CODE", Types.VARCHAR, request.getParameter("DEFAULT_LOCATION_CODE"));
+                departmentRecLog.addField("GL_CODE", Types.VARCHAR, request.getParameter("GL_CODE"));
+                
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
-
-                    if (DBMgr.insertRecord(departmentRec)) {
+                	departmentRecLog.addField("REMARK", Types.VARCHAR, remark);
+                	
+                    if (DBMgr.insertRecord(departmentRec) && DBMgr.insertRecord(departmentRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/department.jsp"));
                     } 
                     else {
@@ -76,7 +91,23 @@
                     }
                 } 
                 else if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_UPDATE) {
-                    if (DBMgr.updateRecord(departmentRec)) {
+					DataRecord dept = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION, HOSPITAL_UNIT_CODE, ACTIVE, UPDATE_DATE, UPDATE_TIME, USER_ID, DEFAULT_LOCATION_CODE, GL_CODE "+
+               				"FROM DEPARTMENT WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+             		
+               		remark = "แก้ไข ";
+               		for(int i = 0; i < dept.getSize(); i++){
+               			if(!dept.getValueOfIndex(i).getValue().equalsIgnoreCase(departmentRec.getValueOfIndex(i).getValue())
+               					&& !departmentRec.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !departmentRec.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !departmentRec.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				//System.out.println(dept.getValueOfIndex(i).getValue()+", "+departmentRec.getValueOfIndex(i).getValue());
+               				System.out.println("แก้ไข"+departmentRec.getValueOfIndex(i).getName());
+               				remark += departmentRec.getValueOfIndex(i).getName()+", ";
+               			}
+               		}
+               		departmentRecLog.addField("REMARK", Types.VARCHAR, remark.substring(0, remark.length()-2));
+               		
+                    if (DBMgr.updateRecord(departmentRec) && DBMgr.insertRecord(departmentRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/department.jsp"));
                     } 
                     else {
@@ -101,6 +132,7 @@
                     hospitalUnitRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM HOSPITAL_UNIT WHERE CODE = '" + DBMgr.getRecordValue(departmentRec, "HOSPITAL_UNIT_CODE") + "' AND HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE")+"'");
                     location = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM LOCATION WHERE CODE = '" + DBMgr.getRecordValue(departmentRec, "DEFAULT_LOCATION_CODE") + "' AND HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE")+"'");
 					getcode = DBMgr.getRecordValue(departmentRec, "CODE");
+					
                 }
             }
             System.out.println(session.getAttribute("HOSPITAL_CODE"));
