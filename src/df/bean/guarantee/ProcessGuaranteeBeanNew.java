@@ -1120,6 +1120,18 @@ public class ProcessGuaranteeBeanNew {
     		this.guarantee_balance = this.guarantee_balance - (this.trn_guarantee_amt+temp) < 0 ? 0 : this.guarantee_balance - this.trn_guarantee_amt;
             this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
             this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
+    	}else if(this.guarantee_allocate_condition.equals("A")){
+    		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+    			this.dr_amt = this.trn_guarantee_amt * (this.percent_in_allocate/100);
+    		}else{
+    			this.dr_amt = this.trn_guarantee_amt;
+    		}
+    		
+    		this.guarantee_paid = this.guarantee_paid + this.dr_amt;
+    		this.sum_trn_guarantee_balance = this.sum_trn_guarantee_balance - this.dr_amt;
+    		this.guarantee_balance = this.guarantee_balance - this.dr_amt < 0 ? 0 : this.guarantee_balance - this.dr_amt;
+            this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
+            this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
         }else{
         	if(this.sum_amount_aft_discount <= this.guarantee_amt){
         		this.dr_amt = amount;
@@ -1204,12 +1216,50 @@ public class ProcessGuaranteeBeanNew {
                 		this.guarantee_note = "ABSORB SOME GUARANTEE";
                 		this.dr_amt = over_guarantee_amount;
                 		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
-                		//this.dr_amt = (this.dr_amt - this.guarantee_balance);
-                		//this.trn_guarantee_paid_amt = this.guarantee_balance;
                 	}
             	}
             }
         	this.guarantee_balance = 0;
+    	}else if(this.guarantee_allocate_condition.equals("A")){
+                if(this.guarantee_balance == 0){
+            		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+            			this.dr_amt = this.trn_guarantee_amt * (this.percent_over_allocate/100);
+            		}else{
+            			this.dr_amt = this.trn_guarantee_amt;
+            		}
+                	if(!t[t_index][5].equals("")){
+                		this.guarantee_note = "OVER GUARANTEE "+t[t_index][16]+" to "+this.percent_over_allocate;
+                	}else{
+                		this.guarantee_note = "";
+                	}
+                }
+                if(this.guarantee_balance > 0 && this.guarantee_balance < (this.trn_guarantee_amt * (this.percent_over_allocate/100))){
+                	trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
+            		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance) * (percent_over_allocate/100);
+            		}else{
+                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance);
+            		}
+
+                	if(!t[t_index][5].equals("")){ //if Receipt transaction
+                		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+                            this.dr_amt = trn_in_guarantee_amount+over_guarantee_amount;
+                		}else{
+                			this.dr_amt = this.trn_guarantee_amt;
+                		}
+
+                		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
+                	}else{ //if Invoice transaction
+                    	if(this.guarantee_balance <= 0){
+                    		this.guarantee_note = "";
+                    	}else{
+                    		this.guarantee_note = "ABSORB SOME GUARANTEE";
+                    		this.dr_amt = over_guarantee_amount;
+                    		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
+                    	}
+                	}
+                }
+            	this.guarantee_balance = 0;
     	}else{
     		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
                 trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
@@ -1420,7 +1470,7 @@ public class ProcessGuaranteeBeanNew {
                 	
 //==================GUARANTEE MONTHLY/DAILY
                     if(this.guarantee_amt>0){
-                    	if(this.guarantee_allocate_condition.equals("Y")){
+                    	if(this.guarantee_allocate_condition.equals("Y") || this.guarantee_allocate_condition.equals("A")){
                         //=================== BGH METHOD ===================//
                     		if(this.guarantee_balance >= this.trn_guarantee_amt){//---in guarantee
                             	this.inGuaranteeAllocate(i, x, guarantee_table, transaction_table);
