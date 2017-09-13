@@ -983,7 +983,8 @@
             }
             
             function AJAX_Verify_MASTER_DETAIL_Data() {
-                var target = "../../RetrieveData?TABLE=TRN_DAILY&COND=INVOICE_NO='" + document.mainForm.INVOICE_NO.value + "'";
+                var target = "../../RetrieveData?TABLE=TRN_DAILY&COND=INVOICE_NO='" + document.mainForm.INVOICE_NO.value+"' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
+               
                 AJAX_Request(target, AJAX_Handle_Verify_MASTER_DETAIL_Data);
             }
             
