@@ -37,7 +37,7 @@
     request.setCharacterEncoding("UTF-8");
     byte MODE = DBMgr.MODE_INSERT;
     DataRecord stpExpenseRec = null, doctorRec = null, expenseTypeRec = null, supplierTypeRec = null;
-    DataRecord departmentRec= null, locationRec=null;
+    DataRecord departmentRec= null, locationRec=null, summaryMounthlyRec = null;
     String MM = "", YYYY = "";
 
     if (request.getParameter("MODE") != null) {
@@ -125,6 +125,11 @@
 
         query = "SELECT CODE, DESCRIPTION FROM LOCATION WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND CODE = '" + DBMgr.getRecordValue(stpExpenseRec, "LOCATION_CODE") + "'";
         locationRec = DBMgr.getRecord(query);
+        
+        //check summary monthly
+        query = "SELECT MM FROM SUMMARY_MONTHLY WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
+        summaryMounthlyRec = DBMgr.getRecord(query);
+        System.out.println(query);
     
     } else if (request.getParameter("DOCTOR_CODE") != null && request.getParameter("MM") != null && request.getParameter("YYYY") != null) {
         // New
@@ -500,7 +505,7 @@
                 </tr>
                 <tr>
                     <th colspan="4" class="buttonBar">
-                        <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}"<%= !DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") ? " disabled=\"disabled\"" : ""%> onclick="validateData();" />
+                        <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" <%=!DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") || !DBMgr.getRecordValue(summaryMounthlyRec, "MM").equals("")  ? " disabled=\"disabled\"" : ""%> onclick="validateData();" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location.href='expense_main.jsp?EXPENSE_DR_CODE=<%=request.getParameter("DOCTOR_CODE")%>&MM=<%=MM%>&YYYY=<%=YYYY%>'" />                    
                     </th>
