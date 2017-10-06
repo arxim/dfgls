@@ -254,8 +254,8 @@
                         trnDailyRec.addField("LINE_NO", Types.VARCHAR, request.getParameter("LINE_NO"), true);
                         trnDailyRec.addField("EXECUTE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
                         trnDailyRec.addField("EXECUTE_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
-                        trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")),true);
-                        trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")),true);
+                        trnDailyRec.addField("VERIFY_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("EXECUTE_DATE")));
+                        trnDailyRec.addField("VERIFY_TIME", Types.VARCHAR, JDate.saveTime(request.getParameter("EXECUTE_TIME")));
                     }
                     trnDailyRec.addField("RECEIPT_NO", Types.VARCHAR, request.getParameter("RECEIPT_NO"));
                     trnDailyRec.addField("RECEIPT_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("RECEIPT_DATE")));
@@ -367,6 +367,7 @@
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                         }
                     }else {
+                    	System.out.println("eiei");
                         if ( DBMgr.updateRecord(trnDailyRec) ) {
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", String.format("input/invoice.jsp?INVOICE_NO=%1$s", trnDailyRec.getField("INVOICE_NO").getValue())));
                         }else {

@@ -401,7 +401,7 @@
                     }
         			DBConnection con = new DBConnection();
                     con.connectToLocal();
-                    query = "SELECT INVOICE_NO, INVOICE_DATE, LINE_NO, PAYOR_OFFICE_CODE, DOCTOR_CODE, HN_NO, PATIENT_NAME, AMOUNT_AFT_DISCOUNT FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND ACTIVE = '1' AND (YYYY = '' AND MM = '') AND (BATCH_NO IS NULL OR BATCH_NO = '')" + cond;
+                    query = "SELECT INVOICE_NO, INVOICE_DATE, LINE_NO, PAYOR_OFFICE_CODE, DOCTOR_CODE, HN_NO, PATIENT_NAME, AMOUNT_AFT_DISCOUNT FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND IS_ONWARD <> 'Y'  AND ACTIVE = '1' AND (YYYY = '' AND MM = '') AND (BATCH_NO IS NULL OR BATCH_NO = '')" + cond;
                     System.out.println(query);
                     ResultSet rs = con.executeQuery(query);
                     int i = 0;
