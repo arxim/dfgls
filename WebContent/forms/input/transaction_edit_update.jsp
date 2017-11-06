@@ -416,8 +416,8 @@
 											   + arrInvoiceNumber[nd]
 											   + "' AND LINE_NO='"
 											   + arrLineNo[nd] + "' "
-											   + " AND RECEIPT_DATE = '" + arrReceiptDate[nd] + "'";
-									
+											   + " AND RECEIPT_DATE = '" + arrReceiptDate[nd] + "'"
+									           + " AND TRANSACTION_DATE = '" + transaction_date + "' ";
 									noteCondition = "";
 
 									try {
