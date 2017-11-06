@@ -246,7 +246,12 @@ public class ProcessGuaranteeBeanNew {
     	boolean status = true;
     	String message = "Backup tax before guarantee";
     	
-        String sql_statement = "UPDATE TRN_DAILY SET OLD_TAX_AMT = DR_TAX_406+DR_TAX_402+DR_TAX_401, " +
+        String sql_statement = "UPDATE TRN_DAILY SET "+
+        //"OLD_TAX_AMT = DR_TAX_406+DR_TAX_402+DR_TAX_401, " +
+        "OLD_TAX_AMT = CASE WHEN TAX_TYPE_CODE = '401' THEN DR_TAX_401 ELSE '0' END, "+
+        "OLD_TAX_AMT = CASE WHEN TAX_TYPE_CODE = '402' THEN DR_TAX_402 ELSE '0' END, "+
+        "OLD_TAX_AMT = CASE WHEN TAX_TYPE_CODE = '406' THEN DR_TAX_406 ELSE '0' END "+
+
         "OLD_DR_AMT = DR_AMT, HP_PREMIUM = AMOUNT_AFT_DISCOUNT "+
 		"WHERE TRANSACTION_DATE LIKE '"+year+""+month+"%' "+
 		"AND HOSPITAL_CODE = '"+hospital_code+"' AND BATCH_NO = '' ";
