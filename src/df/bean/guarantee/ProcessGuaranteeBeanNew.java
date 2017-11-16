@@ -2177,6 +2177,7 @@ public class ProcessGuaranteeBeanNew {
     						 " AND TD.GUARANTEE_TYPE  = 'MMY' " + 
     						 " AND TD.GUARANTEE_TERM_YYYY+TD.GUARANTEE_TERM_MM = '" + this.year + this.month + "' " + 
     						 " AND TD.ACTIVE = 1 " + 
+    						 " AND TD.YYYY+TD.MM = '" + this.year + this.month + "' " +
     						 //" AND TD.GUARANTEE_NOTE LIKE 'OVER%' "+
     						 " AND TD.GUARANTEE_NOTE != '' "+
     						 " GROUP BY TD.GUARANTEE_DR_CODE, GUARANTEE_AMOUNT "+
