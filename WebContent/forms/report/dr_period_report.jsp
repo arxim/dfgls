@@ -127,7 +127,7 @@
                 <input type="hidden" id="REPORT_DISPLAY" name="REPORT_DISPLAY"/>
                 <input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="df_monthly"/>
                 <input type="hidden" id="DOCTOR_CODE_FROM" name="DOCTOR_CODE_FROM" value="<%=request.getSession().getAttribute("USER_ID").toString()%>"/>
-                <input type="hidden" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" value="SummaryRevenueByDetailPeriod"/>
+                <input type="hidden" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" value="SummaryRevenueByDetailPeriodForDoctor"/>
                 <tr>
                     <th colspan="4">
                         <div style="float: left;">${labelMap.TITLE_MAIN}</div>                    </th>

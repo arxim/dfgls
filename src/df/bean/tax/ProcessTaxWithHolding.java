@@ -28,7 +28,7 @@ public class ProcessTaxWithHolding {
 		 String calTaxAmt = new DecimalFormat(".00").format((Double.parseDouble(taxAmt)*Double.parseDouble(methodTax))/100);
 		 
 		 sql_up="UPDATE SUMMARY_TAX_402 SET NET_TAX_MONTH = CASE WHEN HOSPITAL_CODE = '045' THEN ROUND("+calTaxAmt+",0) ELSE '"+calTaxAmt+"' END, SUM_NORMAL_TAX_AMT=TURN_OUT_AMT " 
-				 + ", TEXT_NET_TAX_MONTH = CASE WHEN HOSPITAL_CODE = '045' THEN '"+Utils.toThaiMoney((double)(Math.round(Double.parseDouble(calTaxAmt))))+"' ELSE "+Utils.toThaiMoney(calTaxAmt)+"' END " 
+				 + ", TEXT_NET_TAX_MONTH = CASE WHEN HOSPITAL_CODE = '045' THEN '"+Utils.toThaiMoney((double)(Math.round(Double.parseDouble(calTaxAmt))))+"' ELSE '"+Utils.toThaiMoney(calTaxAmt)+"' END " 
 				 + " WHERE HOSPITAL_CODE='"+hospital_code+"' AND YYYY+MM='"+yyyy+mm+"' AND DOCTOR_CODE='"+Doctor+"' ";
 		 /*
 		 sql_up="UPDATE SUMMARY_TAX_402 SET NET_TAX_MONTH='"+calTaxAmt+"',SUM_NORMAL_TAX_AMT=TURN_OUT_AMT"+
