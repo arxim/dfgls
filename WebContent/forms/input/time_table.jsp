@@ -256,7 +256,7 @@
                     dtInsert.addField("GUARANTEE_TYPE", Types.VARCHAR , GUARANTEE_TYPE, true);
                     dtInsert.addField("DAY", Types.VARCHAR , "ALL", true);
                     dtInsert.addField("START_TIME", Types.VARCHAR , JDate.saveTime("00:00"), true);
-                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("23:59"));
+                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("24:00"));
                     dtInsert.addField("GUARANTEE_AMOUNT", Types.NUMERIC, request.getParameter("MTHALL_GUARANTEE_AMOUNT"));
                     dtInsert.addField("GUARANTEE_EXCLUDE_AMOUNT", Types.NUMERIC, request.getParameter("MTHALL_TURN_AMOUNT"));
                     dtInsert.addField("GUARANTEE_FIX_AMOUNT", Types.NUMERIC, request.getParameter("MTHALL_FIX_GUARANTEE"));//
@@ -275,7 +275,7 @@
                     dtInsert.addField("GUARANTEE_TYPE", Types.VARCHAR , GUARANTEE_TYPE, true);
                     dtInsert.addField("DAY", Types.VARCHAR , "ALL", true);
                     dtInsert.addField("START_TIME", Types.VARCHAR , JDate.saveTime("00:00"), true);
-                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("23:59"));
+                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("24:00"));
                     dtInsert.addField("GUARANTEE_AMOUNT", Types.NUMERIC, request.getParameter("MMY_GUARANTEE_AMOUNT"));
                     dtInsert.addField("GUARANTEE_EXCLUDE_AMOUNT", Types.NUMERIC, request.getParameter("MMY_TURN_AMOUNT"));
                     dtInsert.addField("GUARANTEE_FIX_AMOUNT", Types.NUMERIC, request.getParameter("MMY_FIX_GUARANTEE"));//
@@ -294,7 +294,7 @@
                     dtInsert.addField("GUARANTEE_TYPE", Types.VARCHAR , GUARANTEE_TYPE, true);
                     dtInsert.addField("DAY", Types.VARCHAR , "ALL", true);
                     dtInsert.addField("START_TIME", Types.VARCHAR , JDate.saveTime("00:00"), true);
-                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("23:59"));
+                    dtInsert.addField("STOP_TIME", Types.VARCHAR , JDate.saveTime("24:00"));
                     dtInsert.addField("GUARANTEE_AMOUNT", Types.NUMERIC, request.getParameter("STP_GUARANTEE_AMOUNT"));
                     dtInsert.addField("GUARANTEE_EXCLUDE_AMOUNT", Types.NUMERIC, request.getParameter("STP_TURN_GUARNATEE"));
                     dtInsert.addField("GUARANTEE_FIX_AMOUNT", Types.NUMERIC, request.getParameter("STP_FIX_GUARANTEE"));//
