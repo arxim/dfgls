@@ -49,6 +49,7 @@ public class WelfareDFPayment {
 		conn.connectToLocal();
 		boolean result = true;
 			String sql ="UPDATE TRN_DAILY SET "
+					+ "TRN_DAILY.HP_PREMIUM = TRN_DAILY.NOR_ALLOCATE_PCT, "
 					+ "TRN_DAILY.ACTIVE = CASE WHEN DR.DOCTOR_GROUP_CODE = 'FT' THEN '0' ELSE '1' END ,	"
 					+ "TRN_DAILY.DR_AMT = CASE WHEN DR.DOCTOR_GROUP_CODE = 'FT' THEN 0.00 ELSE T.DR_AMT*50/100 END,	"
 					+ "TRN_DAILY.NOR_ALLOCATE_PCT = CASE WHEN DR.DOCTOR_GROUP_CODE = 'FT' THEN 0.00 ELSE 50.00 END,	"
@@ -81,8 +82,12 @@ public class WelfareDFPayment {
 		conn = new DBConnection();
 		conn.connectToLocal();
 		boolean result = true;
-			String sqlRollback ="UPDATE TRN_DAILY SET "
-					+ "TRN_DAILY.ACTIVE = '1' ,"
+		String sqlRollback ="UPDATE TRN_DAILY SET "
+					+ "TRN_DAILY.NOR_ALLOCATE_PCT = TRN_DAILY.HP_PREMIUM, "
+				    + "TRN_DAILY.DR_AMT = TRN_DAILY.OLD_DR_AMT, "
+					+ "TRN_DAILY.DR_TAX_406 = CASE WHEN TRN_DAILY.TAX_TYPE_CODE = '406' THEN TRN_DAILY.OLD_TAX_AMT ELSE '0.00' END,	"
+					+ "TRN_DAILY.DR_TAX_402 = CASE WHEN TRN_DAILY.TAX_TYPE_CODE = '402' THEN TRN_DAILY.OLD_TAX_AMT ELSE '0.00' END,	"
+					+ "TRN_DAILY.ACTIVE = '1', "
 					+ "TRN_DAILY.NOTE ='' "
 					+ "FROM TRN_DAILY T	"
 					+ "LEFT OUTER JOIN DOCTOR DR ON T.HOSPITAL_CODE = DR.HOSPITAL_CODE AND T.DOCTOR_CODE = DR.CODE	"
