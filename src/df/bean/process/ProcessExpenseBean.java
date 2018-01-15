@@ -207,7 +207,8 @@ public class ProcessExpenseBean {
 		        			  System.out.println("percentTaxSomeExp : "+someExpCarryForword+"/"+Double.parseDouble(listEx.get(k).get("AMOUNT")));
 		        			  HashMap<String, String> data3 = new HashMap<String, String>();
 		        			  data3.put("YYYY",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?(Integer.parseInt(listEx.get(k).get("YYYY"))+1):(Integer.parseInt(listEx.get(k).get("YYYY")))));
-		        			  data3.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
+		        			  data3.put("MM",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?Integer.parseInt("01"):(Integer.parseInt(listEx.get(k).get("MM")))));
+		        			  //data3.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
 			    			  data3.put("EMPLOYEE_ID", listEx.get(k).get("EMPLOYEE_ID"));
 			      			  data3.put("DOCTOR_CODE",listEx.get(k).get("DOCTOR_CODE"));
 			      			  data3.put("HOSPITAL_CODE",listEx.get(k).get("HOSPITAL_CODE"));
@@ -248,7 +249,8 @@ public class ProcessExpenseBean {
     				   		//  System.out.println("ËÑ¡ËÁ´áÅéÇÇ  µéÍ§Â¡ÂÍ´ÃÒÂ¡ÒÃ·Ñé§ËÁ´ä»à´×Í¹¶Ñ´ä»");
     				   		  HashMap<String, String> data4 = new HashMap<String, String>();
 		        			  data4.put("YYYY",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?(Integer.parseInt(listEx.get(k).get("YYYY"))+1):(Integer.parseInt(listEx.get(k).get("YYYY")))));
-		        			  data4.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
+		        			  data4.put("MM",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?Integer.parseInt("01"):(Integer.parseInt(listEx.get(k).get("MM")))));
+		        			  //data4.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
 			    			  data4.put("EMPLOYEE_ID", listEx.get(k).get("EMPLOYEE_ID"));
 			      			  data4.put("DOCTOR_CODE",listEx.get(k).get("DOCTOR_CODE"));
 			      			  data4.put("HOSPITAL_CODE",listEx.get(k).get("HOSPITAL_CODE"));
