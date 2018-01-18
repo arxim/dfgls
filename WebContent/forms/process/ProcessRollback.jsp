@@ -133,7 +133,7 @@
                                 <td>    
                                     <label for="aText">${labelMap.MM}</label>                                </td>                                
                                 <td>
-                                    <%=proUtil.selectMM("", "MM10",batch.getMm())%>                                </td>
+                                    <%=proUtil.selectMM406 ("", "MM10",batch.getMm())%>
                                 <td>
                                     <label>${labelMap.YYYY}</label>                                </td>  
                                 <td>

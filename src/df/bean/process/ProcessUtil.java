@@ -321,4 +321,69 @@ public class ProcessUtil {
         strReturn+= "</select>";
         return strReturn;
     }
+    public String selectMM406(String type,String name,String Def){
+        String strReturn = "";       
+        if("T".equals(type.toString())){
+            strReturn = this.selectMM406TH(name, Def);
+        }else{
+            strReturn = this.selectMM406EN(name, Def);
+        }
+        return strReturn;
+    }
+    
+    private String selectMM406EN(String name,String Def){
+        String[] mthTh = {"First Term", "Second Term", "Yearly"};
+        String strReturn = "";       
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           //if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(i==0) {
+                 varluMthStr = "01";
+           }
+           if(i==1) {
+                 varluMthStr = "06";
+           }
+           if(i==2) {
+                 varluMthStr = "12";
+           }
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }
+   
+    private String selectMM406TH(String name,String Def){
+        String[] mthTh = {"รายได้ครึ่งปีแรก", "รายได้ครึ่งปีหลัง","รายได้ทั้งปี"};
+        String strReturn = "";       
+        strReturn = "<select id=\""+ name +"\" name=\""+ name +"\" class=\"medium\">";
+        int valueMth = 1;
+        for(int i = 0;i < mthTh.length ; i++){
+           String varluMthStr = "" + valueMth;
+           //if(varluMthStr.length() == 1)varluMthStr = "0" + varluMthStr;
+           if(i==0) {
+                 varluMthStr = "01";
+           }
+           if(i==1) {
+                 varluMthStr = "06";
+           }
+           if(i==2) {
+                 varluMthStr = "12";
+           }
+           if(varluMthStr.equals(Def.toString())){
+                strReturn+="<option value=\"" + varluMthStr + "\" selected>" + mthTh[i] + "</option>";
+           }else{
+                strReturn+="<option value=\"" + varluMthStr + "\">" + mthTh[i] + "</option>";
+           }
+           valueMth++;
+        }
+        strReturn+= "</select>";
+        return strReturn;
+    }
 }

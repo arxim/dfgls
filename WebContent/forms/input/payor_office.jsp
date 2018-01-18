@@ -104,8 +104,7 @@
                			}
                		}
                		payorRecLog.addField("REMARK", Types.VARCHAR, remark.substring(0, remark.length()-2));
-               		
-                    if (DBMgr.insertRecord(payorRecLog) && DBMgr.insertRecord(payorRecLog)) {
+               		if (DBMgr.updateRecord(record) && DBMgr.insertRecord(payorRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/payor_office.jsp"));
                     } else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
