@@ -1551,7 +1551,7 @@ public class ProcessExpenseBean {
 							       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, DEPARTMENT_CODE, LINE_NO, "
 							       	+" EXPENSE_CODE, EXPENSE_SIGN, EXPENSE_ACCOUNT_CODE, TAX_TYPE_CODE, NOTE, "
 							       	+" AMOUNT, TAX_AMOUNT, USER_ID, UPDATE_DATE, UPDATE_TIME)"
-							       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', "+departmentCode+"', "
+							       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', '"+departmentCode+"', "
 							       	+" '"+line_no+"', '"+expenseCode+"', "+getExpSign+", "
 							       	+" '"+getExpAccCode+"', '"+taxType+"', '"+getNote+"', "+rsAmount+", "
 							       	+rsTaxAmount+", '"+this.user+"', '"+JDate.getDate()+"','"+JDate.getTime()+"')";
@@ -1640,7 +1640,7 @@ public class ProcessExpenseBean {
 									       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, DEPARTMENT_CODE, LINE_NO, "
 									       	+" EXPENSE_CODE, EXPENSE_SIGN, EXPENSE_ACCOUNT_CODE, TAX_TYPE_CODE, NOTE, "
 									       	+" AMOUNT, TAX_AMOUNT, USER_ID, UPDATE_DATE, UPDATE_TIME)"
-									       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', "+departmentCode+"', "
+									       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', '"+departmentCode+"', "
 									       	+" '"+line_no+"', '"+expenseCode+"', "+getExpSign+", "
 									       	+" '"+getExpAccCode+"', '"+taxType+"', '"+getNote+"', "+rsAmount+", "
 									       	+rsTaxAmount+", '"+this.user+"', '"+JDate.getDate()+"','"+JDate.getTime()+"')";
