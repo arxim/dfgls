@@ -98,6 +98,7 @@
                     table.rows[currentRowID].cells[2].innerHTML = '<img src="../../images/processing_icon.gif" alt="" />';
                     var target = "../../ProcessExpenseSrvl?"
                             + "&HOSPITAL_CODE="+"<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
+                            + "&USER="+"<%=session.getAttribute("USER_ID").toString()%>"
                             + "&MM=" + document.mainForm.MM.value
                             + "&YYYY=" + document.mainForm.YYYY.value
                             + "&TYPE=" + table.rows[currentRowID].cells[1].innerHTML;
