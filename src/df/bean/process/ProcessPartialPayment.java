@@ -612,7 +612,14 @@ public class ProcessPartialPayment {
 		+ "AND I.IS_LAST_RECEIPT ='N' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'"; 
 
 		String deleteTrn = "DELETE TRN_DAILY " 
-		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' " 
+		//OLD
+		//+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' "
+
+		//NEW
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE IN "
+		+ "(SELECT RECEIPT_DATE FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') " 
+		+ "AND BATCH_NO = '' "
+		
 		+ "AND IS_PARTIAL = 'Y'"; 
 
 
