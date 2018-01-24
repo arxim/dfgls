@@ -41,6 +41,7 @@ public class CareProvider {
     private String treatmentType;
     private String lineNo;
     private String receiptDate;
+    private String user;
     
     public String lYyyy, lMm, lDd, lHospitalCode, lInvNo, lInvDate, lHno, lPatientName, lDoctorDepartmentCode;
     public String lLocationCode, lLineNo, lOrderItemCode, lReceiptModeCode, lReceiptTypeCode, lPaymentModule, lDoctorCode;
@@ -88,6 +89,10 @@ public class CareProvider {
     public void newDoctor() {
         //doctor = new Doctor(this.getDoctorCode(), this.getHospitalCode(), this.getDBConnection());      
         doctor = new Doctor();
+    }
+    
+    public void setUser(String a){
+    	this.user = a;
     }
     
     public Doctor getDoctor() {
@@ -622,7 +627,7 @@ public class CareProvider {
         td.setRecIsVoid(trnDaily.getRecIsVoid());
         td.setUpdateDate(JDate.getDate());
         td.setUpdateTime(JDate.getTime());
-        td.setUserId(Variables.getUserID());
+        td.setUserId(this.user);
         td.setInvoiceType(trnDaily.getInvoiceType());
         td.setTotalBillAmount(trnDaily.getTotalBillAmount());
         td.setTotalDrRecAmount(trnDaily.getTotalDrRecAmount());
@@ -651,7 +656,7 @@ public class CareProvider {
         td.setPremiumRecAmt(this.lPremiumRecAmt);
         td.setComputeDailyDate(JDate.getDate());
         td.setComputeDailyTime(JDate.getTime());
-        td.setComputeDailyUserID(this.guaranteeMsg+":"+Variables.getUserID());
+        td.setComputeDailyUserID(this.guaranteeMsg+":"+this.user);
         
         td.setYyyy(trnDaily.getYyyy());
         td.setMm(trnDaily.getMm());

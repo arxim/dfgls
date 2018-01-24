@@ -31,7 +31,7 @@ public class ProcessDailyCalculateBean {
         this.conn.Close();
     }
 	    
-	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE) {
+	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE, String USER) {
 		this.maxsize=MAX_ROW;
 		this.HOSPITAL_CODE=HOSPITAL_CODE;
 		this.START_DATE=START_DATE;
@@ -54,7 +54,7 @@ public class ProcessDailyCalculateBean {
             this.drMethodAllocation = new DrMethodAllocation(conn, hospitalCode);		               
         	this.tDaily = new TrnDaily(conn);
     	}
-    	if(!processCalculate(replaceStartDeta, replaceEndDate, hospitalCode, invoiceNo, LINE_NO, TRANSACTION_DATE)){
+    	if(!processCalculate(replaceStartDeta, replaceEndDate, hospitalCode, invoiceNo, LINE_NO, TRANSACTION_DATE, USER)){
     		data="0";
     	}else{
     		data="1";
@@ -66,7 +66,7 @@ public class ProcessDailyCalculateBean {
         }
 		return data;
 	}	
-	public boolean processCalculate(String startDate, String endDate, String hospitalCode, String invoiceNo, String lineNo, String transactionDate) {
+	public boolean processCalculate(String startDate, String endDate, String hospitalCode, String invoiceNo, String lineNo, String transactionDate, String user) {
         boolean ret = false;
         String doctorCode = "";
         CareProvider careProvider = null;
@@ -80,6 +80,7 @@ public class ProcessDailyCalculateBean {
                     if (careProvider != null) {
                         careProvider.setTrnDaily(tDaily);
                         careProvider.setDrMethodAllocation(this.drMethodAllocation);
+                        careProvider.setUser(user);
                         if (careProvider.computeTransDaily()) { 
                             ret = true;
                         } else {  

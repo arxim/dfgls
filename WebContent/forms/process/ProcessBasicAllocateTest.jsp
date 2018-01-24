@@ -175,6 +175,7 @@
                         + "ROW="+toRowID
                         + "&currentRowID="+(currentRowID)
                         + "&HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
+                        + "&USER="+"<%=session.getAttribute("USER_ID").toString()%>"
                         + "&INVOICE_NO=" + jsarray2[currentRowID]
                         + "&LINE_NO=" +jsarray3[currentRowID]
                         + "&TRANSACTION_DATE=" +jsarray5[currentRowID]
