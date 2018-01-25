@@ -47,8 +47,8 @@
         <form id="mainForm" name="mainForm" method="post" action="BankSrvl">
             <center>
                 <table width="800" border="0">
-                    <tr><td align="left">
-                    <b><font color='#003399'><%=Utils.getInfoPage("tax_reduce_main.jsp", labelMap.getFieldLangSuffix(), new DBConnection())%></font></b>
+                    <tr><td align="left">                  
+                    <b><font color='#003399'><%=Utils.getInfoPage("tax_reduce_main.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
                     </td></tr>
 		</table>
             </center>
