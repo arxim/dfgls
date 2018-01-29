@@ -236,6 +236,7 @@ public class ViewReportSrvl extends HttpServlet {
         String tax_year = request.getParameter("YYYY402");
         String printing_date = request.getParameter("PRINTING_DATE");
         String print_date = request.getParameter("PRINT_DATE");
+        String filling_date = request.getParameter("FILLING_DATE");
         try{
             if( file_save.equals("") || file_save.equals(null) ){file_save = "temp";}
         }catch(Exception e){}
@@ -268,6 +269,7 @@ public class ViewReportSrvl extends HttpServlet {
         }else{
         	hm.put("yyyy", year);
         	hm.put("pay_date", pay_date);
+        	hm.put("filling_date", filling_date);
         }
 
         if(request.getParameter("REPORT_DISPLAY").equals("view")){

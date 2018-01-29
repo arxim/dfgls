@@ -21,6 +21,7 @@
             labelMap.add("DOCTOR_CODE_FROM", "From Doctor Code", "จากแพทย์รหัส");
             labelMap.add("DOCTOR_CODE_TO", "To Doctor Code", "ถึงแพทย์รหัส");
             labelMap.add("DOCTOR_PROFILE_CODE","Doctor Profile Code","รหัส Profile แพทย์");
+            labelMap.add("FILLING_DATE","Filling Date", "วันที่ยื่นแบบ");
 			labelMap.add("MM", "Month", "เดือน");
 			labelMap.add("YYYY", "Year", "ปี");
 			
@@ -133,6 +134,7 @@
                 	year.style.display = 'none';
                 	year_term.style.display = 'none';
                     document.getElementById('PAY_DATE').disabled = "";
+                    document.getElementById('FILLING_DATE').disabled = "";
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='ReportSummaryFrontPage01'){
@@ -334,6 +336,13 @@
 	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PAY_DATE'); return false;" />
                         </td>
                 	</tr>
+                	<tr>
+						<td class="label"><label for="FILLING_DATE">${labelMap.FILLING_DATE}</label></td>
+							<td colspan="3" class="input">
+							<input name="FILLING_DATE" type="text" class="short" id="FILLING_DATE" maxlength="10" value="" />
+							<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('FILLING_DATE'); return false;" />
+						</td>
+					</tr>
                 </tbody>
                 <tbody id='Tax402Year'>
                 	<!-- 
