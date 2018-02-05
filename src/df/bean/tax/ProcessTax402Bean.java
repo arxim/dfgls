@@ -19,7 +19,17 @@ public class ProcessTax402Bean {
     String year = "";
     String hospital = "";
     String result = "";
-    boolean status = false;
+    String userId ="";
+    
+    
+    public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	boolean status = false;
     //private double incomeTurnTotal, firstTaxTurn, taxTurn;//for hospital paid tax
     private double incomeNormalTotal, firstTaxNormal, taxNormal, taxNormalAccu;//for doctor paid tax by self
     private String[][] sumAll;
@@ -57,11 +67,11 @@ public class ProcessTax402Bean {
         	term_tax = this.year;
         }
 	    String stm =	"INSERT INTO SUMMARY_TAX_402(HOSPITAL_CODE, DOCTOR_CODE, TURN_OUT_AMT, OTHER_AMT, GUARANTEE_AMT, POSITION_AMT, " +
-	                    "YYYY, MM, TAX_TERM, BATCH_NO) "+
+	                    "YYYY, MM, TAX_TERM, BATCH_NO,UPDATE_DATE,UPDATE_TIME,USER_ID) "+
 	                    "SELECT HOSPITAL_CODE, DOCTOR_CODE, "+
 	                    "SUM((SUM_TAX_402+EXDR_402)-EXCR_402) AS SUM_TAX_402, 0, 0, 0, "+
 	                    "'"+this.year+"' AS YEAR, '"+this.month+"' AS MONTH, '"+term_tax+"' AS TERM, "+
-	                    "'' AS BATCH_NO "+
+	                    "'' AS BATCH_NO ,'"+JDate.getDate()+"' AS UPDATE_DATE, '"+JDate.getTime()+"' AS UPDATE_TIME, '"+this.userId+"'AS USER_ID "+
 	                    "FROM "+
 	                    "( SELECT TRN_DAILY.HOSPITAL_CODE, TRN_DAILY.DOCTOR_CODE, "+
 	                    "SUM(CASE WHEN TRN_DAILY.TAX_TYPE_CODE = '402' THEN DR_TAX_402 ELSE 0 END) AS SUM_TAX_402, "+
