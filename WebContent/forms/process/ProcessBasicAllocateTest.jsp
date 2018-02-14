@@ -103,7 +103,7 @@
 		DBConnection con = new DBConnection();
 		con.connectToLocal();
 		String sql = "SELECT INVOICE_NO, LINE_NO, DOCTOR_CODE, TRANSACTION_DATE "+
-		"FROM TRN_DAILY WITH (index (discharge_index)) " +
+		"FROM TRN_DAILY " +
 	    "WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' " +
 	    "AND (TRANSACTION_DATE >= '" + JDate.saveDate(request.getParameter("START_DATE")) + "' " +     // #20071123# this.getStartComputeDate()
 	    "AND TRANSACTION_DATE <= '" + JDate.saveDate(request.getParameter("END_DATE")) + "') " +  // #20071123# this.getEndComputeDate()
