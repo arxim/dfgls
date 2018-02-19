@@ -1264,8 +1264,12 @@ public class ProcessGuaranteeBeanNew {
                     		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
                     	}
                 	}
+                }else{//add block 20180220
+                	this.dr_amt = this.trn_guarantee_amt * (percent_in_allocate /100);
+            		this.guarantee_note = "IN GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount);
                 }
-            	this.guarantee_balance = 0;
+            	//this.guarantee_balance = 0; //comment 20180220
+        		this.guarantee_balance = this.guarantee_balance - this.dr_amt < 0 ? 0 : this.guarantee_balance - this.dr_amt; //add 20180220
     	}else{
     		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
                 trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
@@ -1300,6 +1304,7 @@ public class ProcessGuaranteeBeanNew {
             		amount = amount - this.guarantee_balance;
             	}
         	}
+            this.guarantee_balance = 0; //add 20180220
     	}
         if(t[t_index][21].toString().equals("Y")){//if tax from after allocate
             this.tax_amt = this.dr_amt;        		
@@ -1308,7 +1313,7 @@ public class ProcessGuaranteeBeanNew {
         	this.tax_amt = this.guarantee_note.equals("ABSORB SOME GUARANTEE")? amountAfterDiscount - this.trn_guarantee_paid_amt : amountAfterDiscount;
         }
 		this.guarantee_paid = this.guarantee_paid + temp_amount;
-        this.guarantee_balance = 0;
+        //this.guarantee_balance = 0; //comment 20180220
         //this.tax_amt = this.guarantee_note.equals("ABSORB SOME GUARANTEE")? this.tax_amt - this.trn_guarantee_paid_amt : this.tax_amt;
         this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
         this.sum_trn_guarantee_balance = this.sum_trn_guarantee_balance - this.trn_guarantee_amt;
