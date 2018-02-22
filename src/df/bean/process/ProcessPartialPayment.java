@@ -477,7 +477,7 @@ public class ProcessPartialPayment {
 				+ "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
 				+ "GROUP BY BILL_NO HAVING COUNT(*)>1) AND ( USER_ID <>'COMBINE' OR USER_ID IS NULL )";
 		//delete dupicate bill in month N/Y
-		String sqlDeleteDupBill ="DELETE INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='036'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+		String sqlDeleteDupBill ="DELETE INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
 				+ "AND BILL_NO IN ( SELECT BILL_NO   FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"'  "
 				+ "AND BILL_NO IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
 				+ "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='N') "
