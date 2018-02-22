@@ -411,7 +411,9 @@ public class CareProvider {
                sql = sql + " where (PAYMENT_DATE >= '" + startDate + "'";
                sql = sql + " and PAYMENT_DATE <= '" + endDate + "')";
                sql = sql + " and PM.HOSPITAL_CODE = '" + hospital_code + "'";
-               sql = sql + " and DR.DOCTOR_TAX_CODE = '" + this.getDoctorCode() + "'";
+               //sql = sql + " and DR.DOCTOR_TAX_CODE = '" + this.getDoctorCode() + "'";
+               sql = sql + " and EXISTS (SELECT DOCTOR_TAX_CODE FROM DOCTOR WHERE HOSPITAL_CODE = '”+ hospital_code +”' AND CODE = '" + this.getDoctorCode() +
+            		       "' AND DR.DOCTOR_TAX_CODE = DOCTOR_TAX_CODE)";
                sql = sql + " group by DR.DOCTOR_TAX_CODE";
 
                 if (this.getStatement() == null) { this.setStatement(this.getDBConnection().getConnection().createStatement()); }
