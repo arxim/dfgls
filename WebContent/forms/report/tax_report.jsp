@@ -21,7 +21,6 @@
             labelMap.add("DOCTOR_CODE_FROM", "From Doctor Code", "จากแพทย์รหัส");
             labelMap.add("DOCTOR_CODE_TO", "To Doctor Code", "ถึงแพทย์รหัส");
             labelMap.add("DOCTOR_PROFILE_CODE","Doctor Profile Code","รหัส Profile แพทย์");
-            labelMap.add("FILLING_DATE","Filling Date", "วันที่ยื่นแบบ");
 			labelMap.add("MM", "Month", "เดือน");
 			labelMap.add("YYYY", "Year", "ปี");
 			
@@ -39,7 +38,8 @@
             labelMap.add("MESSAGE", "Please Select Report Module", "กรุณาเลือกรายงาน");
             labelMap.add("TERM", "TERM", "ช่วง");
             labelMap.add("PAY_DATE","Pay Date","Pay Date");
-            labelMap.add("PRINT_DATE","Print Date","Print Date");            
+            labelMap.add("PRINT_DATE","Print Date","Print Date");       
+            labelMap.add("FILLING_DATE","Filling Date", "วันที่ยื่นแบบ");
             //
             labelMap.add("TERM_FIRST","First Term","ครึ่งปีแรก");
             labelMap.add("TERM_SECOND","Second Term","ครึ่งปีหลัง");
@@ -148,10 +148,12 @@
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
                     year_term.style.display = 'block';
                 	e.style.display = 'none';
-                	d.style.display = 'none';
+                	d.style.display = 'block';
                 	term.style.display = 'none';
                 	year.style.display = 'none';
                     document.getElementById('YYYY').disabled = "";
+					document.getElementById('LABEL_PAYDATE').style.display = "none";
+					document.getElementById('INPUT_PAYDATE').style.display = "none";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='Tax402SummaryYearly' || mainForm.REPORT_FILE_NAME.value=='Tax91_52'){
                     year.style.display = 'block';
                 	e.style.display = 'none';
@@ -330,19 +332,19 @@
                 </tbody>
                 <tbody id='Tax402'>
                 	<tr>
-                		<td class="label"><label for="PAY_DATE">${labelMap.PAY_DATE}</label></td>
-                		<td colspan="3" class="input">
+                		<td class="label" id="LABEL_PAYDATE"><label for="PAY_DATE">${labelMap.PAY_DATE}</label></td>
+                		<td colspan="3" class="input" id="INPUT_PAYDATE">
 	                		<input name="PAY_DATE" type="text" class="short" id="PAY_DATE" maxlength="10" value="" />
 	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PAY_DATE'); return false;" />
                         </td>
                 	</tr>
                 	<tr>
-						<td class="label"><label for="FILLING_DATE">${labelMap.FILLING_DATE}</label></td>
-							<td colspan="3" class="input">
-							<input name="FILLING_DATE" type="text" class="short" id="FILLING_DATE" maxlength="10" value="" />
-							<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('FILLING_DATE'); return false;" />
-						</td>
-					</tr>
+                		<td class="label"><label for="FILLING_DATE">${labelMap.FILLING_DATE}</label></td>
+                		<td colspan="3" class="input">
+	                		<input name="FILLING_DATE" type="text" class="short" id="FILLING_DATE" maxlength="10" value="" />
+	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('FILLING_DATE'); return false;" />
+                        </td>
+                	</tr>
                 </tbody>
                 <tbody id='Tax402Year'>
                 	<!-- 

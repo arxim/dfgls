@@ -69,7 +69,7 @@
             labelMap.add("CITI_PARTY_AC","(Citi Bank) Account","(Citi Bank) Account");
             labelMap.add("GUARANTEE_INCLUDE_EXTRA","Guarantee Include Extra","Guarantee Include Extra");
             labelMap.add("GUARANTEE_DAY","Guarantee Day","Guarantee Day");
-            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Sharing Refund","คืนส่วนแบ่ง รพ.กรณีไม่ถึงการันตี");
+            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Sharing Refund","การคำนวณส่วนแบ่งในการันตี");
             labelMap.add("GL_ACCOUNT_CODE","GL Accunt Code","GL Account Code");
             labelMap.add("AC_ACCOUNT_CODE","AC Account Code","AC Account Code");
             labelMap.add("SHARING_ACCOUNT" , " Sharing Account Code " , " Sharing Account Code ");
@@ -94,8 +94,9 @@
             labelMap.add("IS_ONWARD_0","No","ไม่คำนวน");
             labelMap.add("IS_ONWARD_1","Yes","คำนวน");
             
-            labelMap.add("GUARANTEE_ALL_ALLOC_0","No","คืน");
-            labelMap.add("GUARANTEE_ALL_ALLOC_1","Yes","ไม่คืน");
+            labelMap.add("GUARANTEE_ALL_ALLOC_0","No","คืนส่วนแบ่งเมื่อไม่ถึงการันตี");
+            labelMap.add("GUARANTEE_ALL_ALLOC_1","Yes","ไม่คืนส่วนแบ่ง");
+            labelMap.add("GUARANTEE_ALL_ALLOC_2","Calculate basic allocate in guarantee","คำนวณส่วนแบ่งใหม่ตามการตั้งค่าในการันตี");
             
             labelMap.add("GUARANTEE_DAY_0","INV","วันที่ออกบิล");
             labelMap.add("GUARANTEE_DAY_1","VER","วันที่แพทย์คีย์");
@@ -128,6 +129,8 @@
             labelMap.add("MONTH11","November","พฤศจิกายน");
             labelMap.add("MONTH12","December","ธันวาคม");
             
+            labelMap.add("AUTHORITY_NAME","Authority Name","ผู้มีอำนาจลงนามรับรองภาษี");
+            labelMap.add("AUTHORITY_POSITION","Authority Position","ตำแหน่งของผู้มีอำนาจลงนามรับรองภาษี");
             //labelMap.add("CONTRACT_NAME_THAI","CONTRACT_NAME_THAI","");
             ///labelMap.add("CONTRACT_NAME_ENG","CONTRACT_NAME_ENG","");
             //labelMap.add("CONTRACT_POSITION","CONTRACT_POSITION","");
@@ -228,6 +231,8 @@
                 HOSPITALRec.addField("DOCTOR_PRIVATE", Types.VARCHAR, request.getParameter("DOCTOR_PRIVATE"));
                 HOSPITALRec.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
                 HOSPITALRec.addField("IS_DF_ALLOC_TAX_402", Types.VARCHAR, request.getParameter("DF_ALLOC_TAX_402"));
+                HOSPITALRec.addField("AUTHORITY_NAME", Types.VARCHAR, request.getParameter("AUTHORITY_NAME"));
+                HOSPITALRec.addField("AUTHORITY_POSITION", Types.VARCHAR, request.getParameter("AUTHORITY_POSITION"));
                 
                 //for log
                 hospitalRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
@@ -279,6 +284,8 @@
 				hospitalRecLog.addField("DOCTOR_PRIVATE", Types.VARCHAR, request.getParameter("DOCTOR_PRIVATE"));
 				hospitalRecLog.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
 				hospitalRecLog.addField("IS_DF_ALLOC_TAX_402", Types.VARCHAR, request.getParameter("DF_ALLOC_TAX_402"));
+				hospitalRecLog.addField("AUTHORITY_NAME", Types.VARCHAR, request.getParameter("AUTHORITY_NAME"));
+				hospitalRecLog.addField("AUTHORITY_POSITION", Types.VARCHAR, request.getParameter("AUTHORITY_POSITION"));
 
                 //out.println(request.getParameter("MODE"));
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
@@ -296,7 +303,7 @@
                 			"OF_BUILDER_FLOOR, OF_VILLAGE, OF_SOI, OF_ROAD, OF_SUBDISTRICT, OF_DISTRICT, OF_PROVINCE, COMPANY_NAME1, TAX_END_MONTH_OF_YEAR, "+
                 			"CITI_PARTY_NAME, CITI_PARTY_ID, CITI_PARTY_AC, GUARANTEE_INCLUDE_EXTRA, GUARANTEE_DAY, GL_ACCOUNT_CODE, AC_ACCOUNT_CODE, "+
                 			"SHARING_ACCOUNT, EARNING_ACCOUNT, GUARANTEE_ALL_ALLOC, IS_DISCHARGE_BASIS, IS_GUARANTEE_ONWARD, IS_ONWARD, IS_PARTIAL, IS_JOIN_BILL, "+
-                			"DOCTOR_PRIVATE, CURRENCY, IS_DF_ALLOC_TAX_402 "+
+                			"DOCTOR_PRIVATE, CURRENCY, IS_DF_ALLOC_TAX_402, AUTHORITY_NAME, AUTHORITY_POSITION "+
                				"FROM HOSPITAL WHERE CODE = '" + session.getAttribute("HOSPITAL_CODE") + "' " );
              		
                		//remark = "แก้ไข ";
@@ -775,7 +782,14 @@
 			<!-- edit -->
 			<tr>
 				<td class="label"><label for="GUARANTEE_ALL_ALLOC">${labelMap.GUARANTEE_ALL_ALLOC}</label></td>
-				<td class="input"><input type="radio"
+				<td class="input">
+					<select class="mediumMax" id="GUARANTEE_ALL_ALLOC" name="GUARANTEE_ALL_ALLOC">
+						<option value="Y" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? "selected":"" %> >${labelMap.GUARANTEE_ALL_ALLOC_1}</option>
+						<option value="N" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_0}</option>
+                        <option value="A" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("A") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_2}</option>
+                    </select>
+                    </td>
+				<!-- td class="input"><input type="radio"
 					id="GUARANTEE_ALL_ALLOC_1" name="GUARANTEE_ALL_ALLOC" value="Y"
 					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
 					<label for="GUARANTEE_ALL_ALLOC_1">${labelMap.GUARANTEE_ALL_ALLOC_1}</label>
@@ -783,7 +797,11 @@
 					name="GUARANTEE_ALL_ALLOC" value="N"
 					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
 					<label for="GUARANTEE_ALL_ALLOC_0">${labelMap.GUARANTEE_ALL_ALLOC_0}</label>
-				</td>
+					<input type="radio" id="GUARANTEE_ALL_ALLOC_2"
+					name="GUARANTEE_ALL_ALLOC" value="A"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("A") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ALL_ALLOC_2">${labelMap.GUARANTEE_ALL_ALLOC_2}</label>
+				</td-->
 				<td class="label"><label for="IS_ONWARD">${labelMap.IS_ONWARD}</label></td>
 				<td class="input"><input type="radio" id="IS_ONWARD_1"
 					name="IS_ONWARD" value="Y"
@@ -908,7 +926,22 @@
 					<label for="DF_ALLOC_TAX_402_0">${labelMap.DF_ALLOC_TAX_402_0}</label>
 				</td>
 			</tr>
-
+			
+			<tr>
+				<td class="label"><label for="AUTHORITY_NAME">${labelMap.AUTHORITY_NAME}</label>
+				</td>
+				<td class="input"><input name="AUTHORITY_NAME" type="text"
+					class="medium" id="AUTHORITY_NAME"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "AUTHORITY_NAME") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="AUTHORITY_POSITION">${labelMap.AUTHORITY_POSITION}</label>
+				</td>
+				<td class="input"><input name="AUTHORITY_POSITION" type="text"
+					class="medium" id="AUTHORITY_POSITION"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "AUTHORITY_POSITION") %>"
+					maxlength="50" /></td>
+			</tr>
+			
 			<tr>
 				<td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td>
 				<td colspan="3" class="input"><input type="radio" id="ACTIVE_1"
