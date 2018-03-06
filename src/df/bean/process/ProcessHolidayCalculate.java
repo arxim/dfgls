@@ -4,9 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeMap;
+
+import df.bean.obj.util.JDate;
 import df.bean.obj.util.Utils;
 import df.bean.db.conn.DBConn;
 import df.bean.db.conn.DBConnection;
+import df.bean.db.table.Batch;
 
 public class ProcessHolidayCalculate {
 
@@ -26,9 +29,10 @@ public class ProcessHolidayCalculate {
 		DBConnection connsb=new DBConnection();
 		connsb.connectToLocal(); 	
 		connsb.beginTrans();
+		Batch b = new Batch(hospitalcode, con);
+		String yearMonth = b.getBatchNo();
 		String messageIn = "";
 		String Command="SELECT * FROM STP_HOLIDAY WHERE HOSPITAL_CODE = '"+hospitalcode+"' AND YYYY='"+yyyy+"' AND MM='"+mm+"' AND ACTIVE='1' AND INCLUDE LIKE '%' ORDER BY NOR_ALLOCATE_PCT ";
-		//",INCLUDE ASC,DOCTOR_CATEGORY_CODE ASC,ORDER_ITEM_CATEGORY_CODE ASC,DOCTOR_CODE ASC,ORDER_ITEM_CODE ASC ,ADMISSION_TYPE_CODE DESC";
 		ResultSet rsMethod=con.executeQuery(Command);
 		
 		try {
@@ -64,20 +68,23 @@ public class ProcessHolidayCalculate {
 				String sqlqu=
 					"INSERT INTO HIS_TRN_DAILY "
 					+"SELECT TD.*,'"+INCLUDE+"' AS INCLUDE, 'HOLIDAY' AS TAG "
-					+"FROM TRN_DAILY AS TD WITH (index (discharge_index)) "
+					+"FROM TRN_DAILY AS TD "
+					//+"WITH (index (discharge_index)) " //change verify date 20180222
 					+"LEFT OUTER JOIN ORDER_ITEM AS OI ON TD.ORDER_ITEM_CODE=OI.CODE AND TD.HOSPITAL_CODE=OI.HOSPITAL_CODE "
 					+"LEFT OUTER JOIN DOCTOR AS DOC ON TD.DOCTOR_CODE=DOC.CODE AND TD.HOSPITAL_CODE=DOC.HOSPITAL_CODE "
 					+"WHERE "
 					+"TD.LINE_NO+TD.INVOICE_NO+TD.TRANSACTION_DATE NOT IN(SELECT LINE_NO+INVOICE_NO+TRANSACTION_DATE FROM HIS_TRN_DAILY WHERE TAG='HOLIDAY' AND HOSPITAL_CODE='"+hospitalcode+"') "
 					+"AND TD.HOSPITAL_CODE='"+hospitalcode+"' "
-					+"AND TD.TRANSACTION_DATE = '"+rsMethod.getString("YYYY")+rsMethod.getString("MM")+rsMethod.getString("DD")+"' "
+					+"AND (TD.VERIFY_DATE = '"+rsMethod.getString("YYYY")+rsMethod.getString("MM")+rsMethod.getString("DD")+"' "
+					+"AND TD.TRANSACTION_DATE LIKE '"+yearMonth+"%') " //change verify date 20180222
+					+"AND (TD.BATCH_NO = '' OR TD.BATCH_NO IS NULL) "//change verify date 20180222
 					+"AND TD.ACTIVE='1' "
 					+"AND TD.DR_AMT > 0 "
 					+"AND "+Utils.Join(conditions, " AND ");
-				System.out.println("Backup LongWeekend : "+sqlqu);
+				System.out.println(sqlqu);
 				connsb.executeUpdate(sqlqu);
 			}
-			if(true){
+			if(rsMethod.getString("INCLUDE").equals("Y")){
 				DBConnection con2 =new DBConnection();
 				con2.connectToLocal();
 				String Command2="SELECT * FROM STP_HOLIDAY WHERE YYYY='"+yyyy+"' AND MM='"+mm+"' AND ACTIVE='1' AND INCLUDE='Y' ORDER BY INCLUDE ASC,DOCTOR_CATEGORY_CODE ASC,ORDER_ITEM_CATEGORY_CODE ASC,DOCTOR_CODE ASC,ORDER_ITEM_CODE ASC ,ADMISSION_TYPE_CODE DESC";
@@ -111,16 +118,18 @@ public class ProcessHolidayCalculate {
 							+"WHERE "
 							+"HIS_TRN_DAILY.TAG='HOLIDAY' AND "
 							+"TRN_DAILY.HOSPITAL_CODE='"+hospitalcode+"' AND "
-							+"TRN_DAILY.TRANSACTION_DATE = '"+rsMethod2.getString("YYYY")+rsMethod2.getString("MM")+rsMethod2.getString("DD")+"' AND "
+							+"(TRN_DAILY.VERIFY_DATE = '"+rsMethod2.getString("YYYY")+rsMethod2.getString("MM")+rsMethod2.getString("DD")+"' AND "
+							+"TRN_DAILY.TRANSACTION_DATE LIKE '"+yearMonth+"%') AND " //change verify date 20180222
+							+"(TRN_DAILY.BATCH_NO = '' OR TRN_DAILY.BATCH_NO IS NULL) AND "//change verify date 20180222
 							+""+ADTYPE+" AND "
 							+"TRN_DAILY.DR_AMT > 0  AND "
 							+"HIS_TRN_DAILY.INCLUDE='Y'";
 					messageIn = sqlcommand;
+					System.out.println("LongWeekend Allocate : "+messageIn);
 				    connsb.executeUpdate(sqlcommand);
 				}
-				System.out.println("in method");
 				con2.Close();	
-			}			
+			}
 			connsb.commitTrans();
 			connsb.Close();
 			con.Close();
