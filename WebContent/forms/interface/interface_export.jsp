@@ -109,6 +109,14 @@
 					} 
 				}
 			}
+			function checkText(){ 
+				var elem = document.getElementById('target_file').value; 
+				if(elem !="" && !elem.match(/^([a-z0-9\_])+$/i)){ 
+					alert("ชื่อไฟล์ กรอกได้เฉพาะ a-Z, A-Z, 0-9 และ _ (underscore)"); 
+					document.getElementById('target_file').value = ""; 
+					document.getElementById('target_file').focus(); 
+				}
+			}
 		</script>
     </head>
 	<body>
@@ -145,7 +153,7 @@
                     </select>
 					</td>
 					<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-                    <td class="input"><input type="text" class="medium" id="target_file" name="target_file"/></td>
+                    <td class="input"><input type="text" class="medium" id="target_file" name="target_file" onblur="checkText();"/></td>
 				</tr>
 				<tr>
                     <td class="label">

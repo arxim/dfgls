@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 import df.bean.db.conn.DBConn;
@@ -14,6 +15,7 @@ import df.bean.obj.util.Variables;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,6 +212,47 @@ public abstract class InterfaceTextFileBean {
             status = false;
         }
         
+        return status;
+    }
+    
+    protected boolean writeFileNewACGL(String[] data, boolean newFile){
+        boolean status = true;
+        PrintWriter outputStream = null;
+		File file = new File(this.fileName);
+		FileOutputStream fOut;
+		OutputStreamWriter osw;
+		try {
+			if(file.exists() && newFile) {
+				file.delete();
+			}
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			// true = append file
+			fOut = new FileOutputStream(file, true);
+	        osw = new OutputStreamWriter(fOut, "Cp874");
+            outputStream = new PrintWriter(osw, true);
+            System.out.println("Size of data : "+data.length);
+			for ( int i = 0; i<data.length; i++ ){
+                try {
+                    //out.write(data[i].trim()+"\n");
+                    //outputStream.println("" + data[i]);
+                	if(data[i] != null) {
+                		outputStream.println("" + data[i]);
+                	}
+                } catch (Exception ex) {
+                    System.out.println("Output file "+ex);
+                }
+            }
+			System.out.println("Done");
+		} catch (IOException e) {
+			System.out.println("Problem opening files.");
+			status = false;
+		} finally {
+			if (outputStream != null)
+				outputStream.close();
+		}
+		
         return status;
     }
     
