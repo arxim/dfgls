@@ -34,7 +34,7 @@ public class ProcessHolidayCalculate {
 		String messageIn = "";
 		String Command="SELECT * FROM STP_HOLIDAY WHERE HOSPITAL_CODE = '"+hospitalcode+"' AND YYYY='"+yyyy+"' AND MM='"+mm+"' AND ACTIVE='1' AND INCLUDE LIKE '%' ORDER BY NOR_ALLOCATE_PCT ";
 		ResultSet rsMethod=con.executeQuery(Command);
-		
+		String INCLUDE="";
 		try {
 			int a=rsMethod.getMetaData().getColumnCount();
 			while(rsMethod.next()){
@@ -61,7 +61,6 @@ public class ProcessHolidayCalculate {
 				if(!rsMethod.getString("NOR_ALLOCATE_PCT").equals("0.00")){
 					NOR_ALLOCATE_PCT=rsMethod.getDouble("NOR_ALLOCATE_PCT")/100;
 				}
-				String INCLUDE="";
 				if( !rsMethod.getString("INCLUDE").equals("")){
 					INCLUDE=rsMethod.getString("INCLUDE");
 				}
@@ -84,7 +83,7 @@ public class ProcessHolidayCalculate {
 				System.out.println(sqlqu);
 				connsb.executeUpdate(sqlqu);
 			}
-			if(rsMethod.getString("INCLUDE").equals("Y")){
+			if(INCLUDE.equals("Y")){
 				DBConnection con2 =new DBConnection();
 				con2.connectToLocal();
 				String Command2="SELECT * FROM STP_HOLIDAY WHERE YYYY='"+yyyy+"' AND MM='"+mm+"' AND ACTIVE='1' AND INCLUDE='Y' ORDER BY INCLUDE ASC,DOCTOR_CATEGORY_CODE ASC,ORDER_ITEM_CATEGORY_CODE ASC,DOCTOR_CODE ASC,ORDER_ITEM_CODE ASC ,ADMISSION_TYPE_CODE DESC";
