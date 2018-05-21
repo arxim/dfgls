@@ -127,7 +127,6 @@ public class ProcessBasicAllocateBean {
 		t.calculateTest();
 		t.rollbackTest();
 	}
-	
 	private void rollbackTest(){
 		TrnDailyDAO trn = new TrnDailyDAO();
 		trn.setHospital("11750");
