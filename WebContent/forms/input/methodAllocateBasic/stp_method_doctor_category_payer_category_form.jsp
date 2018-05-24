@@ -102,7 +102,7 @@
                 if (MODE == DBMgr.MODE_INSERT) {
 
                     if (DBMgr.insertRecord(methodRec)) {
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasice/stp_method_doctor_category_payer_category_form.jsp?DOCTOR_CATEGORY_CODE='" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()+"'"));
+                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_payer_category_form.jsp?DOCTOR_CATEGORY_CODE='" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()+"'"));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -111,7 +111,7 @@
                 else if (MODE == DBMgr.MODE_UPDATE) {
                 	if (DBMgr.updateRecord(methodRec)) {
                   		System.out.print(" Update complete.");
-                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasice/stp_method_doctor_category_payer_category_form.jsp?DOCTOR_CATEGORY_CODE='" +  request.getParameter("DOCTOR_CATEGORY_CODE") + "'"));
+                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_payer_category_form.jsp?DOCTOR_CATEGORY_CODE='" +  request.getParameter("DOCTOR_CATEGORY_CODE") + "'"));
                     }  else {
                     	System.out.print(" Update fail.");
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -164,7 +164,7 @@
                // doctorRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_THAI FROM DOCTOR WHERE CODE = %1$s", request.getParameter("DOCTOR_CODE")));
                 orderItemCateRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM ORDER_ITEM_CATEGORY WHERE CODE =  %1$s ", request.getParameter("ORDER_ITEM_CATEGORY_CODE")));
                 orderItemRec  =  DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM ORDER_ITEM WHERE CODE =  %1$s ", request.getParameter("ORDER_ITEM_CODE")));
-                payorCateRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM PAYOR_OFFICE_CATEGORY WHERE CODE =  %1$s ", request.getParameter("PAYOR_OFFICE_CATEGORY_CODE")));
+                payorCateRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_THAI FROM PAYOR_OFFICE_CATEGORY WHERE CODE =  %1$s ", request.getParameter("PAYOR_OFFICE_CATEGORY_CODE")));
                 //payorRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM PAYOR_OFFICE WHERE CODE =  %1$s", request.getParameter("PAYOR_OFFICE_CODE")));
          	
             }
@@ -335,7 +335,7 @@
                             return;
                         }
                         // Data found
-                        document.mainForm.PAYOR_OFFICE_CATEGORY_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+                        document.mainForm.PAYOR_OFFICE_CATEGORY_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "NAME_THAI");
                     }
               }
 
@@ -521,8 +521,8 @@
                     <label for="PAYOR_OFFICE_CATEGORY_CODE"><span class="style1">${labelMap.PAYOR_OFFICE_CATEGORY_CODE}*</span></label></td>
                     <td class="input" colspan="3">
                         <input name="PAYOR_OFFICE_CATEGORY_CODE" type="text" class="medium" id="PAYOR_OFFICE_CATEGORY_CODE" maxlength="20" value="<%= DBMgr.getRecordValue(payorCateRec, "CODE")%>" onkeypress="return PAYOR_OFFICE_CATEGORY_CODE_KeyPress(event);" onblur="AJAX_Refresh_PAYOR_OFFICE_CATEGORY();" />
-                        <input id="SEARCH_ORDER_ITEM" name="SEARCH_ORDER_ITEM" type="image" class="image_button" src="../../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=PAYOR_OFFICE_CATEGORY&TARGET=PAYOR_OFFICE_CATEGORY_CODE&BEINSIDEHOSPITAL=1&DISPLAY_FIELD=DESCRIPTION&BEACTIVE=1&HANDLE=AJAX_Refresh_PAYOR_OFFICE_CATEGORY'); return false;" />
-                        <input name="PAYOR_OFFICE_CATEGORY_DESCRIPTION" type="text" class="mediumMax" id="PAYOR_OFFICE_CATEGORY_DESCRIPTION" readonly="readonly" value="<%= DBMgr.getRecordValue(payorCateRec, "DESCRIPTION")%>" maxlength="255" />                    
+                        <input id="SEARCH_ORDER_ITEM" name="SEARCH_ORDER_ITEM" type="image" class="image_button" src="../../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=PAYOR_OFFICE_CATEGORY&TARGET=PAYOR_OFFICE_CATEGORY_CODE&BEINSIDEHOSPITAL=1&DISPLAY_FIELD=NAME_THAI&BEACTIVE=1&HANDLE=AJAX_Refresh_PAYOR_OFFICE_CATEGORY'); return false;" />
+                        <input name="PAYOR_OFFICE_CATEGORY_DESCRIPTION" type="text" class="mediumMax" id="PAYOR_OFFICE_CATEGORY_DESCRIPTION" readonly="readonly" value="<%= DBMgr.getRecordValue(payorCateRec, "NAME_THAI")%>" maxlength="255" />                    
                     </td>
                 </tr>
                 

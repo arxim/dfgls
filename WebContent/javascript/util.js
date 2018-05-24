@@ -87,6 +87,19 @@ function trim(s) {
     return s.substring(l, r + 1);
 }
 
+function isObjectSelectEmptyString(obj , alertMsg){
+	  if (obj == null) {
+	        return true;
+	    }
+	  if (isEmptyString(obj.value)) {
+	        obj.focus();
+	        //obj.select();
+	        alert(alertMsg);
+	        return true;
+	   }
+	   return false;
+}
+
 function isObjectEmptyString(obj, alertMsg) {
     if (obj == null) {
         return true;
