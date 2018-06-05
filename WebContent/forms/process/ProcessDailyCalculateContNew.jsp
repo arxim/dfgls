@@ -1,6 +1,6 @@
-<jsp:useBean id="pc" scope="session" class="df.bean.process.ProcessBasicAllocateBean" />
+<jsp:useBean id="pcnew" scope="session" class="df.bean.process.ProcessBasicAllocateBean" />
 <%
-	String msg =pc.processRequest(
+	String msg =pcnew.processRequest(
 			   	request.getParameter("ROW"),
 			   	request.getParameter("currentRowID"),
 			   	request.getParameter("HOSPITAL_CODE").toString(),

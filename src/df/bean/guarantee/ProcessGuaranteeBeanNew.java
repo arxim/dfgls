@@ -1022,10 +1022,10 @@ public class ProcessGuaranteeBeanNew {
                     
                     if(g_setup[i][16].equals("")||g_setup[i][16].equals("AF")){
                     	//if guarantee from after allocate
-                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'F' THEN AMOUNT_AFT_DISCOUNT ELSE DR_AMT END, ";
+                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'N' AND COMPUTE_DAILY_USER_ID NOT LIKE '%Employee%' THEN AMOUNT_AFT_DISCOUNT ELSE DR_AMT END, ";
                     }else{
                     	//if guarantee from before allocate
-                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'D' THEN DR_AMT ELSE AMOUNT_AFT_DISCOUNT END, ";
+                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'Y' OR COMPUTE_DAILY_USER_ID LIKE '%Employee%' THEN DR_AMT ELSE AMOUNT_AFT_DISCOUNT END, ";
                     }
                     
                     sql_statement += "IS_PAID = '"+ is_paid + "', " +
