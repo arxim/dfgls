@@ -328,6 +328,7 @@ public class ProcessPartialPayment {
 						" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I "+
 						" WHERE T.INVOICE_NO = I.BILL_NO "+
 						" AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "+
+						" AND T.INVOICE_NO = '"+hashData.get("INVOICE_NO")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 						" AND LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'"+ 
 						" AND INVOICE_TYPE ='"+hashData.get("INVOICE_TYPE")+"'" +
