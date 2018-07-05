@@ -62,7 +62,7 @@
 		<tr>
         	<td class="label"><label for="START_DATE">${labelMap.START_DATE}</label></td>
             <td class="input">
-            	<input type="text" id="START_DATE" name="START_DATE" class="short" value="<%=request.getParameter("START_DATE") == null ? startDateStr : request.getParameter("START_DATE")%>" />
+                <input type="text" id="START_DATE" name="START_DATE" class="short" value="<%=request.getParameter("START_DATE") == null ? startDateStr : request.getParameter("START_DATE")%>" onchange="AJAX_Verify_Check_Summary_Monthly();" />
             </td>
             <td class="label"><label for="END_DATE">${labelMap.END_DATE}</label></td>
             <td class="input">
@@ -262,6 +262,28 @@
             if("<%=request.getParameter("SELECT_DATA")%>"=="true"&&"<%=request.getParameter("state")%>"=="run"){
             	RUN_Click();	
             }
+            
+            // Check data on table SUMMARY_MONTHLY : 2009-07-01 By Nop
+            function AJAX_Verify_Check_Summary_Monthly() {
+            	alert("");
+                var date_input = document.mainForm.START_DATE.value;
+                var target = "../../CheckSummaryMonthlySrvl?DATE_INPUT=" + date_input+"&FORM=guarantee";
+                AJAX_Request(target, AJAX_Handle_Verify_Check_Summary_Monthly);
+            }
+
+            function AJAX_Handle_Verify_Check_Summary_Monthly(){
+                if (AJAX_IsComplete()) {
+                    var xmlDoc = AJAX.responseXML;
+                    if (getXMLNodeValue(xmlDoc, "STATUS")=='YES') {
+                        document.mainForm.RUN.disabled = false;
+                        document.mainForm.SELECT.disabled = false;
+                    }else{
+                    	document.mainForm.RUN.disabled = true;
+                        document.mainForm.SELECT.disabled = true;
+                    }
+                }				
+           	}
+
             function RUN_Click() {
                 if("<%=request.getParameter("SELECT_DATA")%>"=="true"&&"<%=request.getParameter("state")%>"=="run"){
                 toRowID = jsarray1.length;
