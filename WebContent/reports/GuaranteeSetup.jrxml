@@ -24,13 +24,13 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["09"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["06"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2013"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2018"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["011"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["006"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["0"]]></defaultValueExpression>
@@ -49,7 +49,20 @@ CASE WHEN SG.EARLY_TIME = '000000' OR SG.EARLY_TIME = START_TIME THEN '' ELSE SG
 SG.END_DATE, SG.END_TIME, 
 CASE WHEN SG.LATE_TIME = '000000' OR SG.LATE_TIME = SG.END_TIME THEN '' ELSE SG.LATE_TIME END AS LATE_TIME,
 SG.GUARANTEE_AMOUNT, SG.GUARANTEE_FIX_AMOUNT, SG.GUARANTEE_INCLUDE_AMOUNT, SG.GUARANTEE_EXCLUDE_AMOUNT,
-DR.NAME_THAI, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE  , HP.DESCRIPTION_THAI
+DR.NAME_THAI, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE  , HP.DESCRIPTION_THAI,
+ROW_NUMBER ( ) OVER ( PARTITION BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE,SG.GUARANTEE_CODE ORDER BY SG.START_DATE+SG.START_TIME) AS ROWNO,
+ISNULL((CASE WHEN ROW_NUMBER ( ) OVER ( PARTITION BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE, SG.GUARANTEE_CODE ORDER BY SG.START_DATE+SG.START_TIME) = 1 AND SG.GUARANTEE_TYPE_CODE = 'MLY' THEN
+			(SELECT SUM(DISTINCT GUARANTEE_AMOUNT)
+FROM STP_GUARANTEE
+WHERE HOSPITAL_CODE = SG.HOSPITAL_CODE
+AND GUARANTEE_DR_CODE = SG.GUARANTEE_DR_CODE
+AND GUARANTEE_TYPE_CODE = SG.GUARANTEE_TYPE_CODE
+AND YYYY = SG.YYYY
+AND MM = SG.MM
+AND GUARANTEE_AMOUNT > 0
+GROUP BY GUARANTEE_TYPE_CODE, GUARANTEE_CODE, GUARANTEE_DR_CODE)
+WHEN ROW_NUMBER ( ) OVER ( PARTITION BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE, SG.GUARANTEE_CODE ORDER BY SG.START_DATE+SG.START_TIME) <> 1 AND SG.GUARANTEE_TYPE_CODE = 'MLY' THEN 0
+ELSE SG.GUARANTEE_AMOUNT END),0) AS GUARANTEE
 FROM STP_GUARANTEE SG 
 LEFT OUTER JOIN DOCTOR DR ON SG.GUARANTEE_DR_CODE = DR.CODE AND SG.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN DEPARTMENT DPT ON SG.GL_DEPARTMENT_CODE = DPT.CODE AND SG.HOSPITAL_CODE = DPT.HOSPITAL_CODE
@@ -83,9 +96,11 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 	<field name="USER_ID" class="java.lang.String"/>
 	<field name="ACTIVE" class="java.lang.String"/>
 	<field name="DESCRIPTION_THAI" class="java.lang.String"/>
+	<field name="ROWNO" class="java.lang.Long"/>
+	<field name="GUARANTEE" class="java.math.BigDecimal"/>
 
 	<variable name="SUM_GUARANTEE_AMOUNT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
+		<variableExpression><![CDATA[$F{GUARANTEE}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_FIX_AMOUNT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
@@ -97,7 +112,7 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_AMOUNT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="GUARANTEE_DR_CODE" calculation="Sum">
-		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
+		<variableExpression><![CDATA[$F{GUARANTEE}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_FIX_AMOUNT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="GUARANTEE_DR_CODE" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
@@ -109,7 +124,7 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
-		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
+		<variableExpression><![CDATA[$F{GUARANTEE}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_FIX_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="Active" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
@@ -121,7 +136,7 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 		<variableExpression><![CDATA[$F{GUARANTEE_EXCLUDE_AMOUNT}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
-		<variableExpression><![CDATA[$F{GUARANTEE_AMOUNT}]]></variableExpression>
+		<variableExpression><![CDATA[$F{GUARANTEE}]]></variableExpression>
 	</variable>
 	<variable name="SUM_GUARANTEE_FIX_AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="GL_DEPARTMENT_CODE" calculation="Sum">
 		<variableExpression><![CDATA[$F{GUARANTEE_FIX_AMOUNT}]]></variableExpression>
