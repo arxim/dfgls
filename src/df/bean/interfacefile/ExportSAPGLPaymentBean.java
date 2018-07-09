@@ -34,53 +34,39 @@ public class ExportSAPGLPaymentBean extends InterfaceTextFileBean{
         try { cn.setStatement(); } catch (SQLException e1) {}
         
         String[] data_export = null;
-        String data = "SELECT CASE WHEN LEN(IEP.HOSPITAL_CODE)=5 THEN SUBSTRING(IEP.HOSPITAL_CODE,3,LEN(IEP.HOSPITAL_CODE)) ELSE IEP.HOSPITAL_CODE END AS HOSPITAL_CODE,"+ 
-         		" ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCT, " +
-                " ACCOUNT, DEPT_ID, PRODUCT, SUM(MONETARY_AMOUNT) AS MONETARY_AMOUNT, CLASS_FLD, " +
-                " CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, " +
-                " CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
-                " AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE, AC.GL_CODE AS ACCOUNT_GL_CODE, " +
-                " IEP.PROJECT_ID, IEP.STATISTICS_CODE"+
-                " FROM INT_ERP_GL IEP " +
-                " LEFT JOIN HOSPITAL HP ON IEP.HOSPITAL_CODE = HP.CODE "+
-                " LEFT JOIN DEPARTMENT DP ON DP.CODE = IEP.DEPT_ID AND DP.HOSPITAL_CODE = IEP.HOSPITAL_CODE " + 
-                " LEFT JOIN ACCOUNT AC ON AC.CODE = IEP.ACCOUNT " + 
-                " WHERE IEP.YYYY = '"+year+"' AND IEP.MM='"+month+"' AND IEP.HOSPITAL_CODE = '"+hp+"' " +
-                " AND MONETARY_AMOUNT > 0 AND IEP.CLASS_FLD != '00' AND TYPE='"+type+"'" +
-                " GROUP BY IEP.HOSPITAL_CODE, ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, ACCOUNT, DEPT_ID, PRODUCT, CLASS_FLD, AMOUNT_SIGN, DP.GL_CODE, AC.GL_CODE, IEP.PROJECT_ID, IEP.STATISTICS_CODE"+
-                " ORDER BY DB_CR DESC, PRODUCT;";
-        
-        data = ""+
-        	   "SELECT CASE WHEN LEN(IEP.HOSPITAL_CODE)=5 THEN SUBSTRING(IEP.HOSPITAL_CODE,3,LEN(IEP.HOSPITAL_CODE)) ELSE IEP.HOSPITAL_CODE END AS HOSPITAL_CODE, "+
-        	   "ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, "+
-        	   "ACCOUNT, DEPT_ID, PRODUCT, SUM(MONETARY_AMOUNT) AS MONETARY_AMOUNT, CLASS_FLD, "+
-        	   "CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, "+
-        	   "CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
-        	   "AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE, AC.GL_CODE AS ACCOUNT_GL_CODE, "+
-        	   "IEP.PROJECT_ID, '' AS STATISTICS_CODE "+
-        	   "FROM INT_ERP_GL IEP "+
-        	   "LEFT JOIN HOSPITAL HP ON IEP.HOSPITAL_CODE = HP.CODE "+
-        	   "LEFT JOIN DEPARTMENT DP ON DP.CODE = IEP.DEPT_ID AND DP.HOSPITAL_CODE = IEP.HOSPITAL_CODE "+
-        	   "LEFT JOIN ACCOUNT AC ON AC.CODE = IEP.ACCOUNT "+
-        	   "WHERE IEP.YYYY = '"+year+"' AND IEP.MM='"+month+"' AND IEP.HOSPITAL_CODE = '"+hp+"' "+
-        	   "AND MONETARY_AMOUNT > 0 AND TYPE='"+type+"' "+
-        	   "AND CLASS_FLD != '00' "+
-        	   "GROUP BY IEP.HOSPITAL_CODE, ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, ACCOUNT, DEPT_ID, PRODUCT, CLASS_FLD, AMOUNT_SIGN, DP.GL_CODE, AC.GL_CODE, IEP.PROJECT_ID, IEP.STATISTICS_CODE "+
-        	   "UNION ALL "+
-        	   "SELECT CASE WHEN LEN(TEMP_GL.HOSPITAL_CODE)=5 THEN SUBSTRING(TEMP_GL.HOSPITAL_CODE, 3, LEN(TEMP_GL.HOSPITAL_CODE)) ELSE TEMP_GL.HOSPITAL_CODE END AS HOSPITAL_CODE, "+
-        	   "'', '', PROCESS, CURRENCY, "+
-        	   "ACCOUNT_CODE, PATIENT_DEPARTMENT_CODE, CASE WHEN ADMISSION_TYPE_CODE = 'O' THEN 'OPD' ELSE 'IPD' END, AMOUNT_AFT_DISCOUNT, NATIONALITY_CODE AS CLASS_FLD, "+
-        	   "CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, "+
-        	   "CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
-        	   "AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE, AC.GL_CODE AS ACCOUNT_GL_CODE, "+
-        	   "TEMP_GL.DOCTOR_CODE AS PROJECT_ID, LINE_NO AS STATISTICS_CODE "+
-        	   "FROM TEMP_GL "+
-        	   "LEFT JOIN HOSPITAL HP ON HOSPITAL_CODE = HP.CODE "+
-        	   "LEFT JOIN DEPARTMENT DP ON DP.CODE = PATIENT_DEPARTMENT_CODE AND DP.HOSPITAL_CODE = TEMP_GL.HOSPITAL_CODE "+
-        	   "LEFT JOIN ACCOUNT AC ON AC.CODE = ACCOUNT_CODE "+
-        	   "WHERE TEMP_GL.HOSPITAL_CODE = '"+hp+"' AND YYYY+MM = '"+year+month+"' "+
-        	   "AND PROCESS = '"+type+"' AND LINE_NO LIKE 'COSAP%' "+
-        	   "ORDER BY DB_CR DESC, PRODUCT, STATISTICS_CODE";
+        String data = ""+
+        		"SELECT *, DENSE_RANK ()  OVER(ORDER BY DB_CR DESC, PRODUCT, STATISTICS_CODE) AS GROUP_ID "+
+        		"FROM(SELECT CASE WHEN LEN(IEP.HOSPITAL_CODE)=5 THEN SUBSTRING(IEP.HOSPITAL_CODE,3,LEN(IEP.HOSPITAL_CODE)) ELSE IEP.HOSPITAL_CODE END AS HOSPITAL_CODE, "+
+        		"ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, "+
+        		"ACCOUNT, DEPT_ID, PRODUCT, SUM(MONETARY_AMOUNT) AS MONETARY_AMOUNT, CLASS_FLD, "+
+        		"CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, "+
+        		"CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
+        		"AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE, AC.GL_CODE AS ACCOUNT_GL_CODE, "+
+        		"IEP.PROJECT_ID, '' AS STATISTICS_CODE "+
+        		"FROM INT_ERP_GL IEP "+
+        		"LEFT JOIN HOSPITAL HP ON IEP.HOSPITAL_CODE = HP.CODE "+
+        		"LEFT JOIN DEPARTMENT DP ON DP.CODE = IEP.DEPT_ID AND DP.HOSPITAL_CODE = IEP.HOSPITAL_CODE "+
+        		"LEFT JOIN ACCOUNT AC ON AC.CODE = IEP.ACCOUNT "+
+        	   	"WHERE IEP.YYYY = '"+year+"' AND IEP.MM='"+month+"' AND IEP.HOSPITAL_CODE = '"+hp+"' "+
+        	   	"AND MONETARY_AMOUNT > 0 AND TYPE='"+type+"' "+
+        		"AND CLASS_FLD != '00' "+
+        		"GROUP BY IEP.HOSPITAL_CODE, ACCOUNTING_DT, ACCOUNTING_TIME, TYPE, CURRENCY, ACCOUNT, DEPT_ID, PRODUCT, CLASS_FLD, AMOUNT_SIGN, DP.GL_CODE, AC.GL_CODE, IEP.PROJECT_ID, IEP.STATISTICS_CODE "+
+        		"UNION ALL "+
+        		"SELECT CASE WHEN LEN(TEMP_GL.HOSPITAL_CODE)=5 THEN SUBSTRING(TEMP_GL.HOSPITAL_CODE, 3, LEN(TEMP_GL.HOSPITAL_CODE)) ELSE TEMP_GL.HOSPITAL_CODE END AS HOSPITAL_CODE, "+
+        		"'', '', PROCESS, CURRENCY, "+
+        		"ACCOUNT_CODE, PATIENT_DEPARTMENT_CODE, CASE WHEN ADMISSION_TYPE_CODE = 'O' THEN 'OPD' ELSE 'IPD' END, AMOUNT_AFT_DISCOUNT, NATIONALITY_CODE AS CLASS_FLD, "+
+        		"CASE WHEN (AMOUNT_SIGN = '*' OR AMOUNT_SIGN = '+') THEN '40' ELSE '50' END AS AMOUNT_SIGN, "+
+        		"CASE WHEN (AMOUNT_SIGN = '-' OR AMOUNT_SIGN = '+') THEN 'DF' ELSE 'AJ' END AS DB_CR, "+
+        		"AMOUNT_SIGN AS DB_CR_1, DP.GL_CODE AS DEPARTMENT_GL_CODE, AC.GL_CODE AS ACCOUNT_GL_CODE, "+
+        		"TEMP_GL.DOCTOR_CODE AS PROJECT_ID, LINE_NO AS STATISTICS_CODE "+
+        		"FROM TEMP_GL "+
+        		"LEFT JOIN HOSPITAL HP ON HOSPITAL_CODE = HP.CODE "+
+        		"LEFT JOIN DEPARTMENT DP ON DP.CODE = PATIENT_DEPARTMENT_CODE AND DP.HOSPITAL_CODE = TEMP_GL.HOSPITAL_CODE "+
+        		"LEFT JOIN ACCOUNT AC ON AC.CODE = ACCOUNT_CODE "+
+        	   	"WHERE TEMP_GL.HOSPITAL_CODE = '"+hp+"' AND YYYY+MM = '"+year+month+"' "+
+        	   	"AND PROCESS = '"+type+"' AND LINE_NO LIKE 'COSAP%' "+
+        		")Q "+
+        		"ORDER BY DB_CR DESC, PRODUCT, STATISTICS_CODE";
         System.out.println(data);
         try {
             setFileName(path);
@@ -107,16 +93,19 @@ public class ExportSAPGLPaymentBean extends InterfaceTextFileBean{
             	String info = "";
             	String projId = "";
             	String nation = rs.getString("CLASS_FLD").toString();
+            	docNo = rs.getString("GROUP_ID").toString();
         		if( rs.getString("DB_CR").equals("DF") ){
         			info = docText;
+        			/*
         			if(rs.getString("PRODUCT").equals("IPD")){
         				docNo = "1";
         			}else{
         				docNo = "2";
         			}
+        			*/
         		}else if( !rs.getString("CLASS_FLD").equals("00") && !rs.getString("DB_CR").equals("DF") ){
         			info = docText;
-        			docNo = "3";
+        			//docNo = "3";
         		}else{
         			if(!rs.getString("STATISTICS_CODE").equals("")){
         				if(!rs.getString("STATISTICS_CODE").equals(lineNo)){
@@ -148,9 +137,8 @@ public class ExportSAPGLPaymentBean extends InterfaceTextFileBean{
         					info = "|";
         				}
         			}
-        			docNo = docCount+"";
+        			//docNo = docCount+"";
         		}
-        		//System.out.println("start"+iCount);
                 data_export[iCount] = ""
                 		+ docNo+"|"
                 		+ rs.getString("HOSPITAL_CODE")+"|"
