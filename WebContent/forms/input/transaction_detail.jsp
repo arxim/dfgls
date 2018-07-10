@@ -122,11 +122,9 @@
             
             DataRecord trnDailyRec = null, payorOfficeRec = null, payorOfficeCategoryRec = null, patientDepartmentRec = null, patientLocationRec = null, receiptDepartmentRec = null, receiptLocationRec = null, receiptTypeRec = null;
             DataRecord doctorDepartmentRec = null, orderItemRec = null, doctorRec = null, doctorExecuteRec = null, doctorResultRec = null;
-            
             if (request.getParameter("INVOICE_NO") != null && request.getParameter("LINE_NO") != null) {
                 query = "SELECT * FROM TRN_DAILY WHERE HOSPITAL_CODE = '" + session.getAttribute("HOSPITAL_CODE").toString() + "' AND INVOICE_NO = '" + request.getParameter("INVOICE_NO") + "'" +
-                " AND RECEIPT_DATE = '" + request.getParameter("RECEIPT_DATE") + "' AND LINE_NO = '" + DBMgr.toSQLString( request.getParameter("LINE_NO")) + "'";
-                System.out.println(query);
+                " AND LINE_NO = '" + DBMgr.toSQLString( request.getParameter("LINE_NO")) + "'";
                 trnDailyRec = DBMgr.getRecord(query);
                 MODE = MODE_UPDATE_DETAIL;
             }
@@ -137,7 +135,6 @@
             }
            if (request.getParameter("MODE") != null) {
                 MODE = Byte.parseByte(request.getParameter("MODE"));
-                
                 if (MODE == MODE_UPDATE_MASTER) {
                     trnDailyRec = new DataRecord("TRN_DAILY");
 
@@ -240,8 +237,6 @@
                     trnDailyRec.addField("PREMIUM_CHARGE_PCT", Types.NUMERIC, "0");
                     trnDailyRec.addField("PREMIUM_REC_AMT", Types.NUMERIC, "0");
                     trnDailyRec.addField("ORDER_ITEM_CATEGORY_CODE", Types.VARCHAR, "");
-
-                    
                 }
             }
 
@@ -327,7 +322,7 @@
                 </tr>
                 <tr>
                     <td class="label"><label for="INVOICE_NO">${labelMap.INVOICE_NO} </label></td>
-                    <td class="input">&nbsp;<%= DBMgr.getRecordValue(trnDailyRec, "INVOICE_NO")%>                      <label for="INVOICE_DATE"></label></td>
+                    <td class="input">&nbsp;<%= DBMgr.getRecordValue(trnDailyRec, "INVOICE_NO")%><label for="INVOICE_DATE"></label></td>
                 </tr>
                  <tr>
                    <td class="label"><label for="INVOICE_DATE">${labelMap.INVOICE_DATE} </label></td>
