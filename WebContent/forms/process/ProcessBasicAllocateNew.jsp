@@ -265,7 +265,6 @@
             
             // Check data on table SUMMARY_MONTHLY : 2009-07-01 By Nop
             function AJAX_Verify_Check_Summary_Monthly() {
-            	alert("");
                 var date_input = document.mainForm.START_DATE.value;
                 var target = "../../CheckSummaryMonthlySrvl?DATE_INPUT=" + date_input+"&FORM=guarantee";
                 AJAX_Request(target, AJAX_Handle_Verify_Check_Summary_Monthly);
