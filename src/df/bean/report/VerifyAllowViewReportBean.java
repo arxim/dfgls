@@ -31,6 +31,7 @@ public class VerifyAllowViewReportBean {
         }catch(Exception e){
         	System.out.println(e);
         }
+        cdb.closeDB("");
     	return status;
     }
 

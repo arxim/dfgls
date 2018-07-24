@@ -72,6 +72,7 @@ import df.bean.obj.util.JDate;
     	        		diff_time_val = AMT*amount_diff_time;
     	        		out.print("<RESULT><STATUS>" + diff_time_val + "</STATUS><STATUS1>" + amount_diff_time + "</STATUS1><STATUS2>" + amount_of_time + "</STATUS2></RESULT>");
     	   			}
+    	   			conn.closeDB("");
     	       }
     	       catch (Exception  e) 
     	       {
