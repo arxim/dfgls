@@ -334,7 +334,7 @@ public class ProcessPartialPayment {
 						" AND INVOICE_TYPE ='"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND BATCH_NO = ''"+
 						//" AND DR_AMT > 0" +
-						" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"'";
+						" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"' AND T.ACTIVE = '1'";
 						//System.out.println("sql = " + this.sql);
 		
 				try {
