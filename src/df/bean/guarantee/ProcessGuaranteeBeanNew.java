@@ -266,6 +266,7 @@ public class ProcessGuaranteeBeanNew {
         String sql_statement2 = "UPDATE TRN_DAILY SET TAX_FROM_ALLOCATE = 'N' " +
 		"WHERE TRANSACTION_DATE LIKE '"+year+""+month+"%' "+
 		"AND HOSPITAL_CODE = '"+hospital_code+"' AND BATCH_NO = '' "+
+		"AND (TAX_FROM_ALLOCATE <> 'Y' OR TAX_FROM_ALLOCATE IS NULL) "+
 		"AND ORDER_ITEM_CODE IN (SELECT CODE FROM ORDER_ITEM WHERE HOSPITAL_CODE = '"+hospital_code+"' " +
 		"AND IS_ALLOC_FULL_TAX = 'Y')";
 

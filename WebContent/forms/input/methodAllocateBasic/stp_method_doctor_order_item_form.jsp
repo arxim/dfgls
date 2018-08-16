@@ -447,9 +447,8 @@
                     AJAX_VerifyData();
                 } 
             }
-            
-            function btnClose($id) {
-            	window.location = "stp_method_doctor_order_item.jsp?DOCTOR_CODE="+ $id;
+            function btnClose() {
+            	window.location.href = "stp_method_doctor_order_item.jsp?DOCTOR_CODE="+ document.mainForm.DOCTOR_CODE.value;
             }
             
         </script>
@@ -573,7 +572,7 @@
                     <th colspan="4" class="buttonBar">                        
                         <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="SAVE_Click()" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
-                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="btnClose(<%=request.getParameter("DOCTOR_CODE") %>)" />																					
+                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="btnClose()" />																					
                     </th>
                 </tr>
             </table>
