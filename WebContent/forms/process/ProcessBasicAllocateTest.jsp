@@ -36,12 +36,18 @@
       String startDateStr = JDate.showDate(JDate.getDate());
       String endDateStr = JDate.showDate(JDate.getDate());
       String hospitalCode = session.getAttribute("HOSPITAL_CODE").toString();
+      
+      DBConnection c = new DBConnection();
+      c.connectToLocal();
+      Batch b = new Batch(hospitalCode, c);
+      String sendDate = "00/"+b.getMm()+"/"+b.getYyyy();
+      System.out.println("<>"+sendDate);
+      c.Close();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    
         <title>${labelMap.TITLE_MAIN}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
@@ -55,6 +61,7 @@
 	</head>
     <body>
 	<form id="mainForm" name="mainForm" method="post" action="ProcessBasicAllocateTest.jsp">
+	<input type="hidden" id="BATCH_DATE" name="BATCH_DATE" value="<%= sendDate %>" />
 	<center>
         <table width="800" border="0">
             <tr><td align="left">
@@ -283,7 +290,8 @@
             
             // Check data on table SUMMARY_MONTHLY : 2009-07-01 By Nop
             function AJAX_Verify_Check_Summary_Monthly() {
-                var date_input = document.mainForm.START_DATE.value;
+                //var date_input = document.mainForm.START_DATE.value;
+                var date_input = document.mainForm.BATCH_DATE.value;
                 var target = "../../CheckSummaryMonthlySrvl?DATE_INPUT=" + date_input+"&FORM=guarantee";
                 AJAX_Request(target, AJAX_Handle_Verify_Check_Summary_Monthly);
             }
