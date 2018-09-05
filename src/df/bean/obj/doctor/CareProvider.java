@@ -225,7 +225,7 @@ public class CareProvider {
                 this.tax_from_allocate = "N";
             } else{
                 this.guaranteeMsg = "";
-                this.lIsGuaranteeFromAlloc = "N";
+                this.lIsGuaranteeFromAlloc = "";
                 this.tax_from_allocate = "N";
                 this.lguaranteeAmt = 0.00;
             }
