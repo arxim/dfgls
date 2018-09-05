@@ -100,7 +100,7 @@
                 "AND DOCTOR_CODE = '%2$s' " +
                 "AND EXPENSE_CODE = '%3$s' " +
                 "AND MM = '%4$s' " +
-				"AND LINE_NO= '%5$S' " +
+				"AND LINE_NO= '%5$s' " +
                 "AND YYYY = '%6$s' "
                 , session.getAttribute("HOSPITAL_CODE")
                 , request.getParameter("DOCTOR_CODE")
