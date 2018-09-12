@@ -101,7 +101,7 @@
                
                 if (MODE == DBMgr.MODE_INSERT) {
                     if (DBMgr.insertRecord(methodRec)) {
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_order_item_form.jsp?DOCTOR_CODE='" + methodRec.getField("DOCTOR_CODE").getValue()+"'"));
+                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_order_item.jsp?DOCTOR_CODE='" + methodRec.getField("DOCTOR_CODE").getValue()+"'"));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -109,7 +109,7 @@
                 } 
                 else if (MODE == DBMgr.MODE_UPDATE) {
                 	if (DBMgr.updateRecord(methodRec)) {
-                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_order_item_form.jsp?DOCTOR_CODE='" +  request.getParameter("DOCTOR_CODE") + "'"));
+                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_order_item.jsp?DOCTOR_CODE='" +  request.getParameter("DOCTOR_CODE") + "'"));
                     }  else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                     }
