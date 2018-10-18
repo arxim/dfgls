@@ -442,7 +442,7 @@ public class CareProvider {
 */
                     st.setTextSumDrAmt(Utils.toThaiMoney(rs.getString("sDrAmt")));
                     st.setTextSumTaxDrAmt(Utils.toThaiMoney(rs.getString("sDrTax")));
-                    st.setPrintDate(yyyy+mm+dd);
+                    st.setPrintDate("");
                     st.setUpdateDate(JDate.getDate());
                     st.setUpdateTime(JDate.getTime());
                     st.setUserId("");

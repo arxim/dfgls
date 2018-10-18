@@ -155,7 +155,7 @@
 					}
 
 					//QUERY DATA FROM TRN_DAILY
-					sqlData = "SELECT INVOICE_NO, INVOICE_DATE , HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
+					sqlData = "SELECT INVOICE_NO, INVOICE_DATE, HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
 							+ " ORDER_ITEM_CODE, INVOICE_TYPE, DOCTOR_CODE, AMOUNT_BEF_DISCOUNT, AMOUNT_OF_DISCOUNT, "
 							+ " AMOUNT_AFT_DISCOUNT, YYYY, MM, ACTIVE, LINE_NO, "
 							+ " PATIENT_NAME, OLD_AMOUNT, DR_AMT, OLD_DR_AMT, DR_TAX_406, "
@@ -168,6 +168,7 @@
 							+ getInvoiceNumber
 							+ "'"
 							+ " AND RECEIPT_DATE = '" + getReceipt + "'"
+				            +" AND INVOICE_TYPE <> 'ORDER' "
 							+ " AND HOSPITAL_CODE='"
 							+ session.getAttribute("HOSPITAL_CODE").toString() + "' ";
 
