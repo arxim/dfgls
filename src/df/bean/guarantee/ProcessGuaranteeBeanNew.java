@@ -1735,7 +1735,7 @@ public class ProcessGuaranteeBeanNew {
         "FROM TRN_DAILY T "+
         "LEFT OUTER JOIN DOCTOR DR ON T.DOCTOR_CODE = DR.CODE AND T.HOSPITAL_CODE = DR.HOSPITAL_CODE "+
         "WHERE T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' " +
-        "AND T.VERIFY_DATE < '"+this.year+this.month+"' AND T.VERIFY_DATE != '' " +
+        "AND T.VERIFY_DATE <= '"+this.year+this.month+"01' AND T.VERIFY_DATE != '' " +
         "AND T.VERIFY_TIME <> '' AND T.HOSPITAL_CODE = '"+this.hospital_code+"' " +
         "AND T.IS_GUARANTEE = 'Y' AND INVOICE_TYPE <> 'ORDER' AND GUARANTEE_NOTE != 'OLD EXTRA' "+
         "AND T.GUARANTEE_NOTE = '' AND IS_ONWARD <> 'Y' AND T.BATCH_NO = '' AND T.ACTIVE = '1' "+
