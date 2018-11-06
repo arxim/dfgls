@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import df.bean.db.conn.DBConn;
 import df.bean.expense.ExpenseSummaryBean;
 import df.bean.obj.util.JDate;
+import df.bean.obj.util.JNumber;
 import df.bean.obj.util.Utils;
 import df.bean.obj.util.Variables;
 
@@ -197,11 +198,11 @@ public class ProcessTax402Bean {
     	boolean status = false;
         try {
             String s = "UPDATE SUMMARY_TAX_402 SET " +
-            "ACCU_NORMAL_TAX_MONTH = '"+taxNormalAccu+"' "+   //ACCRU REVENUE
-            ",SUM_NORMAL_TAX_AMT = '"+incomeNormalTotal+"' "+ //REVENUE OF THIS MONTH
-            ",NORMAL_TAX_MONTH = '"+firstTaxNormal+"' "+ 	  //TAX FROM REVENUE IN MONTH
+            "ACCU_NORMAL_TAX_MONTH = '"+JNumber.setFormat(taxNormalAccu, "0.00")+"' "+   //ACCRU REVENUE
+            ",SUM_NORMAL_TAX_AMT = '"+JNumber.setFormat(incomeNormalTotal, "0.00")+"' "+ //REVENUE OF THIS MONTH
+            ",NORMAL_TAX_MONTH = '"+JNumber.setFormat(firstTaxNormal, "0.00") +"' "+ 	  //TAX FROM REVENUE IN MONTH
             ",TEXT_NET_TAX_MONTH = '"+Utils.toThaiMoney(taxNormal)+"' "+
-            ",NET_TAX_MONTH = '"+taxNormal+"' "+
+            ",NET_TAX_MONTH = '"+JNumber.setFormat(taxNormal, "0.00") +"' "+
             "WHERE DOCTOR_CODE = '"+doctor+"' " +
             "AND HOSPITAL_CODE = '"+this.hospital+"' "+
             "AND YYYY = '"+this.year+"' " +
