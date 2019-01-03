@@ -1731,7 +1731,8 @@ public class ProcessGuaranteeBeanNew {
         
         String sql_trn = "SELECT T.INVOICE_NO, T.INVOICE_DATE, T.LINE_NO, T.VERIFY_DATE, " + //0-3
         "T.VERIFY_TIME, T.DOCTOR_CODE, DR.GUARANTEE_DR_CODE, ISNULL(T.DR_AMT,0), ISNULL(T.AMOUNT_AFT_DISCOUNT,0), " +//4-8
-        "'' AS GUARANTEE_SOURCE, T.ADMISSION_TYPE_CODE, 'VER' AS GUARANTEE_DAY, ISNULL(T.DR_TAX_406,0), T.TRANSACTION_DATE  "+ //9-13
+        "'' AS GUARANTEE_SOURCE, T.ADMISSION_TYPE_CODE, 'VER' AS GUARANTEE_DAY, ISNULL(T.DR_TAX_406,0), " +//9-12
+        "T.TRANSACTION_DATE, T.IS_PARTIAL "+ //13-14
         "FROM TRN_DAILY T "+
         "LEFT OUTER JOIN DOCTOR DR ON T.DOCTOR_CODE = DR.CODE AND T.HOSPITAL_CODE = DR.HOSPITAL_CODE "+
         "WHERE T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' " +
@@ -1864,6 +1865,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = "+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
