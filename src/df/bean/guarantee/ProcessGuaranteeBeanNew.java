@@ -1423,7 +1423,7 @@ public class ProcessGuaranteeBeanNew {
             "IS_PAID, DR_AMT, HP_AMT, NOR_ALLOCATE_PCT, AMOUNT_AFT_DISCOUNT, DR_TAX_406, " + //13-18
             "HP_TAX, CASE WHEN DR_TAX_406+DR_TAX_402 > DR_AMT THEN 'AMT' ELSE 'A' END, " + //19-20
             "TAX_FROM_ALLOCATE, AMOUNT_AFT_DISCOUNT, OLD_TAX_AMT, TRANSACTION_DATE, RECEIPT_DATE "+ //21-25
-            ", IS_GUARANTEE_FROM_ALLOC "+ //26 Fix Not Allocate from Guarantee Process
+            ", IS_GUARANTEE_FROM_ALLOC, IS_PARTIAL "+ //26-27 Fix Not Allocate from Guarantee Process
             "FROM TRN_DAILY "+
             "WHERE GUARANTEE_DR_CODE = '"+guarantee_table[i][1]+"' "+
             "AND GUARANTEE_CODE = '"+guarantee_table[i][2]+"' "+
@@ -1633,6 +1633,7 @@ public class ProcessGuaranteeBeanNew {
                         "AND GUARANTEE_TERM_YYYY = '"+transaction_table[x][10]+"' "+
                         "AND HOSPITAL_CODE = '"+hospital_code+"' "+
                         "AND BATCH_NO = '' "+
+                        "AND IS_PARTIAL = '"+transaction_table[x][27]+"' "+
                         "AND ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' "+
                         onwardCondition;
                     	stemp = ss;
