@@ -102,7 +102,7 @@
                 if (MODE == DBMgr.MODE_INSERT) {
 
                 	if (DBMgr.insertRecord(methodRec)) {
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_item.jsp?DOCTOR_CATEGORY_CODE='" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()+"'"));
+                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_item.jsp?DOCTOR_CATEGORY_CODE=" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -111,7 +111,7 @@
                 else if (MODE == DBMgr.MODE_UPDATE) {
                 	if (DBMgr.updateRecord(methodRec)) {
                   		System.out.print(" Update complete.");
-                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_item.jsp?DOCTOR_CATEGORY_CODE='" +  request.getParameter("DOCTOR_CATEGORY_CODE") + "'"));
+                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_item.jsp?DOCTOR_CATEGORY_CODE=" +  request.getParameter("DOCTOR_CATEGORY_CODE")));
                     }  else {
                     	System.out.print(" Update fail.");
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));

@@ -48,7 +48,7 @@
             DataRecord doctorCategoryRec = null;
             String arr = "";
             if (request.getParameter("DOCTOR_CATEGORY_CODE") != null) {
-                doctorCategoryRec = DBMgr.getRecord("SELECT * FROM DOCTOR_CATEGORY WHERE CODE = '" + request.getParameter("DOCTOR_CATEGORY_CODE") + "'");
+                doctorCategoryRec = DBMgr.getRecord("SELECT * FROM DOCTOR_CATEGORY WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE")+"' AND CODE = '" + request.getParameter("DOCTOR_CATEGORY_CODE") + "'");
                 if(doctorCategoryRec==null)
                 {
                     arr +="<script language='javascript'>";
