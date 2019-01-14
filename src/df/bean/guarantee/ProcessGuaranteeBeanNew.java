@@ -1866,7 +1866,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
-		                "AND IS_PARTIAL = "+transaction_table[i][14]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
@@ -1992,6 +1992,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
@@ -2117,6 +2118,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
