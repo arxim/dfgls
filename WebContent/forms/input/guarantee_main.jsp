@@ -80,7 +80,8 @@
             String yyyy = request.getParameter("YYYY") != null ? request.getParameter("YYYY") : JDate.getYear();
             
             if (request.getParameter("GUARANTEE_DR_CODE") != null) {
-                doctorRec = DBMgr.getRecord("SELECT * FROM DOCTOR WHERE CODE = '" + request.getParameter("GUARANTEE_DR_CODE") + "'");
+            	doctorRec = DBMgr.getRecord("SELECT * FROM DOCTOR WHERE CODE = '" + request.getParameter("GUARANTEE_DR_CODE") + "' AND HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE")+"'");
+                //doctorRec = DBMgr.getRecord("SELECT * FROM DOCTOR WHERE CODE = '" + request.getParameter("GUARANTEE_DR_CODE") + "'");
             }
 %>
 

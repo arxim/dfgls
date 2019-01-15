@@ -399,10 +399,10 @@ public class IntErpArReceipt extends ABSTable {
     }    
     
     
-    public boolean rollBackUpdate(String hospitalCode, String YYYY, String MM, String tableName) {
+    public boolean rollBackUpdate(String hospitalCode, String startDate, String endDate, String tableName) {
         List sqlCommand = new ArrayList();
         
-        String startDate = YYYY + MM + "00", endDate = YYYY + MM + "31";
+        //String startDate = YYYY + MM + "00", endDate = YYYY + MM + "31";
         boolean ret = false;
         String sql1 = "UPDATE INT_ERP_AR_RECEIPT SET IS_LOADED = 'N' " 
                             + " WHERE (TRANSACTION_DATE >='" + startDate + "' AND TRANSACTION_DATE <='" + endDate + "')"
@@ -419,9 +419,9 @@ public class IntErpArReceipt extends ABSTable {
                     + " WHERE (PAY_BY_CASH <> 'Y' AND PAY_BY_PAYOR <> 'Y' AND PAY_BY_DOCTOR <> 'Y' AND (PAY_BY_AR = 'Y' OR PAY_BY_CASH_AR = 'Y')) "
                     + " AND HOSPITAL_CODE='" + hospitalCode + "'" 
                     + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
-                    + " AND (YYYY = '" + YYYY + "') "
-                    //+ " AND(RECEIPT_DATE BETWEEN '" + YYYY + MM + "00' AND '" + YYYY + MM + "31')"
-                    + " AND (MM = '" + MM + "') "
+                    //+ " AND (YYYY = '" + YYYY + "') "
+                    + " AND(RECEIPT_DATE BETWEEN '" +startDate+"' AND '" + endDate + "')"
+                    //+ " AND (MM = '" + MM + "') "
                     + " AND " + tableName + ".INVOICE_NO = (SELECT DISTINCT E.BILL_NO " +
                                                 " FROM INT_ERP_AR_RECEIPT E " +
                                                 " WHERE E.BILL_NO = " + tableName + ".INVOICE_NO " +

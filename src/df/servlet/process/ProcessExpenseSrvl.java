@@ -39,6 +39,8 @@ public class ProcessExpenseSrvl extends HttpServlet {
 	            String year = request.getParameter("YYYY");
 	            String month = request.getParameter("MM");
 	            String process_type = request.getParameter("TYPE");
+	            String user = request.getParameter("USER");
+	            gpb.setUser(user);
 	            boolean st = true;
                 try{
                     st = gpb.prepareProcess(month, year, hospitalCode, process_type);

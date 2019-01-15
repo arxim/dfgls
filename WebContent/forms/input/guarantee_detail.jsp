@@ -591,6 +591,7 @@
            function AJAX_Handle_GUARANTEE_AMOUNT(){
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
+                    //alert(document.mainForm.GUARANTEE_TYPE.value);
                      if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
                     			document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
                         		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
@@ -615,6 +616,7 @@
     	           			
                     	}else if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
                     		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
+                    		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
     	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
     	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
     	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
@@ -666,15 +668,20 @@
             }
             
             function startTime(val){ 
+            	//alert(document.getElementById(val.id).value);
                 if(val != '') {
-	                 checkKeyTime(val);
+	                 if(!checkKeyTime(val)){
+	                	 document.getElementById(val.id).value="";
+	                 }
 					 amountType();
                 }
 		    }
             
             function endTime(val){ 
 				if(val) {
-	   			 	checkKeyTime(val);
+					if(!checkKeyTime(val)){
+	                	 document.getElementById(val.id).value="";
+	                 }
 				  	amountType();
 				}
             }
@@ -866,7 +873,7 @@
                   <td class="label">
                     <label for="START_TIME"><span class="style1">${labelMap.START_TIME} *</span></label>                    </td>
                     <td class="input">
-                        <input name="START_TIME" type="text" class="short" id="START_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "START_TIME")) %>" onblur="return startTime(this);" />
+                        <input name="START_TIME" type="text" class="short" id="START_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "START_TIME")) %>" onchange="return startTime(this);" />
                         HHMM
                     </td>
                     <td class="labelRequest">
@@ -879,11 +886,11 @@
                 <tr>
                     <td class="label">
                     <label for="START_TIME">${labelMap.EARLY_TIME}</label>                    </td>
-                    <td class="input"><input name="EARLY_TIME" type="text" class="short" id="EARLY_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "EARLY_TIME")) %>"  onblur="return checkKeyTime(this);" /> HHMM</td>
+                    <td class="input"><input name="EARLY_TIME" type="text" class="short" id="EARLY_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "EARLY_TIME")) %>"  onchange="return startTime(this);" /> HHMM</td>
                     <td class="label">
                         <label for="bText">${labelMap.LATE_TIME}</label>                    </td>
                     <td class="input">
-                        <input name="LATE_TIME" type="text" class="short" id="LATE_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "LATE_TIME")) %>"  onblur="return checkKeyTime(this);" /> HHMM</td>
+                        <input name="LATE_TIME" type="text" class="short" id="LATE_TIME" maxlength="4" value="<%= JDate.showTime(DBMgr.getRecordValue(stpGuaranteeRec, "LATE_TIME")) %>"  onchange="return endTime(this);" /> HHMM</td>
                 </tr>
                 <tr>
                     <td class="label">

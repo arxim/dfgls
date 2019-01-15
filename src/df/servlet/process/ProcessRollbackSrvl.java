@@ -132,7 +132,8 @@ public class ProcessRollbackSrvl extends HttpServlet {
                 htmlCode+= "</script>";                
             }else if("06_02".equals(idProcess.toString())){
                 //result = process.Process06_02(startDT);
-                result = rb.rollBackReceiptByAR(bkkCode, yy, mm);
+                //result = rb.rollBackReceiptByAR(bkkCode, yy, mm);
+            	result = rb.rollBackReceiptByAR(bkkCode, startDT, endDT);
                 htmlCode = "<script language='javascript'>";
                 //htmlCode+= "    alert('"+ idProcess +"');";
                 htmlCode+= "    parent.status('" + idProcess + "','"+ result +"');";

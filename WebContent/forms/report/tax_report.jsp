@@ -31,6 +31,8 @@
 			labelMap.add("REPORT_402_YEARLY", "หนังสือรับรอง 50 ทวิ", "หนังสือรับรอง 50 ทวิ");			
 			labelMap.add("REPORT_SUMMARY_402_YEARLY", "รายงานสรุปภาษี 40(2)รายปี", "รายงานสรุปภาษี 40(2)รายปี");
 			labelMap.add("REPORT_TAX91", "รายงาน ภ.ง.ด.91", "รายงาน ภ.ง.ด.91");
+			labelMap.add("REPORT_TAX3", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.3)", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.3)");
+			labelMap.add("REPORT_TAX53", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.53)", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.53)");
 			
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
             labelMap.add("DOCUMENT_TYPE", "Document Type", "ประเภทเอกสาร");
@@ -38,7 +40,8 @@
             labelMap.add("MESSAGE", "Please Select Report Module", "กรุณาเลือกรายงาน");
             labelMap.add("TERM", "TERM", "ช่วง");
             labelMap.add("PAY_DATE","Pay Date","Pay Date");
-            labelMap.add("PRINT_DATE","Print Date","Print Date");            
+            labelMap.add("PRINT_DATE","Print Date","Print Date");       
+            labelMap.add("FILLING_DATE","Filling Date", "วันที่ยื่นแบบ");
             //
             labelMap.add("TERM_FIRST","First Term","ครึ่งปีแรก");
             labelMap.add("TERM_SECOND","Second Term","ครึ่งปีหลัง");
@@ -126,13 +129,14 @@
                     document.getElementById('YEAR').disabled = "";
                     document.getElementById('PRINT_DATE').disabled = "";
                     document.getElementById('DOCTOR_CODE_FROM').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='tax402_monthly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='tax402_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax3_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax53_monthly'){
                     d.style.display = 'block';
                     term.style.display = 'block';
                 	e.style.display = 'none';
                 	year.style.display = 'none';
                 	year_term.style.display = 'none';
                     document.getElementById('PAY_DATE').disabled = "";
+                    document.getElementById('FILLING_DATE').disabled = "";
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='ReportSummaryFrontPage01'){
@@ -146,10 +150,12 @@
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
                     year_term.style.display = 'block';
                 	e.style.display = 'none';
-                	d.style.display = 'none';
+                	d.style.display = 'block';
                 	term.style.display = 'none';
                 	year.style.display = 'none';
                     document.getElementById('YYYY').disabled = "";
+					document.getElementById('LABEL_PAYDATE').style.display = "none";
+					document.getElementById('INPUT_PAYDATE').style.display = "none";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='Tax402SummaryYearly' || mainForm.REPORT_FILE_NAME.value=='Tax91_52'){
                     year.style.display = 'block';
                 	e.style.display = 'none';
@@ -282,6 +288,8 @@
                         <option value="Tax402SummaryYearly">${labelMap.REPORT_402_YEARLY}</option>
                         <option value="SummaryTax402Yearly">${labelMap.REPORT_SUMMARY_402_YEARLY}</option>
                         <option value="Tax91_52">${labelMap.REPORT_TAX91}</option>
+                        <option value="tax53_monthly">${labelMap.REPORT_TAX3}</option>
+                        <option value="tax53_monthly">${labelMap.REPORT_TAX53}</option>
                     </select>
                 </tr>
                 <tbody id='year_term'>
@@ -293,7 +301,7 @@
                 <tbody id='term'>
 				<tr>
                     <td class="label"><label>${labelMap.MM}</label></td>
-                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
+                    <td class="input"><%=proUtil.selectMM402(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
                     <td class="label"><label>${labelMap.YYYY}</label></td>
                     <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
                 </tr>
@@ -328,10 +336,17 @@
                 </tbody>
                 <tbody id='Tax402'>
                 	<tr>
-                		<td class="label"><label for="PAY_DATE">${labelMap.PAY_DATE}</label></td>
-                		<td colspan="3" class="input">
+                		<td class="label" id="LABEL_PAYDATE"><label for="PAY_DATE">${labelMap.PAY_DATE}</label></td>
+                		<td colspan="3" class="input" id="INPUT_PAYDATE">
 	                		<input name="PAY_DATE" type="text" class="short" id="PAY_DATE" maxlength="10" value="" />
 	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PAY_DATE'); return false;" />
+                        </td>
+                	</tr>
+                	<tr>
+                		<td class="label"><label for="FILLING_DATE">${labelMap.FILLING_DATE}</label></td>
+                		<td colspan="3" class="input">
+	                		<input name="FILLING_DATE" type="text" class="short" id="FILLING_DATE" maxlength="10" value="" />
+	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('FILLING_DATE'); return false;" />
                         </td>
                 	</tr>
                 </tbody>

@@ -41,6 +41,7 @@ public class CareProvider {
     private String treatmentType;
     private String lineNo;
     private String receiptDate;
+    private String user;
     
     public String lYyyy, lMm, lDd, lHospitalCode, lInvNo, lInvDate, lHno, lPatientName, lDoctorDepartmentCode;
     public String lLocationCode, lLineNo, lOrderItemCode, lReceiptModeCode, lReceiptTypeCode, lPaymentModule, lDoctorCode;
@@ -88,6 +89,10 @@ public class CareProvider {
     public void newDoctor() {
         //doctor = new Doctor(this.getDoctorCode(), this.getHospitalCode(), this.getDBConnection());      
         doctor = new Doctor();
+    }
+    
+    public void setUser(String a){
+    	this.user = a;
     }
     
     public Doctor getDoctor() {
@@ -220,7 +225,7 @@ public class CareProvider {
                 this.tax_from_allocate = "N";
             } else{
                 this.guaranteeMsg = "";
-                this.lIsGuaranteeFromAlloc = "N";
+                this.lIsGuaranteeFromAlloc = "";
                 this.tax_from_allocate = "N";
                 this.lguaranteeAmt = 0.00;
             }
@@ -406,7 +411,9 @@ public class CareProvider {
                sql = sql + " where (PAYMENT_DATE >= '" + startDate + "'";
                sql = sql + " and PAYMENT_DATE <= '" + endDate + "')";
                sql = sql + " and PM.HOSPITAL_CODE = '" + hospital_code + "'";
-               sql = sql + " and DR.DOCTOR_TAX_CODE = '" + this.getDoctorCode() + "'";
+               //sql = sql + " and DR.DOCTOR_TAX_CODE = '" + this.getDoctorCode() + "'";
+               sql = sql + " and EXISTS (SELECT DOCTOR_TAX_CODE FROM DOCTOR WHERE HOSPITAL_CODE = '"+ hospital_code +"' AND CODE = '" + this.getDoctorCode() +
+            		       "' AND DR.DOCTOR_TAX_CODE = DOCTOR_TAX_CODE)";
                sql = sql + " group by DR.DOCTOR_TAX_CODE";
 
                 if (this.getStatement() == null) { this.setStatement(this.getDBConnection().getConnection().createStatement()); }
@@ -435,7 +442,7 @@ public class CareProvider {
 */
                     st.setTextSumDrAmt(Utils.toThaiMoney(rs.getString("sDrAmt")));
                     st.setTextSumTaxDrAmt(Utils.toThaiMoney(rs.getString("sDrTax")));
-                    st.setPrintDate(yyyy+mm+dd);
+                    st.setPrintDate("");
                     st.setUpdateDate(JDate.getDate());
                     st.setUpdateTime(JDate.getTime());
                     st.setUserId("");
@@ -622,7 +629,7 @@ public class CareProvider {
         td.setRecIsVoid(trnDaily.getRecIsVoid());
         td.setUpdateDate(JDate.getDate());
         td.setUpdateTime(JDate.getTime());
-        td.setUserId(Variables.getUserID());
+        td.setUserId(this.user);
         td.setInvoiceType(trnDaily.getInvoiceType());
         td.setTotalBillAmount(trnDaily.getTotalBillAmount());
         td.setTotalDrRecAmount(trnDaily.getTotalDrRecAmount());
@@ -651,7 +658,7 @@ public class CareProvider {
         td.setPremiumRecAmt(this.lPremiumRecAmt);
         td.setComputeDailyDate(JDate.getDate());
         td.setComputeDailyTime(JDate.getTime());
-        td.setComputeDailyUserID(this.guaranteeMsg+":"+Variables.getUserID());
+        td.setComputeDailyUserID(this.guaranteeMsg+":"+this.user);
         
         td.setYyyy(trnDaily.getYyyy());
         td.setMm(trnDaily.getMm());

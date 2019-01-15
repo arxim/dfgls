@@ -50,9 +50,14 @@
 
             request.setCharacterEncoding("UTF-8");
             DataRecord record = null, payorOfficeCategoryRec = null;
+            DataRecord payorRecLog;
+            String remark = "";
+            
             if (request.getParameter("MODE") != null) {
                 record = new DataRecord("PAYOR_OFFICE");
-                payorOfficeCategoryRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION AS DESCRIPTION FROM PAYOR_OFFICE_CATEGORY WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE").toString()+"' AND CODE = '" + DBMgr.getRecordValue(record, "PAYER_OFFICE_CATEGORY_CODE") + "'");
+                payorRecLog = new DataRecord("LOG_PAYOR_OFFICE");
+                payorOfficeCategoryRec = DBMgr.getRecord("SELECT CODE, NAME_THAI AS DESCRIPTION FROM PAYOR_OFFICE_CATEGORY WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE").toString()+"' AND CODE = '" + DBMgr.getRecordValue(record, "PAYER_OFFICE_CATEGORY_CODE") + "'");
+                
                 record.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                 record.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
                 record.addField("PAYOR_OFFICE_CATEGORY_CODE", Types.VARCHAR, request.getParameter("PAYOR_OFFICE_CATEGORY_CODE"));
@@ -63,17 +68,43 @@
                 record.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 record.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 record.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                
+                payorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
+                payorRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
+                payorRecLog.addField("PAYOR_OFFICE_CATEGORY_CODE", Types.VARCHAR, request.getParameter("PAYOR_OFFICE_CATEGORY_CODE"));
+                payorRecLog.addField("NAME_THAI", Types.VARCHAR, request.getParameter("NAME_THAI"));
+                payorRecLog.addField("NAME_ENG", Types.VARCHAR, request.getParameter("NAME_ENG"));
+                payorRecLog.addField("IS_ADVANCE_PAYMENT", Types.VARCHAR, request.getParameter("IS_ADVANCE_PAYMENT"));
+                payorRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+                payorRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
+                payorRecLog.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime(), true);
+                payorRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+
 
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
-
-                    if (DBMgr.insertRecord(record)) {
+                	payorRecLog.addField("REMARK", Types.VARCHAR, remark);
+                	
+                    if (DBMgr.insertRecord(record)&& DBMgr.insertRecord(payorRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/payor_office.jsp"));
                     } else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                     }
                 } else if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_UPDATE) {
-                	
-                    if (DBMgr.updateRecord(record)) {
+                	DataRecord payor = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, PAYOR_OFFICE_CATEGORY_CODE, NAME_THAI, NAME_ENG, IS_ADVANCE_PAYMENT, ACTIVE, UPDATE_DATE, UPDATE_TIME, USER_ID "+
+               				"FROM PAYOR_OFFICE WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+             		
+               		remark = "แก้ไข ";
+               		for(int i = 0; i < payor.getSize(); i++){
+               			if(!payor.getValueOfIndex(i).getValue().equalsIgnoreCase(record.getValueOfIndex(i).getValue())
+               					&& !record.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !record.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !record.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				System.out.println("แก้ไข"+record.getValueOfIndex(i).getName());
+               				remark += record.getValueOfIndex(i).getName()+", ";
+               			}
+               		}
+               		payorRecLog.addField("REMARK", Types.VARCHAR, remark.substring(0, remark.length()-2));
+               		if (DBMgr.updateRecord(record) && DBMgr.insertRecord(payorRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/payor_office.jsp"));
                     } else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));

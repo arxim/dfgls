@@ -283,14 +283,19 @@
             DBConnection con = new DBConnection();
 			con.connectToLocal();
             //con.connectToServer();
-//            Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
+			//Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
             
             //String sql = "SELECT CODE, NAME_THAI FROM DOCTOR WHERE " + cond + " ORDER BY CODE";
-            String sql = "SELECT DISTINCT D.CODE AS CODE, D.NAME_THAI AS NAME_THAI " + 
-                         "FROM SUMMARY_PAYMENT T INNER JOIN DOCTOR D ON T.DOCTOR_CODE=D.CODE AND T.HOSPITAL_CODE=D.HOSPITAL_CODE " +
-                         "WHERE " + cond + " "+
-                         //"AND D.CODE NOT IN (SELECT DOCTOR_CODE FROM SUMMARY_TAX_406 WHERE HOSPITAL_CODE = '00029' AND YYYY+MM = '201206')"+
-                         "ORDER BY D.CODE";
+            //String sql = "SELECT DISTINCT D.CODE AS CODE, D.NAME_THAI AS NAME_THAI " + 
+            //             "FROM SUMMARY_PAYMENT T INNER JOIN DOCTOR D ON T.DOCTOR_CODE=D.CODE AND T.HOSPITAL_CODE=D.HOSPITAL_CODE " +
+            //             "WHERE " + cond + " "+
+            //             "ORDER BY D.CODE";
+            String sql = "SELECT CODE, NAME_THAI FROM( SELECT DISTINCT D.DOCTOR_TAX_CODE AS CODE, D.NAME_THAI AS NAME_THAI, " +
+             "ROW_NUMBER() OVER(PARTITION BY D.DOCTOR_TAX_CODE ORDER BY D.DOCTOR_TAX_CODE, D.NAME_THAI ASC) AS 'RowNumber' " +
+             "FROM SUMMARY_PAYMENT T INNER JOIN DOCTOR D ON T.DOCTOR_CODE=D.CODE AND T.HOSPITAL_CODE=D.HOSPITAL_CODE " +
+             "WHERE " + cond + " "+
+             ")Q WHERE RowNumber = 1 " +
+      		 "ORDER BY CODE";
             ResultSet rs = con.executeQuery(sql);
             int i = 1;
             while (rs.next()) {

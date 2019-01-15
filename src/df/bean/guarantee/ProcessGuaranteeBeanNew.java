@@ -246,7 +246,13 @@ public class ProcessGuaranteeBeanNew {
     	boolean status = true;
     	String message = "Backup tax before guarantee";
     	
-        String sql_statement = "UPDATE TRN_DAILY SET OLD_TAX_AMT = DR_TAX_406+DR_TAX_402+DR_TAX_401, " +
+        String sql_statement = "UPDATE TRN_DAILY SET "+
+        //"OLD_TAX_AMT = DR_TAX_406+DR_TAX_402+DR_TAX_401, " +
+        "OLD_TAX_AMT = CASE WHEN TAX_TYPE_CODE = '401' THEN DR_TAX_401 ELSE "+
+        "CASE WHEN TAX_TYPE_CODE = '402' THEN DR_TAX_402 ELSE "+
+        "CASE WHEN TAX_TYPE_CODE = '406' THEN DR_TAX_406 ELSE "+
+        "'0' END END END, "+
+
         "OLD_DR_AMT = DR_AMT, HP_PREMIUM = AMOUNT_AFT_DISCOUNT "+
 		"WHERE TRANSACTION_DATE LIKE '"+year+""+month+"%' "+
 		"AND HOSPITAL_CODE = '"+hospital_code+"' AND BATCH_NO = '' ";
@@ -260,6 +266,7 @@ public class ProcessGuaranteeBeanNew {
         String sql_statement2 = "UPDATE TRN_DAILY SET TAX_FROM_ALLOCATE = 'N' " +
 		"WHERE TRANSACTION_DATE LIKE '"+year+""+month+"%' "+
 		"AND HOSPITAL_CODE = '"+hospital_code+"' AND BATCH_NO = '' "+
+		"AND (TAX_FROM_ALLOCATE <> 'Y' OR TAX_FROM_ALLOCATE IS NULL) "+
 		"AND ORDER_ITEM_CODE IN (SELECT CODE FROM ORDER_ITEM WHERE HOSPITAL_CODE = '"+hospital_code+"' " +
 		"AND IS_ALLOC_FULL_TAX = 'Y')";
 
@@ -653,7 +660,7 @@ public class ProcessGuaranteeBeanNew {
     		for(int i = 0; i < arr_guarantee.length; i++){
     			update_guarantee = "UPDATE STP_GUARANTEE SET GUARANTEE_AMOUNT = '"+arr_guarantee[i][3]+"' " +
     					"WHERE HOSPITAL_CODE = '"+hospital_code+"' "+
-    					"AND YYYY = '"+year+"' AND MM = '"+month+"' " +
+    					"AND YYYY = '"+year+"' AND MM = '"+month+"' AND IS_GUARANTEE_DAILY = 'Y' " +
     					"AND GUARANTEE_DR_CODE = '"+arr_guarantee[i][0]+"' "+
     					"AND GUARANTEE_CODE = '"+arr_guarantee[i][1]+"' "+
     					"AND ADMISSION_TYPE_CODE = '"+arr_guarantee[i][2]+"'";
@@ -1016,10 +1023,10 @@ public class ProcessGuaranteeBeanNew {
                     
                     if(g_setup[i][16].equals("")||g_setup[i][16].equals("AF")){
                     	//if guarantee from after allocate
-                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'F' THEN AMOUNT_AFT_DISCOUNT ELSE DR_AMT END, ";
+                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'N' AND COMPUTE_DAILY_USER_ID NOT LIKE '%Employee%' THEN AMOUNT_AFT_DISCOUNT ELSE DR_AMT END, ";
                     }else{
                     	//if guarantee from before allocate
-                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'D' THEN DR_AMT ELSE AMOUNT_AFT_DISCOUNT END, ";
+                    	sql_statement += "GUARANTEE_AMT = CASE WHEN IS_GUARANTEE_FROM_ALLOC = 'Y' OR COMPUTE_DAILY_USER_ID LIKE '%Employee%' THEN DR_AMT ELSE AMOUNT_AFT_DISCOUNT END, ";
                     }
                     
                     sql_statement += "IS_PAID = '"+ is_paid + "', " +
@@ -1120,6 +1127,18 @@ public class ProcessGuaranteeBeanNew {
     		this.guarantee_balance = this.guarantee_balance - (this.trn_guarantee_amt+temp) < 0 ? 0 : this.guarantee_balance - this.trn_guarantee_amt;
             this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
             this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
+    	}else if(this.guarantee_allocate_condition.equals("A")){
+    		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+    			this.dr_amt = this.trn_guarantee_amt * (this.percent_in_allocate/100);
+    		}else{
+    			this.dr_amt = this.trn_guarantee_amt;
+    		}
+    		
+    		this.guarantee_paid = this.guarantee_paid + this.dr_amt;
+    		this.sum_trn_guarantee_balance = this.sum_trn_guarantee_balance - this.dr_amt;
+    		this.guarantee_balance = this.guarantee_balance - this.dr_amt < 0 ? 0 : this.guarantee_balance - this.dr_amt;
+            this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
+            this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
         }else{
         	if(this.sum_amount_aft_discount <= this.guarantee_amt){
         		this.dr_amt = amount;
@@ -1204,12 +1223,54 @@ public class ProcessGuaranteeBeanNew {
                 		this.guarantee_note = "ABSORB SOME GUARANTEE";
                 		this.dr_amt = over_guarantee_amount;
                 		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
-                		//this.dr_amt = (this.dr_amt - this.guarantee_balance);
-                		//this.trn_guarantee_paid_amt = this.guarantee_balance;
                 	}
             	}
             }
         	this.guarantee_balance = 0;
+    	}else if(this.guarantee_allocate_condition.equals("A")){
+                if(this.guarantee_balance == 0){
+            		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+            			this.dr_amt = this.trn_guarantee_amt * (this.percent_over_allocate/100);
+            		}else{
+            			this.dr_amt = this.trn_guarantee_amt;
+            		}
+                	if(!t[t_index][5].equals("")){
+                		this.guarantee_note = "OVER GUARANTEE "+t[t_index][16]+" to "+this.percent_over_allocate;
+                	}else{
+                		this.guarantee_note = "";
+                	}
+                }
+                if(this.guarantee_balance > 0 && this.guarantee_balance < (this.trn_guarantee_amt * (this.percent_over_allocate/100))){
+                	trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
+            		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance) * (percent_over_allocate/100);
+            		}else{
+                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance);
+            		}
+
+                	if(!t[t_index][5].equals("")){ //if Receipt transaction
+                		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
+                            this.dr_amt = trn_in_guarantee_amount+over_guarantee_amount;
+                		}else{
+                			this.dr_amt = this.trn_guarantee_amt;
+                		}
+
+                		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
+                	}else{ //if Invoice transaction
+                    	if(this.guarantee_balance <= 0){
+                    		this.guarantee_note = "";
+                    	}else{
+                    		this.guarantee_note = "ABSORB SOME GUARANTEE";
+                    		this.dr_amt = over_guarantee_amount;
+                    		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
+                    	}
+                	}
+                }else{//add block 20180220
+                	this.dr_amt = this.trn_guarantee_amt * (percent_in_allocate /100);
+            		this.guarantee_note = "IN GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount);
+                }
+            	//this.guarantee_balance = 0; //comment 20180220
+        		this.guarantee_balance = this.guarantee_balance - this.dr_amt < 0 ? 0 : this.guarantee_balance - this.dr_amt; //add 20180220
     	}else{
     		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
                 trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
@@ -1244,6 +1305,7 @@ public class ProcessGuaranteeBeanNew {
             		amount = amount - this.guarantee_balance;
             	}
         	}
+            this.guarantee_balance = 0; //add 20180220
     	}
         if(t[t_index][21].toString().equals("Y")){//if tax from after allocate
             this.tax_amt = this.dr_amt;        		
@@ -1252,7 +1314,7 @@ public class ProcessGuaranteeBeanNew {
         	this.tax_amt = this.guarantee_note.equals("ABSORB SOME GUARANTEE")? amountAfterDiscount - this.trn_guarantee_paid_amt : amountAfterDiscount;
         }
 		this.guarantee_paid = this.guarantee_paid + temp_amount;
-        this.guarantee_balance = 0;
+        //this.guarantee_balance = 0; //comment 20180220
         //this.tax_amt = this.guarantee_note.equals("ABSORB SOME GUARANTEE")? this.tax_amt - this.trn_guarantee_paid_amt : this.tax_amt;
         this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
         this.sum_trn_guarantee_balance = this.sum_trn_guarantee_balance - this.trn_guarantee_amt;
@@ -1361,7 +1423,7 @@ public class ProcessGuaranteeBeanNew {
             "IS_PAID, DR_AMT, HP_AMT, NOR_ALLOCATE_PCT, AMOUNT_AFT_DISCOUNT, DR_TAX_406, " + //13-18
             "HP_TAX, CASE WHEN DR_TAX_406+DR_TAX_402 > DR_AMT THEN 'AMT' ELSE 'A' END, " + //19-20
             "TAX_FROM_ALLOCATE, AMOUNT_AFT_DISCOUNT, OLD_TAX_AMT, TRANSACTION_DATE, RECEIPT_DATE "+ //21-25
-            ", IS_GUARANTEE_FROM_ALLOC "+ //26 Fix Not Allocate from Guarantee Process
+            ", IS_GUARANTEE_FROM_ALLOC, IS_PARTIAL "+ //26-27 Fix Not Allocate from Guarantee Process
             "FROM TRN_DAILY "+
             "WHERE GUARANTEE_DR_CODE = '"+guarantee_table[i][1]+"' "+
             "AND GUARANTEE_CODE = '"+guarantee_table[i][2]+"' "+
@@ -1420,7 +1482,7 @@ public class ProcessGuaranteeBeanNew {
                 	
 //==================GUARANTEE MONTHLY/DAILY
                     if(this.guarantee_amt>0){
-                    	if(this.guarantee_allocate_condition.equals("Y")){
+                    	if(this.guarantee_allocate_condition.equals("Y") || this.guarantee_allocate_condition.equals("A")){
                         //=================== BGH METHOD ===================//
                     		if(this.guarantee_balance >= this.trn_guarantee_amt){//---in guarantee
                             	this.inGuaranteeAllocate(i, x, guarantee_table, transaction_table);
@@ -1571,6 +1633,7 @@ public class ProcessGuaranteeBeanNew {
                         "AND GUARANTEE_TERM_YYYY = '"+transaction_table[x][10]+"' "+
                         "AND HOSPITAL_CODE = '"+hospital_code+"' "+
                         "AND BATCH_NO = '' "+
+                        "AND IS_PARTIAL = '"+transaction_table[x][27]+"' "+
                         "AND ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' "+
                         onwardCondition;
                     	stemp = ss;
@@ -1643,6 +1706,17 @@ public class ProcessGuaranteeBeanNew {
         System.out.println("\nGuarantee Calculate Finish Ending Time "+JDate.getTime());
         return status;
     }
+    private String calculateExtraPreviousGuarantee(){ 
+    	String sql = "UPDATE TRN_DAILY SET GUARANTEE_NOTE = 'OLD EXTRA' " 
+    	+ "FROM TRN_DAILY T " 
+    	+ "LEFT OUTER JOIN ( " 
+    	+ "SELECT * FROM STP_GUARANTEE " 
+    	+ "WHERE HOSPITAL_CODE='"+this.hospital_code+"' AND YYYY+MM='"+JDate.getPreviousBatch(this.month, this.year)+"' AND ACTIVE='1' " 
+    	+ "AND GUARANTEE_EXCLUDE_AMOUNT >0 )G ON T.HOSPITAL_CODE = G.HOSPITAL_CODE AND T.DOCTOR_CODE = G.GUARANTEE_DR_CODE " 
+    	+ "WHERE T.HOSPITAL_CODE ='"+this.hospital_code+"' AND ( T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' AND T.VERIFY_DATE < '"+this.year+this.month+"00') " 
+    	+ "AND T.VERIFY_DATE+T.VERIFY_TIME BETWEEN G.START_DATE+G.START_TIME AND G.END_DATE+G.END_TIME "; 
+    	return sql;
+    }
     
     private boolean calculatePreviousGuarantee(){
         boolean status = true;
@@ -1658,19 +1732,20 @@ public class ProcessGuaranteeBeanNew {
         
         String sql_trn = "SELECT T.INVOICE_NO, T.INVOICE_DATE, T.LINE_NO, T.VERIFY_DATE, " + //0-3
         "T.VERIFY_TIME, T.DOCTOR_CODE, DR.GUARANTEE_DR_CODE, ISNULL(T.DR_AMT,0), ISNULL(T.AMOUNT_AFT_DISCOUNT,0), " +//4-8
-        "'' AS GUARANTEE_SOURCE, T.ADMISSION_TYPE_CODE, 'VER' AS GUARANTEE_DAY, ISNULL(T.DR_TAX_406,0), T.TRANSACTION_DATE  "+ //9-13
+        "'' AS GUARANTEE_SOURCE, T.ADMISSION_TYPE_CODE, 'VER' AS GUARANTEE_DAY, ISNULL(T.DR_TAX_406,0), " +//9-12
+        "T.TRANSACTION_DATE, T.IS_PARTIAL "+ //13-14
         "FROM TRN_DAILY T "+
         "LEFT OUTER JOIN DOCTOR DR ON T.DOCTOR_CODE = DR.CODE AND T.HOSPITAL_CODE = DR.HOSPITAL_CODE "+
         "WHERE T.TRANSACTION_DATE LIKE '"+this.year+this.month+"%' " +
-        "AND T.VERIFY_DATE < '"+this.year+this.month+"' AND T.VERIFY_DATE != '' " +
-        "AND T.VERIFY_TIME <> '' "+
-        "AND T.HOSPITAL_CODE = '"+this.hospital_code+"' " +
-        "AND T.IS_GUARANTEE = 'Y' AND INVOICE_TYPE <> 'ORDER' "+
-        "AND T.GUARANTEE_NOTE = '' AND IS_ONWARD <> 'Y' AND T.BATCH_NO = '' "+
+        "AND T.VERIFY_DATE <= '"+this.year+this.month+"01' AND T.VERIFY_DATE != '' " +
+        "AND T.VERIFY_TIME <> '' AND T.HOSPITAL_CODE = '"+this.hospital_code+"' " +
+        "AND T.IS_GUARANTEE = 'Y' AND INVOICE_TYPE <> 'ORDER' AND GUARANTEE_NOTE != 'OLD EXTRA' "+
+        "AND T.GUARANTEE_NOTE = '' AND IS_ONWARD <> 'Y' AND T.BATCH_NO = '' AND T.ACTIVE = '1' "+
         "ORDER BY YYYY DESC, VERIFY_DATE+VERIFY_TIME ASC";
         
         try {
         	System.out.println("Select Previous Guarantee : "+JDate.getTime());
+        	cdb.insert(calculateExtraPreviousGuarantee());
         	cdb.insert(t);
 			transaction_table = cdb.query(sql_trn);
         } catch (Exception ex) {
@@ -1791,6 +1866,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
@@ -1916,6 +1992,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
@@ -2041,6 +2118,7 @@ public class ProcessGuaranteeBeanNew {
 		                "AND INVOICE_DATE = '"+transaction_table[i][1]+"' "+
 		                "AND BATCH_NO = '' "+
 		                "AND TRANSACTION_DATE = '"+transaction_table[i][13]+"' "+
+		                "AND IS_PARTIAL = '"+transaction_table[i][14]+"' "+
 		                "AND LINE_NO = '"+transaction_table[i][2]+"'";
 		                
 		        		try {
@@ -2111,6 +2189,7 @@ public class ProcessGuaranteeBeanNew {
     						 " AND TD.GUARANTEE_TYPE  = 'MMY' " + 
     						 " AND TD.GUARANTEE_TERM_YYYY+TD.GUARANTEE_TERM_MM = '" + this.year + this.month + "' " + 
     						 " AND TD.ACTIVE = 1 " + 
+    						 " AND TD.YYYY+TD.MM = '" + this.year + this.month + "' " +
     						 //" AND TD.GUARANTEE_NOTE LIKE 'OVER%' "+
     						 " AND TD.GUARANTEE_NOTE != '' "+
     						 " GROUP BY TD.GUARANTEE_DR_CODE, GUARANTEE_AMOUNT "+
@@ -2178,7 +2257,7 @@ public class ProcessGuaranteeBeanNew {
 					" SELECT DISTINCT SG.YYYY , SG.MM  , 'ProcessGuarantee'  , SG.GUARANTEE_DR_CODE , SG.HOSPITAL_CODE ,  (START_DATE+START_TIME) " + 
 					" , EP.CODE  , EP.SIGN , EP.ACCOUNT_CODE , SG.DEDUCT_ABSORB_AMOUNT ,  SG.DEDUCT_ABSORB_AMOUNT , ''  " +
 					" , ''  , '' , '' , '' , SG.YYYY+SG.MM , SG.START_DATE  , 'Absorb Guarantee : Monthly To Year ' + (SG.START_DATE + '' + SG.START_TIME) " + 
-					" , EP.TAX_TYPE_CODE , '' , DR.DEPARTMENT_CODE , '' , '' , '' , '' , '2', SG.GUARANTEE_DR_CODE " +
+					" , EP.TAX_TYPE_CODE , '' , DR.DEPARTMENT_CODE, '', '', '', '2', SG.GUARANTEE_DR_CODE " +
 					" FROM STP_GUARANTEE SG " +
 					" LEFT OUTER JOIN DOCTOR DR ON SG.GUARANTEE_DR_CODE  =  DR.GUARANTEE_DR_CODE AND  SG.HOSPITAL_CODE  =  DR.HOSPITAL_CODE " +
 					" LEFT OUTER JOIN DEPARTMENT DP ON DR.DEPARTMENT_CODE  = DR.DEPARTMENT_CODE AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE " + 
@@ -2594,7 +2673,7 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
 				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percentage)/100);
 			}
-			//System.out.println(d.addData(al, "TRN_DAILY"));
+			System.out.println(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
 		}else{
 			System.out.println("Advance Some : "+al.size());

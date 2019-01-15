@@ -108,4 +108,11 @@ public class ImportTransactionResultBean extends InterfaceTextFileBean {
 	public void setHospitalCode(String hospitalCode) {
 		hospital_code = hospitalCode;
 	}
+
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

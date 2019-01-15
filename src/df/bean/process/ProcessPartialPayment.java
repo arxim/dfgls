@@ -14,7 +14,7 @@ public class ProcessPartialPayment {
 	private String startDate;
 	private String endDate;
 	private ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String,String>>();
-
+	
 	public boolean processPartial(String hospitalCode, String mm, String yyyy, String startDate, String endDate){
 		boolean result = false;
 		this.hospitalCode = hospitalCode;
@@ -36,6 +36,7 @@ public class ProcessPartialPayment {
 			System.out.println("\nPartial Payment Processing");
 			if(this.backUpData(yyyy,mm)){
 				System.out.println("Start Partial Process : "+JDate.getTime());
+				System.out.println(this.arrData);
 				result = this.culculate(this.arrData,mm,yyyy); //New Version (TRN_PARTIAL)
 				//result = this.culculatePartial(this.arrData,mm,yyyy); //Old Version No (TRN_PARTIAL)
 				System.out.println("Finish Partial Process : "+JDate.getTime());
@@ -53,285 +54,289 @@ public class ProcessPartialPayment {
 		HashMap<String, String > hashData = new HashMap<String, String>();
 		for(int i=0;i<arrLineNo.size();i++){
 			hashData = arrLineNo.get(i);
+			
 				this.sql = "INSERT INTO TRN_DAILY (" +
-				" HOSPITAL_CODE," +
-				" INVOICE_NO," +
-				" INVOICE_DATE," +
-				" RECEIPT_NO," +
-				" RECEIPT_DATE," +
-				" TRANSACTION_DATE," +
-				" HN_NO," +
-				" PATIENT_NAME," +
-				" EPISODE_NO," +
-				" NATIONALITY_CODE," +
-				" NATIONALITY_DESCRIPTION," +
-				" PAYOR_OFFICE_CODE," +
-				" PAYOR_OFFICE_NAME, " +
-				" TRANSACTION_MODULE," +
-				" TRANSACTION_TYPE," +
-				" PAYOR_OFFICE_CATEGORY_CODE," +
-				" PAYOR_OFFICE_CATEGORY_DESCRIPTION," +
-				" IS_WRITE_OFF," +
-				" LINE_NO," +
-				" ADMISSION_TYPE_CODE,"+ 
-				" PATIENT_DEPARTMENT_CODE," +
-				" PATIENT_LOCATION_CODE," +
-				" RECEIPT_DEPARTMENT_CODE," +
-				" RECEIPT_LOCATION_CODE," +
-				" DOCTOR_DEPARTMENT_CODE," +
-				" ORDER_ITEM_CODE," +
-				" ORDER_ITEM_DESCRIPTION," +
-				" DOCTOR_CODE," +
-				" VERIFY_DATE,"+
-				" VERIFY_TIME," +
-				" DOCTOR_EXECUTE_CODE," +
-				" EXECUTE_DATE," +
-				" EXECUTE_TIME," +
-				" DOCTOR_RESULT_CODE," +
-				" OLD_DOCTOR_CODE," +
-				" RECEIPT_TYPE_CODE," +
-				" AMOUNT_BEF_DISCOUNT," +
-				" AMOUNT_OF_DISCOUNT," +
-				" AMOUNT_AFT_DISCOUNT," +
-				" AMOUNT_BEF_WRITE_OFF," +
-				" INV_IS_VOID," +
-				" REC_IS_VOID," +
-				" UPDATE_DATE," +
-				" UPDATE_TIME," +
-				" USER_ID," +
-				" BATCH_NO," +
-				" YYYY," +
-				" MM," +
-				" DD," +
-				" NOR_ALLOCATE_AMT," +
-				" NOR_ALLOCATE_PCT," +
-				" DR_AMT," +
-				" OLD_DR_AMT," +
-				" DR_TAX_400," +
-				" DR_TAX_401," +
-				" DR_TAX_402," +
-				" DR_TAX_406," +
-				" TAX_TYPE_CODE," +
-				" DR_PREMIUM," +
-				" GUARANTEE_PAID_AMT," +
-				" GUARANTEE_AMT," +
-				" GUARANTEE_CODE," +
-				" GUARANTEE_DR_CODE," +
-				" GUARANTEE_TYPE," +
-				" GUARANTEE_DATE_TIME," +
-				" GUARANTEE_TERM_MM," +
-				" GUARANTEE_TERM_YYYY," +
-				" GUARANTEE_NOTE," +
-				" IS_GUARANTEE," +
-				" HP_AMT," +
-				" HP_PREMIUM," +
-				" HP_TAX," +
-				" COMPUTE_DAILY_DATE," +
-				" COMPUTE_DAILY_TIME," +
-				" COMPUTE_DAILY_USER_ID," +
-				" DOCTOR_CATEGORY_CODE," +
-				" EXCLUDE_TREATMENT," +
-				" PREMIUM_CHARGE_PCT," +
-				" PREMIUM_REC_AMT," +
-				" ACTIVE," +
-				" INVOICE_TYPE," +
-				" TOTAL_BILL_AMOUNT," +
-				" TOTAL_DR_REC_AMOUNT," +
-				" OLD_AMOUNT," +
-				" PAY_BY_CASH," +
-				" PAY_BY_AR," +
-				" PAY_BY_DOCTOR," +
-				" PAY_BY_PAYOR," +
-				" PAY_BY_CASH_AR," +
-				" IS_PAID," +
-				" ORDER_ITEM_ACTIVE," +
-				" ORDER_ITEM_CATEGORY_CODE," +
-				" WRITE_OFF_BILL_AMT," +
-				" WRITE_OFF_RECEIPT_AMT," +
-				" OLD_DR_AMT_BEF_WRITE_OFF," +
-				" DR_AMT_BEF_WRITE_OFF," +
-				" DR_PREMIUM_BEF_WRITE_OFF," +
-				" HP_AMT_BEF_WRITE_OFF," +
-				" HP_PREMIUM_WRITE_OFF," +
-				" OLD_TAX_AMT," +
-				" DR_TAX_406_BEF_WRITE_OFF," +
-				" TAX_FROM_ALLOCATE," +
-				" IS_GUARANTEE_FROM_ALLOC," +
-				" IS_PARTIAL) " +
-			"SELECT " +
-				" T.HOSPITAL_CODE," +
-				" INVOICE_NO," +
-				" INVOICE_DATE," +
-				" '"+hashData.get("RECEIPT_NO")+"'," + 
-				" '"+hashData.get("RECEIPT_DATE")+"'," +
-				" T.TRANSACTION_DATE," +
-				" HN_NO," + 
-				" PATIENT_NAME," +
-				" EPISODE_NO,"+ 
-				" NATIONALITY_CODE," + 
-				" NATIONALITY_DESCRIPTION," + 
-				" PAYOR_OFFICE_CODE," + 
-				" PAYOR_OFFICE_NAME," + 
-				" 'AR'," + 
-				" TRANSACTION_TYPE," + 
-				" PAYOR_OFFICE_CATEGORY_CODE," +
-				" PAYOR_OFFICE_CATEGORY_DESCRIPTION," +
-				" IS_WRITE_OFF," + 
-				" '"+hashData.get("LINE_NO")+"'," + 
-				" ADMISSION_TYPE_CODE,"+ 
-				" PATIENT_DEPARTMENT_CODE," +
-				" PATIENT_LOCATION_CODE," + 
-				" RECEIPT_DEPARTMENT_CODE," +
-				" RECEIPT_LOCATION_CODE," + 
-				" DOCTOR_DEPARTMENT_CODE," +
-				" ORDER_ITEM_CODE," + 
-				" ORDER_ITEM_DESCRIPTION," + 
-				" DOCTOR_CODE," + 
-				" VERIFY_DATE," + 
-				" VERIFY_TIME," + 
-				" DOCTOR_EXECUTE_CODE," + 
-				" EXECUTE_DATE," + 
-				" EXECUTE_TIME," + 
-				" DOCTOR_RESULT_CODE," +
-				" OLD_DOCTOR_CODE," + 
-				" T.RECEIPT_TYPE_CODE," + 
-				" AMOUNT_BEF_DISCOUNT," +
-				" AMOUNT_OF_DISCOUNT," +
-				//----AMOUNT_AFT_DISCOUNT
-				" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
-				" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
-				" THEN AMOUNT_AFT_DISCOUNT" + //IF Partial allocate > amount for payment then use that amount
-				" ELSE " +
-				" (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)* P.AMOUNT_AFT_DISCOUNT)/100)" +
-				" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I,TRN_PARTIAL P"+
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
-				//----AMOUNT_AFT_DISCOUNT
-				" AMOUNT_BEF_WRITE_OFF," +
-				" INV_IS_VOID," +
-				" REC_IS_VOID," +
-				" T.UPDATE_DATE," +
-				" T.UPDATE_TIME," +
-				" T.USER_ID," +
-				" BATCH_NO," +
-				" '"+yyyy+"'," +
-				" '"+mm+"'," +
-				" DD," +
-				" NOR_ALLOCATE_AMT," +
-				" NOR_ALLOCATE_PCT," +
-				//----DR_AMT
-				" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
-				" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P" + 
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
-				" THEN DR_AMT" + //IF Partial allocate > amount for payment then use that amount
-				" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
-				" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I, TRN_PARTIAL P" + 
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
-				//----DR_AMT
-				" OLD_DR_AMT," +
-				" DR_TAX_400," +
-				" DR_TAX_401," +
-				" DR_TAX_402," +
-				//----DR_TAX_406
-				" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
-				" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
-				" THEN DR_TAX_406" + //IF Partial allocate > amount for payment then use that amount
-				" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.TAX_AMT)/100)" +
-				" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P "+ 
-				" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
-				" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
-				" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
-				" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END,"+ 
-				//----DR_TAX_406
-				" TAX_TYPE_CODE," +
-				" DR_PREMIUM," +
-				" GUARANTEE_PAID_AMT," +
-				" GUARANTEE_AMT," +
-				" GUARANTEE_CODE," +
-				" GUARANTEE_DR_CODE," +
-				" GUARANTEE_TYPE," +
-				" GUARANTEE_DATE_TIME," +
-				" GUARANTEE_TERM_MM," +
-				" GUARANTEE_TERM_YYYY," +
-				" GUARANTEE_NOTE," +
-				" IS_GUARANTEE," +
-				" '0', "+
-				//" HP_AMT," +
-				" HP_PREMIUM," +
-				" HP_TAX," +
-				" COMPUTE_DAILY_DATE," +
-				" COMPUTE_DAILY_TIME," +
-				" COMPUTE_DAILY_USER_ID," +
-				" DOCTOR_CATEGORY_CODE," +
-				" EXCLUDE_TREATMENT," +
-				" PREMIUM_CHARGE_PCT," +
-				" PREMIUM_REC_AMT," +
-				" ACTIVE," +
-				" INVOICE_TYPE," +
-				" TOTAL_BILL_AMOUNT," +
-				" TOTAL_DR_REC_AMOUNT," +
-				" OLD_AMOUNT," +
-				" PAY_BY_CASH," +
-				//" CASE WHEN SUBSTRING(I.RECEIPT_DATE,1,6) = SUBSTRING(T.INVOICE_DATE,1,6) THEN PAY_BY_AR ELSE 'Y' END, " +
-				" 'Y'," +
-				" PAY_BY_DOCTOR," +
-				" PAY_BY_PAYOR," +
-				//" CASE WHEN SUBSTRING(I.RECEIPT_DATE,1,6) = SUBSTRING(T.INVOICE_DATE,1,6) THEN 'Y' ELSE PAY_BY_CASH_AR END, " +
-				" PAY_BY_CASH_AR," +
-				" IS_PAID," +
-				" ORDER_ITEM_ACTIVE," +
-				" ORDER_ITEM_CATEGORY_CODE," +
-				" WRITE_OFF_BILL_AMT," +
-				" WRITE_OFF_RECEIPT_AMT," +
-				" OLD_DR_AMT_BEF_WRITE_OFF," +
-				" DR_AMT_BEF_WRITE_OFF," +
-				" DR_PREMIUM_BEF_WRITE_OFF," +
-				" HP_AMT_BEF_WRITE_OFF," +
-				" HP_PREMIUM_WRITE_OFF," +
-				" OLD_TAX_AMT," +
-				" DR_TAX_406_BEF_WRITE_OFF," +
-				" TAX_FROM_ALLOCATE," +
-				" IS_GUARANTEE_FROM_ALLOC," +
-				" 'Y'" +
-				//" FROM TRN_DAILY "+ 
-				//" WHERE LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'" +
-				" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I "+
-				" WHERE T.INVOICE_NO = I.BILL_NO "+
-				" AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "+
-				" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
-				" AND LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'" +
-				" AND BATCH_NO = ''"+
-				//" AND DR_AMT > 0" +
-				" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"'";
-				//System.out.println("sql = " + this.sql);
+						" HOSPITAL_CODE," +
+						" INVOICE_NO," +
+						" INVOICE_DATE," +
+						" RECEIPT_NO," +
+						" RECEIPT_DATE," +
+						" TRANSACTION_DATE," +
+						" HN_NO," +
+						" PATIENT_NAME," +
+						" EPISODE_NO," +
+						" NATIONALITY_CODE," +
+						" NATIONALITY_DESCRIPTION," +
+						" PAYOR_OFFICE_CODE," +
+						" PAYOR_OFFICE_NAME, " +
+						" TRANSACTION_MODULE," +
+						" TRANSACTION_TYPE," +
+						" PAYOR_OFFICE_CATEGORY_CODE," +
+						" PAYOR_OFFICE_CATEGORY_DESCRIPTION," +
+						" IS_WRITE_OFF," +
+						" LINE_NO," +
+						" ADMISSION_TYPE_CODE,"+ 
+						" PATIENT_DEPARTMENT_CODE," +
+						" PATIENT_LOCATION_CODE," +
+						" RECEIPT_DEPARTMENT_CODE," +
+						" RECEIPT_LOCATION_CODE," +
+						" DOCTOR_DEPARTMENT_CODE," +
+						" ORDER_ITEM_CODE," +
+						" ORDER_ITEM_DESCRIPTION," +
+						" DOCTOR_CODE," +
+						" VERIFY_DATE,"+
+						" VERIFY_TIME," +
+						" DOCTOR_EXECUTE_CODE," +
+						" EXECUTE_DATE," +
+						" EXECUTE_TIME," +
+						" DOCTOR_RESULT_CODE," +
+						" OLD_DOCTOR_CODE," +
+						" RECEIPT_TYPE_CODE," +
+						" AMOUNT_BEF_DISCOUNT," +
+						" AMOUNT_OF_DISCOUNT," +
+						" AMOUNT_AFT_DISCOUNT," +
+						" AMOUNT_BEF_WRITE_OFF," +
+						" INV_IS_VOID," +
+						" REC_IS_VOID," +
+						" UPDATE_DATE," +
+						" UPDATE_TIME," +
+						" USER_ID," +
+						" BATCH_NO," +
+						" YYYY," +
+						" MM," +
+						" DD," +
+						" NOR_ALLOCATE_AMT," +
+						" NOR_ALLOCATE_PCT," +
+						" DR_AMT," +
+						" OLD_DR_AMT," +
+						" DR_TAX_400," +
+						" DR_TAX_401," +
+						" DR_TAX_402," +
+						" DR_TAX_406," +
+						" TAX_TYPE_CODE," +
+						" DR_PREMIUM," +
+						" GUARANTEE_PAID_AMT," +
+						" GUARANTEE_AMT," +
+						" GUARANTEE_CODE," +
+						" GUARANTEE_DR_CODE," +
+						" GUARANTEE_TYPE," +
+						" GUARANTEE_DATE_TIME," +
+						" GUARANTEE_TERM_MM," +
+						" GUARANTEE_TERM_YYYY," +
+						" GUARANTEE_NOTE," +
+						" IS_GUARANTEE," +
+						" HP_AMT," +
+						" HP_PREMIUM," +
+						" HP_TAX," +
+						" COMPUTE_DAILY_DATE," +
+						" COMPUTE_DAILY_TIME," +
+						" COMPUTE_DAILY_USER_ID," +
+						" DOCTOR_CATEGORY_CODE," +
+						" EXCLUDE_TREATMENT," +
+						" PREMIUM_CHARGE_PCT," +
+						" PREMIUM_REC_AMT," +
+						" ACTIVE," +
+						" INVOICE_TYPE," +
+						" TOTAL_BILL_AMOUNT," +
+						" TOTAL_DR_REC_AMOUNT," +
+						" OLD_AMOUNT," +
+						" PAY_BY_CASH," +
+						" PAY_BY_AR," +
+						" PAY_BY_DOCTOR," +
+						" PAY_BY_PAYOR," +
+						" PAY_BY_CASH_AR," +
+						" IS_PAID," +
+						" ORDER_ITEM_ACTIVE," +
+						" ORDER_ITEM_CATEGORY_CODE," +
+						" WRITE_OFF_BILL_AMT," +
+						" WRITE_OFF_RECEIPT_AMT," +
+						" OLD_DR_AMT_BEF_WRITE_OFF," +
+						" DR_AMT_BEF_WRITE_OFF," +
+						" DR_PREMIUM_BEF_WRITE_OFF," +
+						" HP_AMT_BEF_WRITE_OFF," +
+						" HP_PREMIUM_WRITE_OFF," +
+						" OLD_TAX_AMT," +
+						" DR_TAX_406_BEF_WRITE_OFF," +
+						" TAX_FROM_ALLOCATE," +
+						" IS_GUARANTEE_FROM_ALLOC," +
+						" IS_PARTIAL) " +
+					"SELECT " +
+						" T.HOSPITAL_CODE," +
+						" INVOICE_NO," +
+						" INVOICE_DATE," +
+						" '"+hashData.get("RECEIPT_NO")+"'," + 
+						" '"+hashData.get("RECEIPT_DATE")+"'," +
+						" T.TRANSACTION_DATE," +
+						" HN_NO," + 
+						" PATIENT_NAME," +
+						" EPISODE_NO,"+ 
+						" NATIONALITY_CODE," + 
+						" NATIONALITY_DESCRIPTION," + 
+						" PAYOR_OFFICE_CODE," + 
+						" PAYOR_OFFICE_NAME," + 
+						" 'AR'," + 
+						" TRANSACTION_TYPE," + 
+						" PAYOR_OFFICE_CATEGORY_CODE," +
+						" PAYOR_OFFICE_CATEGORY_DESCRIPTION," +
+						" IS_WRITE_OFF," + 
+						" '"+hashData.get("LINE_NO")+"'," + 
+						" ADMISSION_TYPE_CODE,"+ 
+						" PATIENT_DEPARTMENT_CODE," +
+						" PATIENT_LOCATION_CODE," + 
+						" RECEIPT_DEPARTMENT_CODE," +
+						" RECEIPT_LOCATION_CODE," + 
+						" DOCTOR_DEPARTMENT_CODE," +
+						" ORDER_ITEM_CODE," + 
+						" ORDER_ITEM_DESCRIPTION," + 
+						" DOCTOR_CODE," + 
+						" VERIFY_DATE," + 
+						" VERIFY_TIME," + 
+						" DOCTOR_EXECUTE_CODE," + 
+						" EXECUTE_DATE," + 
+						" EXECUTE_TIME," + 
+						" DOCTOR_RESULT_CODE," +
+						" OLD_DOCTOR_CODE," + 
+						" T.RECEIPT_TYPE_CODE," + 
+						" AMOUNT_BEF_DISCOUNT," +
+						" AMOUNT_OF_DISCOUNT," +
+						//----AMOUNT_AFT_DISCOUNT
+						" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
+						" THEN AMOUNT_AFT_DISCOUNT" + //IF Partial allocate > amount for payment then use that amount
+						" ELSE " +
+						" (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)* P.AMOUNT_AFT_DISCOUNT)/100)" +
+						" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I,TRN_PARTIAL P"+
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
+						//----AMOUNT_AFT_DISCOUNT
+						" AMOUNT_BEF_WRITE_OFF," +
+						" INV_IS_VOID," +
+						" REC_IS_VOID," +
+						" T.UPDATE_DATE," +
+						" T.UPDATE_TIME," +
+						" T.USER_ID," +
+						" BATCH_NO," +
+						" '"+yyyy+"'," +
+						" '"+mm+"'," +
+						" DD," +
+						" NOR_ALLOCATE_AMT," +
+						" NOR_ALLOCATE_PCT," +
+						//----DR_AMT
+						" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P" + 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
+						" THEN DR_AMT" + //IF Partial allocate > amount for payment then use that amount
+						" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
+						" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I, TRN_PARTIAL P" + 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
+						//----DR_AMT
+						" OLD_DR_AMT," +
+						" DR_TAX_400," +
+						" DR_TAX_401," +
+						" DR_TAX_402," +
+						//----DR_TAX_406
+						" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
+						" THEN DR_TAX_406" + //IF Partial allocate > amount for payment then use that amount
+						" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.TAX_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P "+ 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END,"+ 
+						//----DR_TAX_406
+						" TAX_TYPE_CODE," +
+						" DR_PREMIUM," +
+						" GUARANTEE_PAID_AMT," +
+						" GUARANTEE_AMT," +
+						" GUARANTEE_CODE," +
+						" GUARANTEE_DR_CODE," +
+						" GUARANTEE_TYPE," +
+						" GUARANTEE_DATE_TIME," +
+						" GUARANTEE_TERM_MM," +
+						" GUARANTEE_TERM_YYYY," +
+						" GUARANTEE_NOTE," +
+						" IS_GUARANTEE," +
+						" '0', "+
+						//" HP_AMT," +
+						" HP_PREMIUM," +
+						" HP_TAX," +
+						" COMPUTE_DAILY_DATE," +
+						" COMPUTE_DAILY_TIME," +
+						" COMPUTE_DAILY_USER_ID," +
+						" DOCTOR_CATEGORY_CODE," +
+						" EXCLUDE_TREATMENT," +
+						" PREMIUM_CHARGE_PCT," +
+						" PREMIUM_REC_AMT," +
+						" ACTIVE," +
+						" INVOICE_TYPE," +
+						" TOTAL_BILL_AMOUNT," +
+						" TOTAL_DR_REC_AMOUNT," +
+						" OLD_AMOUNT," +
+						" PAY_BY_CASH," +
+						//" CASE WHEN SUBSTRING(I.RECEIPT_DATE,1,6) = SUBSTRING(T.INVOICE_DATE,1,6) THEN PAY_BY_AR ELSE 'Y' END, " +
+						" 'Y'," +
+						" PAY_BY_DOCTOR," +
+						" PAY_BY_PAYOR," +
+						//" CASE WHEN SUBSTRING(I.RECEIPT_DATE,1,6) = SUBSTRING(T.INVOICE_DATE,1,6) THEN 'Y' ELSE PAY_BY_CASH_AR END, " +
+						" PAY_BY_CASH_AR," +
+						" IS_PAID," +
+						" ORDER_ITEM_ACTIVE," +
+						" ORDER_ITEM_CATEGORY_CODE," +
+						" WRITE_OFF_BILL_AMT," +
+						" WRITE_OFF_RECEIPT_AMT," +
+						" OLD_DR_AMT_BEF_WRITE_OFF," +
+						" DR_AMT_BEF_WRITE_OFF," +
+						" DR_PREMIUM_BEF_WRITE_OFF," +
+						" HP_AMT_BEF_WRITE_OFF," +
+						" HP_PREMIUM_WRITE_OFF," +
+						" OLD_TAX_AMT," +
+						" DR_TAX_406_BEF_WRITE_OFF," +
+						" TAX_FROM_ALLOCATE," +
+						" IS_GUARANTEE_FROM_ALLOC," +
+						" 'Y'" +
+						//" FROM TRN_DAILY "+ 
+						//" WHERE LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'" +
+						" FROM TRN_DAILY T,INT_ERP_AR_RECEIPT I "+
+						" WHERE T.INVOICE_NO = I.BILL_NO "+
+						" AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "+
+						" AND T.INVOICE_NO = '"+hashData.get("INVOICE_NO")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'"+ 
+						" AND INVOICE_TYPE ='"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND BATCH_NO = ''"+
+						//" AND DR_AMT > 0" +
+						" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"' AND T.ACTIVE = '1'";
+						//System.out.println("sql = " + this.sql);
+		
 				try {
 					dbConnNew.insert(this.sql);
 					dbConnNew.commitDB();
@@ -364,7 +369,10 @@ public class ProcessPartialPayment {
 					+ "AND T.YYYY = '' "
 					+ "AND T.BATCH_NO = '' "
 					+ "AND T.HOSPITAL_CODE = '"+this.hospitalCode+"' "
+					//add invoice type
+					+ "AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"' "
 					+ "AND T.LINE_NO = '"+hashData.get("LINE_NO")+"'";
+					//System.out.println("Test : "+this.sql);
 					//System.out.println("UPDATE NONE PARTIAL = " + this.sql);
 					try {
 						dbConnNew.insert(this.sql);
@@ -409,24 +417,94 @@ public class ProcessPartialPayment {
 	private ArrayList<HashMap<String, String>> getLineNo(String startDate, String endDate){
 		this.dbConn = new DBConn();
 		ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String, String>>();
-		this.sql = "SELECT DISTINCT T.LINE_NO, T.OLD_DR_AMT, I.RECEIPT_DATE, I.RECEIPT_NO, I.TRANSACTION_DATE, "
-		+ "T.INVOICE_NO, T.INVOICE_DATE, T.INVOICE_TYPE "
-		+ "FROM TRN_DAILY T ,INT_ERP_AR_RECEIPT I "//,INT_ERP_AR_RECEIPT I
-		+ "WHERE T.HOSPITAL_CODE ='"+this.hospitalCode+"' AND T.INVOICE_NO = I.BILL_NO "
-		+ "AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "
-		+ "AND (I.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') "
-		+ "AND I.DOC_TYPE= 'R' AND I.IS_LAST_RECEIPT ='N' AND T.IS_PARTIAL='N' AND T.BATCH_NO = '' "
-		+ "AND T.YYYY = '' "
-		//+ "AND I.IS_LOADED = 'N' "
-		+ "ORDER BY T.INVOICE_NO, T.LINE_NO";
-		try {
-			this.dbConn.setStatement();
-			arrData = this.dbConn.getMultiData(this.sql);
-			this.dbConn.closeDB("");
-		} catch (SQLException e) {
-			System.out.println("Partial Payment Process Error on statement : "+this.sql);
-		}
+		
+		if(getLineNoCombineBill( this.hospitalCode,startDate,endDate)){
+			this.sql = "SELECT DISTINCT T.LINE_NO, T.OLD_DR_AMT, I.RECEIPT_DATE, I.RECEIPT_NO, I.TRANSACTION_DATE, "
+					+ "T.INVOICE_NO, T.INVOICE_DATE, T.INVOICE_TYPE "
+					+ "FROM TRN_DAILY T ,INT_ERP_AR_RECEIPT I "//,INT_ERP_AR_RECEIPT I
+					+ "WHERE T.HOSPITAL_CODE ='"+this.hospitalCode+"' AND T.INVOICE_NO = I.BILL_NO "
+					+ "AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "
+					+ "AND (I.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') "
+					+ "AND I.DOC_TYPE= 'R' AND I.IS_LAST_RECEIPT ='N' AND T.IS_PARTIAL='N' AND T.BATCH_NO = '' "
+					+ "AND T.YYYY = '' "
+					+ "AND T.ACTIVE = '1' "
+					//+ "AND I.IS_LOADED = 'N' "
+					+ "ORDER BY T.INVOICE_NO, T.LINE_NO";
+					try {
+						this.dbConn.setStatement();
+						System.out.println(this.sql);
+						arrData = this.dbConn.getMultiData(this.sql);
+						this.dbConn.closeDB("");
+					} catch (SQLException e) {
+						System.out.println("Partial Payment Process Error on statement : "+this.sql);
+					}
+		}else{}
 		return arrData;
+	}
+	
+	//Combine bill
+	public boolean getLineNoCombineBill(String hospitalCode,String startDate, String endDate){
+		this.dbConn = new DBConn();
+		this.hospitalCode = hospitalCode;
+		//ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String, String>>();
+		String qMessage="";
+		boolean result =true;
+		//Insert Combind bill case N/N or N in month
+		String sqlCombineBill = "INSERT INTO INT_ERP_AR_RECEIPT "
+				 +"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, " 
+				 +"IAR.DEBIT_NOTE_AMOUNT,SUM(IAR.PAYMENT_AMOUNT)AS PAYMENT_AMONT,IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE,IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE, "
+				 + "IAR.UPDATE_DATE,IAR.UPDATE_TIME,'COMBINE' AS USER_ID,IAR.IS_LOADED from INT_ERP_AR_RECEIPT IAR "
+				 + "JOIN ( SELECT I.HOSPITAL_CODE, I.BILL_NO, I.RECEIPT_DATE, I.RECEIPT_NO,I.TRANSACTION_DATE FROM INT_ERP_AR_RECEIPT I JOIN( "
+				 + "SELECT HOSPITAL_CODE,BILL_NO ,RECEIPT_NO,RECEIPT_DATE,TRANSACTION_DATE, ROW_NUMBER() OVER(PARTITION BY BILL_NO ORDER BY BILL_NO )AS PT_NUM  "
+				 + "FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  AND BILL_NO IN ( "
+				 + "SELECT BILL_NO  FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"' "
+				 + "AND BILL_NO IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' "
+				 + "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='N')AND  "
+				 + "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				 + "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='Y') )AND BILL_NO IN ( SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"' "
+				 + "AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' GROUP BY BILL_NO HAVING COUNT(*)>1) )I2 ON I.HOSPITAL_CODE =I2.HOSPITAL_CODE "
+				 + "AND I.BILL_NO = I2.BILL_NO AND I.RECEIPT_NO = I2.RECEIPT_NO WHERE PT_NUM =1 ) I3 ON I3.HOSPITAL_CODE = IAR.HOSPITAL_CODE and I3.BILL_NO = IAR.BILL_NO  "
+				 + "WHERE IAR.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND IS_LAST_RECEIPT = 'N' AND IAR.HOSPITAL_CODE = '"+this.hospitalCode+"' "
+				 + "GROUP BY IAR.BILL_NO, I3.RECEIPT_DATE, I3.RECEIPT_NO,IAR.HOSPITAL_CODE,IAR.RECEIPT_TYPE_CODE, "
+				 + "IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT,IAR.DEBIT_NOTE_AMOUNT,IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE, "
+				 + "IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE,IAR.UPDATE_DATE,IAR.UPDATE_TIME,IAR.USER_ID,IAR.IS_LOADED";
+		//delete dupicate bill in month N/N
+		String sqlDeleteBeforeCombineBill ="DELETE INT_ERP_AR_RECEIPT  WHERE HOSPITAL_CODE='"+this.hospitalCode+"'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  AND BILL_NO IN ( "
+				+ "SELECT BILL_NO   FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"' "
+				+ "AND BILL_NO IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='N')AND  "
+				+ "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='Y') )AND BILL_NO IN ( "
+				+ "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "GROUP BY BILL_NO HAVING COUNT(*)>1) AND ( USER_ID <>'COMBINE' OR USER_ID IS NULL )";
+		//delete dupicate bill in month N/Y
+		String sqlDeleteDupBill ="DELETE INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "AND BILL_NO IN ( SELECT BILL_NO   FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"'  "
+				+ "AND BILL_NO IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='N') "
+				+ "AND BILL_NO IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "AND HOSPITAL_CODE='"+this.hospitalCode+"' AND IS_LAST_RECEIPT='Y') "
+				+ ")AND BILL_NO IN ( SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  "
+				+ "GROUP BY BILL_NO HAVING COUNT(*)>1) AND IS_LAST_RECEIPT='N'";
+		
+		try { 
+			this.dbConn.setStatement(); 
+			dbConn.insert(sqlCombineBill); 
+			qMessage =sqlCombineBill;	
+			dbConn.insert(sqlDeleteBeforeCombineBill);
+			qMessage =sqlDeleteBeforeCombineBill;	
+			dbConn.insert(sqlDeleteDupBill);
+			qMessage =sqlDeleteDupBill;	
+			//System.out.println(qMessage);
+			this.dbConn.commitDB();
+			result = true; 
+		} catch (Exception e1) { 
+			dbConn.rollDB(); 
+			result = false; 
+			System.out.println("SQLException in stetment : "+qMessage); 
+		}	
+		//dbConn.closeDB("Close Connection from Partial Process"); 
+		return result; 
 	}
 	
 	private String backupTransactionMaster(){
@@ -462,11 +540,12 @@ public class ProcessPartialPayment {
 				   "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT "+
 				   "WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
 				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_LAST_RECEIPT = 'Y') AND "+
-				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_LAST_RECEIPT = 'N' GROUP BY BILL_NO HAVING COUNT(*)>1) "+
+				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_LAST_RECEIPT = 'N' AND TRANSACTION_DATE NOT BETWEEN '"+this.startDate+"' AND '"+this.endDate+"'   GROUP BY BILL_NO HAVING COUNT(*)>1) "+
 				   ") "+
 				   "AND TRANSACTION_DATE BETWEEN '"+this.startDate+"' AND '"+this.endDate+"' "+
 				   ") "+
 				   "AND INVOICE_NO+LINE_NO NOT IN (SELECT INVOICE_NO+LINE_NO FROM TRN_PARTIAL WHERE HOSPITAL_CODE = '"+this.hospitalCode+"')";
+		System.out.println("TRN_PARTIAL : "+qn );
 		return qn;
 	}
 	private String clearTransactionMaster(){
@@ -488,6 +567,7 @@ public class ProcessPartialPayment {
 		+ "AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%' "
 		+ "AND DOC_TYPE= 'R' AND IS_LAST_RECEIPT ='N') "
 		+ "AND IS_PARTIAL = 'N' AND BATCH_NO = ''";
+		System.out.println(this.sql);
 		try {
 			this.dbConn.setStatement();
 			System.out.println("Update TrnDaily");
@@ -507,7 +587,67 @@ public class ProcessPartialPayment {
 		return result;
 	}
 
-	public boolean rollBack(String YYYY, String MM, String hospitalCode){
+	public boolean rollBack(String startDate, String endDate, String hospitalCode){ 
+		boolean result = true; 
+		this.dbConn = new DBConn(false); 
+		String qMessage = ""; 
+
+		String updateTrn = "UPDATE TRN_DAILY SET " 
+		+ "AMOUNT_AFT_DISCOUNT = AMT_BEF_PARTIAL, " 
+		+ "DR_AMT = DR_AMT_BEF_PARTIAL, " 
+		+ "DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN DR_TAX_BEF_PARTIAL ELSE '0' END, " 
+		+ "DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN DR_TAX_BEF_PARTIAL ELSE '0' END " 
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' " 
+		+ "AND INVOICE_NO IN (" 
+		+ "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+hospitalCode+"' " 
+		//+ "AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%' " 
+		+ "AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'" 
+		+ "AND DOC_TYPE= 'R' AND IS_LAST_RECEIPT ='N') " 
+		+ "AND IS_PARTIAL = 'N' AND BATCH_NO = ''"; 
+
+		String updateIntErp = "UPDATE INT_ERP_AR_RECEIPT SET " 
+		+ "IS_LOADED = 'N' " 
+		+ "FROM INT_ERP_AR_RECEIPT I " 
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND I.DOC_TYPE= 'R' " 
+		//+ "AND I.IS_LAST_RECEIPT ='N' AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%'"; 
+		+ "AND I.IS_LAST_RECEIPT ='N' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'"; 
+
+		String deleteTrn = "DELETE TRN_DAILY " 
+		//OLD
+		//+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' "
+
+		//NEW
+		+ "WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND RECEIPT_DATE IN "
+		+ "(SELECT RECEIPT_DATE FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') " 
+		+ "AND BATCH_NO = '' "
+		
+		+ "AND IS_PARTIAL = 'Y'"; 
+
+
+		try { 
+			this.dbConn.setStatement(); 
+			if(this.dbConn.getSingleData("SELECT IS_PARTIAL FROM HOSPITAL WHERE CODE = '"+hospitalCode+"'").equals("Y")){ 
+				System.out.println("Rollback Partial"); 
+				qMessage = updateTrn; 
+				dbConn.insert(updateTrn); 
+				qMessage = updateIntErp; 
+				dbConn.insert(updateIntErp); 
+				qMessage = deleteTrn; 
+				dbConn.insert(deleteTrn); 
+				dbConn.commitDB();	
+			}else{ 
+				System.out.println("No Partial Condition"); 
+			} 
+		} catch (Exception e1) { 
+			dbConn.rollDB(); 
+			result = false; 
+			System.out.println("SQLException in stetment : "+qMessage); 
+		}	
+		dbConn.closeDB("Close Connection from Partial Process"); 
+		return result; 
+	}
+	
+	public boolean rollBackOld(String YYYY, String MM, String hospitalCode){
 		boolean result = true;
 		this.dbConn = new DBConn(false);
 		String qMessage = "";

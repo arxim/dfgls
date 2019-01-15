@@ -347,7 +347,8 @@ public class TrnDailyDAO {
 				"FROM TRN_DAILY A WHERE HOSPITAL_CODE = '"+hospitalCode+"' "+ 
 				"AND (TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') "+
 				"AND EPISODE_NO+LINE_NO IN (SELECT EPISODE_NO+LINE_NO FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+hospitalCode+"' "+ 
-				"AND (INVOICE_NO = A.INVOICE_NO AND IS_ONWARD = 'Y' AND TRANSACTION_DATE < '"+startDate+"') ) "+
+				//"AND (INVOICE_NO = A.INVOICE_NO AND IS_ONWARD = 'Y' AND TRANSACTION_DATE < '"+startDate+"') ) "+
+				"AND (IS_ONWARD = 'Y' AND TRANSACTION_DATE < '"+startDate+"') ) "+
 				"AND (IS_ONWARD != 'Y' OR IS_ONWARD IS NULL)";
 		try{
 			conn = new DBConn();

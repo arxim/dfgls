@@ -66,14 +66,17 @@
 
             request.setCharacterEncoding("UTF-8");
             DataRecord orderItemRec = null, orderItemCategoryRec = null;
+            DataRecord orderItemRecLog = null;
             byte MODE = DBMgr.MODE_INSERT;
 			String getcode = "";
 			String codescript = "";
+			String remark = "";
             if (request.getParameter("MODE") != null) {
 
                 MODE = Byte.parseByte(request.getParameter("MODE"));
 
                 orderItemRec = new DataRecord("ORDER_ITEM");
+                orderItemRecLog = new DataRecord("LOG_ORDER_ITEM");
 
                 orderItemRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                 orderItemRec.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
@@ -92,16 +95,51 @@
                 orderItemRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 orderItemRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 orderItemRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                
+                //for log
+                orderItemRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
+                orderItemRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
+                orderItemRecLog.addField("DESCRIPTION_THAI", Types.VARCHAR, request.getParameter("DESCRIPTION_THAI"));
+                orderItemRecLog.addField("DESCRIPTION_ENG", Types.VARCHAR, request.getParameter("DESCRIPTION_ENG"));
+                orderItemRecLog.addField("PAYMENT_TIME", Types.NUMERIC, request.getParameter("PAYMENT_TIME"));
+                orderItemRecLog.addField("ORDER_ITEM_CATEGORY_CODE", Types.VARCHAR, request.getParameter("ORDER_ITEM_CATEGORY_CODE"));
+                orderItemRecLog.addField("ACCOUNT_CODE", Types.VARCHAR, request.getParameter("ACCOUNT_CODE"));
+                orderItemRecLog.addField("IS_COMPUTE", Types.VARCHAR, request.getParameter("IS_COMPUTE"));
+                orderItemRecLog.addField("IS_STEP_COMPUTE", Types.VARCHAR, request.getParameter("IS_STEP_COMPUTE"));
+                orderItemRecLog.addField("IS_ALLOC_FULL_TAX", Types.VARCHAR, request.getParameter("IS_ALLOC_FULL_TAX"));
+                orderItemRecLog.addField("IS_GUARANTEE", Types.VARCHAR, request.getParameter("IS_GUARANTEE"));
+                orderItemRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+                orderItemRecLog.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
+                orderItemRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
+                orderItemRecLog.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime(), true);
+                orderItemRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
 
                 if (MODE == DBMgr.MODE_INSERT) {
-
-                    if (DBMgr.insertRecord(orderItemRec)) {
+                	orderItemRecLog.addField("REMARK", Types.VARCHAR, remark);
+                    if (DBMgr.insertRecord(orderItemRec) && DBMgr.insertRecord(orderItemRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/order_item.jsp"));
                     } else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                     }
                 } else if (MODE == DBMgr.MODE_UPDATE) {
-                    if (DBMgr.updateRecord(orderItemRec)) {
+                	DataRecord orderItem = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION_THAI, DESCRIPTION_ENG, "+
+                			"PAYMENT_TIME, ORDER_ITEM_CATEGORY_CODE, ACCOUNT_CODE, IS_COMPUTE, IS_STEP_COMPUTE, IS_ALLOC_FULL_TAX, IS_GUARANTEE, "+
+                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID "+
+               				"FROM ORDER_ITEM WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+             		
+               		remark = "แก้ไข ";
+               		for(int i = 0; i < orderItem.getSize(); i++){
+               			if(!orderItem.getValueOfIndex(i).getValue().equalsIgnoreCase(orderItemRec.getValueOfIndex(i).getValue())
+               					&& !orderItemRec.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !orderItemRec.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !orderItemRec.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				System.out.println(orderItem.getValueOfIndex(i).getValue()+", "+orderItemRec.getValueOfIndex(i).getValue());
+               				System.out.println("แก้ไข"+orderItemRec.getValueOfIndex(i).getName());
+               				remark += orderItemRec.getValueOfIndex(i).getName()+", ";
+               			}
+               		}
+               		orderItemRecLog.addField("REMARK", Types.VARCHAR, remark.substring(0, remark.length()-2));
+                    if (DBMgr.updateRecord(orderItemRec) && DBMgr.insertRecord(orderItemRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/order_item.jsp"));
                     } else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));

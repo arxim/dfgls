@@ -10,6 +10,7 @@
 <%@page import="df.bean.db.DataRecord"%>
 <%@page import="java.sql.Types"%>
 <%@page import="df.bean.db.conn.DBConn"%>
+<%@page import="df.bean.db.table.Batch" %>
 <%@ include file="../../_global.jsp" %><%    
  
 
@@ -26,10 +27,6 @@
 
     request.setAttribute("labelMap", labelMap.getHashMap());
     
-    String current_mm="", current_year="";
-    current_mm=JDate.getMonth();
-	current_year =JDate.getYear(); 
-	
 	DBConnection con = new DBConnection();
     con.connectToLocal();
     
@@ -38,6 +35,14 @@
     
     DBConn conSaveData = new DBConn();
     conSaveData.setStatement();
+    
+    Batch objBatch = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
+    
+    String current_mm="", current_year="";
+    current_mm = objBatch.getMm();
+	current_year = objBatch.getYyyy(); 
+    //current_mm=JDate.getMonth();
+	//current_year =JDate.getYear(); 
     
     request.setCharacterEncoding("UTF-8");
     DataRecord tax91Rec = null, doctorRec = null, doctorProfileRec=null, taxReduceRec=null;
@@ -235,7 +240,8 @@
         		//System.out.println("ddddddddddddddddddd");
         		
             	String sqlDataReduce="SELECT CODE FROM STP_MASTER_TAX_REDUCE WHERE STATUS=1 "
-            	    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' ";
+            	    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "
+            	    +" AND YYYY = '" + getYYYY + "'";
     				System.out.println("sqlData= "+sqlDataReduce);
     				String [][]arrDataReduce = conData.query(sqlDataReduce);
     				System.out.println("arrDataReduce="+arrDataReduce.length);
@@ -324,7 +330,8 @@
 	    	       conData.rollDB();
 	    	    }
         		String sqlDataReduce="SELECT CODE FROM STP_MASTER_TAX_REDUCE WHERE STATUS=1 "
-            	    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' ";
+            	    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "
+            	    +" AND YYYY = '" + getYYYY + "'";
     				//System.out.println("sqlData= "+sqlDataReduce);
     				String [][]arrDataReduce = conData.query(sqlDataReduce);
     				//System.out.println("arrDataReduce="+arrDataReduce.length);
@@ -360,7 +367,7 @@
 									+getAmount2+", '"+session.getAttribute("USER_ID").toString()+"','"+JDate.getDate()+"', "
 									+" '"+JDate.getTime()+"', '"+session.getAttribute("USER_ID").toString()+"', "
 									+" '"+JDate.getDate()+"', '"+JDate.getTime()+"')";
-									//System.out.println("sqlInsert="+insertData);
+									System.out.println("sqlInsert="+insertData);
 									//ResultSet rsInsertData = con.executeQuery(insertData);
 									try
 						    	    {
@@ -412,9 +419,9 @@
 	            
 	            if(dCode.equals(dpCode))
 	            {
-	            	showC01="30000.00";
-	                showC14="30000.00";
-	                showA06="30000.00";
+	            	showC01="60000.00";
+	                showC14="60000.00";
+	                showA06="60000.00";
 	            }
 	            else
 	            {
@@ -447,12 +454,37 @@ String report = "";
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="../../css/calendar.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/jquery-ui.css" />
         <script type="text/javascript" src="../../javascript/calendar.js"></script>
 		<script type="text/javascript" src="../../javascript/util.js"></script>
         <script type="text/javascript" src="../../javascript/ajax.js"></script>
         <script type="text/javascript" src="../../javascript/search_form.js"></script>
         <script type="text/javascript" src="../../javascript/data_table.js"></script>
-<script language="javascript">
+        <!-- link rel="stylesheet" href="href="../../css/jquery-ui.css" /-->
+	   	<!-- link rel="stylesheet" href="/resources/demos/style.css"-->
+	  	<script type="text/javascript" src="../../javascript/jquery-1.12.4.js"></script>
+	  	<script type="text/javascript" src="../../javascript/jquery-ui.js"></script>
+		<script language="javascript">
+			$(function() {
+				  $("#dialog").dialog({
+				     autoOpen: false,
+				     modal: true,
+				     buttons : {
+				          "Confirm" : function() {
+				        	  $(this).dialog("close");
+							  setTimeout(function(){ SAVE_Click(); }, 100);           
+				          },
+				          "Cancel" : function() {
+				            $(this).dialog("close");
+				          }
+				        }
+				      });
+			
+				  $("#bt_save").on("click", function(e) {
+				      e.preventDefault();
+				      $("#dialog").dialog("open");
+				  });
+			});
     //parent.toggleFrame();
     //++++++++++++++ Script ++++++++++++
     //document.getElementById('mytab')
@@ -956,7 +988,7 @@ String report = "";
 			mainForm.SPOUSE_TYPE1[0].checked=false;
     		mainForm.SPOUSE_TYPE1[1].checked=false;
     		mainForm.SPOUSE_TYPE1[2].checked=false;
-			mainForm.c02.value=30000.00;
+			mainForm.c02.value=60000.00;
 			//คู่สมรสอายุตั้งแต่ 65 ปีขึ้นไปและมีเงินได้รวมคำนวณ 190,000 บาท
 			mainForm.b05.disabled=false;
 			
@@ -1064,7 +1096,7 @@ String report = "";
     		mainForm.SPOUSE_TYPE1[1].checked=false;
     		mainForm.SPOUSE_TYPE1[2].checked=false;
 			
-			mainForm.c02.value=30000.00;
+			mainForm.c02.value=60000.00;
 			
 			mainForm.a08_011.disabled=true;
 	    	mainForm.a101.disabled=true;
@@ -1121,7 +1153,7 @@ String report = "";
 		}	
 		//JsC12();
 		JsC03_01();	
-		JsC03_03();
+		//JsC03_03();
 		
 	}
     
@@ -1213,6 +1245,7 @@ String report = "";
         }else{
             x = parseFloat(a.value);
         }
+        
         if(b.value == '' ){
             y = 0;
         }else{
@@ -1242,6 +1275,8 @@ String report = "";
         }else{
             z = parseFloat(e.value);
         }
+        /*
+       	 เงื่อนไขลดหย่อนปี 2560 บุตรลดหย่อนได้คนละ 30,000 ไม่จำกัดจำนวนบุตร
         if(JsC03('c03_01'))
 		{
 			if(mainForm.SPOUSE_TYPE[0].checked==true || mainForm.SPOUSE_TYPE1[0].checked==true || mainForm.SPOUSE_TYPE1[1].checked==true || mainForm.SPOUSE_TYPE1[2].checked==true || mainForm.SPOUSE_TYPE[2].checked==true)
@@ -1253,6 +1288,15 @@ String report = "";
 				a.value = (15000*z).toFixed(2);
 			}
 			//JsC12(); 
+		}
+        */
+        if(mainForm.SPOUSE_TYPE[0].checked==true || mainForm.SPOUSE_TYPE1[0].checked==true || mainForm.SPOUSE_TYPE1[1].checked==true || mainForm.SPOUSE_TYPE1[2].checked==true || mainForm.SPOUSE_TYPE[2].checked==true)
+		{
+			a.value = (30000*z).toFixed(2);   
+		}
+		else
+		{
+			a.value = (30000*z).toFixed(2);
 		}
     }
 
@@ -1441,6 +1485,7 @@ String report = "";
 		}
 		else
 		{
+			//alert(c09.length);
 			for (var i = 0; i < c09.length; i++) 
 		    { 
 			    if(parseFloat(c10[i].value) !=0)
@@ -1467,6 +1512,7 @@ String report = "";
 				if(parseFloat(c08.value) > parseFloat(c10.value))
 				{
 					alert("กรอกจำนวนเงินได้คู่สมรสได้ไม่เกิน "+c10.value);
+					c08.value = "";
 					c08.focus();
 				}
 			}
@@ -1480,6 +1526,7 @@ String report = "";
 					if(parseFloat(c08[i].value) > parseFloat(c10[i].value))
 					{
 						alert("กรอกจำนวนเงินได้คู่สมรสได้ไม่เกิน "+c10[i].value);
+						c08[i].value = "";
 						c08[i].focus();
 					}
 				}
@@ -1822,18 +1869,18 @@ String report = "";
                       <td colspan="2" align="left">&nbsp;</td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
-                      <td align="left">4.2.คู่สมรส(30,000 บาท กรณีมีเงินได้รวมคำนวณภาษีหรือไม่มีเงินได้)</td>
+                      <td align="left">4.2.คู่สมรส(60,000 บาท กรณีมีเงินได้รวมคำนวณภาษีหรือไม่มีเงินได้)</td>
                       <td colspan="2" align="left">&nbsp;</td>
                       <td colspan="2" align="left"><input name="c02" type="text" class="short alignRight" id="c02" value="<%=DBMgr.getRecordValue(tax91Rec,"C02")%>" readonly="readonly"/></td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
-                      <td align="left">4.3.บุตรคนละ 15,000 บาท
+                      <td align="left">4.3.บุตรคนละ 30,000 บาท
                         <input type="text" name="c03_01"  id="c03_01" value="<%=DBMgr.getRecordValue(tax91Rec,"C03_01")%>" class="alignRight" size="3" onblur="JsC03_01()" onkeypress="IsNumericKeyPress();"  onkeyup="JsC03_01();"/>
                         คน</td>
                       <td colspan="2" align="left"><input name="c03_02" type="text" class="short alignRight" id="c03_02" value="<%=DBMgr.getRecordValue(tax91Rec,"C03_02")%>" readonly="readonly"/></td>
                       <td colspan="2" align="left">&nbsp;</td>
                     </tr>
-                    <tr bgcolor="#FFFFFF">
+                    <tr bgcolor="#FFFFFF" style="display: none;">
                       <td align="left">&nbsp;&nbsp;บุตรคนละ 17,000 บาท
                         <input name="c03_03" type="text" class="alignRight" id="c03_03" onblur="JsC03_03()" value="<%=DBMgr.getRecordValue(tax91Rec,"C03_03")%>" size="3" onkeyup="JsC03_03();"  onkeypress="IsNumericKeyPress();"/>
                         คน</td>
@@ -1992,8 +2039,8 @@ String report = "";
                 <input type="hidden" name="c10[]" value="<%=amountReduce%>">
                 <tr bgcolor="#FFFFFF">
                       <td align="left">4.<%=num %>. <%=Util.formatHTMLString(rs.getString("MASTER_REDUCE_NAME"), true)%> </td>
-                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" maxlength="8" onblur="c07();"/></td>
-                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" maxlength="8" onblur="c08();"/></td>
+                      <td colspan="2" align="left"><input name="c07[]" type="text" class="short alignRight" id="c07[]" value="<%=amount_1%>" onkeypress="IsNumericKeyPress();" maxlength="8" onchange="c07();"/></td>
+                      <td colspan="2" align="left"><input name="c08[]" type="text" class="short alignRight" id="c08[]" value="<%=amount_2%>"  onkeypress="IsNumericKeyPress();" maxlength="8" onchange="c08();"/></td>
                   </tr>              
                 	 
                 <%
@@ -2010,12 +2057,14 @@ String report = "";
             <tr>
                 <td align="center" height="28">
                 
-                 	<input type="button" name="bt_save" id="bt_save" value="บันทึก" onClick="SAVE_Click()" />
+                 	<input type="button" name="bt_save" id="bt_save" value="บันทึก"  />
                  	<input type="reset" name="bt_reset" id="bt_reset" value="ล้าง"/>
                     <input type="button" name="bt_close" id="bt_close" value="ปิดหน้าจอ" onClick="window.location='../tax/stp_tax_reduce_main.jsp'"/>                </td>
             </tr>
         </table>
-
+		<div id="dialog" title="คำเตือน">
+		  <font size="3">การแจ้งสิทธิ์ลดหย่อนทางภาษีเป็นหน้าที่ความรับผิดชอบของผู้มีเงินได้ในการให้ข้อมูลถูกต้องตามความจริง   </font>
+		</div>
         </form>
 	</body>
 </html>

@@ -11,8 +11,11 @@ import df.bean.obj.util.JDate;
 import df.bean.obj.util.Variables;
 import df.bean.report.GenerateReportBean;
 import df.bean.report.ReportQuery;
+import df.bean.report.VerifyAllowViewReportBean;
+
 import java.io.*;
 import java.util.HashMap;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -233,6 +236,7 @@ public class ViewReportSrvl extends HttpServlet {
         String tax_year = request.getParameter("YYYY402");
         String printing_date = request.getParameter("PRINTING_DATE");
         String print_date = request.getParameter("PRINT_DATE");
+        String filling_date = request.getParameter("FILLING_DATE");
         try{
             if( file_save.equals("") || file_save.equals(null) ){file_save = "temp";}
         }catch(Exception e){}
@@ -265,6 +269,7 @@ public class ViewReportSrvl extends HttpServlet {
         }else{
         	hm.put("yyyy", year);
         	hm.put("pay_date", pay_date);
+        	hm.put("filling_date", filling_date);
         }
 
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
@@ -388,14 +393,7 @@ public class ViewReportSrvl extends HttpServlet {
         String reportfilename = request.getParameter("REPORT_FILE_NAME");
         
         String from_date = JDate.saveDate(request.getParameter("FROM_DATE"));
-        String to_date = JDate.saveDate(request.getParameter("TO_DATE"));
-        
-        
-        String year_start = from_date.substring(0,4);
-        String month_start = from_date.substring(4,6);
-        String year_end = to_date.substring(0,4);
-        String month_end =to_date.substring(4,6);
-        
+        String to_date = JDate.saveDate(request.getParameter("TO_DATE"));        
         
         String doctor_profile_code = request.getParameter("DOCTOR_PROFILE_CODE");
         String doctor_code = request.getParameter("DOCTOR_CODE");
@@ -497,6 +495,11 @@ public class ViewReportSrvl extends HttpServlet {
             if( doc_type.equals("") || doc_type.equals(null) ){doc_type = "%";}
         }catch(Exception e){}
         
+        String year_start = from_date.substring(0,4);
+        String month_start = from_date.substring(4,6);
+        String year_end = to_date.substring(0,4);
+        String month_end =to_date.substring(4,6);
+
         hm.put("hospital_code", hospital_code);
         rq.setHospitalCode(hospital_code);
         hm.put("from_date", from_date);
@@ -621,7 +624,7 @@ public class ViewReportSrvl extends HttpServlet {
         try{
         	if(reportfilename.equals("SummaryDFUnpaidByDetailForDoctor") && term.equals("1")){
         		to_date = year+month+"15";
-        		System.out.println("Yes"+to_date);
+        		System.out.println("Yes");
         	}
         }catch(Exception e) { }
         try{
@@ -652,9 +655,17 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("payment_date", payment_date);
         hm.put("term", term);
         System.out.println("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
-        
-        if(request.getParameter("REPORT_DISPLAY").equals("view")){
-            this.reportGenerateView(hm, reportfilename, response);
+        System.out.println("Test : "+year+month+term+"Hospital_code"+hospital_code);
+        VerifyAllowViewReportBean v = new VerifyAllowViewReportBean();
+        boolean status = v.getReportPermit(hospital_code, term, month, year);
+    	if(request.getParameter("REPORT_DISPLAY").equals("view")){
+    		if(status){
+    			this.reportGenerateView(hm, reportfilename, response);
+    		}else{
+    			
+    			this.reportGenerateView(hm,"notReport" , response);
+    		}
+            
         }else{
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
@@ -785,7 +796,7 @@ public class ViewReportSrvl extends HttpServlet {
             if(file_type.equals("txt")){
             	System.out.println(file_type+"<>"+path);
                 System.out.println(rq.getReport(reportfilename));
-                this.reportGenerateFile(null, file_save, null, response, request, ""+ers.exportData(path, null, rq.getReport(reportfilename), null, null, cdb, null));
+                this.reportGenerateFile(null, file_save, null, response, request, ""+ers.exportData(path, reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
                 cdb.closeDB("");
             }else{
                 this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);

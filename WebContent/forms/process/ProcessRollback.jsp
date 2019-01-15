@@ -39,13 +39,14 @@
             String startDateStr04 = JDate.showDate(JDate.getDate());
             String startDateStr05 = JDate.showDate(JDate.getDate());
             String startDateStr07 = JDate.showDate(JDate.getDate());
-           
+            String startDateStr08 = JDate.showDate(JDate.getDate());//Receipt Transaction
+            
             String endDateStr01 = JDate.showDate(JDate.getDate());
             String endDateStr02 = JDate.showDate(JDate.getDate());
             String endDateStr03 = JDate.showDate(JDate.getDate());
             String endDateStr04 = JDate.showDate(JDate.getDate());
             String endDateStr05 = JDate.showDate(JDate.getDate());
-                     
+            String endDateStr08 = JDate.showDate(JDate.getDate());//Receipt Transaction         
                                              
             LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
             labelMap.add("TITLE_MAIN", "RollBack", "ระบบ RollBack");
@@ -132,7 +133,7 @@
                                 <td>    
                                     <label for="aText">${labelMap.MM}</label>                                </td>                                
                                 <td>
-                                    <%=proUtil.selectMM("", "MM10",batch.getMm())%>                                </td>
+                                    <%=proUtil.selectMM406 ("", "MM10",batch.getMm())%>
                                 <td>
                                     <label>${labelMap.YYYY}</label>                                </td>  
                                 <td>
@@ -342,25 +343,32 @@
                     <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" id="<%=labelMap.get("NAMEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('15')" ></td>
                     <td class="row0 alignLeft"><div id="countPro15">..</div></td>
                 </tr>
+                
+                
+                
                 <tr>
                     <td class="row0 alignCenter"><div id="ImgPro06_02"><img src="../../images/begin_rollback.png" ></div></td>
                     <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_02")%></td>
-                    <td class="row0 alignCenter">
+                    <td class="row0 alignCenter">  
                         <table cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                                <td>    
-                                    <label for="aText">${labelMap.MM}</label>                                </td>                                
                                 <td>
-                                    <%=proUtil.selectMM("", "MM06_02",batch.getMm())%>                                </td>
+                                    <input type="text" value="<%=startDateStr08%>" id="START_DATE06_02" name="START_DATE06_02" class="short" value="<%=request.getParameter("START_DATE06_02") == null ? "" : request.getParameter("START_DATE06_02")%>">
+                                    <input name="image1" type="image" class="image_button" onclick="displayDatePicker('START_DATE06_02'); return false;" src="../../images/calendar_button.png" alt="" />                                </td>
                                 <td>
-                                    <label>${labelMap.YYYY}</label>                                </td>  
-                                <td>
-                                    <%=proUtil.selectYY("YY06_02", batch.getYyyy())%>                                </td>                                
+                                    <input type="text" value="<%=endDateStr08%>" id="END_DATE06_02" name="END_DATE06_02" class="short" value="<%=request.getParameter("END_DATE06_02") == null ? "" : request.getParameter("END_DATE06_02")%>" />
+                                    <input name="image1" type="image" class="image_button" onclick="displayDatePicker('END_DATE06_02'); return false;" src="../../images/calendar_button.png" alt="" />                                </td>
                             </tr>
-                        </table>                    </td>                
-                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="processMMYY('06_02')" ></td>
+                        </table>               
+                   </td>                
+                    <td class="row0 alignCenter"><input type="button" value="<%=labelMap.get("VALUEBUTTONPROCESS")%>" name="<%=labelMap.get("NAMEBUTTONPROCESS")%>" onclick="process('06_02')" ></td>
                     <td class="row0 alignLeft"><div id="countPro06_02">..</div></td>
                 </tr>
+                
+                
+                
+                
+                
                 <tr>
                     <td class="row0 alignCenter"><div id="ImgPro06_03"><img src="../../images/begin_rollback.png"  /></div></td>
                     <td class="row1 alignLeft"><%=labelMap.get("PROCESS_06_03")%></td>

@@ -1,4 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../error.jsp"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"
+	errorPage="../error.jsp"%>
 
 <%@page import="df.jsp.Guard"%>
 <%@page import="df.jsp.LabelMap"%>
@@ -9,7 +10,7 @@
 <%@page import="df.bean.db.conn.DBConnection"%>
 <%@page import="df.bean.process.ProcessUtil"%>
 <%@page import="java.sql.Types"%>
-<%@ include file="../../_global.jsp" %>
+<%@ include file="../../_global.jsp"%>
 
 <%
             //
@@ -68,13 +69,13 @@
             labelMap.add("CITI_PARTY_AC","(Citi Bank) Account","(Citi Bank) Account");
             labelMap.add("GUARANTEE_INCLUDE_EXTRA","Guarantee Include Extra","Guarantee Include Extra");
             labelMap.add("GUARANTEE_DAY","Guarantee Day","Guarantee Day");
-            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Sharing Refund","คืนส่วนแบ่ง รพ.กรณีไม่ถึงการันตี");
+            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Sharing Refund","การคำนวณส่วนแบ่งในการันตี");
             labelMap.add("GL_ACCOUNT_CODE","GL Accunt Code","GL Account Code");
             labelMap.add("AC_ACCOUNT_CODE","AC Account Code","AC Account Code");
             labelMap.add("SHARING_ACCOUNT" , " Sharing Account Code " , " Sharing Account Code ");
             labelMap.add("EARNING_ACCOUNT" , " Earning Account Code " , " Earning Account Code ");
             labelMap.add("IS_ONWARD","Import Onward / Mobile Checkup","นำเข้า Onward และ Mobile Checkup");
-            labelMap.add("IS_PARTIAL","Partial Payment","แบ่งชำระหนี้]");
+            labelMap.add("IS_PARTIAL","Partial Payment","แบ่งชำระหนี้");
             labelMap.add("IS_COMBINE_BILL","Combine Bill","รวมบิล");
             labelMap.add("IS_COMBINE_BILL_0","No","ไม่รวมบิล");
             labelMap.add("IS_COMBINE_BILL_1","Yes","รวมบิล");
@@ -93,8 +94,9 @@
             labelMap.add("IS_ONWARD_0","No","ไม่คำนวน");
             labelMap.add("IS_ONWARD_1","Yes","คำนวน");
             
-            labelMap.add("GUARANTEE_ALL_ALLOC_0","No","คืน");
-            labelMap.add("GUARANTEE_ALL_ALLOC_1","Yes","ไม่คืน");
+            labelMap.add("GUARANTEE_ALL_ALLOC_0","No","คืนส่วนแบ่งเมื่อไม่ถึงการันตี");
+            labelMap.add("GUARANTEE_ALL_ALLOC_1","Yes","ไม่คืนส่วนแบ่ง");
+            labelMap.add("GUARANTEE_ALL_ALLOC_2","Calculate basic allocate in guarantee","คำนวณส่วนแบ่งใหม่ตามการตั้งค่าในการันตี");
             
             labelMap.add("GUARANTEE_DAY_0","INV","วันที่ออกบิล");
             labelMap.add("GUARANTEE_DAY_1","VER","วันที่แพทย์คีย์");
@@ -102,6 +104,17 @@
             labelMap.add("GUARANTEE_INCLUDE_EXTRA_0","No","ไม่รวม");
             labelMap.add("GUARANTEE_INCLUDE_EXTRA_1","Yes","รวม");
             
+            labelMap.add("CURRENCY","Currency","สกุลเงิน");
+            labelMap.add("CURRENCY_THB","THB","บาท");
+            labelMap.add("CURRENCY_USD","USD","ดอลลาร์");
+            
+            labelMap.add("DF_ALLOC_TAX_402","DF Allocate Full Tax 40(2)","คำนวณภาษี 40(2) จากรายการค่าแพทย์");
+            labelMap.add("DF_ALLOC_TAX_402_0","No","ไม่คำนวณ");
+            labelMap.add("DF_ALLOC_TAX_402_1","Yes","คำนวณ");
+            
+            labelMap.add("DOCTOR_PRIVATE","Doctor Private","Doctor Private");
+            labelMap.add("DOCTOR_PRIVATE_0","No","No");
+            labelMap.add("DOCTOR_PRIVATE_1","Yes","Yes");
             
             labelMap.add("MONTH1","January","มกราคม");
             labelMap.add("MONTH2","February","กุมภาพันธ์");
@@ -116,6 +129,8 @@
             labelMap.add("MONTH11","November","พฤศจิกายน");
             labelMap.add("MONTH12","December","ธันวาคม");
             
+            labelMap.add("AUTHORITY_NAME","Authority Name","ผู้มีอำนาจลงนามรับรองภาษี");
+            labelMap.add("AUTHORITY_POSITION","Authority Position","ตำแหน่งของผู้มีอำนาจลงนามรับรองภาษี");
             //labelMap.add("CONTRACT_NAME_THAI","CONTRACT_NAME_THAI","");
             ///labelMap.add("CONTRACT_NAME_ENG","CONTRACT_NAME_ENG","");
             //labelMap.add("CONTRACT_POSITION","CONTRACT_POSITION","");
@@ -159,11 +174,14 @@
             String disabledManager = "";
             request.setCharacterEncoding("UTF-8");
            
-            DataRecord HOSPITALRec = null, hospitalUnitRec = null;
+            DataRecord HOSPITALRec = null, hospitalUnitRec = null, bankRec = null, bankBranchRec = null;
+            DataRecord hospitalRecLog = null;
             byte MODE = DBMgr.MODE_INSERT;
-            
+            String remark = "";
             if (request.getParameter("MODE") != null) {
                 HOSPITALRec = new DataRecord("HOSPITAL");
+                hospitalRecLog = new DataRecord("LOG_HOSPITAL");
+                
                 HOSPITALRec.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
                 HOSPITALRec.addField("DESCRIPTION_THAI", Types.VARCHAR, request.getParameter("DESCRIPTION_THAI"));
                 HOSPITALRec.addField("DESCRIPTION_ENG", Types.VARCHAR, request.getParameter("DESCRIPTION_ENG"));
@@ -209,8 +227,66 @@
                 HOSPITALRec.addField("IS_GUARANTEE_ONWARD", Types.VARCHAR, request.getParameter("GUARANTEE_ONWARD"));    
                 HOSPITALRec.addField("IS_ONWARD", Types.VARCHAR, request.getParameter("IS_ONWARD"));    
                 HOSPITALRec.addField("IS_PARTIAL", Types.VARCHAR, request.getParameter("IS_PARTIAL"));    
-                HOSPITALRec.addField("IS_JOIN_BILL", Types.VARCHAR, request.getParameter("IS_COMBINE_BILL"));    
+                HOSPITALRec.addField("IS_JOIN_BILL", Types.VARCHAR, request.getParameter("IS_COMBINE_BILL"));  
+                HOSPITALRec.addField("DOCTOR_PRIVATE", Types.VARCHAR, request.getParameter("DOCTOR_PRIVATE"));
+                HOSPITALRec.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
+                HOSPITALRec.addField("IS_DF_ALLOC_TAX_402", Types.VARCHAR, request.getParameter("DF_ALLOC_TAX_402"));
+                HOSPITALRec.addField("AUTHORITY_NAME", Types.VARCHAR, request.getParameter("AUTHORITY_NAME"));
+                HOSPITALRec.addField("AUTHORITY_POSITION", Types.VARCHAR, request.getParameter("AUTHORITY_POSITION"));
                 
+                //for log
+                hospitalRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
+				hospitalRecLog.addField("DESCRIPTION_THAI", Types.VARCHAR, request.getParameter("DESCRIPTION_THAI"));
+				hospitalRecLog.addField("DESCRIPTION_ENG", Types.VARCHAR, request.getParameter("DESCRIPTION_ENG"));
+				hospitalRecLog.addField("ADDRESS1", Types.VARCHAR, request.getParameter("OF_ADDRESSNO")+" "+request.getParameter("OF_SOI")+" "+request.getParameter("OF_MOO"));
+				hospitalRecLog.addField("ADDRESS2", Types.VARCHAR, request.getParameter("OF_ROAD")+" "+request.getParameter("OF_SUBDISTRICT"));
+				hospitalRecLog.addField("ADDRESS3", Types.VARCHAR, request.getParameter("OF_DISTRICT")+" "+request.getParameter("OF_PROVINCE"));
+				hospitalRecLog.addField("ZIP", Types.VARCHAR, request.getParameter("ZIP"));
+				hospitalRecLog.addField("TEL", Types.VARCHAR, request.getParameter("TEL"));
+				hospitalRecLog.addField("EMAIL", Types.VARCHAR, request.getParameter("EMAIL"));
+				hospitalRecLog.addField("TAXNO", Types.VARCHAR, request.getParameter("TAXNO"));
+				hospitalRecLog.addField("COMPANY_NAME", Types.VARCHAR, request.getParameter("COMPANY_NAME"));
+				hospitalRecLog.addField("BANK_CODE", Types.VARCHAR, request.getParameter("BANK_CODE"));
+				hospitalRecLog.addField("BANK_BRANCH_CODE", Types.VARCHAR, request.getParameter("BANK_BRANCH_CODE"));
+				hospitalRecLog.addField("ACCOUNT_NO", Types.VARCHAR, request.getParameter("ACCOUNT_NO"));
+				hospitalRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
+				hospitalRecLog.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime(), true);
+				hospitalRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+				hospitalRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+				hospitalRecLog.addField("OF_ADDRESSNO", Types.VARCHAR, request.getParameter("OF_ADDRESSNO"));
+				hospitalRecLog.addField("OF_MOO", Types.VARCHAR, request.getParameter("OF_MOO"));
+				hospitalRecLog.addField("OF_BUILDER", Types.VARCHAR, request.getParameter("OF_BUILDING_NAME"));
+				hospitalRecLog.addField("OF_BUILDER_NUMBER", Types.VARCHAR, request.getParameter("OF_BUILDING_NO"));
+				hospitalRecLog.addField("OF_BUILDER_FLOOR", Types.VARCHAR, request.getParameter("OF_BUILDING_FLOOR"));
+				hospitalRecLog.addField("OF_VILLAGE", Types.VARCHAR, request.getParameter("OF_VILLAGE"));
+				hospitalRecLog.addField("OF_SOI", Types.VARCHAR, request.getParameter("OF_SOI"));
+				hospitalRecLog.addField("OF_ROAD", Types.VARCHAR, request.getParameter("OF_ROAD"));
+				hospitalRecLog.addField("OF_SUBDISTRICT", Types.VARCHAR, request.getParameter("OF_SUBDISTRICT"));
+				hospitalRecLog.addField("OF_DISTRICT", Types.VARCHAR, request.getParameter("OF_DISTRICT"));
+				hospitalRecLog.addField("OF_PROVINCE", Types.VARCHAR, request.getParameter("OF_PROVINCE"));
+				hospitalRecLog.addField("COMPANY_NAME1", Types.VARCHAR, request.getParameter("COMPANY_NAME"));
+				hospitalRecLog.addField("TAX_END_MONTH_OF_YEAR", Types.VARCHAR, request.getParameter("TAX_END_MONTH_OF_YEAR"));
+				hospitalRecLog.addField("CITI_PARTY_NAME", Types.VARCHAR, request.getParameter("CITI_PARTY_NAME"));
+				hospitalRecLog.addField("CITI_PARTY_ID", Types.VARCHAR, request.getParameter("CITI_PARTY_ID"));
+				hospitalRecLog.addField("CITI_PARTY_AC", Types.VARCHAR, request.getParameter("CITI_PARTY_AC"));
+				hospitalRecLog.addField("GUARANTEE_INCLUDE_EXTRA", Types.VARCHAR, request.getParameter("GUARANTEE_INCLUDE_EXTRA"));    
+				hospitalRecLog.addField("GUARANTEE_DAY", Types.VARCHAR, request.getParameter("GUARANTEE_DAY"));    
+				hospitalRecLog.addField("GL_ACCOUNT_CODE", Types.VARCHAR, request.getParameter("GL_ACCOUNT_CODE"));    
+				hospitalRecLog.addField("AC_ACCOUNT_CODE", Types.VARCHAR, request.getParameter("AC_ACCOUNT_CODE")); 
+				hospitalRecLog.addField("SHARING_ACCOUNT", Types.VARCHAR, request.getParameter("SHARING_ACCOUNT"));
+				hospitalRecLog.addField("EARNING_ACCOUNT", Types.VARCHAR ,request.getParameter("EARNING_ACCOUNT"));
+				hospitalRecLog.addField("GUARANTEE_ALL_ALLOC", Types.VARCHAR, request.getParameter("GUARANTEE_ALL_ALLOC"));    
+				hospitalRecLog.addField("IS_DISCHARGE_BASIS", Types.VARCHAR, request.getParameter("DISCHARGE_BASIS"));    
+				hospitalRecLog.addField("IS_GUARANTEE_ONWARD", Types.VARCHAR, request.getParameter("GUARANTEE_ONWARD"));    
+				hospitalRecLog.addField("IS_ONWARD", Types.VARCHAR, request.getParameter("IS_ONWARD"));    
+				hospitalRecLog.addField("IS_PARTIAL", Types.VARCHAR, request.getParameter("IS_PARTIAL"));    
+				hospitalRecLog.addField("IS_JOIN_BILL", Types.VARCHAR, request.getParameter("IS_COMBINE_BILL"));  
+				hospitalRecLog.addField("DOCTOR_PRIVATE", Types.VARCHAR, request.getParameter("DOCTOR_PRIVATE"));
+				hospitalRecLog.addField("CURRENCY", Types.VARCHAR, request.getParameter("CURRENCY"));
+				hospitalRecLog.addField("IS_DF_ALLOC_TAX_402", Types.VARCHAR, request.getParameter("DF_ALLOC_TAX_402"));
+				hospitalRecLog.addField("AUTHORITY_NAME", Types.VARCHAR, request.getParameter("AUTHORITY_NAME"));
+				hospitalRecLog.addField("AUTHORITY_POSITION", Types.VARCHAR, request.getParameter("AUTHORITY_POSITION"));
+
                 //out.println(request.getParameter("MODE"));
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
                     //out.println("Insert");
@@ -222,6 +298,29 @@
                 }
                 else if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_UPDATE) {
                     //out.println("Update");
+                	DataRecord hospital = DBMgr.getRecord("SELECT CODE, DESCRIPTION_THAI, DESCRIPTION_ENG, ADDRESS1, ADDRESS2, ADDRESS3, ZIP, TEL, EMAIL, TAXNO, COMPANY_NAME, BANK_CODE, "+ 
+                			"BANK_BRANCH_CODE, ACCOUNT_NO, UPDATE_DATE, UPDATE_TIME, ACTIVE, USER_ID, OF_ADDRESSNO, OF_MOO, OF_BUILDER, OF_BUILDER_NUMBER, "+ 
+                			"OF_BUILDER_FLOOR, OF_VILLAGE, OF_SOI, OF_ROAD, OF_SUBDISTRICT, OF_DISTRICT, OF_PROVINCE, COMPANY_NAME1, TAX_END_MONTH_OF_YEAR, "+
+                			"CITI_PARTY_NAME, CITI_PARTY_ID, CITI_PARTY_AC, GUARANTEE_INCLUDE_EXTRA, GUARANTEE_DAY, GL_ACCOUNT_CODE, AC_ACCOUNT_CODE, "+
+                			"SHARING_ACCOUNT, EARNING_ACCOUNT, GUARANTEE_ALL_ALLOC, IS_DISCHARGE_BASIS, IS_GUARANTEE_ONWARD, IS_ONWARD, IS_PARTIAL, IS_JOIN_BILL, "+
+                			"DOCTOR_PRIVATE, CURRENCY, IS_DF_ALLOC_TAX_402, AUTHORITY_NAME, AUTHORITY_POSITION "+
+               				"FROM HOSPITAL WHERE CODE = '" + session.getAttribute("HOSPITAL_CODE") + "' " );
+             		
+               		//remark = "แก้ไข ";
+               		System.out.println("size: "+hospital.getSize()+", "+HOSPITALRec.getSize());
+               		for(int i = 0; i < hospital.getSize(); i++){
+               			if(!hospital.getValueOfIndex(i).getValue().equalsIgnoreCase(HOSPITALRec.getValueOfIndex(i).getValue())
+               					&& !HOSPITALRec.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !HOSPITALRec.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !HOSPITALRec.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				//System.out.println(hospital.getValueOfIndex(i).getValue()+", "+HOSPITALRec.getValueOfIndex(i).getValue());
+               				System.out.println("แก้ไข"+HOSPITALRec.getValueOfIndex(i).getName());
+               				remark += HOSPITALRec.getValueOfIndex(i).getName()+", ";
+               			}
+               		}
+               		
+                    hospitalRecLog.addField("REMARK", Types.VARCHAR, !remark.equals("") ? "แก้ไข "+remark.substring(0, remark.length()-2) : remark);
+                    DBMgr.insertRecord(hospitalRecLog);
                     if (DBMgr.updateRecord(HOSPITALRec)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/hospital.jsp"));
                     }else {
@@ -237,6 +336,8 @@
                     HOSPITALRec = DBMgr.getRecord("SELECT * FROM HOSPITAL WHERE CODE = '" + CODE + "'");
                 }else{
                     HOSPITALRec = DBMgr.getRecord("SELECT * FROM HOSPITAL WHERE CODE = '" + session.getAttribute("HOSPITAL_CODE") + "'");
+                    bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + DBMgr.getRecordValue(HOSPITALRec, "BANK_CODE") + "' ");
+                    bankBranchRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK_BRANCH WHERE CODE = '" + DBMgr.getRecordValue(HOSPITALRec, "BANK_BRANCH_CODE") + "' AND BANK_CODE='"+DBMgr.getRecordValue(HOSPITALRec, "BANK_CODE")+"'");
                 }
                 if (HOSPITALRec == null) {
                     MODE = DBMgr.MODE_INSERT;
@@ -256,15 +357,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>${labelMap.TITLE_MAIN}</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" type="text/css" href="../../css/share.css" media="all" />
-        <script type="text/javascript" src="../../javascript/ajax.js"></script>
-        <script type="text/javascript" src="../../javascript/util.js"></script>
-        <script type="text/javascript" src="../../javascript/search_form.js"></script>
-        <script type="text/javascript" src="../../javascript/md5.js"></script>
-        <script type="text/javascript">
+<head>
+<title>${labelMap.TITLE_MAIN}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="../../css/share.css"
+	media="all" />
+<script type="text/javascript" src="../../javascript/ajax.js"></script>
+<script type="text/javascript" src="../../javascript/util.js"></script>
+<script type="text/javascript" src="../../javascript/search_form.js"></script>
+<script type="text/javascript" src="../../javascript/md5.js"></script>
+<script type="text/javascript">
 
             function CODE_KeyPress(e) {
                 var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
@@ -440,332 +542,428 @@
                 }
             }
         </script>
-    </head>
-    <body>
-            <form id="mainForm" name="mainForm" method="post">
-            <input type="hidden" id="MODE" name="MODE" value="<%=MODE%>" />
-            <table class="form">
-                <tr>
-                    <th colspan="4">
-				  	<div style="float: left;">${labelMap.TITLE_MAIN}</div>
-				  	<div style="float: right;" id="Language" name="Language"></div>
-				  	</th>
-                </tr>
-                <tr>
-                    <td class="label"><label for="CODE">${labelMap.CODE} *</label></td>
-                    <td class="input">
-                        <input type="text" id="CODE" name="CODE" class="short" maxlength="20" readonly="readonly" value="<%= DBMgr.getRecordValue(HOSPITALRec, "CODE") %>" onkeypress="return CODE_KeyPress(event);"/>
-                    </td>
-                    <td class="label">
-                        <label for="COMPANY_NAME">${labelMap.COMPANY_NAME}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="COMPANY_NAME" type="text" class="medium" id="COMPANY_NAME" value="<%= DBMgr.getRecordValue(HOSPITALRec, "COMPANY_NAME") %>" maxlength="50"/>
-                    </td>
-                    
-                </tr>
-                <tr>
-                    <td class="label"><label for="NAME">${labelMap.DESCRIPTION_THAI}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="DESCRIPTION_THAI" name="DESCRIPTION_THAI" class="long" maxlength="255" value="<%= DBMgr.getRecordValue(HOSPITALRec, "DESCRIPTION_THAI") %>" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="EMAIL">${labelMap.DESCRIPTION_ENG}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="DESCRIPTION_ENG" name="DESCRIPTION_ENG" class="long" maxlength="255" value="<%= DBMgr.getRecordValue(HOSPITALRec, "DESCRIPTION_ENG") %>" />
-                    </td>
-                </tr>                
-                <tr>
-                    <td class="label">
-                        <label for="TAX_END_MONTH_OF_YEAR">${labelMap.TAX_END_MONTH_OF_YEAR}</label>
-                    </td>
-                    
-                    <td class="input" >
-                        <%= util.selectMM(session.getAttribute("LANG_CODE").toString(), "TAX_END_MONTH_OF_YEAR", DBMgr.getRecordValue(HOSPITALRec, "TAX_END_MONTH_OF_YEAR").equals("") ? b.getMm() : DBMgr.getRecordValue(HOSPITALRec, "TAX_END_MONTH_OF_YEAR"))  %>
-                    </td>
+</head>
+<body>
+	<form id="mainForm" name="mainForm" method="post">
+		<input type="hidden" id="MODE" name="MODE" value="<%=MODE%>" />
+		<table class="form">
+			<tr>
+				<th colspan="4">
+					<div style="float: left;">${labelMap.TITLE_MAIN}</div>
+					<div style="float: right;" id="Language" name="Language"></div>
+				</th>
+			</tr>
+			<tr>
+				<td class="label"><label for="CODE">${labelMap.CODE} *</label></td>
+				<td class="input"><input type="text" id="CODE" name="CODE"
+					class="short" maxlength="20" readonly="readonly"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "CODE") %>"
+					onkeypress="return CODE_KeyPress(event);" /></td>
+				<td class="label"><label for="COMPANY_NAME">${labelMap.COMPANY_NAME}</label>
+				</td>
+				<td class="input"><input name="COMPANY_NAME" type="text"
+					class="medium" id="COMPANY_NAME"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "COMPANY_NAME") %>"
+					maxlength="50" /></td>
 
-                    <td class="label">
-                        <label for="TAXNO">${labelMap.TAXNO}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="TAXNO" type="text" class="medium" id="TAXNO" value="<%= DBMgr.getRecordValue(HOSPITALRec, "TAXNO") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="BANK_ACCOUNT_NO">${labelMap.ACCOUNT_NO}</label>
-                    </td>
-                    <td class="input" colspan="3">
-                        <input name="ACCOUNT_NO" type="text" class="medium" id="ACCOUNT_NO" value="<%= DBMgr.getRecordValue(HOSPITALRec, "ACCOUNT_NO") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="BANK_CODE">${labelMap.BANK_CODE}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="BANK_CODE" name="BANK_CODE" class="short" maxlength="20" value="<%= DBMgr.getRecordValue(HOSPITALRec, "BANK_CODE") %>" onkeypress="return BANK_CODE_KeyPress(event);" onblur="AJAX_Refresh_BANK();" />
-                        <input id="SEARCH_BANK_CODE" name="SEARCH_BANK_CODE" type="image" <%=disabledManager%> class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=BANK&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&TARGET=BANK_CODE&HANDLE=AJAX_Refresh_BANK'); return false;" />
-                        <input type="text" id="BANK_DESCRIPTION" name="BANK_DESCRIPTION" class="long" readonly="readonly" value="" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="BANK_BRANCH_CODE">${labelMap.BANK_BRANCH_CODE}</label>
-                    </td>
-                    <td class="input" colspan="3">
-                        <input type="text" id="BANK_BRANCH_CODE" name="BANK_BRANCH_CODE" class="short" maxlength="20" value="<%= DBMgr.getRecordValue(HOSPITALRec, "BANK_BRANCH_CODE") %>" onkeypress="return BANK_BRANCH_CODE_KeyPress(event);" onblur="AJAX_Refresh_BANK_BRANCH();" />
-                        <input id="SEARCH_BANK_BRANCH_CODE" name="SEARCH_BANK_BRANCH_CODE" type="image" <%=disabledManager%> class="image_button" src="../../images/search_button.png" alt="Search" onclick="return checkBankBranchCode()" />
-                        <input type="text" id="BANK_BRANCH_DESCRIPTION" name="BANK_BRANCH_DESCRIPTION" class="long" readonly="readonly" value="" />
-                    </td>
-                </tr> 
-                <tr>
-                    <td class="label">
-                        <label for="CITI_PARTY_NAME">${labelMap.CITI_PARTY_NAME}</label>
-                    </td>
-                    <td class="input" colspan="3">
-                        <input type="text" id="CITI_PARTY_NAME" name="CITI_PARTY_NAME" class="short" maxlength="20" value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_NAME") %>" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="CITI_PARTY_ID">${labelMap.CITI_PARTY_ID}</label>
-                    </td>
-                    <td class="input" >
-                        <input type="text" id="CITI_PARTY_ID" name="CITI_PARTY_ID" class="short" maxlength="20" value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_ID") %>" />
-                    </td>
-                    <td class="label">
-                        <label for="CITI_PARTY_AC">${labelMap.CITI_PARTY_AC}</label>
-                    </td>
-                    <td class="input" >
-                        <input type="text" id="CITI_PARTY_AC" name="CITI_PARTY_AC" class="short" maxlength="20" value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_AC") %>" />
-                    </td>
-                </tr>
-                
-               	<!---------- Add by Tong. ------------>               
-                <tr>
-                    <td class="label">
-                        <label for="OF_BUILDING_NAME">${labelMap.OF_BUILDING_NAME}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_BUILDING_NAME" type="text" class="medium" id="OF_BUILDING_NAME" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_NAME") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="OF_BUILDING_NO">${labelMap.OF_BUILDING_NO}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_BUILDING_NO" type="text" class="medium" id="OF_BUILDING_NO" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_NO") %>" maxlength="50"/>
-                    </td>
-                </tr>                
-                <tr>
-                    <td class="label">
-                        <label for="OF_BUILDING_FLOOR">${labelMap.OF_BUILDING_FLOOR}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_BUILDING_FLOOR" type="text" class="medium" id="OF_BUILDING_FLOOR" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_FLOOR") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="OF_VILLAGE">${labelMap.OF_VILLAGE}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_VILLAGE" type="text" class="medium" id="OF_VILLAGE" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_VILLAGE") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="OF_ADDRESSNO">${labelMap.OF_ADDRESSNO}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_ADDRESSNO" type="text" class="medium" id="OF_ADDRESSNO" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_ADDRESSNO") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="OF_MOO">${labelMap.OF_MOO}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_MOO" type="text" class="medium" id="OF_MOO" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_MOO") %>" maxlength="50"/>
-                    </td>
-                </tr> 
-               	<tr>
-                    <td class="label">
-                        <label for="OF_SOI">${labelMap.OF_SOI}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_SOI" type="text" class="medium" id="OF_SOI" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_SOI") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="OF_ROAD">${labelMap.OF_ROAD}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_ROAD" type="text" class="medium" id="OF_ROAD" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_ROAD") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="OF_SUBDISTRICT">${labelMap.OF_SUBDISTRICT}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_SUBDISTRICT" type="text" class="medium" id="OF_SUBDISTRICT" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_SUBDISTRICT") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="OF_DISTRICT">${labelMap.OF_DISTRICT}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_DISTRICT" type="text" class="medium" id="OF_DISTRICT" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_DISTRICT") %>" maxlength="50"/>
-                    </td>
-                </tr>  
-                <tr>
-                    <td class="label">
-                        <label for="OF_PROVINCE">${labelMap.OF_PROVINCE}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="OF_PROVINCE" type="text" class="medium" id="OF_PROVINCE" value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_PROVINCE") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="ZIP">${labelMap.ZIP}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="ZIP" type="text" class="medium" id="ZIP" value="<%= DBMgr.getRecordValue(HOSPITALRec, "ZIP") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="TEL">${labelMap.TEL}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="TEL" type="text" class="medium" id="TEL" value="<%= DBMgr.getRecordValue(HOSPITALRec, "TEL") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="EMAIL">${labelMap.EMAIL}</label>
-                    </td>
-                    <td class="input" >
-                    
-                        <input name="EMAIL" type="text" class="medium" id="EMAIL" value="<%= DBMgr.getRecordValue(HOSPITALRec, "EMAIL") %>" maxlength="50"/>
-                   
-                    </td>
-                </tr>
-                 <tr>
-                    <td class="label"><label for="GUARANTEE_INCLUDE_EXTRA">${labelMap.GUARANTEE_INCLUDE_EXTRA}</label></td>
-                    <td class="input">
-                        <input type="radio" id="GUARANTEE_INCLUDE_EXTRA_1" name="GUARANTEE_INCLUDE_EXTRA" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_INCLUDE_EXTRA_1">${labelMap.GUARANTEE_INCLUDE_EXTRA_1}</label>
-                        <input type="radio" id="GUARANTEE_INCLUDE_EXTRA_0" name="GUARANTEE_INCLUDE_EXTRA" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_INCLUDE_EXTRA_0">${labelMap.GUARANTEE_INCLUDE_EXTRA_0}</label>
-                    </td>
-                    <td class="label"><label for="GUARANTEE_DAY">${labelMap.GUARANTEE_DAY}</label></td>
-                    <td class="input">
-                        <input type="radio" id="GUARANTEE_DAY_1" name="GUARANTEE_DAY" value="VER"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("VER") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_DAY_1">${labelMap.GUARANTEE_DAY_1}</label>
-                        <input type="radio" id="GUARANTEE_DAY_0" name="GUARANTEE_DAY" value="INV"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("INV") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_DAY_0">${labelMap.GUARANTEE_DAY_0}</label>
-                    </td>
-                </tr>
-                
-                <!-- edit -->
-                 <tr>
-                    <td class="label"><label for="GUARANTEE_ALL_ALLOC">${labelMap.GUARANTEE_ALL_ALLOC}</label></td>
-                    <td class="input">
-                        <input type="radio" id="GUARANTEE_ALL_ALLOC_1" name="GUARANTEE_ALL_ALLOC" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_ALL_ALLOC_1">${labelMap.GUARANTEE_ALL_ALLOC_1}</label>
-                        <input type="radio" id="GUARANTEE_ALL_ALLOC_0" name="GUARANTEE_ALL_ALLOC" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_ALL_ALLOC_0">${labelMap.GUARANTEE_ALL_ALLOC_0}</label>
-                    </td>
-                    <td class="label"><label for="IS_ONWARD">${labelMap.IS_ONWARD}</label></td>
-                    <td class="input">
-                        <input type="radio" id="IS_ONWARD_1" name="IS_ONWARD" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_ONWARD_1">${labelMap.IS_ONWARD_1}</label>
-                        <input type="radio" id="IS_ONWARD_0" name="IS_ONWARD" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_ONWARD_0">${labelMap.IS_ONWARD_0}</label>
-                    </td>
-                </tr>
+			</tr>
+			<tr>
+				<td class="label"><label for="NAME">${labelMap.DESCRIPTION_THAI}</label></td>
+				<td colspan="3" class="input"><input type="text"
+					id="DESCRIPTION_THAI" name="DESCRIPTION_THAI" class="long"
+					maxlength="255"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "DESCRIPTION_THAI") %>" />
+				</td>
+			</tr>
+			<tr>
+				<td class="label"><label for="EMAIL">${labelMap.DESCRIPTION_ENG}</label></td>
+				<td colspan="3" class="input"><input type="text"
+					id="DESCRIPTION_ENG" name="DESCRIPTION_ENG" class="long"
+					maxlength="255"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "DESCRIPTION_ENG") %>" />
+				</td>
+			</tr>
+			<tr>
+				<td class="label"><label for="TAX_END_MONTH_OF_YEAR">${labelMap.TAX_END_MONTH_OF_YEAR}</label>
+				</td>
 
-                <!-- edit -->
-                 <tr>
-                    <td class="label"><label for="GUARANTEE_ONWARD">${labelMap.GUARANTEE_ONWARD}</label></td>
-                    <td class="input">
-                        <input type="radio" id="GUARANTEE_ONWARD_1" name="GUARANTEE_ONWARD" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_GUARANTEE_ONWARD").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ONWARD").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_ONWARD_1">${labelMap.GUARANTEE_ONWARD_1}</label>
-                        <input type="radio" id="GUARANTEE_ONWARD_0" name="GUARANTEE_ONWARD" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_GUARANTEE_ONWARD").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="GUARANTEE_ONWARD_0">${labelMap.GUARANTEE_ONWARD_0}</label>
-                    </td>
-                    <td class="label"><label for="DISCHARGE_BASIS">${labelMap.DISCHARGE_BASIS}</label></td>
-                    <td class="input">
-                        <input type="radio" id="DISCHARGE_BASIS_1" name="DISCHARGE_BASIS" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="DISCHARGE_BASIS_1">${labelMap.DISCHARGE_BASIS_1}</label>
-                        <input type="radio" id="DISCHARGE_BASIS_0" name="DISCHARGE_BASIS" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="DISCHARGE_BASIS_0">${labelMap.DISCHARGE_BASIS_0}</label>
-                    </td>
-                </tr>
+				<td class="input"><%= util.selectMM(session.getAttribute("LANG_CODE").toString(), "TAX_END_MONTH_OF_YEAR", DBMgr.getRecordValue(HOSPITALRec, "TAX_END_MONTH_OF_YEAR").equals("") ? b.getMm() : DBMgr.getRecordValue(HOSPITALRec, "TAX_END_MONTH_OF_YEAR"))  %>
+				</td>
 
-                <!-- edit -->
-                <tr>
-                    <td class="label">
-                        <label for="GL_ACCOUNT_CODE">${labelMap.GL_ACCOUNT_CODE}</label>
+				<td class="label"><label for="TAXNO">${labelMap.TAXNO}</label>
+				</td>
+				<td class="input"><input name="TAXNO" type="text"
+					class="medium" id="TAXNO"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "TAXNO") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="BANK_ACCOUNT_NO">${labelMap.ACCOUNT_NO}</label>
+				</td>
+				<td class="input" colspan="3"><input name="ACCOUNT_NO"
+					type="text" class="medium" id="ACCOUNT_NO"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "ACCOUNT_NO") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="BANK_CODE">${labelMap.BANK_CODE}</label></td>
+				<td colspan="3" class="input"><input type="text" id="BANK_CODE"
+					name="BANK_CODE" class="short" maxlength="20"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "BANK_CODE") %>"
+					onkeypress="return BANK_CODE_KeyPress(event);"
+					onblur="AJAX_Refresh_BANK();" /> <input id="SEARCH_BANK_CODE"
+					name="SEARCH_BANK_CODE" type="image" <%=disabledManager%>
+					class="image_button" src="../../images/search_button.png"
+					alt="Search"
+					onclick="openSearchForm('../search.jsp?TABLE=BANK&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&TARGET=BANK_CODE&HANDLE=AJAX_Refresh_BANK'); return false;" />
+					<input type="text" id="BANK_DESCRIPTION" name="BANK_DESCRIPTION"
+					class="long" readonly="readonly"
+					value="<%= DBMgr.getRecordValue(bankRec, "DESCRIPTION")%>" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="BANK_BRANCH_CODE">${labelMap.BANK_BRANCH_CODE}</label>
+				</td>
+				<td class="input" colspan="3"><input type="text"
+					id="BANK_BRANCH_CODE" name="BANK_BRANCH_CODE" class="short"
+					maxlength="20"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "BANK_BRANCH_CODE") %>"
+					onkeypress="return BANK_BRANCH_CODE_KeyPress(event);"
+					onblur="AJAX_Refresh_BANK_BRANCH();" /> <input
+					id="SEARCH_BANK_BRANCH_CODE" name="SEARCH_BANK_BRANCH_CODE"
+					type="image" <%=disabledManager%> class="image_button"
+					src="../../images/search_button.png" alt="Search"
+					onclick="return checkBankBranchCode()" /> <input type="text"
+					id="BANK_BRANCH_DESCRIPTION" name="BANK_BRANCH_DESCRIPTION"
+					class="long" readonly="readonly"
+					value="<%= DBMgr.getRecordValue(bankBranchRec, "DESCRIPTION")%>" />
+				</td>
+			</tr>
+			<tr>
+				<td class="label"><label for="CITI_PARTY_NAME">${labelMap.CITI_PARTY_NAME}</label>
+				</td>
+				<td class="input" colspan="3"><input type="text"
+					id="CITI_PARTY_NAME" name="CITI_PARTY_NAME" class="short"
+					maxlength="20"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_NAME") %>" />
+				</td>
+			</tr>
+			<tr>
+				<td class="label"><label for="CITI_PARTY_ID">${labelMap.CITI_PARTY_ID}</label>
+				</td>
+				<td class="input"><input type="text" id="CITI_PARTY_ID"
+					name="CITI_PARTY_ID" class="short" maxlength="20"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_ID") %>" />
+				</td>
+				<td class="label"><label for="CITI_PARTY_AC">${labelMap.CITI_PARTY_AC}</label>
+				</td>
+				<td class="input"><input type="text" id="CITI_PARTY_AC"
+					name="CITI_PARTY_AC" class="short" maxlength="20"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "CITI_PARTY_AC") %>" />
+				</td>
+			</tr>
+
+			<!---------- Add by Tong. ------------>
+			<tr>
+				<td class="label"><label for="OF_BUILDING_NAME">${labelMap.OF_BUILDING_NAME}</label>
+				</td>
+				<td class="input"><input name="OF_BUILDING_NAME" type="text"
+					class="medium" id="OF_BUILDING_NAME"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_NAME") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="OF_BUILDING_NO">${labelMap.OF_BUILDING_NO}</label>
+				</td>
+				<td class="input"><input name="OF_BUILDING_NO" type="text"
+					class="medium" id="OF_BUILDING_NO"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_NO") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="OF_BUILDING_FLOOR">${labelMap.OF_BUILDING_FLOOR}</label>
+				</td>
+				<td class="input"><input name="OF_BUILDING_FLOOR" type="text"
+					class="medium" id="OF_BUILDING_FLOOR"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_BUILDING_FLOOR") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="OF_VILLAGE">${labelMap.OF_VILLAGE}</label>
+				</td>
+				<td class="input"><input name="OF_VILLAGE" type="text"
+					class="medium" id="OF_VILLAGE"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_VILLAGE") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="OF_ADDRESSNO">${labelMap.OF_ADDRESSNO}</label>
+				</td>
+				<td class="input"><input name="OF_ADDRESSNO" type="text"
+					class="medium" id="OF_ADDRESSNO"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_ADDRESSNO") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="OF_MOO">${labelMap.OF_MOO}</label>
+				</td>
+				<td class="input"><input name="OF_MOO" type="text"
+					class="medium" id="OF_MOO"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_MOO") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="OF_SOI">${labelMap.OF_SOI}</label>
+				</td>
+				<td class="input"><input name="OF_SOI" type="text"
+					class="medium" id="OF_SOI"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_SOI") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="OF_ROAD">${labelMap.OF_ROAD}</label>
+				</td>
+				<td class="input"><input name="OF_ROAD" type="text"
+					class="medium" id="OF_ROAD"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_ROAD") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="OF_SUBDISTRICT">${labelMap.OF_SUBDISTRICT}</label>
+				</td>
+				<td class="input"><input name="OF_SUBDISTRICT" type="text"
+					class="medium" id="OF_SUBDISTRICT"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_SUBDISTRICT") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="OF_DISTRICT">${labelMap.OF_DISTRICT}</label>
+				</td>
+				<td class="input"><input name="OF_DISTRICT" type="text"
+					class="medium" id="OF_DISTRICT"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_DISTRICT") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="OF_PROVINCE">${labelMap.OF_PROVINCE}</label>
+				</td>
+				<td class="input"><input name="OF_PROVINCE" type="text"
+					class="medium" id="OF_PROVINCE"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "OF_PROVINCE") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="ZIP">${labelMap.ZIP}</label></td>
+				<td class="input"><input name="ZIP" type="text" class="medium"
+					id="ZIP" value="<%= DBMgr.getRecordValue(HOSPITALRec, "ZIP") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="TEL">${labelMap.TEL}</label></td>
+				<td class="input"><input name="TEL" type="text" class="medium"
+					id="TEL" value="<%= DBMgr.getRecordValue(HOSPITALRec, "TEL") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="EMAIL">${labelMap.EMAIL}</label>
+				</td>
+				<td class="input"><input name="EMAIL" type="text"
+					class="medium" id="EMAIL"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "EMAIL") %>"
+					maxlength="50" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label for="GUARANTEE_INCLUDE_EXTRA">${labelMap.GUARANTEE_INCLUDE_EXTRA}</label></td>
+				<td class="input"><input type="radio"
+					id="GUARANTEE_INCLUDE_EXTRA_1" name="GUARANTEE_INCLUDE_EXTRA"
+					value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_INCLUDE_EXTRA_1">${labelMap.GUARANTEE_INCLUDE_EXTRA_1}</label>
+					<input type="radio" id="GUARANTEE_INCLUDE_EXTRA_0"
+					name="GUARANTEE_INCLUDE_EXTRA" value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_INCLUDE_EXTRA").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_INCLUDE_EXTRA_0">${labelMap.GUARANTEE_INCLUDE_EXTRA_0}</label>
+				</td>
+				<td class="label"><label for="GUARANTEE_DAY">${labelMap.GUARANTEE_DAY}</label></td>
+				<td class="input"><input type="radio" id="GUARANTEE_DAY_1"
+					name="GUARANTEE_DAY" value="VER"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("VER") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_DAY_1">${labelMap.GUARANTEE_DAY_1}</label> <input
+					type="radio" id="GUARANTEE_DAY_0" name="GUARANTEE_DAY" value="INV"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_DAY").equalsIgnoreCase("INV") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_DAY_0">${labelMap.GUARANTEE_DAY_0}</label></td>
+			</tr>
+
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="GUARANTEE_ALL_ALLOC">${labelMap.GUARANTEE_ALL_ALLOC}</label></td>
+				<td class="input">
+					<select class="mediumMax" id="GUARANTEE_ALL_ALLOC" name="GUARANTEE_ALL_ALLOC">
+						<option value="Y" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? "selected":"" %> >${labelMap.GUARANTEE_ALL_ALLOC_1}</option>
+						<option value="N" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_0}</option>
+                        <option value="A" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("A") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_2}</option>
+                    </select>
                     </td>
-                    <td class="input" >
-                        <input name="GL_ACCOUNT_CODE" type="text" class="medium" id="GL_ACCOUNT_CODE" value="<%= DBMgr.getRecordValue(HOSPITALRec, "GL_ACCOUNT_CODE") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="AC_ACCOUNT_CODE">${labelMap.AC_ACCOUNT_CODE}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="AC_ACCOUNT_CODE" type="text" class="medium" id="AC_ACCOUNT_CODE" value="<%= DBMgr.getRecordValue(HOSPITALRec, "AC_ACCOUNT_CODE") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                
-                
-                <!--    -->
-                <tr>
-                    <td class="label">
-                        <label for="SHARING_ACCOUNT">${labelMap.SHARING_ACCOUNT}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="SHARING_ACCOUNT" type="text" class="medium" id="SHARING_ACCOUNT" value="<%= DBMgr.getRecordValue(HOSPITALRec, "SHARING_ACCOUNT") %>" maxlength="50"/>
-                    </td>
-                    <td class="label">
-                        <label for="EARNING_ACCOUNT">${labelMap.EARNING_ACCOUNT}</label>
-                    </td>
-                    <td class="input" >
-                        <input name="EARNING_ACCOUNT" type="text" class="medium" id="EARNING_ACCOUNT" value="<%= DBMgr.getRecordValue(HOSPITALRec, "EARNING_ACCOUNT") %>" maxlength="50"/>
-                    </td>
-                </tr>
-                <!-- edit -->
-              
-                 <!-- edit -->
-                 <tr>
-                    <td class="label"><label for="IS_PARTIAL">${labelMap.IS_PARTIAL}</label></td>
-                    <td class="input">
-                        <input type="radio" id="IS_PARTIAL_1" name="IS_PARTIAL" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_PARTIAL_1">${labelMap.IS_PARTIAL_1}</label>
-                        <input type="radio" id="IS_PARTIAL_0" name="IS_PARTIAL" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_PARTIAL_0">${labelMap.IS_PARTIAL_0}</label>
-                    </td>
-                    <td class="label"><label for="IS_COMBINE_BILL">${labelMap.IS_COMBINE_BILL}</label></td>
-                    <td class="input">
-                        <input type="radio" id="IS_COMBINE_BILL_1" name="IS_COMBINE_BILL" value="Y"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_COMBINE_BILL_1">${labelMap.IS_COMBINE_BILL_1}</label>
-                        <input type="radio" id="IS_COMBINE_BILL_0" name="IS_COMBINE_BILL" value="N"<%= DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
-                        <label for="IS_COMBINE_BILL_0">${labelMap.IS_COMBINE_BILL_0}</label>
-                    </td>
-                </tr>
-                <!-- edit -->
-                <tr>
-                    <td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="radio" id="ACTIVE_1" name="ACTIVE" value="1"<%= DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("1") || DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
-                        <label for="ACTIVE_1">${labelMap.ACTIVE_1}</label>
-                        <input type="radio" id="ACTIVE_0" name="ACTIVE" value="0"<%= DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("0") ? " checked=\"checked\"" : "" %> />
-                        <label for="ACTIVE_0">${labelMap.ACTIVE_0}</label>
-                    </td>
-                </tr>
-                <tr>
-                    <th colspan="4" class="buttonBar">
-                        <input type="submit" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="SAVE_Click();" />
-                        <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="return RESET_Click()" />
-                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
-                    </th>
-                </tr>
-            </table>
-        </form>
-    </body>
+				<!-- td class="input"><input type="radio"
+					id="GUARANTEE_ALL_ALLOC_1" name="GUARANTEE_ALL_ALLOC" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ALL_ALLOC_1">${labelMap.GUARANTEE_ALL_ALLOC_1}</label>
+					<input type="radio" id="GUARANTEE_ALL_ALLOC_0"
+					name="GUARANTEE_ALL_ALLOC" value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ALL_ALLOC_0">${labelMap.GUARANTEE_ALL_ALLOC_0}</label>
+					<input type="radio" id="GUARANTEE_ALL_ALLOC_2"
+					name="GUARANTEE_ALL_ALLOC" value="A"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("A") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ALL_ALLOC_2">${labelMap.GUARANTEE_ALL_ALLOC_2}</label>
+				</td-->
+				<td class="label"><label for="IS_ONWARD">${labelMap.IS_ONWARD}</label></td>
+				<td class="input"><input type="radio" id="IS_ONWARD_1"
+					name="IS_ONWARD" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_ONWARD_1">${labelMap.IS_ONWARD_1}</label> <input
+					type="radio" id="IS_ONWARD_0" name="IS_ONWARD" value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_ONWARD").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_ONWARD_0">${labelMap.IS_ONWARD_0}</label></td>
+			</tr>
+
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="GUARANTEE_ONWARD">${labelMap.GUARANTEE_ONWARD}</label></td>
+				<td class="input"><input type="radio" id="GUARANTEE_ONWARD_1"
+					name="GUARANTEE_ONWARD" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_GUARANTEE_ONWARD").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ONWARD").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ONWARD_1">${labelMap.GUARANTEE_ONWARD_1}</label>
+					<input type="radio" id="GUARANTEE_ONWARD_0" name="GUARANTEE_ONWARD"
+					value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_GUARANTEE_ONWARD").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="GUARANTEE_ONWARD_0">${labelMap.GUARANTEE_ONWARD_0}</label>
+				</td>
+				<td class="label"><label for="DISCHARGE_BASIS">${labelMap.DISCHARGE_BASIS}</label></td>
+				<td class="input"><input type="radio" id="DISCHARGE_BASIS_1"
+					name="DISCHARGE_BASIS" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="DISCHARGE_BASIS_1">${labelMap.DISCHARGE_BASIS_1}</label>
+					<input type="radio" id="DISCHARGE_BASIS_0" name="DISCHARGE_BASIS"
+					value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DISCHARGE_BASIS").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="DISCHARGE_BASIS_0">${labelMap.DISCHARGE_BASIS_0}</label>
+				</td>
+			</tr>
+
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="GL_ACCOUNT_CODE">${labelMap.GL_ACCOUNT_CODE}</label>
+				</td>
+				<td class="input"><input name="GL_ACCOUNT_CODE" type="text"
+					class="medium" id="GL_ACCOUNT_CODE"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "GL_ACCOUNT_CODE") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="AC_ACCOUNT_CODE">${labelMap.AC_ACCOUNT_CODE}</label>
+				</td>
+				<td class="input"><input name="AC_ACCOUNT_CODE" type="text"
+					class="medium" id="AC_ACCOUNT_CODE"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "AC_ACCOUNT_CODE") %>"
+					maxlength="50" /></td>
+			</tr>
+
+
+			<!--    -->
+			<tr>
+				<td class="label"><label for="SHARING_ACCOUNT">${labelMap.SHARING_ACCOUNT}</label>
+				</td>
+				<td class="input"><input name="SHARING_ACCOUNT" type="text"
+					class="medium" id="SHARING_ACCOUNT"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "SHARING_ACCOUNT") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="EARNING_ACCOUNT">${labelMap.EARNING_ACCOUNT}</label>
+				</td>
+				<td class="input"><input name="EARNING_ACCOUNT" type="text"
+					class="medium" id="EARNING_ACCOUNT"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "EARNING_ACCOUNT") %>"
+					maxlength="50" /></td>
+			</tr>
+			<!-- edit -->
+
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="IS_PARTIAL">${labelMap.IS_PARTIAL}</label></td>
+				<td class="input"><input type="radio" id="IS_PARTIAL_1"
+					name="IS_PARTIAL" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_PARTIAL_1">${labelMap.IS_PARTIAL_1}</label> <input
+					type="radio" id="IS_PARTIAL_0" name="IS_PARTIAL" value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_PARTIAL").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_PARTIAL_0">${labelMap.IS_PARTIAL_0}</label></td>
+				<td class="label"><label for="IS_COMBINE_BILL">${labelMap.IS_COMBINE_BILL}</label></td>
+				<td class="input"><input type="radio" id="IS_COMBINE_BILL_1"
+					name="IS_COMBINE_BILL" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_COMBINE_BILL_1">${labelMap.IS_COMBINE_BILL_1}</label>
+					<input type="radio" id="IS_COMBINE_BILL_0" name="IS_COMBINE_BILL"
+					value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_JOIN_BILL").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="IS_COMBINE_BILL_0">${labelMap.IS_COMBINE_BILL_0}</label>
+				</td>
+			</tr>
+			<!-- edit -->
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="IS_PARTIAL">${labelMap.DOCTOR_PRIVATE}</label></td>
+				<td class="input"><input type="radio" id="DOCTOR_PRIVATE_1"
+					name="DOCTOR_PRIVATE" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "DOCTOR_PRIVATE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "DOCTOR_PRIVATE").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="DOCTOR_PRIVATE_1">${labelMap.DOCTOR_PRIVATE_1}</label>
+					<input type="radio" id="DOCTOR_PRIVATE_0" name="DOCTOR_PRIVATE"
+					value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "DOCTOR_PRIVATE").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="DOCTOR_PRIVATE_0">${labelMap.DOCTOR_PRIVATE_0}</label>
+				</td>
+				<td class="label"><label for="CURRENCY_THB">${labelMap.CURRENCY}</label></td>
+				<td colspan="3" class="input"><input type="radio"
+					id="CURRENCY_THB" name="CURRENCY" value="THB"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("THB") || DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="CURRENCY_THB">${labelMap.CURRENCY_THB}</label> <input
+					type="radio" id="CURRENCY_USD" name="CURRENCY" value="USD"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "CURRENCY").equalsIgnoreCase("USD") ? " checked=\"checked\"" : "" %> />
+					<label for="CURRENCY_USD">${labelMap.CURRENCY_USD}</label></td>
+			</tr>
+			<!-- edit -->
+			<tr>
+				<td class="label"><label for="DF_ALLOC_TAX_402_1">${labelMap.DF_ALLOC_TAX_402}</label></td>
+				<td colspan="3" class="input"><input type="radio"
+					id="DF_ALLOC_TAX_402_1" name="DF_ALLOC_TAX_402" value="Y"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="DF_ALLOC_TAX_402_1">${labelMap.DF_ALLOC_TAX_402_1}</label>
+					<input type="radio" id="DF_ALLOC_TAX_402_0" name="DF_ALLOC_TAX_402"
+					value="N"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "IS_DF_ALLOC_TAX_402").equalsIgnoreCase("N") ? " checked=\"checked\"" : "" %> />
+					<label for="DF_ALLOC_TAX_402_0">${labelMap.DF_ALLOC_TAX_402_0}</label>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label"><label for="AUTHORITY_NAME">${labelMap.AUTHORITY_NAME}</label>
+				</td>
+				<td class="input"><input name="AUTHORITY_NAME" type="text"
+					class="medium" id="AUTHORITY_NAME"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "AUTHORITY_NAME") %>"
+					maxlength="50" /></td>
+				<td class="label"><label for="AUTHORITY_POSITION">${labelMap.AUTHORITY_POSITION}</label>
+				</td>
+				<td class="input"><input name="AUTHORITY_POSITION" type="text"
+					class="medium" id="AUTHORITY_POSITION"
+					value="<%= DBMgr.getRecordValue(HOSPITALRec, "AUTHORITY_POSITION") %>"
+					maxlength="50" /></td>
+			</tr>
+			
+			<tr>
+				<td class="label"><label for="ACTIVE_1">${labelMap.ACTIVE}</label></td>
+				<td colspan="3" class="input"><input type="radio" id="ACTIVE_1"
+					name="ACTIVE" value="1"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("1") || DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("") ? " checked=\"checked\"" : "" %> />
+					<label for="ACTIVE_1">${labelMap.ACTIVE_1}</label> <input
+					type="radio" id="ACTIVE_0" name="ACTIVE" value="0"
+					<%= DBMgr.getRecordValue(HOSPITALRec, "ACTIVE").equalsIgnoreCase("0") ? " checked=\"checked\"" : "" %> />
+					<label for="ACTIVE_0">${labelMap.ACTIVE_0}</label></td>
+			</tr>
+			<tr>
+				<th colspan="4" class="buttonBar"><input type="submit"
+					id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}"
+					onclick="SAVE_Click();" /> <input type="reset" id="RESET"
+					name="RESET" class="button" value="${labelMap.RESET}"
+					onclick="return RESET_Click()" /> <input type="button" id="CLOSE"
+					name="CLOSE" class="button" value="${labelMap.CLOSE}"
+					onclick="window.location='../process/ProcessFlow.jsp'" /></th>
+			</tr>
+		</table>
+	</form>
+</body>
 </html>
 <script language="javascript">
 	function checkBankBranchCode(){

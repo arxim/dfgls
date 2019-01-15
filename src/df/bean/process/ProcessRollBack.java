@@ -132,7 +132,7 @@ public class ProcessRollBack {
     }
         
     // roll back receipt by AR
-    public boolean rollBackReceiptByAR(String hospitalCode, String YYYY, String MM) {
+    public boolean rollBackReceiptByAROld(String hospitalCode, String YYYY, String MM) {
         boolean result = true;
         this.conn = new DBConnection();
         this.conn.connectToLocal();
@@ -160,6 +160,34 @@ public class ProcessRollBack {
         
         return result;    
     }
+    
+    public boolean rollBackReceiptByAR(String hospitalCode, String startDate, String endDate) { 
+    	boolean result = true; 
+    	this.conn = new DBConnection(); 
+    	this.conn.connectToLocal(); 
+    	ProcessPartialPayment pt = new ProcessPartialPayment(); 
+    	IntErpArReceipt er = new IntErpArReceipt(conn); 
+
+    	try { 
+	    	conn.beginTrans(); 
+	    	result = pt.rollBack(startDate, endDate, hospitalCode); 
+	    	System.out.println("Rollback Receipt : "+result); 
+	    	if (result){ 
+		    	result = er.rollBackUpdate(hospitalCode,startDate, endDate, "TRN_DAILY"); 
+	    	}else{ 
+		    	result = false; 
+	    	} 
+	    	System.out.println("Rollback Receipt Finished"); 
+    	} catch (Exception ex) { 
+	    	System.out.println("Rollback Receipt By AR Error : " + ex.getMessage()); 
+    	} finally { 
+	    	if (result) { conn.commitTrans(); } 
+	    	if (!result) { conn.rollBackTrans(); } 
+	    	this.conn.Close(); 
+	    	er = null; 
+    	} 
+    	return result; 
+    }
         
     // roll back receipt by Payor
     public boolean rollBackReceiptByPayor(String hospitalCode, String YYYY, String MM) {
@@ -184,7 +212,7 @@ public class ProcessRollBack {
         return result;    
     }
     
-    // roll back receipt by Payor
+    // roll back receipt by Doctor
     public boolean rollBackReceiptByDoctor(String hospitalCode, String YYYY, String MM) {
         boolean result = true;
         this.conn = new DBConnection();
@@ -193,7 +221,7 @@ public class ProcessRollBack {
         
         try {
             conn.beginTrans();
-            if (result) { result = dt.rollBackUpdate(hospitalCode,YYYY, MM, "TRN_DAILY");  }
+            if (result) { result = dt.rollBackUpdate(YYYY, MM, hospitalCode, "TRN_DAILY");  }
             
         } catch (Exception ex) {
             DialogBox.ShowError("Error : " + ex.getMessage());

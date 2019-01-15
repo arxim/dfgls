@@ -44,8 +44,13 @@
 	labelMap.add("PAID_SALARY", "Salary", "ค่าเงินเดือน");
 	labelMap.add("RD1A", "ภ.ง.ด.1ก","ภ.ง.ด.1ก");
 	labelMap.add("RD1", "ภ.ง.ด.1","ภ.ง.ด.1");
+    labelMap.add("RD3", "ภ.ง.ด.3", "ภ.ง.ด.3");
+    labelMap.add("RD53", "ภ.ง.ด.53", "ภ.ง.ด.53");
 	labelMap.add("PAYMENT_DATE", "Payment Date", "วันที่ทำจ่าย");
 	labelMap.add("TRANSACTION_DATE", "Transaction Date", "วันที่ทำรายการ");
+	labelMap.add("FILING_TYPE", "Filing Type", "ประเภทการยื่นแบบ");
+	labelMap.add("FILING_TYPE_0", "Regular Filing", "ยื่นปกติ");
+	labelMap.add("FILING_TYPE_1", "Additional Filing", "ยื่นเพิ่มเติมครั้งที่");
 	String report = "";
     request.setAttribute("labelMap", labelMap.getHashMap());
     
@@ -71,7 +76,7 @@
 					alert("Please Select Revenue Type");
             	}else if(document.mainForm.target_file.value == ""){
             		alert("Please Enter Filename");
-            	}else if(document.mainForm.PROCESS_NAME.value == "ExportRD" && (document.mainForm.PAY_TYPE.value != 'R01' && document.mainForm.PAY_TYPE.value != 'R00')){
+            	}else if(document.mainForm.PROCESS_NAME.value == "ExportRD" && (document.mainForm.PAY_TYPE.value != 'R01' && document.mainForm.PAY_TYPE.value != 'R00' && document.mainForm.PAY_TYPE.value != 'R03' && document.mainForm.PAY_TYPE.value != 'R53')){
                 	alert("Revenue Type is Mismatch");
             	}else{
                     document.mainForm.target = "_blank";
@@ -79,18 +84,39 @@
             	}
 			}
 			function changeDropDownList(){
+				var radios = document.mainForm.FILING_TYPE;
+				//alert(radios.length);
 				if(document.mainForm.PROCESS_NAME.value == "ExportBank"){
 					document.mainForm.PAY_TYPE.disabled = false;
 					document.mainForm.TRANSACTION_DATE.disabled = false;
 					document.mainForm.BANK_TYPE.disabled = false;
+					document.mainForm.FILING_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = true;
+					} 
 				}else if(document.mainForm.PROCESS_NAME.value == "ExportRD"){
 					document.mainForm.PAY_TYPE.disabled = false;
 					document.mainForm.TRANSACTION_DATE.disabled = true;
 					document.mainForm.BANK_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = false;
+					} 
 				}else{
 					document.mainForm.PAY_TYPE.disabled = true;
 					document.mainForm.BANK_TYPE.disabled = true;
 					document.mainForm.TRANSACTION_DATE.disabled = false;
+					document.mainForm.FILING_TYPE.disabled = true;
+					for (var i=0, iLen=radios.length; i<iLen; i++) {
+						radios[i].disabled = true;
+					} 
+				}
+			}
+			function checkText(){ 
+				var elem = document.getElementById('target_file').value; 
+				if(elem !="" && !elem.match(/^([a-z0-9\_])+$/i)){ 
+					alert("ชื่อไฟล์ กรอกได้เฉพาะ a-Z, A-Z, 0-9 และ _ (underscore)"); 
+					document.getElementById('target_file').value = ""; 
+					document.getElementById('target_file').focus(); 
 				}
 			}
 		</script>
@@ -129,7 +155,7 @@
                     </select>
 					</td>
 					<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-                    <td class="input"><input type="text" class="medium" id="target_file" name="target_file"/></td>
+                    <td class="input"><input type="text" class="medium" id="target_file" name="target_file" onblur="checkText();"/></td>
 				</tr>
 				<tr>
                     <td class="label">
@@ -165,6 +191,8 @@
                             <option value="%">-- Select Tax Type --</option>
                             <option value="R00">${labelMap.RD1A}</option>
                             <option value="R01">${labelMap.RD1}</option>
+                            <option value="R03">${labelMap.RD3}</option>
+                            <option value="R53">${labelMap.RD53}</option>
                         </select>
 					</td>
 					<td class="label">
@@ -180,6 +208,18 @@
                             <option value="017">${labelMap.CITI}</option>
                         </select>
 					</td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label for="FILING_TYPE">${labelMap.FILING_TYPE}</label><br />
+					</td>
+                    <td colspan="3" class="input" >
+                        <input onclick="document.getElementById('filing_add_no').disabled = true;" type="radio" id="1" name="FILING_TYPE" value="0" checked="checked"/>
+                        <label for="FILING_TYPE_0">${labelMap.FILING_TYPE_0}</label>
+                        <input onclick="document.getElementById('filing_add_no').disabled = false;" type="radio" id="2" name="FILING_TYPE" value="1" />
+                        <label for="FILING_TYPE_1">${labelMap.FILING_TYPE_1}</label>
+                        <input type="text"  style="width: 20px;" id="filing_add_no" name="filing_add_no" disabled="disabled"/>
+                    </td>
                 </tr>
                 <!-- 
                 <tbody id="idFormDate">

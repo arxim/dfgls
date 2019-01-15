@@ -646,5 +646,12 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
         	c.closeDB("");
         }
         return ExpArr;
-    } 
+    }
+
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	} 
 }

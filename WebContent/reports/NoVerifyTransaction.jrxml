@@ -24,10 +24,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_date" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["20100101"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["20180401"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_date" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["20100101"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["20180431"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -45,7 +45,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["00002"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -54,22 +54,30 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["/home/arxim/workspace/dfbgh/WebContent/reports/"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT I.HOSPITAL_CODE, CASE WHEN I.ADMISSION_TYPE_CODE = 'I' THEN 'IPD' ELSE 'OPD' END AS ADMISSION_TYPE_CODE,
+	<queryString><![CDATA[SELECT * FROM(
+SELECT I.HOSPITAL_CODE, CASE WHEN I.ADMISSION_TYPE_CODE = 'I' THEN 'IPD' ELSE 'OPD' END AS ADMISSION_TYPE_CODE,
 I.INVOICE_NO, I.INVOICE_DATE, I.LINE_NO, I.RECEIPT_TYPE_CODE, I.HN_NO, I.PATIENT_NAME, I.EPISODE_NO,
-I.ORDER_ITEM_CODE, OI.DESCRIPTION_THAI, I.DOCTOR_CODE, I.AMOUNT_AFT_DISCOUNT, I.RECEIPT_LOCATION_CODE
-FROM TRN_DAILY I LEFT OUTER JOIN ORDER_ITEM OI ON I.ORDER_ITEM_CODE = OI.CODE AND I.HOSPITAL_CODE = OI.HOSPITAL_CODE 
-WHERE (I.INVOICE_DATE BETWEEN $P{from_date} AND $P{to_date}) AND
-I.LINE_NO NOT IN (SELECT SUBSTRING(LINE_NO,1,LEN(LINE_NO)-1) FROM TRN_DAILY WHERE INVOICE_TYPE = 'RESULT') AND
-I.INVOICE_TYPE = 'ORDER' AND OI.IS_COMPUTE = 'Y' AND
+I.ORDER_ITEM_CODE, OI.DESCRIPTION_THAI, I.DOCTOR_CODE, I.AMOUNT_AFT_DISCOUNT, I.RECEIPT_LOCATION_CODE, I.PATIENT_DEPARTMENT_CODE,
+ISNULL((SELECT COUNT(*) FROM TRN_DAILY
+WHERE HOSPITAL_CODE = I.HOSPITAL_CODE
+AND INVOICE_NO = I.INVOICE_NO
+AND CASE WHEN LINE_NO LIKE '%V' THEN SUBSTRING(LINE_NO,1,LEN(LINE_NO)-1) ELSE LINE_NO END = I.LINE_NO
+AND INVOICE_TYPE <> 'ORDER'),0) AS CHK
+FROM TRN_DAILY I WITH (INDEX(X9_TRN_DAILY))
+LEFT OUTER JOIN ORDER_ITEM OI ON I.ORDER_ITEM_CODE = OI.CODE AND I.HOSPITAL_CODE = OI.HOSPITAL_CODE AND OI.IS_COMPUTE = 'Y' 
+WHERE I.HOSPITAL_CODE LIKE $P{hospital_code} AND
+(I.INVOICE_DATE BETWEEN $P{from_date} AND $P{to_date}) AND
+I.INVOICE_TYPE = 'ORDER' AND
 I.ADMISSION_TYPE_CODE LIKE $P{admission_type} AND
 I.TRANSACTION_TYPE LIKE $P{transaction_type} AND
 I.ORDER_ITEM_CODE LIKE $P{order_item} AND
 I.ORDER_ITEM_CATEGORY_CODE LIKE $P{order_category} AND
-I.RECEIPT_DEPARTMENT_CODE LIKE $P{doctor_department} AND
-I.HOSPITAL_CODE LIKE $P{hospital_code}
-ORDER BY I.ADMISSION_TYPE_CODE, I.INVOICE_NO, I.LINE_NO]]></queryString>
+I.RECEIPT_DEPARTMENT_CODE LIKE $P{doctor_department}
+)Q
+WHERE CHK = 0
+ORDER BY ADMISSION_TYPE_CODE, INVOICE_NO, LINE_NO]]></queryString>
 
 	<field name="HOSPITAL_CODE" class="java.lang.String"/>
 	<field name="ADMISSION_TYPE_CODE" class="java.lang.String"/>
@@ -85,6 +93,8 @@ ORDER BY I.ADMISSION_TYPE_CODE, I.INVOICE_NO, I.LINE_NO]]></queryString>
 	<field name="DOCTOR_CODE" class="java.lang.String"/>
 	<field name="AMOUNT_AFT_DISCOUNT" class="java.math.BigDecimal"/>
 	<field name="RECEIPT_LOCATION_CODE" class="java.lang.String"/>
+	<field name="PATIENT_DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="CHK" class="java.lang.Integer"/>
 
 	<variable name="SUM_AMOUNT_AFT_DISCOUNT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{AMOUNT_AFT_DISCOUNT}]]></variableExpression>

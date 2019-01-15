@@ -94,7 +94,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"'))"+
                trnCon+termCon+
                "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
-               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N'";
+               //"AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' AND TRN_DAILY.IS_PAID != 'N'";
+               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' "+
+               "AND (TRN_DAILY.IS_PAID != 'N' OR TRN_DAILY.GUARANTEE_NOTE = 'ABSORB OLD GUARANTEE')";
          return sql;		
 	}
 	private String summaryMonthlyProcess(String endDate){
@@ -117,7 +119,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR (TRN_DAILY.YYYY+TRN_DAILY.MM = '"+this.year+this.month+"'))"+
                trnCon+termCon+
                "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
-               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1'";
+               "AND TRN_DAILY.ACTIVE = '1' AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' "+
+               "AND (TRN_DAILY.IS_PAID != 'N' OR TRN_DAILY.GUARANTEE_NOTE = 'ABSORB OLD GUARANTEE')";
          return sql;		
 	}
 	private String monthlyProcess(String endDate){
@@ -530,52 +533,49 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 	        	System.out.println(doTransferDoctorPaymentReport());
 	        	
 	        	conn.beginTrans();
-	        	if(this.hospitalCode.equals("00001")){
-		        	if(conn.executeUpdate(this.doTransferDoctorPaymentReport())>0){
+	        	String errorMessage = "";
+	        	try{
+		        	if(this.hospitalCode.equals("00001")){
+		        		
+		        		errorMessage = "Do process tranform doctor payment report";
+			        	if(conn.executeUpdate(this.doTransferDoctorPaymentReport())>0){
+				            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
+				            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
+				        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
+				        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE		        		
+			        	}
+		        	}else{
 			            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
 			            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
 			        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
-			        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE		        		
+			        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE
+
+		        		errorMessage = "Do process move xray";
+				        if(this.hospitalCode.equals("011")){
+					        if(conn.executeUpdate(doMoveXray())>0){
+						        conn.executeUpdate(doDeleteXray());	        		        		
+					        }
+				        }
 		        	}
-	        	}else{
-		            conn.executeUpdate(doTransactionClose()); //TRN_DAILY CLOSE
-		            conn.executeUpdate(doTransactionPaymentClose()); //TRN_PAYMENT CLOSE
-		        	conn.executeUpdate(doMonthEndAdjustClose()); //TRN_EXPENSE_DETAIL CLOSE
-		        	conn.executeUpdate(doSummaryClose()); //SUMMARY_PAYMENT CLOSE
-	        	}
-	        	//STP_GUARANTEE
-	        	try{ //MOVE X-RAY
-		        	if(conn.executeUpdate(doMoveXray())>0){
-			        	conn.executeUpdate(doDeleteXray());	        		        		
-		        	}
-	        	}catch(Exception e){
-	        		System.out.println("Error while moving X-ray Management to TRN_DAILY_LOG");
-	        		System.out.println("Error : "+e);
-	        		System.out.println("Statement : "+doMoveXray());
-	        	}
-	        	
-	        	//MOVE ONWARD
-	        	try{
+		        	
+	        		errorMessage = "Do process move onward";
 		        	if(conn.executeUpdate(doMoveOnward())>0){
 			        	conn.executeUpdate(doDeleteOnward());	        		        		
 		        	}
-	        	}catch(Exception e){
-	        		System.out.println("Error while moving Onward to TRN_ONWARD");
-	        		System.out.println("Error : " + e);
-	        		System.out.println("Statement : "+doMoveOnward());
-	        	}
-	        	
-	        	//MOVE TRANSACTION PAYMENT (EDIT UNPAID AS OF DATE REPORT BEFORE)
-	        	//MOVE TRANSACTION IN ACTIVE
-	        	//CREATE BATCH
-	        	batch.setCloseByUserId(this.userID);
-	            if(batch.closeBATCH() && batch.createBATCH()){
-	                conn.commitTrans();
-	            }else{
-	            	status = false;
-	            }
-	        }
 
+	        		errorMessage = "Do process commit batch close";
+	                conn.commitTrans();
+
+	                errorMessage = "Do process create batch";
+		        	batch.setCloseByUserId(this.userID);
+		            batch.closeBATCH();
+		            batch.createBATCH();
+		            status = true;
+	        	}catch(Exception e){
+	        		System.out.println(errorMessage+" : "+e);
+	        		status = false;
+	        	}
+	        }
 		} catch (SQLException e) {
 			status = false;
 		} finally{

@@ -71,11 +71,15 @@
             request.setCharacterEncoding("UTF-8");
             byte MODE = DBMgr.MODE_INSERT;
             DataRecord record = null;
+            DataRecord expenseRecLog = null;
+            String remark = "";
             if (request.getParameter("MODE") != null) {
             	MODE = Byte.parseByte(request.getParameter("MODE"));
                 //out.print(request.getParameterMap().toString());
 				
                 record = new DataRecord("EXPENSE");
+                expenseRecLog = new DataRecord("LOG_EXPENSE");
+                
                 record.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(),true);
                 record.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
                 record.addField("DESCRIPTION", Types.VARCHAR, request.getParameter("DESCRIPTION"));
@@ -89,17 +93,49 @@
                 record.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 record.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 record.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                
+                //for log
+                expenseRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(),true);
+                expenseRecLog.addField("CODE", Types.VARCHAR, request.getParameter("CODE"), true);
+                expenseRecLog.addField("DESCRIPTION", Types.VARCHAR, request.getParameter("DESCRIPTION"));
+                expenseRecLog.addField("ACCOUNT_CODE", Types.VARCHAR, request.getParameter("ACCOUNT_CODE"));
+                expenseRecLog.addField("GL_INTERFACE", Types.VARCHAR, request.getParameter("GL_INTERFACE"));
+                expenseRecLog.addField("AC_INTERFACE", Types.VARCHAR, request.getParameter("AC_INTERFACE"));
+                expenseRecLog.addField("ADJUST_TYPE", Types.VARCHAR, request.getParameter("ADJUST_TYPE"));
+                expenseRecLog.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
+                expenseRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
+                expenseRecLog.addField("SIGN", Types.VARCHAR, request.getParameter("SIGN"));
+                expenseRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
+                expenseRecLog.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime(), true);
+                expenseRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
 
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
-
-                    if (DBMgr.insertRecord(record)) {
+                	expenseRecLog.addField("REMARK", Types.VARCHAR, remark);
+                    if (DBMgr.insertRecord(record) && DBMgr.insertRecord(expenseRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/expense.jsp"));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                     }
                 }else if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_UPDATE) {
-                    if (DBMgr.updateRecord(record)) {
+                	DataRecord expense = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION, ACCOUNT_CODE, GL_INTERFACE, AC_INTERFACE, "+
+                			"ADJUST_TYPE, TAX_TYPE_CODE, ACTIVE, SIGN, UPDATE_DATE, UPDATE_TIME, USER_ID "+
+               				"FROM EXPENSE WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+             		
+               		remark = "แก้ไข ";
+               		for(int i = 0; i < expense.getSize(); i++){
+               			if(!expense.getValueOfIndex(i).getValue().equalsIgnoreCase(record.getValueOfIndex(i).getValue())
+               					&& !record.getValueOfIndex(i).getName().equals("USER_ID")
+               					&& !record.getValueOfIndex(i).getName().equals("UPDATE_DATE")
+               					&& !record.getValueOfIndex(i).getName().equals("UPDATE_TIME")){
+               				//System.out.println(dept.getValueOfIndex(i).getValue()+", "+departmentRec.getValueOfIndex(i).getValue());
+               				System.out.println("แก้ไข"+record.getValueOfIndex(i).getName());
+               				remark += record.getValueOfIndex(i).getName()+", ";
+               			}
+               		}
+               		expenseRecLog.addField("REMARK", Types.VARCHAR, remark.substring(0, remark.length()-2));
+                	
+                    if (DBMgr.updateRecord(record) && DBMgr.insertRecord(expenseRecLog)) {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/expense.jsp"));
                     } 
                     else {

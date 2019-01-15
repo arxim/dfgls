@@ -162,4 +162,11 @@ public class ExportDFToBankBean_no_ciitbank extends InterfaceTextFileBean {
         }
         return sub_data;
     }
+
+	@Override
+	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path,
+			String filing_type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

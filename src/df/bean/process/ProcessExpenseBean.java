@@ -28,6 +28,7 @@ public class ProcessExpenseBean {
     String expense_code_get = "";
     int expense_sign_get=0;
     String expense_type_get="";
+    String user="";
     
     public ProcessExpenseBean(DBConn cdb){
         try {
@@ -39,6 +40,9 @@ public class ProcessExpenseBean {
             this.result = ""+ex;
             System.out.println(ex);
         }
+    }
+    public void setUser(String user){
+    	this.user = user;
     }
     
     public String getMessage(){
@@ -207,7 +211,8 @@ public class ProcessExpenseBean {
 		        			  System.out.println("percentTaxSomeExp : "+someExpCarryForword+"/"+Double.parseDouble(listEx.get(k).get("AMOUNT")));
 		        			  HashMap<String, String> data3 = new HashMap<String, String>();
 		        			  data3.put("YYYY",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?(Integer.parseInt(listEx.get(k).get("YYYY"))+1):(Integer.parseInt(listEx.get(k).get("YYYY")))));
-		        			  data3.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
+		        			  data3.put("MM",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?Integer.parseInt("01"):(formatter.format(Integer.parseInt(listEx.get(k).get("MM"))+1))));
+		        			  //data3.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
 			    			  data3.put("EMPLOYEE_ID", listEx.get(k).get("EMPLOYEE_ID"));
 			      			  data3.put("DOCTOR_CODE",listEx.get(k).get("DOCTOR_CODE"));
 			      			  data3.put("HOSPITAL_CODE",listEx.get(k).get("HOSPITAL_CODE"));
@@ -248,7 +253,8 @@ public class ProcessExpenseBean {
     				   		//  System.out.println("ËÑ¡ËÁ´áÅéÇÇ  µéÍ§Â¡ÂÍ´ÃÒÂ¡ÒÃ·Ñé§ËÁ´ä»à´×Í¹¶Ñ´ä»");
     				   		  HashMap<String, String> data4 = new HashMap<String, String>();
 		        			  data4.put("YYYY",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?(Integer.parseInt(listEx.get(k).get("YYYY"))+1):(Integer.parseInt(listEx.get(k).get("YYYY")))));
-		        			  data4.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
+		        			  data4.put("MM",""+((Integer.parseInt(listEx.get(k).get("MM"))+1)==13?Integer.parseInt("01"):(formatter.format(Integer.parseInt(listEx.get(k).get("MM"))+1))));
+		        			  //data4.put("MM",""+formatter.format(Double.parseDouble(listEx.get(k).get("MM"))+1));
 			    			  data4.put("EMPLOYEE_ID", listEx.get(k).get("EMPLOYEE_ID"));
 			      			  data4.put("DOCTOR_CODE",listEx.get(k).get("DOCTOR_CODE"));
 			      			  data4.put("HOSPITAL_CODE",listEx.get(k).get("HOSPITAL_CODE"));
@@ -1542,13 +1548,13 @@ public class ProcessExpenseBean {
 							       	note_save="EXP_PED Conditon Type: PayEquals Amount :"+getAmount+" Tax Amount:"+getTaxAmount+" Term :"+getTerm;
 							       	
 							       	sql_insert="INSERT INTO TRN_EXPENSE_DETAIL("
-							       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, LINE_NO, "
+							       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, DEPARTMENT_CODE, LINE_NO, "
 							       	+" EXPENSE_CODE, EXPENSE_SIGN, EXPENSE_ACCOUNT_CODE, TAX_TYPE_CODE, NOTE, "
-							       	+" AMOUNT,TAX_AMOUNT,UPDATE_DATE,UPDATE_TIME)"
-							       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"',"
+							       	+" AMOUNT, TAX_AMOUNT, USER_ID, UPDATE_DATE, UPDATE_TIME)"
+							       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', '"+departmentCode+"', "
 							       	+" '"+line_no+"', '"+expenseCode+"', "+getExpSign+", "
 							       	+" '"+getExpAccCode+"', '"+taxType+"', '"+getNote+"', "+rsAmount+", "
-							       	+rsTaxAmount+", '"+JDate.getDate()+"','"+JDate.getTime()+"')";
+							       	+rsTaxAmount+", '"+this.user+"', '"+JDate.getDate()+"','"+JDate.getTime()+"')";
 							        System.out.println("sql_insert="+sql_insert);
 							        
 							        try
@@ -1631,13 +1637,13 @@ public class ProcessExpenseBean {
 					            			note_save="EXP_PED Conditon Type: PayMonth Amount :"+getAmount+" Tax Amount:"+getTaxAmount+" Term :"+getTerm;
 									       	
 									       	sql_insert="INSERT INTO TRN_EXPENSE_DETAIL("
-									       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, LINE_NO, "
+									       	+" HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, DEPARTMENT_CODE, LINE_NO, "
 									       	+" EXPENSE_CODE, EXPENSE_SIGN, EXPENSE_ACCOUNT_CODE, TAX_TYPE_CODE, NOTE, "
-									       	+" AMOUNT,TAX_AMOUNT,UPDATE_DATE,UPDATE_TIME)"
-									       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"',"
+									       	+" AMOUNT, TAX_AMOUNT, USER_ID, UPDATE_DATE, UPDATE_TIME)"
+									       	+" VALUES('"+hospital_code+"', '"+year+"', '"+month+"', '"+doctorCode+"', '"+departmentCode+"', "
 									       	+" '"+line_no+"', '"+expenseCode+"', "+getExpSign+", "
 									       	+" '"+getExpAccCode+"', '"+taxType+"', '"+getNote+"', "+rsAmount+", "
-									       	+rsTaxAmount+", '"+JDate.getDate()+"','"+JDate.getTime()+"')";
+									       	+rsTaxAmount+", '"+this.user+"', '"+JDate.getDate()+"','"+JDate.getTime()+"')";
 									        System.out.println("sql_insert="+sql_insert);
 									        
 									        try

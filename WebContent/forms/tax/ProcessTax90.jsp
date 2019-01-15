@@ -135,7 +135,7 @@
         <center>
 			<table width="800" border="0">
 				<tr><td align="left">
-					<b><font color='#003399'><%=Utils.getInfoPage("ProcessTax90.jsp", labelMap.getFieldLangSuffix(), new DBConnection()) %></font></b>
+					<b><font color='#003399'><%=Utils.getInfoPage("ProcessTax90.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
 				</td></tr>
 			</table>
 		</center>

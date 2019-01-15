@@ -18,6 +18,7 @@
 	labelMap.add("REPORT_DOCTOR", "New Doctor Code", "นำเข้ารหัสแพทย์ใหม่");
 	labelMap.add("REPORT_UPDATE_DOCTOR", "Update Doctor Info.", "แก้ไขข้อมูลแพทย์");
 	labelMap.add("REPORT_ORDER_ITEM", "New Order Item", "นำเข้ารายการรักษาใหม่");
+	labelMap.add("REPORT_ORDER_ITEM_INACTIVE", "Order Item Inactive", "รายการรักษาที่ Inactive แล้วในระบบ");
 	labelMap.add("REPORT_PAYOR", "New Payor Office", "นำเข้าบริษัทคู่สัญญาใหม่");
 	labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
 	labelMap.add("VIEW", "View", "แสดงผล");
@@ -86,6 +87,7 @@
 	                        <option value="VerifyNewDoctor">${labelMap.REPORT_DOCTOR}</option>
 	                        <option value="VerifyUpdateDoctor">${labelMap.REPORT_UPDATE_DOCTOR}</option>
 	                        <option value="VerifyNewOrderItem">${labelMap.REPORT_ORDER_ITEM}</option>
+	                        <option value="VerifyOrderItemInactive">${labelMap.REPORT_ORDER_ITEM_INACTIVE}</option>
 	                        <option value="VerifyNewPayorOffice">${labelMap.REPORT_PAYOR}</option>
 	                    </select>
 					</td>

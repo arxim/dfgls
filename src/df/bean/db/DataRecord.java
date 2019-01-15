@@ -45,6 +45,16 @@ public class DataRecord {
         }
         return new DataField();
     }
+    
+    public DataField getValueOfIndex(int index){
+    	DataField value = fields.get(index);
+    	return value;
+    }
+    
+    public int getSize(){
+    	int size = fields.size();
+    	return size;
+    }
 /*    
     public boolean retrieve() throws Exception {
         if (this.fields.size() <= 0 || !this.fields.firstElement().name.equalsIgnoreCase("CODE"))

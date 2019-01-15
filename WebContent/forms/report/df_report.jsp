@@ -47,6 +47,7 @@
 			labelMap.add("REPORT_PAID_CHEQUE","Summary Cheque Paid","รายงานทำจ่ายเช็คค่าแพทย์");
 			labelMap.add("REPORT_EXPENSE","Adjust Revenue Report","รายงานรายการปรับปรุงค่าแพทย์");
 			labelMap.add("REPORT_DF_HOLD","DF Hold Report","รายงานรายการระงับจ่ายค่าแพทย์");
+			labelMap.add("REPORT_TAX_406","Tax 40(6) Report","หนังสือรับรองรายได้ 40(6)"); 
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
             labelMap.add("DOCUMENT_TYPE", "Document Type", "ประเภทเอกสาร");
             labelMap.add("VIEW", "View", "แสดงผล");
@@ -71,21 +72,9 @@
             con = new DBConnection();
             con.connectToLocal();
             String report_payment = "PaymentVoucher"+session.getAttribute("HOSPITAL_CODE").toString();
-            VerifyAllowViewReportBean vr = new VerifyAllowViewReportBean();
-            String payTerm=request.getParameter("payTerm");
-            String month = request.getParameter("MM");
-            String year = request.getParameter("YYYY");
-            String status = vr.getReportPermit(session.getAttribute("HOSPITAL_CODE").toString(),payTerm,month,year);
-            System.out.println("status01 : "+status);
             Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), con);
             con.Close();
-            String BATCH_DATE = b.getYyyy() + b.getMm();
-            
-            
-            
-           
-           
-            
+            String BATCH_DATE = b.getYyyy() + b.getMm();      
            
 %>
 
@@ -117,14 +106,9 @@
 							document.mainForm.YYYY.focus();
 						}
 					}else{
-						if(document.mainForm.YYYY.value+document.mainForm.MM.value+document.mainForm.term.value == <%= status %>){
-							
-							document.mainForm.REPORT_DISPLAY.value = "view";
-	                    	document.mainForm.target = "_blank";
-	                    	document.mainForm.submit(); 
-						}else{
-							alert("Can't view report in this month");
-						}
+						document.mainForm.REPORT_DISPLAY.value = "view";
+                    	document.mainForm.target = "_blank";
+                    	document.mainForm.submit();
 					}
 				}
             }
@@ -158,6 +142,7 @@
 	                      <option value="SummaryRevenueByDetailForDoctor">${labelMap.REPORT_DETAIL_DF}</option>
 	                      <option value="ExpenseDetailForDoctor">${labelMap.REPORT_EXPENSE}</option>
 			      		  <option value="SummaryDFUnpaidByDetailForDoctor">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
+	                      <option value="TaxLetter406">${labelMap.REPORT_TAX_406}</option>
 	                    </select>
 					</td>
                 	<td class="label" align="right" width="25%">Payment Term</td>
