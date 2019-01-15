@@ -41,7 +41,7 @@ public class ProcessEnableTaxReportBean {
 				+ "AND YYYY = '"+this.year+"' AND MM = '"+this.term+"' "
 				+ "AND PRINT_DATE = ''";
 		} else if (this.taxType.equals("Tax402")) {
-			sql = "UPDATE SUMMARY_TAX_402 SET BATCH_NO = '"+this.year+this.term+"',"
+			sql = "UPDATE SUMMARY_TAX_402 SET PRINT_DATE = '"+this.printDate+"', BATCH_NO = '"+this.year+this.term+"',"
 				+ "UPDATE_DATE = '"+JDate.getDate()+"', UPDATE_TIME = '"+JDate.getTime()+"', USER_ID = '"+this.userID+"' "
 				+ "WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' "
 				+ "AND YYYY = '"+this.year+"' AND MM = '"+this.term+"' "

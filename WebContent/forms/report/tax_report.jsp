@@ -31,6 +31,8 @@
 			labelMap.add("REPORT_402_YEARLY", "หนังสือรับรอง 50 ทวิ", "หนังสือรับรอง 50 ทวิ");			
 			labelMap.add("REPORT_SUMMARY_402_YEARLY", "รายงานสรุปภาษี 40(2)รายปี", "รายงานสรุปภาษี 40(2)รายปี");
 			labelMap.add("REPORT_TAX91", "รายงาน ภ.ง.ด.91", "รายงาน ภ.ง.ด.91");
+			labelMap.add("REPORT_TAX3", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.3)", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.3)");
+			labelMap.add("REPORT_TAX53", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.53)", "รายงานสรุปภาษีหัก ณ ที่จ่าย รายเดือน (ภ.ง.ด.53)");
 			
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
             labelMap.add("DOCUMENT_TYPE", "Document Type", "ประเภทเอกสาร");
@@ -127,7 +129,7 @@
                     document.getElementById('YEAR').disabled = "";
                     document.getElementById('PRINT_DATE').disabled = "";
                     document.getElementById('DOCTOR_CODE_FROM').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='tax402_monthly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='tax402_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax3_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax53_monthly'){
                     d.style.display = 'block';
                     term.style.display = 'block';
                 	e.style.display = 'none';
@@ -286,6 +288,8 @@
                         <option value="Tax402SummaryYearly">${labelMap.REPORT_402_YEARLY}</option>
                         <option value="SummaryTax402Yearly">${labelMap.REPORT_SUMMARY_402_YEARLY}</option>
                         <option value="Tax91_52">${labelMap.REPORT_TAX91}</option>
+                        <option value="tax53_monthly">${labelMap.REPORT_TAX3}</option>
+                        <option value="tax53_monthly">${labelMap.REPORT_TAX53}</option>
                     </select>
                 </tr>
                 <tbody id='year_term'>

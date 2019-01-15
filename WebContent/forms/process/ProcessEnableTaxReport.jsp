@@ -37,7 +37,7 @@
             LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
             labelMap.add("TITLE_MAIN", "Enable Tax Report For Doctor", "แสดงรายงานภาษีสำหรับแพทย์");
             labelMap.add("TAX_TYPE", "Tax Type", "ประเภทภาษี");
-            labelMap.add("PRINT_DATE", "Payment Term", "รอบภาษี");
+            labelMap.add("PRINT_DATE", "Issued On", "ลงวันที่");
             /* labelMap.add("END_DATE", "Payment Term To", "สิ้นสุดงวดเดือน"); */
             labelMap.add("FIRST_TAX_TERM", "First Term", "รายได้ครึ่งปีแรก");
             labelMap.add("SECOND_TAX_TERM", "Second Term", "รายได้ครึ่งปีหลัง");
@@ -107,7 +107,7 @@
                 + "&YYYY="+ document.getElementById('YYYY').value
                 + "&PRINT_DATE="+ document.mainForm.PRINT_DATE.value 
                 + "&TAX_TYPE="+document.mainForm.TAX_TYPE.value ;
-				
+				alert(target);
 				//document.mainForm.submit();
 				 AJAX_Request(target, AJAX_Handle_Response);
         }
@@ -189,6 +189,15 @@
 			<tr>
 				<td class="label"><label>${labelMap.YYYY}</label></td>
 				<td class="input"><%=proUtil.selectYY("YYYY", yy_str)%></td>
+				
+			</tr>
+			<tr>
+				<td class="label"><label for="PRINT_DATE">${labelMap.PRINT_DATE}</label>
+				</td>
+				<td class="input">
+				<input type="text" id="PRINT_DATE" name="PRINT_DATE" class="short" /> 
+				<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PRINT_DATE'); return false;" />
+				</td>
 				
 			</tr>
 			</tbody>

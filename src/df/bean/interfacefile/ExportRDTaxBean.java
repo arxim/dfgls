@@ -41,6 +41,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         String tax_month = "";
         String[][] temp_data = null;
         //if(Variables.phase.equals("test")){}
+        String cond = "";
         
         System.out.println(type);
         //type "00" ภงด.1ก
@@ -52,12 +53,23 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         }
         System.out.println(month);
         
+        if(type.equals("01")){
+        	cond = "AND S.TAX_402_METHOD IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY <> 'Y' ";
+        }
+        else if(type.equals("03")) {
+        	cond = "AND S.TAX_402_METHOD NOT IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY <> 'Y' ";
+        }
+        else if(type.equals("53")) {
+        	cond = "AND S.TAX_402_METHOD NOT IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY = 'Y' ";
+        }
+        
         String dat = "SELECT '"+type+"', H.TAXNO, '0000000000', '0000', "+//0-3
         			 "CASE WHEN D.TAX_ID = '' THEN '0000000000000' ELSE D.TAX_ID END AS NATION_ID, " +//4 get from doctor
         			 "'0000000000' AS TAX_ID, " +//5 fix 0
         			 "'', D.NAME_THAI, '', SUBSTRING(D.ADDRESS1+' '+D.ADDRESS2,1,80), D.ADDRESS3, D.ZIP, "+//6-11
         			 "'"+tax_month+"', S.YYYY, '4', '"+this.payment_date+"', "+ //12-15
-        			 "'0', S.SUM_NORMAL_TAX_AMT, S.NET_TAX_MONTH, '1' "+//16-19
+        			 "'0', S.SUM_NORMAL_TAX_AMT, S.NET_TAX_MONTH, '1', "+//16-19
+        			 "CASE WHEN S.IS_LEGAL_ENTITY = 'Y' THEN 'ค่าเช่าเครื่องมือ' ELSE 'ค่าวิชาชีพ' END AS REVENUE_TYPE, S.TAX_402_METHOD "+
         			 "FROM DOCTOR D LEFT OUTER JOIN HOSPITAL H "+
         			 "ON D.HOSPITAL_CODE = H.CODE "+
         			 "LEFT OUTER JOIN DOCTOR_PROFILE DP "+
@@ -66,7 +78,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         			 "ON D.CODE = S.DOCTOR_CODE AND D.HOSPITAL_CODE = S.HOSPITAL_CODE "+
         			 "WHERE S.HOSPITAL_CODE = '"+hp+"' AND "+
         			 "S.YYYY = '"+year+"' AND S.ACTIVE = '1' AND "+
-        			 "S.MM = '"+month+"'";  
+        			 "S.MM = '"+month+"' "+cond;  
         
         //if(type.equals("R00")){
         //	dat = dat.replaceAll("S.MM = '"+month+"'", "S.MM = '13'");
@@ -76,7 +88,12 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
             setFileName(path);//set filename read
             temp_data = d.query(dat);//get data            
             if(temp_data.length>0){
-            	writeFileNew(setFormatFilePayroll(temp_data, type, filing_type));
+            	if(type.equals("03") || type.equals("53")) {
+            		writeFileNew(setFormatFile(temp_data, type));
+            	}
+            	else {
+            		writeFileNew(setFormatFilePayroll(temp_data, type, filing_type));
+            	}
             	//writeFileNew(setFormatFile(temp_data, type));
             }else{
             	System.out.println("Data is null");
@@ -132,7 +149,10 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
 	    		t[i][16]+"|"+//Tax Rate
 	    		t[i][17]+"|"+//Revenue
 	    		t[i][18]+"|"+//Tax
-	    		t[i][19]+"|";//Tax Condition
+	    		t[i][19]+"|"+//Tax Condition
+	    		t[i][20]+"|"+//RevenueType
+	    		t[i][21]+"|"+//Tax402Method
+	    		JDate.saveTaxDate(this.payment_date);//Pay Date;
 	    	}
     	}catch (Exception e){
     		System.out.println("RD Tax Write : "+e);
@@ -185,6 +205,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
     	}
     	return dt;
     }
+    
 	@Override
 	public boolean exportData(String fn, String hp_code, String type, String year, String month, DBConn d, String path) {
 		throw new UnsupportedOperationException("Not supported yet.");

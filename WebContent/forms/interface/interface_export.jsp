@@ -44,6 +44,8 @@
 	labelMap.add("PAID_SALARY", "Salary", "ค่าเงินเดือน");
 	labelMap.add("RD1A", "ภ.ง.ด.1ก","ภ.ง.ด.1ก");
 	labelMap.add("RD1", "ภ.ง.ด.1","ภ.ง.ด.1");
+    labelMap.add("RD3", "ภ.ง.ด.3", "ภ.ง.ด.3");
+    labelMap.add("RD53", "ภ.ง.ด.53", "ภ.ง.ด.53");
 	labelMap.add("PAYMENT_DATE", "Payment Date", "วันที่ทำจ่าย");
 	labelMap.add("TRANSACTION_DATE", "Transaction Date", "วันที่ทำรายการ");
 	labelMap.add("FILING_TYPE", "Filing Type", "ประเภทการยื่นแบบ");
@@ -74,7 +76,7 @@
 					alert("Please Select Revenue Type");
             	}else if(document.mainForm.target_file.value == ""){
             		alert("Please Enter Filename");
-            	}else if(document.mainForm.PROCESS_NAME.value == "ExportRD" && (document.mainForm.PAY_TYPE.value != 'R01' && document.mainForm.PAY_TYPE.value != 'R00')){
+            	}else if(document.mainForm.PROCESS_NAME.value == "ExportRD" && (document.mainForm.PAY_TYPE.value != 'R01' && document.mainForm.PAY_TYPE.value != 'R00' && document.mainForm.PAY_TYPE.value != 'R03' && document.mainForm.PAY_TYPE.value != 'R53')){
                 	alert("Revenue Type is Mismatch");
             	}else{
                     document.mainForm.target = "_blank";
@@ -189,6 +191,8 @@
                             <option value="%">-- Select Tax Type --</option>
                             <option value="R00">${labelMap.RD1A}</option>
                             <option value="R01">${labelMap.RD1}</option>
+                            <option value="R03">${labelMap.RD3}</option>
+                            <option value="R53">${labelMap.RD53}</option>
                         </select>
 					</td>
 					<td class="label">

@@ -85,6 +85,9 @@
             labelMap.add("GUARANTEE_START_DATE","Guarantee Start Date","วันเริ่มการันตี");
             labelMap.add("GUARANTEE_EXPIRE_DATE","Guarantee Expire Date","วันสิ้นสุดการันตี");
             labelMap.add("DOCTOR_PAYMENT_CODE","Payment Revenue to Code","รวมจ่ายแพทย์ที่รหัส");
+            labelMap.add("IS_LEGAL_ENTITY","Person","ประเภทผู้เสียภาษี");
+            labelMap.add("IS_LEGAL_ENTITY_Y", "Juristic Person", "นิติบุคคล");
+            labelMap.add("IS_LEGAL_ENTITY_N", "Individual", "บุคคลธรรมดา/หสม.");
 			labelMap.add("SUBTITLE_PAYMENT_INFORMATION", "Payment/Tax Information", "ข้อมูลการจ่ายเงินและภาษี");
             labelMap.add("SUBTITLE_BANK_ACCOUNT_INFORMATION", "Bank Account Information", "ข้อมูลบัญชีธนาคาร");
             labelMap.add("BANK_ACCOUNT_NO", "Account No", "เลขที่บัญชี");
@@ -156,6 +159,7 @@
                 doctorRec.addField("PAYMENT_TIME", Types.VARCHAR, request.getParameter("IS_HOLD"));
                 doctorRec.addField("IS_ADVANCE_PAYMENT", Types.VARCHAR, request.getParameter("IS_ADVANCE_PAYMENT"));
                 doctorRec.addField("DOCTOR_PAYMENT_CODE", Types.VARCHAR, request.getParameter("DOCTOR_PAYMENT_CODE"));
+                doctorRec.addField("IS_LEGAL_ENTITY", Types.VARCHAR, request.getParameter("IS_LEGAL_ENTITY"));
                 doctorRec.addField("BANK_ACCOUNT_NO", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NO"));
                 doctorRec.addField("BANK_ACCOUNT_NAME", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NAME"));
                 doctorRec.addField("BANK_CODE", Types.VARCHAR, request.getParameter("BANK_CODE"));
@@ -203,6 +207,7 @@
                 doctorRecLog.addField("PAYMENT_TIME", Types.VARCHAR, request.getParameter("IS_HOLD"));
                 doctorRecLog.addField("IS_ADVANCE_PAYMENT", Types.VARCHAR, request.getParameter("IS_ADVANCE_PAYMENT"));
                 doctorRecLog.addField("DOCTOR_PAYMENT_CODE", Types.VARCHAR, request.getParameter("DOCTOR_PAYMENT_CODE"));
+                doctorRecLog.addField("IS_LEGAL_ENTITY", Types.VARCHAR, request.getParameter("IS_LEGAL_ENTITY"));
                 doctorRecLog.addField("BANK_ACCOUNT_NO", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NO"));
                 doctorRecLog.addField("BANK_ACCOUNT_NAME", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NAME"));
                 doctorRecLog.addField("BANK_CODE", Types.VARCHAR, request.getParameter("BANK_CODE"));
@@ -251,9 +256,9 @@
                		}
                		DataRecord doctor = DBMgr.getRecord("SELECT HOSPITAL_CODE, DOCTOR_PROFILE_CODE, CODE, NAME_THAI, NAME_ENG, TAX_ID, LICENSE_ID, FROM_DATE, TO_DATE, ADDRESS1, ADDRESS2, ADDRESS3, ZIP, "+
                				"DOCTOR_TYPE_CODE, DOCTOR_CATEGORY_CODE, HOSPITAL_UNIT_CODE, DEPARTMENT_CODE, PAYMENT_MODE_CODE, GUARANTEE_DAY, GUARANTEE_DR_CODE, GUARANTEE_SOURCE, "+
-               				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_CODE, BANK_BRANCH_CODE, "+
+               				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, IS_LEGAL_ENTITY, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_CODE, BANK_BRANCH_CODE, "+
                				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
-               				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, ACTIVE                FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+               				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, ACTIVE FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
                		System.out.println(doctor.getSize());
                		System.out.println(doctorRec.getSize());
                		
@@ -1118,6 +1123,13 @@
                         <!-- input type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_ENG&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=DOCTOR_PAYMENT_CODE&HANDLE=dummyFunction'); return false;"/-->
                     	<input id="SEARCH_DOCTOR_PAYMENT_CODE" name="SEARCH_DOCTOR_PAYMENT_CODE"  type="image" <%=dfuserLoginDisabled%> <%=disabledManagerV2 %> class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&BEACTIVE=1&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&TARGET=DOCTOR_PAYMENT_CODE&HANDLE=AJAX_Refresh_DOCTOR_PAYMENT_CODE'); return false;" />
                     </td>
+                    <td class="label"><label for="IS_LEGAL_ENTITY_Y"><span class="style1">${labelMap.IS_LEGAL_ENTITY}*</span></label></td>
+                    <td class="input">
+                    	<input type="radio" id="IS_LEGAL_ENTITY_N" name="IS_LEGAL_ENTITY" value="N"<%= DBMgr.getRecordValue(doctorRec, "IS_LEGAL_ENTITY").equalsIgnoreCase("N") || DBMgr.getRecordValue(doctorRec, "IS_LEGAL_ENTITY")=="" ? " checked=\"checked\"" : "" %>  <%=readonlyManager%>/>
+                        <label for="IS_LEGAL_ENTITY_N">${labelMap.IS_LEGAL_ENTITY_N}</label>  
+                        <input type="radio" id="IS_LEGAL_ENTITY_Y" name="IS_LEGAL_ENTITY" value="Y"<%= DBMgr.getRecordValue(doctorRec, "IS_LEGAL_ENTITY").equalsIgnoreCase("Y") ? " checked=\"checked\"" : "" %>  <%=readonlyManager%>/>
+                        <label for="ACTIVE_1">${labelMap.IS_LEGAL_ENTITY_Y}</label>                 
+                    </td>
                 </tr>
                 <tr>
                   <td class="label">
@@ -1221,6 +1233,7 @@
                 <input type="hidden" name="IS_HOLD" value="<%=DBMgr.getRecordValue(doctorRec, "IS_HOLD") %>"/>
                 <input type="hidden" name="GUARANTEE_DR_CODE" value="<%=DBMgr.getRecordValue(doctorRec, "GUARANTEE_DR_CODE") %>"/>
                 <input type="hidden" name="IS_ADVANCE_PAYMENT" value="<%=DBMgr.getRecordValue(doctorRec, "IS_ADVANCE_PAYMENT") %>"/>
+                <input type="hidden" name="IS_LEGAL_ENTITY" value="<%=DBMgr.getRecordValue(doctorRec, "IS_LEGAL_ENTITY") %>"/>
                 <input type="hidden" name="DOCTOR_TYPE_CODE" value="<%=DBMgr.getRecordValue(doctorRec, "DOCTOR_TYPE_CODE") %>"/>
                 <input type="hidden" name="GUARANTEE_SOURCE" value="<%=DBMgr.getRecordValue(doctorRec, "GUARANTEE_SOURCE") %>"/>
                 <input type="hidden" name="PAYMENT_MODE_CODE" value="<%=DBMgr.getRecordValue(doctorRec, "PAYMENT_MODE_CODE") %>"/>
@@ -1259,7 +1272,7 @@
 				        document.mainForm.GUARANTEE_SOURCE[0].disabled = true;       
 				        document.mainForm.IS_ADVANCE_PAYMENT[0].disabled = true;
 				        //document.mainForm.IS_ADVANCE_PAYMENT[1].disabled = true;
-				
+						
 				        document.mainForm.GUARANTEE_DR_CODE[0].disabled = true;
 				        //document.mainForm.GUARANTEE_DR_CODE[1].disabled = true;
 				

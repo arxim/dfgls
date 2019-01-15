@@ -6,7 +6,6 @@
 package df.servlet.process;
 
 import df.bean.obj.util.JDate;
-import df.bean.process.ProcessBatchBean;
 import df.bean.process.ProcessEnableTaxReportBean;
 
 import java.io.IOException;
@@ -22,7 +21,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ProcessEnableTaxReportSrvl extends HttpServlet {
    
-    /** 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
