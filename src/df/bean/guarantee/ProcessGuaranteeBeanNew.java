@@ -1241,18 +1241,21 @@ public class ProcessGuaranteeBeanNew {
                 	}
                 }
                 if(this.guarantee_balance > 0 && this.guarantee_balance < (this.trn_guarantee_amt * (this.percent_over_allocate/100))){
-                	trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
+                	//trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
+                	trn_in_guarantee_amount = (this.guarantee_balance * 100) / percent_in_allocate;
             		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
-                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance) * (percent_over_allocate/100);
+                        over_guarantee_amount = (this.trn_guarantee_amt - trn_in_guarantee_amount) * (percent_over_allocate/100);
             		}else{
-                        over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance);
+                        over_guarantee_amount = (this.trn_guarantee_amt - trn_in_guarantee_amount);
             		}
 
                 	if(!t[t_index][5].equals("")){ //if Receipt transaction
                 		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
-                            this.dr_amt = trn_in_guarantee_amount+over_guarantee_amount;
+                            this.dr_amt = (trn_in_guarantee_amount * percent_in_allocate/100)+over_guarantee_amount;
+                            //this.dr_amt = (trn_in_guarantee_amount * (percent_in_allocate/100))+over_guarantee_amount;
                 		}else{
-                			this.dr_amt = this.trn_guarantee_amt;
+                			this.dr_amt = trn_in_guarantee_amount * percent_in_allocate/100;
+                			//this.dr_amt = this.trn_guarantee_amt;
                 		}
 
                 		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
@@ -1262,10 +1265,10 @@ public class ProcessGuaranteeBeanNew {
                     	}else{
                     		this.guarantee_note = "ABSORB SOME GUARANTEE";
                     		this.dr_amt = over_guarantee_amount;
-                    		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
+                    		this.trn_guarantee_paid_amt = trn_in_guarantee_amount * percent_in_allocate/100;
                     	}
                 	}
-                }else{//add block 20180220
+                }else{ //add block 20180220
                 	this.dr_amt = this.trn_guarantee_amt * (percent_in_allocate /100);
             		this.guarantee_note = "IN GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount);
                 }
