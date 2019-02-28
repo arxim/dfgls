@@ -33,7 +33,8 @@ public class IntHisBillDAO {
 			System.out.println(e);
 		}
 	}
-	public void createTransaction(HashMap<String, String> m){
+	public boolean createTransaction(HashMap<String, String> m){
+		boolean status = true;
 		//System.out.println(m);
 		try {
 			conn.getPrepareStatement().setString(1, m.get("HOSPITAL_CODE").toString());
@@ -82,7 +83,9 @@ public class IntHisBillDAO {
 			conn.getPrepareStatement().executeUpdate();
 			conn.commitDB();
 		} catch (SQLException e) {
+			status = false;
 			System.out.println("SavePrepareStatement Data Error : "+e);
 		}
+		return status;
 	}
 }

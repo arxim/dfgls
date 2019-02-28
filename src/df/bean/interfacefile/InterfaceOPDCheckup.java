@@ -44,7 +44,7 @@ public class InterfaceOPDCheckup implements InterfaceFile {
 	private boolean dataMapping() {
 		HashMap<String, String> dataToInsert = new HashMap<String, String>();
 		int columnComplete = 0;
-		for(int t = 1; t<dataSource.size(); t++){
+		for(int t = 0; t<dataSource.size(); t++){
 			try{
 				dataToInsert.put("HOSPITAL_CODE", dataSource.get(t).get("BusinessUnit"));
 				dataToInsert.put("EPISODE_TYPE", dataSource.get(t).get("EpisodeType"));
@@ -89,16 +89,17 @@ public class InterfaceOPDCheckup implements InterfaceFile {
 				dataToInsert.put("IS_ONWARD", "N");
 				dataToInsert.put("OLD_AMOUNT", dataSource.get(t).get("Standard Charged Amount"));
 				dataToInsert.put("DOCTOR_PRIVATE", dataSource.get(t).get("Private Doctor"));
-				inh.createTransaction(dataToInsert);
+				if(inh.createTransaction(dataToInsert)){
+		            columnComplete++;					
+				}
 			}catch (Exception e){
 				System.out.println("Error While Mapping Running : "+e);
 			}
-            columnComplete++;
 		}
-        if(columnComplete < dataSource.size()-1){
-            setMessage("Error : "+ ""+(dataSource.size()- (columnComplete+1))+"/"+(dataSource.size()-1)+" records complete : "+columnComplete+" records.");
+        if(columnComplete < dataSource.size()){
+            setMessage("Error : "+ ""+(dataSource.size()- (columnComplete))+"/"+(dataSource.size())+" records complete : "+columnComplete+" records.");
         }else{
-            setMessage("Complete "+(dataSource.size()-1)+"/"+columnComplete+" records.");
+            setMessage("Complete "+(dataSource.size())+"/"+columnComplete+" records.");
         }		
 		return false;
 	}
