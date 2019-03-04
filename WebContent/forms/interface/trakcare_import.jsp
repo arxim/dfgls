@@ -155,6 +155,7 @@
          </div>
         <form id="mainForm" name="mainForm" method="post" action="../../ImportFileSrvl" target="myiframe" enctype="multipart/form-data">
         <input type="hidden" id="SOURCE_FILE" name="SOURCE_FILE"/>
+        <input type="hidden" id="businessCode" name="businessCode" value=<%=session.getAttribute("HOSPITAL_CODE")%>/>
             <center>
                 <table width="800" border="0">
 				<tr><td align="left">
