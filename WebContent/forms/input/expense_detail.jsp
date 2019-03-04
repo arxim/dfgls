@@ -127,7 +127,7 @@
         locationRec = DBMgr.getRecord(query);
         
         //check summary monthly
-        query = "SELECT MM FROM SUMMARY_MONTHLY WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
+        query = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
         summaryMounthlyRec = DBMgr.getRecord(query);
         System.out.println(query);
     
