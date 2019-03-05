@@ -661,6 +661,7 @@
             	//CheckDate(val,'START_DATE','END_DATE');
             	if(val != '') { 
             		//checkEndDate(val,'START_DATE','END_DATE');
+            		CheckDate(val,'START_DATE','END_DATE');
 	            	amountType();
 	            	return true;
             	}
@@ -865,7 +866,7 @@
                     <td class="labelRequest">
                         <label for="END_DATE">${labelMap.END_DATE} *</label>                    </td>
                     <td class="input">
-                        <input name="END_DATE" type="text" class="short" id="END_DATE" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "END_DATE"))%>" onblur="return endDate(this.value)" />
+                        <input name="END_DATE" type="text" class="short" id="END_DATE" maxlength="10" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "END_DATE"))%>" onblur="return endDate(this.value)" />
                         <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('END_DATE'); return false;" />
                         </td>
                 </tr>
