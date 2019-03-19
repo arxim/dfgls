@@ -321,7 +321,7 @@
                 <tr>
                     <td class="label"><label for="USER_GROUP_CODE">${labelMap.USER_GROUP_CODE}</label></td>
                     <td colspan="3" class="input">
-                        <%=DBMgr.generateDropDownList("USER_GROUP_CODE", "medium", "SELECT USER_GROUP, ACTION_TYPE FROM USER_GROUP WHERE HOSPITAL_CODE = "+session.getAttribute("HOSPITAL_CODE")+" ORDER BY USER_GROUP", "ACTION_TYPE", "USER_GROUP", DBMgr.getRecordValue(usersRec, "USER_GROUP_CODE"))%>
+                        <%=DBMgr.generateDropDownList("USER_GROUP_CODE", "medium", "SELECT USER_GROUP, ACTION_TYPE FROM USER_GROUP WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE")+"' ORDER BY USER_GROUP", "ACTION_TYPE", "USER_GROUP", DBMgr.getRecordValue(usersRec, "USER_GROUP_CODE"))%>
                     </td>
                 </tr>
                 <tr>
