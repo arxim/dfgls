@@ -660,8 +660,8 @@
             function endDate(val) { 
             	//CheckDate(val,'START_DATE','END_DATE');
             	if(val != '') { 
-            		//checkEndDate(val,'START_DATE','END_DATE');
-            		CheckDate(val,'START_DATE','END_DATE');
+            		checkEndDate(val,'START_DATE','END_DATE');
+            		//CheckDate(val,'START_DATE','END_DATE');
 	            	amountType();
 	            	return true;
             	}
