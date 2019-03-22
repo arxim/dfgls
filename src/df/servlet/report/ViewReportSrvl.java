@@ -548,7 +548,7 @@ public class ViewReportSrvl extends HttpServlet {
             this.reportGenerateView(hm, reportfilename, response);
         }else{
             if(file_type.equals("txt")){
-                this.reportGenerateFile(null, save_file, null, response, request, ""+ers.exportData(path, null, rq.getReport(reportfilename), null, null, cdb, null));
+                this.reportGenerateFile(null, save_file, null, response, request, ""+ers.exportData(path, "", rq.getReport(reportfilename), null, null, cdb, null));
                 cdb.closeDB("");
             }else{
                 this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
