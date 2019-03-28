@@ -95,6 +95,7 @@
                 orderItemRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 orderItemRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 orderItemRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE"));
                 
                 //for log
                 orderItemRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -124,7 +125,7 @@
                 } else if (MODE == DBMgr.MODE_UPDATE) {
                 	DataRecord orderItem = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION_THAI, DESCRIPTION_ENG, "+
                 			"PAYMENT_TIME, ORDER_ITEM_CATEGORY_CODE, ACCOUNT_CODE, IS_COMPUTE, IS_STEP_COMPUTE, IS_ALLOC_FULL_TAX, IS_GUARANTEE, "+
-                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID "+
+                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID, IS_PROCEDURE "+
                				"FROM ORDER_ITEM WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
              		
                		remark = "แก้ไข ";
@@ -286,7 +287,7 @@
                 document.mainForm.ORDER_ITEM_CATEGORY_CODE.value = '';
                 document.mainForm.ORDER_ITEM_CATEGORY_DESCRIPTION.value = '';
                 document.mainForm.IS_COMPUTE_1.checked = true;
-                document.mainForm.IS_ALLOC_FULL_TAX_1.checked = true;
+                //document.mainForm.IS_ALLOC_FULL_TAX_1.checked = true;
                 document.mainForm.IS_GUARANTEE_1.checked = true;
                 //document.mainForm.EXCLUDE_TREATMENT_1.checked = true;
                 document.mainForm.ACTIVE_1.checked = true;
@@ -305,6 +306,9 @@
         <form id="mainForm" name="mainForm" method="post" action="order_item.jsp">
             <input type="hidden" id="MODE" name="MODE" value="<%=MODE%>" />
             <input type="hidden" id="EXCLUDE_TREATMENT" name="EXCLUDE_TREATMENT" value="N" />
+            <input type="hidden" id="IS_ALLOC_FULL_TAX" name="IS_ALLOC_FULL_TAX" value="Y" />
+            <input type="hidden" id="IS_PROCEDURE" name="IS_PROCEDURE" value="" />
+            
             <input type="hidden" id="TAX_TYPE_CODE" name="TAX_TYPE_CODE" value="406" />            
 			<center>
                 <table width="800" border="0">
@@ -345,16 +349,6 @@
                     <td class="label"><label for="ACCOUNT_CODE"><span class="style1">${labelMap.ACCOUNT_CODE}*</span></label></td>
                     <td colspan="3" class="input">
 					<%=DBMgr.generateDropDownList("ACCOUNT_CODE", "long", "SELECT CODE, CODE + ' : ' + DESCRIPTION AS DESCRIPTION FROM ACCOUNT ORDER BY DESCRIPTION", "DESCRIPTION", "CODE", ( DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE")=="" ? "602101" : DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE") ))%>
-					</td>
-                </tr>
-                
-                <tr>
-                    <td class="label"><label for="IS_ALLOC_FULL_TAX_1"><span class="style1">${labelMap.IS_ALLOC_FULL_TAX}*</span></label></td>
-                    <td colspan="3" class="input">
-                        <input type="radio" id="IS_ALLOC_FULL_TAX_1" name="IS_ALLOC_FULL_TAX" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_ALLOC_FULL_TAX").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_ALLOC_FULL_TAX")=="" ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_ALLOC_FULL_TAX_1">${labelMap.IS_ALLOC_FULL_TAX_1}</label>
-                        <input type="radio" id="IS_ALLOC_FULL_TAX_0" name="IS_ALLOC_FULL_TAX" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_ALLOC_FULL_TAX").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_ALLOC_FULL_TAX_0">${labelMap.IS_ALLOC_FULL_TAX_0}</label>
 					</td>
                 </tr>
                 <tr>
