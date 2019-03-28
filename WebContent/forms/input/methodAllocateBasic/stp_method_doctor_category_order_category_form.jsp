@@ -82,8 +82,8 @@
                 methodRec.addField("PAYOR_CATEGORY_CODE", Types.VARCHAR, request.getParameter("PAYOR_OFFICE_CATEGORY_CODE"), true);
                 methodRec.addField("PAYOR_CODE", Types.VARCHAR, request.getParameter("PAYOR_CODE"), true);
                 methodRec.addField("ADMISSION_TYPE_CODE",Types.VARCHAR, request.getParameter("ADMISSION_TYPE_CODE") , true);
-                methodRec.addField("DOCTOR_TREATMENT_CODE", Types.VARCHAR, request.getParameter("DOCTOR_TREATMENT_CODE")  , true);
-                methodRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE") , true);
+                methodRec.addField("DOCTOR_TREATMENT_CODE", Types.VARCHAR, request.getParameter("DOCTOR_TREATMENT_CODE"), true);
+                methodRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE"));
                 methodRec.addField("PRIVATE_DOCTOR", Types.VARCHAR, request.getParameter("PRIVATE_DOCTOR"), true);
                 methodRec.addField("AMOUNT_START", Types.NUMERIC, request.getParameter("AMOUNT_START"), true);
                 methodRec.addField("AMOUNT_END", Types.NUMERIC ,  "0" , true);
@@ -103,7 +103,7 @@
 
                     if (DBMgr.insertRecord(methodRec)) {
                     	System.out.println(" U have insert Data.");
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_category.jsp?DOCTOR_CATEGORY_CODE='" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()+"'"));
+                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_category.jsp?DOCTOR_CATEGORY_CODE=" + methodRec.getField("DOCTOR_CATEGORY_CODE").getValue()+""));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -112,7 +112,7 @@
                 else if (MODE == DBMgr.MODE_UPDATE) {
                 	if (DBMgr.updateRecord(methodRec)) {
                   		System.out.print(" Update complete.");
-                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_category.jsp?DOCTOR_CATEGORY_CODE='" +  request.getParameter("DOCTOR_CATEGORY_CODE") + "'"));
+                		session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/methodAllocateBasic/stp_method_doctor_category_order_category.jsp?DOCTOR_CATEGORY_CODE=" +  request.getParameter("DOCTOR_CATEGORY_CODE") + ""));
                     }  else {
                     	System.out.print(" Update fail.");
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -130,7 +130,7 @@
             		request.getParameter("PAYOR_CODE")  != null &&
             		request.getParameter("ADMISSION_TYPE_CODE")  != null &&
             		request.getParameter("DOCTOR_TREATMENT_CODE")  != null &&
-            		request.getParameter("IS_PROCEDURE")  != null &&
+            		//request.getParameter("IS_PROCEDURE")  != null &&
             		request.getParameter("PRIVATE_DOCTOR")  != null &&
             		request.getParameter("AMOUNT_START")  != null &&
             		request.getParameter("AMOUNT_END")  != null &&
@@ -408,7 +408,7 @@
              }
              
             function AJAX_VerifyData() {
-            	var target = "../../../RetrieveData?TABLE=STP_METHOD_ALLOCATE&COND=HOSPITAL_CODE='${sessionScope.HOSPITAL_CODE}' AND METHOD_SEQUENCE = " + getAttVal("METHOD_SEQUENCE") + " AND DOCTOR_CATEGORY_CODE = " + getAttValStr("DOCTOR_CATEGORY_CODE") + " AND DOCTOR_CODE = "+ getAttValStr("DOCTOR_CODE") +" AND ORDER_ITEM_CATEGORY_CODE =  " + getAttValStr("ORDER_ITEM_CATEGORY_CODE")+ " AND ORDER_ITEM_CODE = " + getAttValStr("ORDER_ITEM_CODE") + " AND PAYOR_CATEGORY_CODE =  " + getAttValStr("PAYOR_OFFICE_CATEGORY_CODE") + " AND PAYOR_CODE = " + getAttValStr("PAYOR_CODE") + " AND ADMISSION_TYPE_CODE = " + getAttValStr("ADMISSION_TYPE_CODE") + " AND DOCTOR_TREATMENT_CODE =  " + getAttValStr("DOCTOR_TREATMENT_CODE") + " AND IS_PROCEDURE  =  " + getAttValSelect("IS_PROCEDURE") + "  AND PRIVATE_DOCTOR =  " + getAttValSelect("PRIVATE_DOCTOR") + "   AND  AMOUNT_START = " + getAttVal("AMOUNT_START") + "  AND  AMOUNT_END = 0 AND NORMAL_ALLOCATE_PCT = " + getAttVal("NORMAL_ALLOCATE_PCT") + " AND NORMAL_ALLOCATE_AMT = " + getAttVal("NORMAL_ALLOCATE_AMT");
+            	var target = "../../../RetrieveData?TABLE=STP_METHOD_ALLOCATE&COND=HOSPITAL_CODE='${sessionScope.HOSPITAL_CODE}' AND METHOD_SEQUENCE = " + getAttVal("METHOD_SEQUENCE") + " AND DOCTOR_CATEGORY_CODE = " + getAttValStr("DOCTOR_CATEGORY_CODE") + " AND DOCTOR_CODE = "+ getAttValStr("DOCTOR_CODE") +" AND ORDER_ITEM_CATEGORY_CODE =  " + getAttValStr("ORDER_ITEM_CATEGORY_CODE")+ " AND ORDER_ITEM_CODE = " + getAttValStr("ORDER_ITEM_CODE") + " AND PAYOR_CATEGORY_CODE =  " + getAttValStr("PAYOR_OFFICE_CATEGORY_CODE") + " AND PAYOR_CODE = " + getAttValStr("PAYOR_CODE") + " AND ADMISSION_TYPE_CODE = " + getAttValStr("ADMISSION_TYPE_CODE") + " AND DOCTOR_TREATMENT_CODE =  " + getAttValStr("DOCTOR_TREATMENT_CODE") + " AND PRIVATE_DOCTOR =  " + getAttValSelect("PRIVATE_DOCTOR") + "   AND  AMOUNT_START = " + getAttVal("AMOUNT_START") + "  AND  AMOUNT_END = 0 AND NORMAL_ALLOCATE_PCT = " + getAttVal("NORMAL_ALLOCATE_PCT") + " AND NORMAL_ALLOCATE_AMT = " + getAttVal("NORMAL_ALLOCATE_AMT");
                 AJAX_Request(target, AJAX_Handle_Verify_Data);
             }
             

@@ -182,7 +182,6 @@
 		            } else  { 
 		            	 query += " AND DOCTOR_CATEGORY_CODE =  '" + request.getParameter("DOCTOR_CATEGORY_CODE") + "'";
 		            }
-		                        
 		            ResultSet rs = con.executeQuery(query);
 		            int i = 0;
 		            String activeIcon, linkEdit;
