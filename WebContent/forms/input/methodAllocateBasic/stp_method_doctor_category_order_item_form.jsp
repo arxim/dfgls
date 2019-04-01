@@ -87,8 +87,8 @@
                 methodRec.addField("PRIVATE_DOCTOR", Types.VARCHAR, request.getParameter("PRIVATE_DOCTOR"), true);
                 methodRec.addField("AMOUNT_START", Types.NUMERIC, request.getParameter("AMOUNT_START"), true);
                 methodRec.addField("AMOUNT_END", Types.NUMERIC ,  "0" , true);
-                methodRec.addField("NORMAL_ALLOCATE_PCT", Types.NUMERIC , request.getParameter("NORMAL_ALLOCATE_PCT"), true);
-                methodRec.addField("NORMAL_ALLOCATE_AMT", Types.NUMERIC , request.getParameter("NORMAL_ALLOCATE_AMT"), true);
+                methodRec.addField("NORMAL_ALLOCATE_PCT", Types.NUMERIC , request.getParameter("NORMAL_ALLOCATE_PCT"));
+                methodRec.addField("NORMAL_ALLOCATE_AMT", Types.NUMERIC , request.getParameter("NORMAL_ALLOCATE_AMT"));
                 methodRec.addField("GUARANTEE_SOURCE", Types.VARCHAR, request.getParameter("GUARANTEE_SOURCE"));
                 methodRec.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
                 methodRec.addField("TAX_RATE", Types.NUMERIC , request.getParameter("TAX_RATE"));
@@ -161,10 +161,10 @@
                 methodRec = DBMgr.getRecord(query);
                 doctorCategoryRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM DOCTOR_CATEGORY WHERE CODE = %1$s", request.getParameter("DOCTOR_CATEGORY_CODE")));
                 String doctorCode = String.format("SELECT CODE, DESCRIPTION FROM DOCTOR_CATEGORY WHERE CODE = %1$s ", request.getParameter("DOCTOR_CATEGORY_CODE"));
-               // doctorRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_THAI FROM DOCTOR WHERE CODE = %1$s", request.getParameter("DOCTOR_CODE")));
+                //doctorRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_THAI FROM DOCTOR WHERE CODE = %1$s", request.getParameter("DOCTOR_CODE")));
                 orderItemCateRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM ORDER_ITEM_CATEGORY WHERE CODE =  %1$s ", request.getParameter("ORDER_ITEM_CATEGORY_CODE")));
                 orderItemRec  =  DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM ORDER_ITEM WHERE CODE =  %1$s ", request.getParameter("ORDER_ITEM_CODE")));
-                payorCateRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM PAYOR_OFFICE_CATEGORY WHERE CODE =  %1$s ", request.getParameter("PAYOR_OFFICE_CATEGORY_CODE")));
+                //payorCateRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM PAYOR_OFFICE_CATEGORY WHERE CODE =  %1$s ", request.getParameter("PAYOR_OFFICE_CATEGORY_CODE")));
                 //payorRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION_THAI FROM PAYOR_OFFICE WHERE CODE =  %1$s", request.getParameter("PAYOR_OFFICE_CODE")));
          	
             }
@@ -232,25 +232,7 @@
                  var target = "../../../RetrieveData?TABLE=ORDER_ITEM&COND=CODE='" + document.mainForm.ORDER_ITEM_CODE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
                  AJAX_Request(target, AJAX_Handle_Refresh_ORDER_ITEM);
              }
-            
-             /**
-              *  Seach PAYOR Office Category
-              **/
-              function AJAX_Refresh_PAYOR_OFFICE_CATEGORY() {
-                  var target = "../../../RetrieveData?TABLE=PAYOR_OFFICE_CATEGORY&COND=CODE='" + document.mainForm.PAYOR_OFFICE_CATEGORY_CODE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
-                  AJAX_Request(target, AJAX_Handle_Refresh_PAYOR_OFFICE_CATEGORY);
-              }
-           
-             
-             /**
-              *  Seach PAYOR Office
-              **/
-              function AJAX_Refresh_PAYOR_OFFICE() {
-                  var target = "../../../RetrieveData?TABLE=PAYOR_OFFICE&COND=CODE='" + document.mainForm.PAYOR_OFFICE_CODE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
-                  AJAX_Request(target, AJAX_Handle_Refresh_PAYOR_OFFICE);
-              }
-             
-            
+
             /**
             *  Handle Doctor Category
             **/
@@ -320,24 +302,6 @@
                        document.mainForm.ORDER_ITEM_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_THAI");
                    }
                }
-             
-            
-               /**
-                *  Handle PAYOR Office Category
-                **/
-                function AJAX_Handle_Refresh_PAYOR_OFFICE_CATEGORY() {
-                    if (AJAX_IsComplete()) {
-                        var xmlDoc = AJAX.responseXML;
-                        // Data not found
-                        if (!isXMLNodeExist(xmlDoc, "CODE")) {
-                            document.mainForm.PAYOR_OFFICE_CATEGORY_CODE.value = "";
-                            document.mainForm.PAYOR_OFFICE_CATEGORY_DESCRIPTION.value = "";
-                            return;
-                        }
-                        // Data found
-                        document.mainForm.PAYOR_OFFICE_CATEGORY_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
-                    }
-              }
 
              function DOCTOR_CATEGORY_CODE_KeyPress(e) {
                  var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
@@ -372,7 +336,6 @@
                  }
              }
              
-             
              function ORDER_ITEM_CODE_KeyPress(e) {
                  var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
                  if (key == 13) {
@@ -383,31 +346,9 @@
                      return true;
                  }
              }
-             
-             function PAYOR_OFFICE_CATEGORY_CODE_KeyPress(e) {
-                 var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
-                 if (key == 13) {
-                     document.mainForm.PAYOR_OFFICE_CATEGORY_CODE.blur();
-                     return false;
-                 }
-                 else {
-                     return true;
-                 }
-             }
-             
-             function PAYOR_OFFICE_CODE_KeyPress(e) {
-                 var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
-                 if (key == 13) {
-                     document.mainForm.PAYOR_OFFICE_CATEGORY_CODE.blur();
-                     return false;
-                 }
-                 else {
-                     return true;
-                 }
-             }
-             
+
             function AJAX_VerifyData() {
-            	var target = "../../../RetrieveData?TABLE=STP_METHOD_ALLOCATE&COND=HOSPITAL_CODE='${sessionScope.HOSPITAL_CODE}' AND METHOD_SEQUENCE = " + getAttVal("METHOD_SEQUENCE") + " AND DOCTOR_CATEGORY_CODE = " + getAttValStr("DOCTOR_CATEGORY_CODE") + " AND DOCTOR_CODE = "+ getAttValStr("DOCTOR_CODE") +" AND ORDER_ITEM_CATEGORY_CODE =  " + getAttValStr("ORDER_ITEM_CATEGORY_CODE")+ " AND ORDER_ITEM_CODE = " + getAttValStr("ORDER_ITEM_CODE") + " AND PAYOR_CATEGORY_CODE =  " + getAttValStr("PAYOR_OFFICE_CATEGORY_CODE") + " AND PAYOR_CODE = " + getAttValStr("PAYOR_CODE") + " AND ADMISSION_TYPE_CODE = " + getAttValStr("ADMISSION_TYPE_CODE") + " AND DOCTOR_TREATMENT_CODE =  " + getAttValStr("DOCTOR_TREATMENT_CODE") + " AND PRIVATE_DOCTOR =  " + getAttValSelect("PRIVATE_DOCTOR") + "   AND  AMOUNT_START = " + getAttVal("AMOUNT_START") + "  AND  AMOUNT_END = 0 AND NORMAL_ALLOCATE_PCT = " + getAttVal("NORMAL_ALLOCATE_PCT") + " AND NORMAL_ALLOCATE_AMT = " + getAttVal("NORMAL_ALLOCATE_AMT");
+            	var target = "../../../RetrieveData?TABLE=STP_METHOD_ALLOCATE&COND=HOSPITAL_CODE='${sessionScope.HOSPITAL_CODE}' AND METHOD_SEQUENCE = " + getAttVal("METHOD_SEQUENCE") + " AND DOCTOR_CATEGORY_CODE = " + getAttValStr("DOCTOR_CATEGORY_CODE") + " AND DOCTOR_CODE = "+ getAttValStr("DOCTOR_CODE") +" AND ORDER_ITEM_CATEGORY_CODE =  " + getAttValStr("ORDER_ITEM_CATEGORY_CODE")+ " AND ORDER_ITEM_CODE = " + getAttValStr("ORDER_ITEM_CODE") + " AND PAYOR_CATEGORY_CODE =  " + getAttValStr("PAYOR_OFFICE_CATEGORY_CODE") + " AND PAYOR_CODE = " + getAttValStr("PAYOR_CODE") + " AND ADMISSION_TYPE_CODE = " + getAttValStr("ADMISSION_TYPE_CODE") + " AND DOCTOR_TREATMENT_CODE =  " + getAttValStr("DOCTOR_TREATMENT_CODE") + " AND PRIVATE_DOCTOR =  " + getAttValSelect("PRIVATE_DOCTOR") + "   AND  AMOUNT_START = " + getAttVal("AMOUNT_START") + "  AND  AMOUNT_END = 0";
                 AJAX_Request(target, AJAX_Handle_Verify_Data);
             }
             
@@ -498,7 +439,7 @@
             <input type="hidden" id="MODE" name="MODE" value="<%= MODE %>" />
             <input name="METHOD_SEQUENCE"  id= "METHOD_SEQUENCE" type="hidden" value="3"/>
             <input name="ORDER_ITEM_CATEGORY_CODE" type="hidden" class="medium" id="ORDER_ITEM_CATEGORY_CODE" maxlength="20" value="<%= DBMgr.getRecordValue(orderItemCateRec, "CODE")%>" onkeypress="return ORDER_ITEM_CATEGORY_CODE_KeyPress(event);" onblur="AJAX_Refresh_ORDER_ITEM_CATEGORY();" />
-            <input name="PAYOR_OFFICE_CATEGORY_CODE" type="hidden" class="medium" id="PAYOR_OFFICE_CATEGORY_CODE" maxlength="20" value="<%= DBMgr.getRecordValue(payorCateRec, "CODE")%>" onkeypress="return PAYOR_OFFICE_CATEGORY_CODE_KeyPress(event);" onblur="AJAX_Refresh_PAYOR_OFFICE_CATEGORY();" />
+            <input name="PAYOR_OFFICE_CATEGORY_CODE" type="hidden" class="medium" id="PAYOR_OFFICE_CATEGORY_CODE" maxlength="20" value="" />
                   
             <table class="form">
                 <tr>
