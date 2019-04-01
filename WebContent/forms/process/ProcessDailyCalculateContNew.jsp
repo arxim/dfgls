@@ -8,7 +8,8 @@
 			   	request.getParameter("END_DATE"),
 			   	request.getParameter("INVOICE_NO"),
 			   	request.getParameter("LINE_NO"),
-			   	request.getParameter("TRANSACTION_DATE")
+			   	request.getParameter("TRANSACTION_DATE"),
+			   	session.getAttribute("USER_ID").toString()
 	);
 	//String [] temp = msg.split("\\|");
 	response.setContentType("text/xml; charset=UTF-8");

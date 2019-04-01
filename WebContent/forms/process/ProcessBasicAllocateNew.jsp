@@ -116,7 +116,7 @@
 	    "AND (COMPUTE_DAILY_DATE IS NULL OR COMPUTE_DAILY_DATE = '') "+
 		"ORDER BY INVOICE_NO";
 		
-	    //System.out.println("Select Data to JavaScript : "+sql);
+	    System.out.println("Select Data to JavaScript : "+sql);
 		
 	    ResultSet rs = con.executeQuery(sql);
 		int i = 0; 

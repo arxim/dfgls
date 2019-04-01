@@ -15,6 +15,7 @@ public class ProcessBasicAllocateBean {
 	List<Map<String,Object>> trnDailyList = null;
 	List<String> orderConditionList = null;
 	List<Map<String,Object>> trnsaction = null;
+	String userID = null;
 	
 	//----- Initial Zone -----
 	public ProcessBasicAllocateBean(){
@@ -36,7 +37,7 @@ public class ProcessBasicAllocateBean {
 	}
 	
 	//----- Functional Zone -----
-	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE) {
+	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE, String userId) {
 		if(curRow.equals("0")){
 			trn = new TrnDailyDAO();
 			trn.prepareSelectCalculate();
@@ -46,6 +47,7 @@ public class ProcessBasicAllocateBean {
 			methodStepDoctorList = mth.getBasicAllocateMethod(HOSPITAL_CODE);
     		prepareCondition();
     	}
+		this.userID = userId;
 		trnDailyList = this.trn.getPsTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // PrepareStatement
 		//trnDailyList = this.trn.getTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // Statement
     	return this.calculateBasicAllocate();
@@ -93,6 +95,7 @@ public class ProcessBasicAllocateBean {
 */						taxRate = Double.parseDouble(methodStepDoctorList.get(x).get("TAX_RATE").toString());
 						taxAmt = methodStepDoctorList.get(x).get("TAX_SOURCE").toString().equals("BF") ? amountAftDiscount*taxRate : df*taxRate ;
 						trnDailyList.get(i).put("SEQ_STEP", 0.00);
+						trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
 						trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
 						trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
 						trnDailyList.get(i).put("DR_AMT", df+"");
@@ -113,6 +116,7 @@ public class ProcessBasicAllocateBean {
 						taxRate = Double.parseDouble(methodStepDoctorList.get(x).get("TAX_RATE").toString());
 						taxAmt = methodStepDoctorList.get(x).get("TAX_SOURCE").toString().equals("BF") ? amountAftDiscount*taxRate : df*taxRate ;
 						trnDailyList.get(i).put("SEQ_STEP", 0.00);
+						trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
 						trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
 						trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
 						trnDailyList.get(i).put("DR_AMT", df+"");
@@ -157,7 +161,7 @@ public class ProcessBasicAllocateBean {
 		trnsaction = new ArrayList<Map<String, Object>>();
 		trnsaction = trn.getTrnDaily("11750", "20151001", "20151001");
 		for (int i = 0; i<trnsaction.size(); i++){
-			this.processRequest("", i+"", "11750", "20151001", "20151001", trnsaction.get(i).get("INVOICE_NO").toString(), trnsaction.get(i).get("LINE_NO").toString(), "");			
+			//this.processRequest("", i+"", "11750", "20151001", "20151001", trnsaction.get(i).get("INVOICE_NO").toString(), trnsaction.get(i).get("LINE_NO").toString(), "");			
 		}
 	}
 }
