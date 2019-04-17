@@ -1127,6 +1127,12 @@ public class ProcessGuaranteeBeanNew {
     		this.guarantee_balance = this.guarantee_balance - (this.trn_guarantee_amt+temp) < 0 ? 0 : this.guarantee_balance - this.trn_guarantee_amt;
             this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
             this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
+    	}else if(this.guarantee_allocate_condition.equals("P")){                
+    		this.guarantee_paid = this.guarantee_paid + this.dr_amt;
+    		this.sum_trn_guarantee_balance = this.sum_trn_guarantee_balance - this.trn_guarantee_amt;
+    		this.guarantee_balance = this.guarantee_balance - (this.trn_guarantee_amt+temp) < 0 ? 0 : this.guarantee_balance - this.trn_guarantee_amt;
+            this.hp_amt = amount - this.dr_amt < 0 ? 0 : amount - this.dr_amt;
+            this.trn_guarantee_paid_amt = 0; //guarantee_paid_amt for Absorb some Guarantee
     	}else if(this.guarantee_allocate_condition.equals("A")){
     		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
     			this.dr_amt = this.trn_guarantee_amt * (this.percent_in_allocate/100);
@@ -1223,6 +1229,33 @@ public class ProcessGuaranteeBeanNew {
                 		this.guarantee_note = "ABSORB SOME GUARANTEE";
                 		this.dr_amt = over_guarantee_amount;
                 		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
+                	}
+            	}
+            }
+        	this.guarantee_balance = 0;
+    	}else if(this.guarantee_allocate_condition.equals("P")){
+            if(this.guarantee_balance == 0){
+            	if(!t[t_index][5].equals("")){
+            		this.guarantee_note = "OVER GUARANTEE "+t[t_index][16]+" to "+this.percent_over_allocate;
+            	}else{
+            		this.guarantee_note = "";
+            	}
+            }
+            if(this.guarantee_balance > 0 && this.guarantee_balance < this.trn_guarantee_amt){
+            	trn_in_guarantee_amount = this.guarantee_balance;
+                over_guarantee_amount = (this.trn_guarantee_amt - this.guarantee_balance);
+
+            	if(!t[t_index][5].equals("")){
+            		//if Receipt transaction
+            		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
+            	}else{
+            		//if Invoice transaction
+                	if(this.guarantee_balance <= 0){
+                		this.guarantee_note = "";
+                	}else{
+                		this.guarantee_note = "ABSORB SOME GUARANTEE";
+                		this.trn_guarantee_paid_amt = (this.dr_amt * trn_in_guarantee_amount) / this.trn_guarantee_amt;
+                		this.dr_amt = (this.dr_amt * over_guarantee_amount)/this.trn_guarantee_amt;
                 	}
             	}
             }
@@ -1485,8 +1518,9 @@ public class ProcessGuaranteeBeanNew {
                 	
 //==================GUARANTEE MONTHLY/DAILY
                     if(this.guarantee_amt>0){
-                    	if(this.guarantee_allocate_condition.equals("Y") || this.guarantee_allocate_condition.equals("A")){
+                    	if(this.guarantee_allocate_condition.equals("Y") || this.guarantee_allocate_condition.equals("A") || this.guarantee_allocate_condition.equals("P")){
                         //=================== BGH METHOD ===================//
+                    		this.dr_amt = Double.parseDouble(transaction_table[x][14]);
                     		if(this.guarantee_balance >= this.trn_guarantee_amt){//---in guarantee
                             	this.inGuaranteeAllocate(i, x, guarantee_table, transaction_table);
                     			//messageWrite(i,guarantee_table, x, transaction_table,"In Guarantee ");
@@ -2607,7 +2641,8 @@ public class ProcessGuaranteeBeanNew {
         	"SUM(SUM_TAX_406), SUM(SUM_TAX_402),'0' "+
         	"FROM VW_PROCESS_GUARANTEE "+ 
         	"WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND YYYY = '"+this.year+"' " +
-        	"AND MM = '"+this.month+"' AND SUM_TAX_406+SUM_TAX_402+SUM_TAX_400 > 0 "+
+        	"AND MM = '"+this.month+"' "+
+        	//"AND SUM_TAX_406+SUM_TAX_402+SUM_TAX_400 > 0 "+
         	"GROUP BY HOSPITAL_CODE, GUARANTEE_DR_CODE, YYYY, MM ";
     	return t;
     }
@@ -2662,7 +2697,13 @@ public class ProcessGuaranteeBeanNew {
 		if(al.size()>0){
 			for(int i = 0; i < al.size(); i++){
 			//New Payment Transaction for Absorb Some
-				double percentage = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT"))*100) /Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
+				double percenAft = 0;
+				if( Double.parseDouble(al.get(i).get("OLD_DR_AMT")) < Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) ){
+					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100) / Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
+				}else{
+					percenAft = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(al.get(i).get("OLD_DR_AMT"));
+				}
+				double percentage = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100) / Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
 				//System.out.println(al.get(i).get("LINE_NO")+"ADV"+"<>"+percentage+"<>"+al.get(i).get("AMOUNT_AFT_DISCOUNT"));
 				al.get(i).put("LINE_NO", al.get(i).get("LINE_NO")+"ADV");
 				al.get(i).put("RECEIPT_NO", al.get(i).get("INVOICE_NO"));
@@ -2672,9 +2713,9 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("YYYY", this.year);
 				al.get(i).put("MM", this.month);
 				al.get(i).put("PAY_BY_CASH_AR", "Y");
-				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percentage)/100);
+				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
-				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percentage)/100);
+				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
 			}
 			System.out.println(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
