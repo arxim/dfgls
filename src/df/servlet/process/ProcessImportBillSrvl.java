@@ -94,7 +94,9 @@ public class ProcessImportBillSrvl extends ProcessServlet {
         if (type.equals("Verify Transaction")) {
             if (pi.importVerifyInMonth(hospitalCode, startDate, endDate) && 
                     pi.importVerifyRecOverMonth(hospitalCode, startDate, endDate) &&
-                        pi.importVerifyNotRec(hospitalCode, startDate, endDate)) {
+                        pi.importVerifyNotRec(hospitalCode, startDate, endDate)
+            	&& pi.importVerifyPreviousMonth(hospitalCode, startDate, endDate)
+            	){
                 numAffRec = 1;
             } else numAffRec = 0;
         }

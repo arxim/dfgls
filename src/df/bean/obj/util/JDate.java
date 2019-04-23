@@ -85,6 +85,10 @@ public class JDate {
     static public String getDate() {
         return getYear() + getMonth() + getDay();
     }
+    
+    static public String getDateDDMMYYY() {
+        return getDay() + getMonth() + getYear();
+    }
 
     static public String getTime() {
         return getHour() + "" + getMinutes() + "" + getSeconds();

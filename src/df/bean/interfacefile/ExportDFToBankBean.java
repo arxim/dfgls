@@ -229,6 +229,73 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
         }
         return status;
     }
+	public boolean exportDataDirect(String fn, String hp_code, String type, String year, String month, DBConn d, String path) {
+		String TBank_Direct = "SELECT '' AS blank,'M' AS TERM_PAYMENT ,'062006' AS COMPANY_CODE ,"+//1-3
+				"'VICHAIYUT' AS COMPANY_NAME,'D' AS APPLY_CODE,'A' AS STATUS ,"+//4-6
+				"'07062018' EFFECTIVE_DATE,convert(nvarchar(255),COUNT(*)) AS TOTAL_RECORD,replace(convert(nvarchar(255),SUM(DR_NET_PAID_AMT)),'.','') AS TOTAL_AMOUNT ,"+//7-9
+				"'I' AS MEDIA_TYPE, '5802410000' AS HASH_VALUE "+//10-11
+				"FROM SUMMARY_PAYMENT P "+
+				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
+				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+ 
+				"WHERE P.HOSPITAL_CODE='11750' AND D.PAYMENT_MODE_CODE='B' AND B.CODE = '003' AND YYYY='"+year+"' AND MM='"+month+"' "+
+				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' "+
+				" UNION ALL "+
+				"SELECT D.BANK_ACCOUNT_NO AS ACCOUNT_NO, P.PAYMENT_DATE AS EFFECTIVE_DATE,'0' AS AMOUNT_SIGN ,"+//1-3
+				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS AMOUNT,ISNULL(D.BANK_ACCOUNT_NAME,'') AS NAME,'' AS STATUS_RETURN ,"+//4-6
+				"'' AS blank,'','','',''"+//7
+				" FROM SUMMARY_PAYMENT P "+
+				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
+				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='11750' "+
+				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
+				"WHERE P.HOSPITAL_CODE='11750' AND D.PAYMENT_MODE_CODE='B' AND B.CODE ='003' AND YYYY='"+year+"' AND MM='"+month+"' "+
+				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"'";
+		System.out.println(payment_date);
+		boolean status = true;
+		String[][] revenue_data_direct= null;
+		setFileName(path);
+		revenue_data_direct = d.query(TBank_Direct);
+		System.out.println(TBANK(revenue_data_direct));
+		writeFileNew(TBANK(revenue_data_direct));
+		return status;
+	}
+	public boolean exportDataSmart(String fn, String hp_code, String type, String year, String month, DBConn d, String path){
+		this.setYyyy(year);
+        this.setMm(month);
+		String TBank_Smart = "SELECT '10' AS File_Type,'1' AS Record_Type,'000001' AS Batch_Number,"+//1-3
+				"'065' AS  Sending_Bank_Code,'000' AS Number_of_Transfer_Orders,replace(convert(nvarchar(255),SUM(P.DR_NET_PAID_AMT)),'.','')  AS DR_NET_PAID_AMT,"+//4-6
+				"'"+JDate.getDateDDMMYYY()+"' AS Effective_Date,'C' AS Kind_of_Transaction,' ' AS Blank,"+//6-9
+				"convert(nvarchar(255),COUNT(*)) AS Total_Records,'980067' AS Com_Code,'VICHAIYUT' AS Com_Name,"+ //10-12
+				"' ' AS Blank2,'' AS Blank3,'','','','','','','0' AS Running_Number,'','',''"+//13
+				"FROM SUMMARY_PAYMENT P "+
+				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
+				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'003'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"'"+
+				// End of header
+				" UNION ALL "+
+				//start detail
+				"SELECT '10' AS File_Type,'2' AS Record_Type,'000001' AS Batch_Number,"+//1-3
+				"D.BANK_CODE AS Receiving_Bank_Code,D.BANK_BRANCH_CODE AS Receiving_Branch_Code,D.BANK_ACCOUNT_NO AS Receiving_Bank_AC_No,"+//4-6
+				"H.BANK_CODE AS Sending_Bank_Code,H.BANK_BRANCH_CODE AS Sending_Branch_Code,H.BANK_ACCOUNT_NO AS Sending_Bank_AC_No,"+//7-9
+				"'06062018' AS Effective_Date_Transfer,'01' AS Service_Type_Code,'00' AS Clearing_House_Code,"+//10-12
+				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS Transfer_Amount,'' AS Information_About_Receiver,'980067' AS Com_Code,'VICHAIYUT' AS Com_Name,"+//13-15
+				"'' AS Mobile_Phone_Receiver,"+//16
+				"' ' AS Blank1,"+//17
+				"'0000000000' AS Other_Information,ISNULL(D.BANK_ACCOUNT_NAME,'') AS Receiving_Bank_AC_Name,ROW_NUMBER() OVER(ORDER BY P.DOCTOR_CODE) AS Running_Number, "+//18-20
+				"' ' AS Blank2,' ' AS Return_Code,' ' AS Blank3 "+//21-23
+				"FROM SUMMARY_PAYMENT P "+
+				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
+				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='"+hp_code+"'" +
+				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'003'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"'";
+			boolean status = true;
+			String[][] revenue_data = null;
+			setFileName(path);
+			revenue_data = d.query(TBank_Smart);
+			writeFileNew(TBANK_SMART(revenue_data));
+		System.out.print(TBANK_SMART(revenue_data));
+		return status;
+	}
+	
     private String[] bankBAY(String[][] t){
     	String[] dt = new String[t.length + 1];
     	String dtBankApprove = this.payment_date.replaceAll("/", "");
@@ -624,6 +691,76 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
     	
     	return dt;
     }
+	private String[] TBANK(String[][] t) {
+		String dtBankApprove = this.payment_date.replaceAll("/", "");
+		String[] dt = new String[t.length];
+		dt[0] = checkString("",8," ","b");//8 Space
+		dt[0] = dt[0] + t[0][1];//1 TERM - PAYMENT
+		dt[0] = dt[0] + t[0][2];//6 COMPANY - CODE
+		dt[0] = dt[0] + checkString( t[0][3].substring(0, t[0][3].length()) ,30," ","b");//30 COMPANY - NAME
+		dt[0] = dt[0] + t[0][4];//1 APPLY-CODE
+		dt[0] = dt[0] + t[0][5];//1 STATUS
+		dt[0] = dt[0] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8),6,"","b");//6 EFFECTIVE-DATE
+		dt[0] = dt[0] + checkString( t[0][7].substring(0, t[0][7].length()),5,"0","f");//5 TOTAL-RECORD
+		dt[0] = dt[0] + checkString( t[0][8].substring(0, t[0][8].length()),11,"0","f");//11 TOTAL-AMOUNT
+		dt[0] = dt[0] + t[0][9];//1 MEDIA-TYPE
+		dt[0] = dt[0] + t[0][10];//10 HASH-VALUE	
+		for(int i=1;i<(t.length);i++) {
+			dt[i] = t[i][0];//10 ACCOUNT NO.
+			dt[i] = dt[i] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8) ,6,"","b");//6 EFFECTIVE-DATE
+			dt[i] = dt[i] + t[i][2];//1 AMOUNT-SIGN
+			dt[i] = dt[i] + checkString( t[i][3].substring(0, t[i][3].length()),11,"0","f");//11 AMOUNT
+			dt[i] = dt[i] + checkString( t[i][4].substring(0, t[i][4].length()),30," ","l");//30 NAME
+			dt[i] = dt[i] + checkString("",1," ","b");//1 STATUS-RETURN
+			dt[i] = dt[i] + checkString("",21," ","b");//21 SPACE
+		}
+	return dt;
+	}
+	private String[] TBANK_SMART(String[][] t) {
+		String dtBankApprove = this.payment_date.replaceAll("/", "");
+		String[] dt = new String[t.length];
+		// header
+		dt[0] = t[0][0];//2 File Type
+		dt[0] = dt[0] + t[0][1];//1 Record Type
+		dt[0] = dt[0] + t[0][2];//6 Batch Number
+		dt[0] = dt[0] + t[0][3];//3 Sending Bank Code
+		dt[0] = dt[0] + t[0][4];//3 Number of Transfer Orders in The Batch
+		dt[0] = dt[0] + checkString( t[0][5].substring(0, t[0][5].length()) ,15,"0","f");//15 Grand Total of Amounts of Transfer Orders
+		dt[0] = dt[0] + dtBankApprove;//8 Effective Date of Transfer Batch Number
+		dt[0] = dt[0] + t[0][7];//1 Kind of Transaction
+		dt[0] = dt[0] + checkString("",1," ","b");//1 Space
+		dt[0] = dt[0] + checkString( t[0][9].substring(0, t[0][9].length()) ,6,"0","f");//6 Total Records
+		dt[0] = dt[0] + t[0][10];//6 Company Code
+		dt[0] = dt[0] + checkString( t[0][11].substring(0, t[0][11].length()) ,30," ","l");//30 Company Name
+		dt[0] = dt[0] + checkString("",238," ","b");//238 Space
+		for(int i = 1; i<(t.length); i++){// Detail
+			dt[i] = t[i][0];//2 File Type
+			dt[i] = dt[i] + t[i][1];//1 Record Type
+    		dt[i] = dt[i] + t[i][2];//6 Batch Number
+    		dt[i] = dt[i] + t[i][3];//3 Receiving Bank Code
+    		dt[i] = dt[i] + t[i][4];//4 Receiving Branch Code
+    		dt[i] = dt[i] + checkString( t[i][5].substring(0, t[i][5].length()) ,11,"0","f");//11 Receiving Bank's A/C No.
+    		dt[i] = dt[i] + t[i][6];//3 Sending Bank Code
+    		dt[i] = dt[i] + t[i][7];//4 Sending Branch Code
+    		dt[i] = dt[i] + checkString( t[i][8].substring(0, t[i][8].length()) ,11,"0","f");//11 Sending Bank's A/C No.
+    		dt[i] = dt[i] + dtBankApprove;//8 Effective Date of Transfer
+    		dt[i] = dt[i] + t[i][10];//2 Service Type Code
+    		dt[i] = dt[i] + t[i][11];//2 Clearing House Code
+    		dt[i] = dt[i] + checkString( t[i][12].substring(0, t[i][12].length()) ,12,"0","f");//12 Transfer Amount
+    		dt[i] = dt[i] + checkString("",60," ","b");//60 Information About The Receiver
+    		dt[i] = dt[i] + t[i][14];//6 Information About The Sender Code
+    		dt[i] = dt[i] + checkString( t[i][15].substring(0, t[i][15].length()) ,30," ","");//30 Information About The Sender Name
+    		dt[i] = dt[i] + checkString("",10," ","b");//10 Mobile Phone of Receiver
+    		dt[i] = dt[i] + checkString("",14," ","b");//14 Space
+    		dt[i] = dt[i] + t[i][18];//10 Any Other Information
+    		dt[i] = dt[i] + checkString( t[i][19].substring(0, t[i][19].length()) ,90," ","l");//90 Receiving Bank's A/C Name
+    		dt[i] = dt[i] + checkString( t[i][20].substring(0, t[i][20].length()) ,6,"0","f");//6 Reference Running Number Given by Bank
+    		dt[i] = dt[i] + checkString("",6," ","b");//6 Space
+    		dt[i] = dt[i] + checkString("",2," ","b");//2 Return Code
+    		dt[i] = dt[i] + checkString("",17," ","b");//17 Space	
+		}
+		return dt;
+	}
     
     private void batEncrypt(String source, String target) {
         try {
@@ -643,6 +780,4 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 		// TODO Auto-generated method stub
 		return false;
 	}
-    
-
 }

@@ -51,6 +51,8 @@
 	labelMap.add("FILING_TYPE", "Filing Type", "ประเภทการยื่นแบบ");
 	labelMap.add("FILING_TYPE_0", "Regular Filing", "ยื่นปกติ");
 	labelMap.add("FILING_TYPE_1", "Additional Filing", "ยื่นเพิ่มเติมครั้งที่");
+	labelMap.add("TBANK_DIRECT", "TBank Direct", "ธนาคารธนชาต Direct");
+	labelMap.add("TBANK_SMART", "TBank Smart", "ธนาคารธนชาต Smart");
 	String report = "";
     request.setAttribute("labelMap", labelMap.getHashMap());
     
@@ -206,6 +208,8 @@
                             <option value="0025">${labelMap.SMART}</option>
                             <option value="014">${labelMap.SCB_DIRECT}</option>
                             <option value="017">${labelMap.CITI}</option>
+                            <option value="062006">${labelMap.TBANK_DIRECT}</option>
+                            <option value="980067">${labelMap.TBANK_SMART}</option>
                         </select>
 					</td>
                 </tr>
