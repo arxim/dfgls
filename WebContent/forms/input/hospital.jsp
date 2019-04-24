@@ -69,7 +69,7 @@
             labelMap.add("CITI_PARTY_AC","(Citi Bank) Account","(Citi Bank) Account");
             labelMap.add("GUARANTEE_INCLUDE_EXTRA","Guarantee Include Extra","Guarantee Include Extra");
             labelMap.add("GUARANTEE_DAY","Guarantee Day","Guarantee Day");
-            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Sharing Refund","การคำนวณส่วนแบ่งในการันตี");
+            labelMap.add("GUARANTEE_ALL_ALLOC","Guarantee Category","ประเภทการคำนวณการันตี");
             labelMap.add("GL_ACCOUNT_CODE","GL Accunt Code","GL Account Code");
             labelMap.add("AC_ACCOUNT_CODE","AC Account Code","AC Account Code");
             labelMap.add("SHARING_ACCOUNT" , " Sharing Account Code " , " Sharing Account Code ");
@@ -94,10 +94,11 @@
             labelMap.add("IS_ONWARD_0","No","ไม่คำนวน");
             labelMap.add("IS_ONWARD_1","Yes","คำนวน");
             
-            labelMap.add("GUARANTEE_ALL_ALLOC_0","No","คืนส่วนแบ่งเมื่อไม่ถึงการันตี");
-            labelMap.add("GUARANTEE_ALL_ALLOC_1","Yes","ไม่คืนส่วนแบ่ง");
-            labelMap.add("GUARANTEE_ALL_ALLOC_2","Calculate basic allocate in guarantee","คำนวณส่วนแบ่งใหม่ตามการตั้งค่าในการันตี");
-            
+            labelMap.add("GUARANTEE_ALL_ALLOC_0","คำนวนเทียบและจ่ายหากไม่ถึงจะคืน sharing (BNH)","คำนวนเทียบและจ่ายหากไม่ถึงจะคืน sharing (BNH)");
+            labelMap.add("GUARANTEE_ALL_ALLOC_1","คำนวณเทียบและจ่ายตาม in/over guarantee (BHQ)","คำนวณเทียบและจ่ายตาม in/over guarantee (BHQ)");
+            labelMap.add("GUARANTEE_ALL_ALLOC_2","คำนวณส่วนแบ่ง in/over guarantee ก่อนเทียบ (BSR)","คำนวณส่วนแบ่ง in/over guarantee ก่อนเทียบ (BSR)");
+            labelMap.add("GUARANTEE_ALL_ALLOC_3","คำนวณเทียบและจ่ายตาม basic allocate (NEW)","คำนวณเทียบและจ่ายตาม basic allocate (NEW)");
+
             labelMap.add("GUARANTEE_DAY_0","INV","วันที่ออกบิล");
             labelMap.add("GUARANTEE_DAY_1","VER","วันที่แพทย์คีย์");
             
@@ -787,6 +788,7 @@
 						<option value="Y" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("Y") || DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("") ? "selected":"" %> >${labelMap.GUARANTEE_ALL_ALLOC_1}</option>
 						<option value="N" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("N") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_0}</option>
                         <option value="A" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("A") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_2}</option>
+                        <option value="P" <%= DBMgr.getRecordValue(HOSPITALRec, "GUARANTEE_ALL_ALLOC").equalsIgnoreCase("P") ? "selected":"" %>>${labelMap.GUARANTEE_ALL_ALLOC_3}</option>
                     </select>
                     </td>
 				<!-- td class="input"><input type="radio"
