@@ -222,7 +222,7 @@ public class ProcessFlow {
             for(int r = 1; r < chkRowFromMonth ; r++){
                 interfaceHTML+="<tr>\n";
                 for(int c = 0; c < 3;c++){
-                    interfaceHTML+="<td class=\"row0 alignCenter\">" + this.showValueInTable(value[r][c],"../process/ProcessBasicAllocateTest.jsp") +"</td>\n";
+                    interfaceHTML+="<td class=\"row0 alignCenter\">" + this.showValueInTable(value[r][c],"../process/ProcessBasicAllocateNew.jsp") +"</td>\n";
                 }
                 interfaceHTML+="</tr>\n";
             }
