@@ -20,6 +20,7 @@ import df.bean.db.table.Batch;
 import df.bean.obj.util.JDate;
 import df.bean.obj.util.Variables;
 import df.bean.process.ProcessImport;
+import df.bean.process.ProcessImportBillNotAllowZeroAndLess;
 import df.bean.process.ProcessMapDepartment;
 import df.bean.process.ProcessTranferRevenue;
 import df.bean.process.ProcessUpdateBillNotPrint;
@@ -58,6 +59,7 @@ public class ProcessImportBillSrvl extends ProcessServlet {
         String type = request.getParameter("TYPE");
     	Batch batch = new Batch(hospitalCode, conn);
     	ProcessImport pi = new ProcessImport(conn);
+    	ProcessImportBillNotAllowZeroAndLess piz = new ProcessImportBillNotAllowZeroAndLess(conn);
     	ProcessReceipt pr = new ProcessReceipt(conn);
         ProcessJoinBill j = new ProcessJoinBill();
         WelfareDFPayment wf = new WelfareDFPayment();
@@ -72,7 +74,7 @@ public class ProcessImportBillSrvl extends ProcessServlet {
         
         conn.beginTrans();
         if (type.equals("Bill Transaction")) {
-            if(j.ProcessJoinBill(hospitalCode, startDate, endDate)){
+        	if(j.ProcessJoinBill(hospitalCode, startDate, endDate)){
             	System.out.print(Variables.IS_TEST ? "OK Join Bill\n" : "");
             	pi.setUserId(user);
                 if (pi.importBill(hospitalCode, startDate, endDate) && 
