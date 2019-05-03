@@ -60,6 +60,7 @@
             labelMap.add("LABEL_END_TERM", "End Term", "ช่วงที่สิ้นสุด");
             labelMap.add("LABEL_EDIT", "Edit", "แก้ไข");
             labelMap.add("ALERT_AMOUNT_VALUE","Please, fill Amount","กรุณากรอกจำนวนเงิน");
+            labelMap.add("DEPARTMENT_CODE","Department Code","รหัสแผนก");
 
             request.setAttribute("labelMap", labelMap.getHashMap());
             //
@@ -71,7 +72,7 @@
             conData.setStatement();
             
             byte MODE = DBMgr.MODE_INSERT;
-            DataRecord periodRec = null, expenseRec=null, doctorRec=null;
+            DataRecord periodRec = null, departmentRec= null, expenseRec=null, doctorRec=null;
             DataRecord stpDelete = null;
             String MM = "", YYYY = "";
             String select_type="", select_tax="";
@@ -137,7 +138,7 @@
                 	}
 					*/
                 }else{
-                	//System.out.println("insert");
+                	System.out.println("insert");
                 	pay_amount="0";
                 	pay_tax_amount="0";
                 	if(request.getParameter("SEL_TYPE").equals("2")){
@@ -156,8 +157,9 @@
                 		total_tax_amount="0";
                 	}
                 	
-                	if(Variables.IS_TEST){
+                	if(true){
 	                	System.out.println("doctor_code="+request.getParameter("OLD_DOCTOR_CODE"));
+	                	System.out.println("department_code="+request.getParameter("DEPARTMENT_CODE"));
 	                	System.out.println("expense_code="+request.getParameter("OLD_EXPENSE_CODE"));
 	                	System.out.println("sel_type="+request.getParameter("OLD_SEL_TYPE"));
 	                	System.out.println("amount="+request.getParameter("AMOUNT"));
@@ -201,6 +203,7 @@
                 periodRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 periodRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 periodRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                periodRec.addField("DEPARTMENT_CODE", Types.VARCHAR, request.getParameter("DEPARTMENT_CODE"));
 
                 if(1==1){
                 	out.println(request.getParameter("DOCTOR_CODE"));
@@ -224,8 +227,10 @@
             }else if (request.getParameter("DOCTOR_CODE") != null && request.getParameter("EXPENSE_CODE") != null) {
                 MODE = DBMgr.MODE_UPDATE;
                 periodRec 			=DBMgr.getRecord(String.format("SELECT * FROM STP_PERIOD_EXPENSE WHERE DOCTOR_CODE = '%1$s' AND EXPENSE_CODE='%2$s' AND HOSPITAL_CODE='%3$s' AND ACTIVE='%4$s' AND START_TERM_YYYY='%5$s' AND START_TERM_MM='%6$s' ", request.getParameter("DOCTOR_CODE"),request.getParameter("EXPENSE_CODE"),session.getAttribute("HOSPITAL_CODE").toString(),request.getParameter("ACTIVE"),request.getParameter("START_TERM_YYYY"),request.getParameter("START_TERM_MM")));
-                expenseRec 			=DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM EXPENSE WHERE CODE = '%1$s'", request.getParameter( "EXPENSE_CODE")));
-				doctorRec 			=DBMgr.getRecord(String.format("SELECT CODE, NAME_%1$s FROM DOCTOR WHERE CODE = '%2$s'", labelMap.getFieldLangSuffix(),request.getParameter( "DOCTOR_CODE")));
+                expenseRec 			=DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM EXPENSE WHERE CODE = '%1$s' AND HOSPITAL_CODE='%2$s'", request.getParameter("EXPENSE_CODE"), session.getAttribute("HOSPITAL_CODE").toString()));
+                doctorRec 			=DBMgr.getRecord(String.format("SELECT CODE, NAME_%1$s, DEPARTMENT_CODE FROM DOCTOR WHERE CODE = '%2$s' AND HOSPITAL_CODE='%3$s'", labelMap.getFieldLangSuffix(), request.getParameter( "DOCTOR_CODE"), session.getAttribute("HOSPITAL_CODE").toString()));
+		        departmentRec 		=DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '%1$s' AND HOSPITAL_CODE='%2$s'", DBMgr.getRecordValue(periodRec, "DEPARTMENT_CODE"), session.getAttribute("HOSPITAL_CODE").toString()));
+
 				get_amount			=DBMgr.getRecordValue(periodRec, "AMOUNT");
 				get_pay_amount		=DBMgr.getRecordValue(periodRec, "PAY_AMOUNT");
 				get_tax_amount		=DBMgr.getRecordValue(periodRec, "TAX_AMOUNT");
@@ -234,10 +239,7 @@
 				get_start_mm		=DBMgr.getRecordValue(periodRec, "START_TERM_MM");
 				get_start_year		=DBMgr.getRecordValue(periodRec, "START_TERM_YYYY");
 				get_end_mm			=DBMgr.getRecordValue(periodRec, "END_TERM_MM");
-				get_end_year		=DBMgr.getRecordValue(periodRec, "END_TERM_YYYY");
-				
-				//System.out.println("get_pay_tax_amount="+get_pay_tax_amount);
-				
+				get_end_year		=DBMgr.getRecordValue(periodRec, "END_TERM_YYYY");				
             }else if (request.getParameter("DOCTOR_CODE") != null) {
                 // New
                 MODE = DBMgr.MODE_INSERT;
@@ -246,8 +248,8 @@
                
                 get_start_mm = JDate.getMonth();
 				get_start_year = JDate.getYear();
-				
-                doctorRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_%1$s FROM DOCTOR WHERE CODE = '%2$s'", labelMap.getFieldLangSuffix(),request.getParameter( "DOCTOR_CODE")));
+                doctorRec = DBMgr.getRecord(String.format("SELECT CODE, NAME_%1$s, DEPARTMENT_CODE FROM DOCTOR WHERE CODE = '%2$s' AND HOSPITAL_CODE='%3$s'", labelMap.getFieldLangSuffix(), request.getParameter( "DOCTOR_CODE"), session.getAttribute("HOSPITAL_CODE").toString()));
+		        departmentRec = DBMgr.getRecord(String.format("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '%1$s' AND HOSPITAL_CODE='%2$s'", DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE"), session.getAttribute("HOSPITAL_CODE").toString()));
 				select_type = request.getParameter("SEL_TYPE");
 			}else {
                 response.sendRedirect("../message.jsp");
@@ -321,7 +323,38 @@
                     }
                     document.mainForm.EXPENSE_NAME.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
                 }
-            }    
+            }
+            function DEPARTMENT_CODE_KeyPress(e) {
+                var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+
+                if (key == 13) {
+                    document.mainForm.DEPARTMENT_CODE.blur();
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            function AJAX_Refresh_DEPARTMENT() {
+                var target = "../../RetrieveData?TABLE=DEPARTMENT&COND=CODE='" + document.mainForm.DEPARTMENT_CODE.value + "' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
+                AJAX_Request(target, AJAX_Handle_Refresh_DEPARTMENT);
+            }
+            function AJAX_Handle_Refresh_DEPARTMENT() {
+                if (AJAX_IsComplete()) {
+                    var xmlDoc = AJAX.responseXML;
+
+                    // Data not found
+                    if (!isXMLNodeExist(xmlDoc, "CODE")) {
+                        document.mainForm.DEPARTMENT_CODE.value = "";
+                        document.mainForm.DEPARTMENT_DESCRIPTION.value = "";
+                        return;
+                    }
+
+                    // Data found
+                    document.mainForm.DEPARTMENT_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+                }
+            }
+            
             function AJAX_VerifyData() {
 	            if(document.mainForm.MODE.value=="<%=DBMgr.MODE_INSERT%>"){
 	                var target = "../../RetrieveData?TABLE=STP_PERIOD_EXPENSE&COND=HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'"
@@ -542,6 +575,17 @@
                    <%if(MODE==DBMgr.MODE_INSERT){%>   
                    <!-- <input id="SEARCH_DOCTOR_CODE" name="SEARCH_DOCTOR_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="doctorOnSearch(1); return false;" /> --><%} %>
                    <input type="text" id="DOCTOR_NAME" name="DOCTOR_NAME" class="mediumMax" readonly="readonly" value="<%= DBMgr.getRecordValue(doctorRec, "NAME_" + labelMap.getFieldLangSuffix()) %>" />                  </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        <label id="DEPARTMENT_LABEL" for="DEPARTMENT_CODE"><span class="style1">${labelMap.DEPARTMENT_CODE}</span></label>
+                    </td>
+                    <td class="input" colspan="3">
+                        <input name="DEPARTMENT_CODE" type="text" class="short" id="DEPARTMENT_CODE" maxlength="20" value="<%= DBMgr.getRecordValue(periodRec, "DEPARTMENT_CODE").equals("") ? DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE") : DBMgr.getRecordValue(periodRec, "DEPARTMENT_CODE") %>" onkeypress="return DEPARTMENT_CODE_KeyPress(event);" onblur="AJAX_Refresh_DEPARTMENT();" />
+                        <input type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DEPARTMENT&DISPLAY_FIELD=DESCRIPTION&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=DEPARTMENT_CODE&HANDLE=AJAX_Refresh_DEPARTMENT'); return false;" />
+                        <input type="text" id="DEPARTMENT_DESCRIPTION" name="DEPARTMENT_DESCRIPTION" class="mediumMax" readonly="readonly" value="<%= DBMgr.getRecordValue(departmentRec, "DESCRIPTION") %>" />
+                        
+                     </td>
                 </tr>
                
                 <tr>
