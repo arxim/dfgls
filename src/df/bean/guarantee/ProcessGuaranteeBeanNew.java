@@ -1580,7 +1580,7 @@ public class ProcessGuaranteeBeanNew {
                             double in_allocate_pct = Double.parseDouble(guarantee_table[i][13]);
                             double trn_guarantee_amount = Double.parseDouble(transaction_table[x][6]);
                             double guarantee_amount = Double.parseDouble(guarantee_table[i][7]);
-                            double dr_amt = trn_guarantee_amount * (in_allocate_pct/100);
+                            double dr_amt = transaction_table[x][26].equals("Y") ? Double.parseDouble(transaction_table[x][14]) : trn_guarantee_amount * (in_allocate_pct/100);
                             double hp_amt = Double.parseDouble(transaction_table[x][17]) - dr_amt;
                             guarantee_amount = guarantee_amount - trn_guarantee_amount;
                             
@@ -1609,12 +1609,14 @@ public class ProcessGuaranteeBeanNew {
 
                                 if(guarantee_amount < 0.2){//if over guarantee (guarantee remain < 0.2)
                                     guarantee_amount = 0;
-                                    dr_amt = trn_guarantee_amount * (over_allocate_pct/100);
+                                    dr_amt = transaction_table[x][26].equals("Y") ? Double.parseDouble(transaction_table[x][14]) : trn_guarantee_amount * (over_allocate_pct/100);
+                                    //dr_amt = trn_guarantee_amount * (over_allocate_pct/100);
                                     hp_amt = Double.parseDouble(transaction_table[x][17]) - dr_amt;
                                 }else{
                                     trn_in_guarantee_amount = guarantee_amount * (in_allocate_pct /100);
                                     over_guarantee_amount = (trn_guarantee_amount - guarantee_amount) * (over_allocate_pct/100);
-                                    dr_amt = over_guarantee_amount + trn_in_guarantee_amount;
+                                    dr_amt = transaction_table[x][26].equals("Y") ? Double.parseDouble(transaction_table[x][14]) : over_guarantee_amount + trn_in_guarantee_amount;
+                                    //dr_amt = over_guarantee_amount + trn_in_guarantee_amount;
                                     hp_amt = Double.parseDouble(transaction_table[x][17]) - dr_amt;
                                     transaction_table[x][12] = "GUARANTEE EXTRA "+(int)trn_in_guarantee_amount+"/"+(int)over_guarantee_amount;
                                 }
