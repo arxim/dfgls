@@ -111,17 +111,6 @@ public class ExportFileSrvl extends HttpServlet {
             		reportGenerateFileBank(save_file+".txt", response, edtb.exportData(save_file, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage());            		
             	}
             }
-        	if (bank_type.equals("980067")){//Smart
-
-
-        		//System.out.println(edttb.exportData_Smart(save_file, hospital_code, pay_type, year, month, cdb2, upload_path));
-
-        	}
-
-        	else { //Direct
-
-
-        	}
             
             if(process_name.equals("ExportPayroll") ){
                 reportGenerateFile(link + save_file+".txt", response, edfp.exportData(save_file, hospital_code, pay_type, year, month, cdb2, upload_path));
