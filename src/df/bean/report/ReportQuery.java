@@ -394,7 +394,7 @@ public class ReportQuery {
     	"AND TM.ACTIVE = '1' AND TM.ORDER_ITEM_ACTIVE = '1' AND DR.ACTIVE = '1' "+
     	"AND (TM.IS_PAID <> 'N' OR (TM.IS_PAID = 'N' AND TM.IS_DISCHARGE_SUMMARY = 'N') ) AND OI.ACCOUNT_CODE NOT LIKE '0%' AND TM.INVOICE_TYPE <> 'ORDER' "+
     	"AND TM.AMOUNT_AFT_DISCOUNT > 0 " +
-    	//"AND DR.PAYMENT_MODE_CODE != 'U' " +
+    	"AND DR.PAYMENT_MODE_CODE != 'U' " +
     	"AND TM.DOCTOR_CODE NOT LIKE '99999%' "+
     	"UNION ALL "+
     	"SELECT 'ADD' AS MODULE, TX.DOCTOR_CODE, DR.NAME_THAI, '' AS HN_NO, '' AS PATIENT_NAME, '' AS INVOICE_NO, TX.LINE_NO, "+
@@ -405,6 +405,7 @@ public class ReportQuery {
     	"LEFT OUTER JOIN DEPARTMENT DEPT ON TX.DEPARTMENT_CODE = DEPT.CODE AND TX.HOSPITAL_CODE = DEPT.HOSPITAL_CODE "+
     	"WHERE TX.HOSPITAL_CODE = '"+this.hospital_code+"' AND TX.YYYY+TX.MM = '"+this.year+this.month+"' "+
     	"AND DR.ACTIVE = '1' "+
+    	"AND DR.PAYMENT_MODE_CODE != 'U' " +
     	"AND TX.EXPENSE_CODE IN (SELECT CODE FROM EXPENSE WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND AC_INTERFACE = 'Y') "+
     	"AND TX.EXPENSE_SIGN = '1' "+
     	"UNION ALL "+
@@ -416,6 +417,7 @@ public class ReportQuery {
     	"LEFT OUTER JOIN DEPARTMENT DEPT ON TX.DEPARTMENT_CODE = DEPT.CODE AND TX.HOSPITAL_CODE = DEPT.HOSPITAL_CODE "+
     	"WHERE TX.HOSPITAL_CODE = '"+this.hospital_code+"' AND TX.YYYY+TX.MM = '"+this.year+this.month+"' "+
     	"AND DR.ACTIVE = '1' "+
+    	"AND DR.PAYMENT_MODE_CODE != 'U' " +
     	"AND TX.EXPENSE_CODE IN (SELECT CODE FROM EXPENSE WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND AC_INTERFACE = 'Y') "+
     	"AND TX.EXPENSE_SIGN = '-1' "+
     	")A) AS Q ";
