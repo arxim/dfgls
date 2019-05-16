@@ -9,6 +9,7 @@ import df.bean.db.conn.DBConnection;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -237,7 +238,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"FROM SUMMARY_PAYMENT P "+
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+ 
-				"WHERE P.HOSPITAL_CODE='11750' AND D.PAYMENT_MODE_CODE='B' AND B.CODE = '003' AND YYYY='"+year+"' AND MM='"+month+"' "+
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE = '003' AND YYYY='"+year+"' AND MM='"+month+"' "+
 				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' "+
 				" UNION ALL "+
 				"SELECT D.BANK_ACCOUNT_NO AS ACCOUNT_NO, P.PAYMENT_DATE AS EFFECTIVE_DATE,'0' AS AMOUNT_SIGN ,"+//1-3
@@ -245,14 +246,15 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"'' AS blank,'','','',''"+//7
 				" FROM SUMMARY_PAYMENT P "+
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
-				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='11750' "+
+				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='"+hp_code+"' "+
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
-				"WHERE P.HOSPITAL_CODE='11750' AND D.PAYMENT_MODE_CODE='B' AND B.CODE ='003' AND YYYY='"+year+"' AND MM='"+month+"' "+
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE ='003' AND YYYY='"+year+"' AND MM='"+month+"' "+
 				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"'";
 		System.out.println(payment_date);
 		boolean status = true;
 		String[][] revenue_data_direct= null;
 		setFileName(path);
+		System.out.println(TBank_Direct);
 		revenue_data_direct = d.query(TBank_Direct);
 		System.out.println(TBANK(revenue_data_direct));
 		writeFileNew(TBANK(revenue_data_direct));
@@ -275,7 +277,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				//start detail
 				"SELECT '10' AS File_Type,'2' AS Record_Type,'000001' AS Batch_Number,"+//1-3
 				"D.BANK_CODE AS Receiving_Bank_Code,D.BANK_BRANCH_CODE AS Receiving_Branch_Code,D.BANK_ACCOUNT_NO AS Receiving_Bank_AC_No,"+//4-6
-				"H.BANK_CODE AS Sending_Bank_Code,H.BANK_BRANCH_CODE AS Sending_Branch_Code,H.BANK_ACCOUNT_NO AS Sending_Bank_AC_No,"+//7-9
+				"H.BANK_CODE AS Sending_Bank_Code,H.BANK_BRANCH_CODE AS Sending_Branch_Code,H.ACCOUNT_NO AS Sending_Bank_AC_No,"+//7-9
 				"'06062018' AS Effective_Date_Transfer,'01' AS Service_Type_Code,'00' AS Clearing_House_Code,"+//10-12
 				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS Transfer_Amount,'' AS Information_About_Receiver,'980067' AS Com_Code,'VICHAIYUT' AS Com_Name,"+//13-15
 				"'' AS Mobile_Phone_Receiver,"+//16
@@ -290,6 +292,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 			boolean status = true;
 			String[][] revenue_data = null;
 			setFileName(path);
+			System.out.println(TBank_Smart);
 			revenue_data = d.query(TBank_Smart);
 			writeFileNew(TBANK_SMART(revenue_data));
 		System.out.print(TBANK_SMART(revenue_data));
@@ -710,7 +713,13 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 			dt[i] = dt[i] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8) ,6,"","b");//6 EFFECTIVE-DATE
 			dt[i] = dt[i] + t[i][2];//1 AMOUNT-SIGN
 			dt[i] = dt[i] + checkString( t[i][3].substring(0, t[i][3].length()),11,"0","f");//11 AMOUNT
-			dt[i] = dt[i] + checkString( t[i][4].substring(0, t[i][4].length()),30," ","l");//30 NAME
+			//dt[i] = dt[i] + checkString( t[i][4].substring(0, t[i][4].length()),30," ","l");//30 NAME
+			try {
+				dt[i] = dt[i] + checkString( new String(t[i][4].trim().getBytes(),"TIS-620").substring(0, t[i][4].length()),30," ","l");
+			} catch (UnsupportedEncodingException e) {
+				System.out.println("Write File Bank : "+e);
+			}//30 NAME
+			
 			dt[i] = dt[i] + checkString("",1," ","b");//1 STATUS-RETURN
 			dt[i] = dt[i] + checkString("",21," ","b");//21 SPACE
 		}
