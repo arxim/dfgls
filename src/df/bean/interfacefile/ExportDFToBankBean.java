@@ -230,10 +230,10 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
         }
         return status;
     }
-	public boolean exportDataDirect(String fn, String hp_code, String type, String year, String month, DBConn d, String path) {
+	public boolean exportDataDirect(String fn, String hp_code, String type, String year, String month, DBConn d, String path,String transaction_date) {
 		String TBank_Direct = "SELECT '' AS blank,'M' AS TERM_PAYMENT ,'062006' AS COMPANY_CODE ,"+//1-3
 				"'VICHAIYUT' AS COMPANY_NAME,'D' AS APPLY_CODE,'A' AS STATUS ,"+//4-6
-				"'07062018' EFFECTIVE_DATE,convert(nvarchar(255),COUNT(*)) AS TOTAL_RECORD,replace(convert(nvarchar(255),SUM(DR_NET_PAID_AMT)),'.','') AS TOTAL_AMOUNT ,"+//7-9
+				"'"+transaction_date+"' EFFECTIVE_DATE,convert(nvarchar(255),COUNT(*)) AS TOTAL_RECORD,replace(convert(nvarchar(255),SUM(DR_NET_PAID_AMT)),'.','') AS TOTAL_AMOUNT ,"+//7-9
 				"'I' AS MEDIA_TYPE, '5802410000' AS HASH_VALUE "+//10-11
 				"FROM SUMMARY_PAYMENT P "+
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
@@ -241,7 +241,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE = '003' AND YYYY='"+year+"' AND MM='"+month+"' "+
 				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' "+
 				" UNION ALL "+
-				"SELECT D.BANK_ACCOUNT_NO AS ACCOUNT_NO, P.PAYMENT_DATE AS EFFECTIVE_DATE,'0' AS AMOUNT_SIGN ,"+//1-3
+				"SELECT D.BANK_ACCOUNT_NO AS ACCOUNT_NO, '"+transaction_date+"' AS EFFECTIVE_DATE,'0' AS AMOUNT_SIGN ,"+//1-3
 				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS AMOUNT,ISNULL(D.BANK_ACCOUNT_NAME,'') AS NAME,'' AS STATUS_RETURN ,"+//4-6
 				"'' AS blank,'','','',''"+//7
 				" FROM SUMMARY_PAYMENT P "+
@@ -254,18 +254,18 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 		boolean status = true;
 		String[][] revenue_data_direct= null;
 		setFileName(path);
-		System.out.println(TBank_Direct);
+		System.out.println("Query Tbank direct "+TBank_Direct);
 		revenue_data_direct = d.query(TBank_Direct);
-		System.out.println(TBANK(revenue_data_direct));
+		System.out.println(revenue_data_direct.toString());
 		writeFileNew(TBANK(revenue_data_direct));
 		return status;
 	}
-	public boolean exportDataSmart(String fn, String hp_code, String type, String year, String month, DBConn d, String path){
+	public boolean exportDataSmart(String fn, String hp_code, String type, String year, String month, DBConn d, String path,String transaction_date){
 		this.setYyyy(year);
         this.setMm(month);
 		String TBank_Smart = "SELECT '10' AS File_Type,'1' AS Record_Type,'000001' AS Batch_Number,"+//1-3
 				"'065' AS  Sending_Bank_Code,'000' AS Number_of_Transfer_Orders,replace(convert(nvarchar(255),SUM(P.DR_NET_PAID_AMT)),'.','')  AS DR_NET_PAID_AMT,"+//4-6
-				"'"+JDate.getDateDDMMYYY()+"' AS Effective_Date,'C' AS Kind_of_Transaction,' ' AS Blank,"+//6-9
+				"'"+transaction_date+"' AS Effective_Date,'C' AS Kind_of_Transaction,' ' AS Blank,"+//6-9
 				"convert(nvarchar(255),COUNT(*)) AS Total_Records,'980067' AS Com_Code,'VICHAIYUT' AS Com_Name,"+ //10-12
 				"' ' AS Blank2,'' AS Blank3,'','','','','','','0' AS Running_Number,'','',''"+//13
 				"FROM SUMMARY_PAYMENT P "+
@@ -278,7 +278,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"SELECT '10' AS File_Type,'2' AS Record_Type,'000001' AS Batch_Number,"+//1-3
 				"D.BANK_CODE AS Receiving_Bank_Code,D.BANK_BRANCH_CODE AS Receiving_Branch_Code,D.BANK_ACCOUNT_NO AS Receiving_Bank_AC_No,"+//4-6
 				"H.BANK_CODE AS Sending_Bank_Code,H.BANK_BRANCH_CODE AS Sending_Branch_Code,H.ACCOUNT_NO AS Sending_Bank_AC_No,"+//7-9
-				"'06062018' AS Effective_Date_Transfer,'01' AS Service_Type_Code,'00' AS Clearing_House_Code,"+//10-12
+				"'"+transaction_date+"' AS Effective_Date_Transfer,'01' AS Service_Type_Code,'00' AS Clearing_House_Code,"+//10-12
 				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS Transfer_Amount,'' AS Information_About_Receiver,'980067' AS Com_Code,'VICHAIYUT' AS Com_Name,"+//13-15
 				"'' AS Mobile_Phone_Receiver,"+//16
 				"' ' AS Blank1,"+//17
@@ -695,38 +695,45 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
     	return dt;
     }
 	private String[] TBANK(String[][] t) {
-		String dtBankApprove = this.payment_date.replaceAll("/", "");
 		String[] dt = new String[t.length];
-		dt[0] = checkString("",8," ","b");//8 Space
-		dt[0] = dt[0] + t[0][1];//1 TERM - PAYMENT
-		dt[0] = dt[0] + t[0][2];//6 COMPANY - CODE
-		dt[0] = dt[0] + checkString( t[0][3].substring(0, t[0][3].length()) ,30," ","b");//30 COMPANY - NAME
-		dt[0] = dt[0] + t[0][4];//1 APPLY-CODE
-		dt[0] = dt[0] + t[0][5];//1 STATUS
-		dt[0] = dt[0] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8),6,"","b");//6 EFFECTIVE-DATE
-		dt[0] = dt[0] + checkString( t[0][7].substring(0, t[0][7].length()),5,"0","f");//5 TOTAL-RECORD
-		dt[0] = dt[0] + checkString( t[0][8].substring(0, t[0][8].length()),11,"0","f");//11 TOTAL-AMOUNT
-		dt[0] = dt[0] + t[0][9];//1 MEDIA-TYPE
-		dt[0] = dt[0] + t[0][10];//10 HASH-VALUE	
-		for(int i=1;i<(t.length);i++) {
-			dt[i] = t[i][0];//10 ACCOUNT NO.
-			dt[i] = dt[i] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8) ,6,"","b");//6 EFFECTIVE-DATE
-			dt[i] = dt[i] + t[i][2];//1 AMOUNT-SIGN
-			dt[i] = dt[i] + checkString( t[i][3].substring(0, t[i][3].length()),11,"0","f");//11 AMOUNT
-			//dt[i] = dt[i] + checkString( t[i][4].substring(0, t[i][4].length()),30," ","l");//30 NAME
-			try {
-				dt[i] = dt[i] + checkString( new String(t[i][4].trim().getBytes(),"TIS-620").substring(0, t[i][4].length()),30," ","l");
-			} catch (UnsupportedEncodingException e) {
-				System.out.println("Write File Bank : "+e);
-			}//30 NAME
-			
-			dt[i] = dt[i] + checkString("",1," ","b");//1 STATUS-RETURN
-			dt[i] = dt[i] + checkString("",21," ","b");//21 SPACE
+		String dtBankApprove = t[0][6].replaceAll("/", "");
+		try {
+			dt[0] = checkString("",8," ","b");//8 Space
+			dt[0] = dt[0] + t[0][1];//1 TERM - PAYMENT
+			dt[0] = dt[0] + t[0][2];//6 COMPANY - CODE
+			dt[0] = dt[0] + checkString( t[0][3].substring(0, t[0][3].length()) ,30," ","b");//30 COMPANY - NAME
+			dt[0] = dt[0] + t[0][4];//1 APPLY-CODE
+			dt[0] = dt[0] + t[0][5];//1 STATUS
+			dt[0] = dt[0] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8),6,"","b");//6 EFFECTIVE-DATE
+			dt[0] = dt[0] + checkString( t[0][7].substring(0, t[0][7].length()),5,"0","f");//5 TOTAL-RECORD
+			dt[0] = dt[0] + checkString( t[0][8].substring(0, t[0][8].length()),11,"0","f");//11 TOTAL-AMOUNT
+			dt[0] = dt[0] + t[0][9];//1 MEDIA-TYPE
+			dt[0] = dt[0] + t[0][10];//10 HASH-VALUE
+			for(int i=1;i<(t.length);i++) {
+				dt[i] = t[i][0];//10 ACCOUNT NO.
+				dt[i] = dt[i] + checkString( dtBankApprove.substring(0, 4) + dtBankApprove.substring(6, 8) ,6,"","b");//6 EFFECTIVE-DATE
+				dt[i] = dt[i] + t[i][2];//1 AMOUNT-SIGN
+				dt[i] = dt[i] + checkString( t[i][3].substring(0, t[i][3].length()),11,"0","f");//11 AMOUNT
+				//dt[i] = dt[i] + checkString( t[i][4].substring(0, t[i][4].length()),30," ","l");//30 NAME
+				try {
+					dt[i] = dt[i] + checkString( new String(t[i][4].trim().getBytes(),"TIS-620").substring(0, t[i][4].length()),30," ","l");
+				} catch (Exception e) {
+					dt[i] = dt[i] + checkString( new String(t[i][4].trim().getBytes(),"TIS-620"),30," ","l");
+
+					System.out.println("Write File Bank : "+e+"  "+t[i][4]);
+				}//30 NAME
+				
+				dt[i] = dt[i] + checkString("",1," ","b");//1 STATUS-RETURN
+				dt[i] = dt[i] + checkString("",21," ","b");//21 SPACE
+			}
+		}catch (Exception e) {
+			System.out.println("TBANK in for : "+e);
 		}
+		
 	return dt;
 	}
 	private String[] TBANK_SMART(String[][] t) {
-		String dtBankApprove = this.payment_date.replaceAll("/", "");
+		String dtBankApprove = t[0][6].replaceAll("/", "");
 		String[] dt = new String[t.length];
 		// header
 		dt[0] = t[0][0];//2 File Type
