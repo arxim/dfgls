@@ -34,6 +34,7 @@
             labelMap.add("PAYOR_OFFICE_CODE", "Payor Office Code", "รหัสบริษัทคู่สัญญา");
             labelMap.add("REPORT_TRANSACTION", "Interface DF Transaction", "นำเข้ารายการค่าแพทย์ชั่วคราว");
             labelMap.add("REPORT_TRANSACTION_RESULT", "Interface Result Transaction", "นำเข้ารายการแพทย์อ่านผลชั่วคราว");
+            labelMap.add("REPORT_IMPORT_CHECKLIST", "Import DF Transaction", "นำเข้ารายการค่าแพทย์เข้าระบบ");
             labelMap.add("REPORT_AR_TRANSACTION", "Account Receipt No DF ", "รายการรับชำระหนี้ไม่มีค่าแพทย์");
             labelMap.add("REPORT_AR_IN_TRANSACTION", "Account Receipt DF", "รายการรับชำระหนี้มีค่าแพทย์");
             labelMap.add("NO_VERIFY_TRANSACTION", "No Verify Transaction","ค่าแพทย์ยังไม่มีการอ่านผล");
@@ -662,7 +663,7 @@
                             <option value="None">-- Select Report --</option>
                             <option value="ImportTransaction">${labelMap.REPORT_TRANSACTION}</option>
                             <option value="ImportVerifyTransaction">${labelMap.REPORT_TRANSACTION_RESULT}</option>
-                            <!-- <option value="SummaryDaily">${labelMap.REPORT_SUMMARY_DAILY}</option>  -->
+                            <option value="ImportChecklist">${labelMap.REPORT_IMPORT_CHECKLIST}</option>
                             <option value="DailyChecklist">${labelMap.REPORT_SUMMARY_DAILY}</option>
                             <option value="SummaryDailyStep">${labelMap.REPORT_SUMMARY_DAILY_STEP}</option>
                             <option value="OnwardOutOfSystem">${labelMap.REPORT_ONWARD_OUT_OF_SYSTEM}</option>
