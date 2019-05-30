@@ -104,7 +104,7 @@ S.IS_ONWARD LIKE $P{is_onward} AND
 S.IS_PARTIAL LIKE $P{is_partial} AND
 S.IS_DISCHARGE_SUMMARY LIKE $P{is_discharge} AND
 S.HOSPITAL_CODE LIKE $P{hospital_code}
-ORDER BY S.HN_NO, S.INVOICE_DATE, S.LINE_NO]]></queryString>
+ORDER BY S.INVOICE_NO]]></queryString>
 
 	<field name="HOSPITAL_CODE" class="java.lang.String"/>
 	<field name="ADMISSION_TYPE_CODE" class="java.lang.String"/>
