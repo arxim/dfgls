@@ -334,19 +334,18 @@ public class ProcessTax402Bean {
         return taxAmount;
     }
     private double calculateMonthTax(String income, String humanGroup, String doctor_code){ //การคำนวณแบบปกติ
-    	String reduce01_sql = "SELECT TOP 1 A08+A081 FROM STP_TAX_REDUCE WHERE DOCTOR_CODE = '"
-    		+doctor_code+"' ORDER BY YYYY+MM DESC";
-    	String reduce02_sql = "SELECT TOP 1 A10+A101 FROM STP_TAX_REDUCE WHERE DOCTOR_CODE = '"
-    		+doctor_code+"' ORDER BY YYYY+MM DESC";
-    	String reduce03_sql = "SELECT TOP 1 B07+B071 FROM STP_TAX_REDUCE WHERE DOCTOR_CODE = '"
-    		+doctor_code+"' ORDER BY YYYY+MM DESC";
-    	String reduce041_sql = "SELECT TOP 1 C01+C02+C03_02+C03_04"+
-    	//String reduce041_sql = "SELECT TOP 1 C01+C02+(C03_01*C03_02)+(C03_03*C03_04)" +
-    			"+C04_02+C04_04+C04_06+C04_08+C05+C051+C06_05+C06_051 " +
-    			"FROM STP_TAX_REDUCE WHERE DOCTOR_CODE = '"+doctor_code+"' ORDER BY YYYY+MM DESC";
-    	String reduce042_sql = "SELECT SUM(AMOUNT_1+AMOUNT_2) FROM STP_TAX_REDUCE_DETAIL " +
-    			"WHERE DOCTOR_CODE = '"+doctor_code+"' AND YYYY+MM = (SELECT MAX(YYYY+MM) " +
-    			"FROM STP_TAX_REDUCE_DETAIL WHERE DOCTOR_CODE = '"+doctor_code+"')";
+    	String reduce01_sql = "SELECT TOP 1 A08+A081 FROM STP_TAX_REDUCE WHERE "
+    		+ "HOSPITAL_CODE = '"+this.hospital+"' AND STATUS = '1' AND DOCTOR_CODE = '"+doctor_code+"' ORDER BY YYYY+MM DESC";
+    	String reduce02_sql = "SELECT TOP 1 A10+A101 FROM STP_TAX_REDUCE WHERE "
+    		+ "HOSPITAL_CODE = '"+this.hospital+"' AND STATUS = '1' AND DOCTOR_CODE = '"+doctor_code+"' ORDER BY YYYY+MM DESC";
+    	String reduce03_sql = "SELECT TOP 1 B07+B071 FROM STP_TAX_REDUCE WHERE "
+    		+ "HOSPITAL_CODE = '"+this.hospital+"' AND STATUS = '1' AND DOCTOR_CODE = '"+doctor_code+"' ORDER BY YYYY+MM DESC";
+    	String reduce041_sql = "SELECT TOP 1 C01+C02+C03_02+C03_04"
+    		+ "+C04_02+C04_04+C04_06+C04_08+C05+C051+C06_05+C06_051 FROM STP_TAX_REDUCE WHERE "
+    		+ "HOSPITAL_CODE = '"+this.hospital+"' AND STATUS = '1' AND DOCTOR_CODE = '"+doctor_code+"' ORDER BY YYYY+MM DESC";
+    	String reduce042_sql = "SELECT SUM(AMOUNT_1+AMOUNT_2) FROM STP_TAX_REDUCE_DETAIL "
+    		+ "WHERE DOCTOR_CODE = '"+doctor_code+"' AND YYYY+MM = (SELECT MAX(YYYY+MM) "
+    		+ "FROM STP_TAX_REDUCE_DETAIL WHERE DOCTOR_CODE = '"+doctor_code+"')";
 
         double total_income = Double.parseDouble(income); //for test
         double humanExpense = 0;
