@@ -555,7 +555,7 @@
                 <tr>
                     <th colspan="6" class="buttonBar">                        
                         <input type="submit" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}"  />
-                        <input type="button" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='transaction_edit.jsp'" />
+                        <input type="button" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='transaction_edit_all.jsp'" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />
                     </th>
                 </tr>
