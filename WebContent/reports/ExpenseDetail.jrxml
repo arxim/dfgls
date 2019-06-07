@@ -758,7 +758,7 @@ order by DOCTOR.PAYMENT_MODE_CODE, DOCTOR.CODE, TRN_EXPENSE_DETAIL.DOC_NO]]></qu
 					<textElement verticalAlignment="Top">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NOTE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[""+$F{EXPENSE_NAME}+" : "+$F{NOTE}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
