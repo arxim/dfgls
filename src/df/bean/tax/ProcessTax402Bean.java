@@ -286,7 +286,7 @@ public class ProcessTax402Bean {
             incomeType = "SUM_TURN_TAX_AMT";
         }
         String sqNormal = "SELECT SUM("+incomeType+") FROM SUMMARY_TAX_402 " +
-        "WHERE HOSPITAL_CODE="+ this.hospital +" AND TAX_TERM = '"+term_tax+"' " +
+        "WHERE HOSPITAL_CODE= '"+ this.hospital +"' AND TAX_TERM = '"+term_tax+"' " +
         "AND DOCTOR_CODE = '"+doctor+"' AND ACTIVE = '1'";
         try{
             temp = cdb.query(sqNormal);
@@ -315,7 +315,7 @@ public class ProcessTax402Bean {
             incomeType = "NET_TAX_MONTH";
         }
         String sqNormal = "SELECT SUM("+incomeType+") FROM SUMMARY_TAX_402 " +
-        		"WHERE HOSPITAL_CODE="+ this.hospital +" AND TAX_TERM = '"+term_tax+"' " +
+        		"WHERE HOSPITAL_CODE= '"+ this.hospital +"' AND TAX_TERM = '"+term_tax+"' " +
         		"AND NET_TAX_MONTH > 0 AND DOCTOR_CODE = '"+doctor+"' AND ACTIVE = '1'";
         try{
             temp = cdb.query(sqNormal);
