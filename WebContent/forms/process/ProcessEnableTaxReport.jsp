@@ -99,7 +99,14 @@
 	<script type="text/javascript">
         <%-- [ AJAX --%>
         function AJAX_Send_Request() {
-        	//alert(document.getElementById('YYYY').value);
+			if(document.getElementById('TAX_TYPE').value=='Tax402'){
+				document.getElementById('YYYY').value = document.getElementById('YYYY402').value;
+			}
+			if(document.getElementById('TAX_TYPE').value=='Tax406'){
+				document.getElementById('YYYY').value = document.getElementById('YYYY406').value;
+			}
+			//alert(document.getElementById('YYYY').value);
+			
             var target = "../../ProcessEnableTaxReportSrvl?"
                 + "&HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
 				+ "&USER_ID=<%=session.getAttribute("USER_ID").toString()%>"
@@ -107,13 +114,14 @@
                 + "&YYYY="+ document.getElementById('YYYY').value
                 + "&PRINT_DATE="+ document.mainForm.PRINT_DATE.value 
                 + "&TAX_TYPE="+document.mainForm.TAX_TYPE.value ;
-				alert(target);
+				
 				//document.mainForm.submit();
 				 AJAX_Request(target, AJAX_Handle_Response);
         }
 
         function AJAX_Handle_Response() {
         	//alert("AJAX_Handle_Response");
+			
             if (AJAX_IsComplete()) {
                 var xmlDoc = AJAX.responseXML;
                 if (xmlDoc.getElementsByTagName("SUCCESS")[0] == null) {
@@ -147,10 +155,11 @@
         		//alert(document.mainForm.PRINT_DATE.value)
         		document.getElementById('tax402').style.display = 'none';
         		document.getElementById('tax406').style.display = 'block'; 
-        		
+        		document.getElementById('printDate').style.display = 'block';
         	}
         	else if(document.mainForm.TAX_TYPE.value=='Tax402'){
         		document.getElementById('tax402').style.display = 'block';
+				document.getElementById('printDate').style.display = 'block';
         		document.getElementById('tax406').style.display = 'none';
         	}
         	else{
@@ -188,19 +197,10 @@
 			<tbody id='tax402'>
 			<tr>
 				<td class="label"><label>${labelMap.YYYY}</label></td>
-				<td class="input"><%=proUtil.selectYY("YYYY", yy_str)%></td>
-				
-			</tr>
-			<tr>
-				<td class="label"><label for="PRINT_DATE">${labelMap.PRINT_DATE}</label>
-				</td>
-				<td class="input">
-				<input type="text" id="PRINT_DATE" name="PRINT_DATE" class="short" /> 
-				<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PRINT_DATE'); return false;" />
-				</td>
-				
+				<td class="input" id="YYYY"><%=proUtil.selectYY("YYYY402", yy_str)%></td>
 			</tr>
 			</tbody>
+			
 			<tbody id='tax406'>
 			<tr>
 				<td class="label"><label>${labelMap.MM}</label></td>
@@ -216,18 +216,20 @@
 				</td>
 
 				<td class="label"><label>${labelMap.YYYY}</label></td>
-				<td class="input"><%=proUtil.selectYY("YYYY", yy_str)%></td>
+				<td class="input"><%=proUtil.selectYY("YYYY406", yy_str)%></td>
 			</tr>
-
-			<tr>
-				<td class="label"><label for="PRINT_DATE">${labelMap.PRINT_DATE}</label>
-				</td>
-				<td class="input">
-				<input type="text" id="PRINT_DATE" name="PRINT_DATE" class="short" /> 
-				<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PRINT_DATE'); return false;" />
-				</td>
-				
-			</tr>
+			</tbody>
+			
+			<tbody id='printDate'>
+				<tr>
+					<td class="label"><label for="PRINT_DATE">${labelMap.PRINT_DATE}</label>
+					</td>
+					<td class="input">
+					<input type="text" id="PRINT_DATE" name="PRINT_DATE" class="short" /> 
+					<input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('PRINT_DATE'); return false;" />
+					</td>
+					
+				</tr>
 			</tbody>
 
 			<tr>

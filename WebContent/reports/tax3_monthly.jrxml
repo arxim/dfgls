@@ -48,7 +48,8 @@
 DR.NAME_THAI, CASE WHEN ST.TAX_402_METHOD = '' THEN DR.TAX_402_METHOD ELSE ST.TAX_402_METHOD END AS TAX_402_METHOD ,
 CASE WHEN LEN(DR.TAX_ID)>10 THEN DR.TAX_ID ELSE '' END AS NATION_ID,
 DR.TAX_ID, DR.ADDRESS1+' '+DR.ADDRESS2+' '+DR.ADDRESS3+' '+DR.ZIP AS ADDRESS,
-ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO, H.COMPANY_NAME
+ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO, H.COMPANY_NAME, 
+H.AUTHORITY_NAME, H.AUTHORITY_POSITION 
 FROM SUMMARY_TAX_402 ST LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL H ON ST.HOSPITAL_CODE = H.CODE
 WHERE ST.YYYY = $P{yyyy} AND ST.MM = $P{mm} AND ST.HOSPITAL_CODE = $P{hospital_code}
@@ -71,6 +72,8 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 	<field name="MM" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
 	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
 	<variable name="SUM_SUM_NORMAL_TAX_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{SUM_NORMAL_TAX_AMT}]]></variableExpression>
@@ -2056,7 +2059,7 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("045") ? "นายอรรถพันธุ์ บุญตา" : $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : ""]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? $F{AUTHORITY_NAME} : $P{hospital_code}.equals("045") ? "นายอรรถพันธุ์ บุญตา" : $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : ""]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2069,7 +2072,7 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("045") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : $P{hospital_code}.equals("067") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : ""]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? $F{AUTHORITY_POSITION} : $P{hospital_code}.equals("045") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : $P{hospital_code}.equals("067") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : ""]]></textFieldExpression>
 				</textField>
 				<rectangle>
 					<reportElement

@@ -288,7 +288,7 @@
                         <option value="Tax402SummaryYearly">${labelMap.REPORT_402_YEARLY}</option>
                         <option value="SummaryTax402Yearly">${labelMap.REPORT_SUMMARY_402_YEARLY}</option>
                         <option value="Tax91_52">${labelMap.REPORT_TAX91}</option>
-                        <option value="tax53_monthly">${labelMap.REPORT_TAX3}</option>
+                        <option value="tax3_monthly">${labelMap.REPORT_TAX3}</option>
                         <option value="tax53_monthly">${labelMap.REPORT_TAX53}</option>
                     </select>
                 </tr>

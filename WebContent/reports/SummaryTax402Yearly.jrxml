@@ -41,14 +41,18 @@
 	<parameter name="filling_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["09/10/2017"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT ST.YYYY,ROW_NUMBER()OVER (ORDER BY ST.LINE_NO) AS SEQ, ST.DOCTOR_CODE, DR.NAME_THAI,
+	<queryString><![CDATA[SELECT ST.YYYY,ROW_NUMBER()OVER (ORDER BY ST.LINE_NO) AS SEQ, ST.DOCTOR_CODE, 
+CASE WHEN ST.HOSPITAL_CODE = '054' THEN DR.BANK_ACCOUNT_NAME ELSE DR.NAME_THAI END AS NAME_THAI,
 CASE WHEN LEN(DR.TAX_ID)>10 THEN DR.TAX_ID ELSE '' END AS NATION_ID, 
 CASE WHEN LEN(DR.TAX_ID)<11 THEN DR.TAX_ID ELSE '' END AS TAX_ID,
-ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO,(DR.ADDRESS1+DR.ADDRESS2+DR.ADDRESS3) as ADDRESS
+ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, 
+H.TAXNO,(DR.ADDRESS1+DR.ADDRESS2+DR.ADDRESS3) as ADDRESS, 
+H.AUTHORITY_NAME, H.AUTHORITY_POSITION 
 FROM SUMMARY_TAX_402 ST LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL H ON ST.HOSPITAL_CODE = H.CODE
 WHERE ST.YYYY = $P{yyyy} AND ST.MM = '13' AND ST.HOSPITAL_CODE = $P{hospital_code}
 AND ST.ACTIVE = '1'
+AND DR.TAX_402_METHOD IN('STP', 'SUM')
 ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 
 	<field name="YYYY" class="java.lang.String"/>
@@ -62,6 +66,8 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 	<field name="MM" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
 	<field name="ADDRESS" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
 	<variable name="SUM_SUM_NORMAL_TAX_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{SUM_NORMAL_TAX_AMT}]]></variableExpression>
@@ -1680,7 +1686,8 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("00002") ? "นางพงษ์แก้ว  ทิพนาค" : 
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? $F{AUTHORITY_NAME} : 
+$P{hospital_code}.equals("00002") ? "นางพงษ์แก้ว  ทิพนาค" : 
 $P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051")? "นางสาวขวัญตา รักษ์ธรรมกิจ" : 
 $P{hospital_code}.equals("007") ? "กุลชญา  เมธาธีรกูล" : 
 $P{hospital_code}.equals("00009") ? "นางสาวพจนา   รัตนประชา"  : 
@@ -1693,6 +1700,7 @@ $P{hospital_code}.equals("036") ? "คุณวลัยลักษณ์ ป�
 $P{hospital_code}.equals("048") ? "นายสิทธิศักดิ์ ตรากลาง" : 
 $P{hospital_code}.equals("045") ? "นายอรรถพันธ์ บุญตา" : 
 $P{hospital_code}.equals("050") ? "นางสาวมณีรัตน์ ศรีบุศกร" : 
+$P{hospital_code}.equals("054") ? "นางสาวนลินี ก่อคุณากร" : 
 $P{hospital_code}.equals("058") ? " น.ส.ธนานิษฐ์ กิตติธนาวิโรจน" : 
 $P{hospital_code}.equals("063") ? "นายสุธี โพธิ์พันธ์" : 
 $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : "นางปราณี  เจือเพ็ชร์"]]></textFieldExpression>
@@ -1708,7 +1716,8 @@ $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{hospital_code}.equals("00002") ? "ผู้จัดการฝ่ายบริหารการเงิน" : 
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? $F{AUTHORITY_POSITION} : 
+$P{hospital_code}.equals("00002") ? "ผู้จัดการฝ่ายบริหารการเงิน" : 
 $P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051") || $P{hospital_code}.equals("007") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
 $P{hospital_code}.equals("00009") ? "หัวหน้าแผนกบัญชี " : $P{hospital_code}.equals("011") || $P{hospital_code}.equals("012") ? " ผู้จัดการฝ่ายบัญชี " : 
 $P{hospital_code}.equals("015") || $P{hospital_code}.equals("039") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
@@ -1718,6 +1727,7 @@ $P{hospital_code}.equals("00029") ? "ผู้จัดการฝ่ายบ�
 $P{hospital_code}.equals("036") ? "ผู้จัดการแผนกบัญชีและการเงิน" : 
 $P{hospital_code}.equals("045") || $P{hospital_code}.equals("048") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
 $P{hospital_code}.equals("050") ? "หัวหน้าแผนกบัญชีและงบประมาณ" : 
+$P{hospital_code}.equals("054") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" :
 $P{hospital_code}.equals("058") ? "เจ้าหน้าที่แผนกบัญชี" : 
 $P{hospital_code}.equals("063") ? "พนักงานบัญชีค่าธรรมเนียมแพทย์ " :  
 $P{hospital_code}.equals("063") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : "ผู้จัดการแผนกบัญชี"]]></textFieldExpression>

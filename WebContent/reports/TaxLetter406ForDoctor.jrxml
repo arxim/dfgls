@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="TaxLetter406"
+		 name="TaxLetter406ForDoctor"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -23,19 +23,19 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
+	<parameter name="doctor" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["036140428"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="term" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="yyyy" isForPrompting="false" class="java.lang.String">
+	<parameter name="year" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="signature" isForPrompting="false" class="java.lang.String">
+	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["D:\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
@@ -47,21 +47,21 @@
 	<queryString><![CDATA[SELECT ST.YYYY, ST.MM, ST.DOCTOR_CODE, ST.HOSPITAL_CODE, DR.NAME_THAI, ST.SUM_TAX_DR_AMT, ST.SUM_DR_AMT,
 HOS.DESCRIPTION_THAI, ST.SUM_TAX_DR_AMT, ST.TEXT_SUM_TAX_DR_AMT,
 DP.NATION_ID, DR.TAX_ID, HOS.DESCRIPTION_THAI AS HOSPITAL_NAME,
-HOS.COMPANY_NAME, HOS.ADDRESS1, HOS.ADDRESS2, HOS.ADDRESS3, HOS.ZIP,
+HOS.COMPANY_NAME, HOS.ADDRESS1, HOS.ADDRESS2, HOS.ADDRESS3, HOS.ZIP,HOS.AUTHORITY_NAME, HOS.AUTHORITY_POSITION, 
 HOS.TAXNO, CASE WHEN DR.TAX_ID <> '' THEN DR.TAX_ID ELSE DP.NATION_ID END AS DR_TAX,
 DR.ADDRESS1 AS DR_ADDRESS1, DR.ADDRESS2 AS DR_ADDRESS2,
-DR.ADDRESS3 AS DR_ADDRESS3, DR.ZIP AS DR_ZIP, DP.CODE AS PROFILE_CODE, ST.PRINT_DATE, 
-HOS.AUTHORITY_NAME, HOS.AUTHORITY_POSITION 
+DR.ADDRESS3 AS DR_ADDRESS3, DR.ZIP AS DR_ZIP, DP.CODE AS PROFILE_CODE, ST.PRINT_DATE
 FROM SUMMARY_TAX_406 ST
 LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE 
 AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN DOCTOR_PROFILE DP on DR.DOCTOR_PROFILE_CODE = DP.CODE
 AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
-where ST.DOCTOR_CODE like $P{doctor_code}
+where ST.DOCTOR_CODE like $P{doctor}
 AND ST.HOSPITAL_CODE = $P{hospital_code}
-AND MM LIKE $P{term} AND YYYY = $P{yyyy}
+AND YYYY = $P{year}
 AND SUM_TAX_DR_AMT > 0
+AND PRINT_DATE <> ''
 order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 
 	<field name="YYYY" class="java.lang.String"/>
@@ -81,6 +81,8 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 	<field name="ADDRESS2" class="java.lang.String"/>
 	<field name="ADDRESS3" class="java.lang.String"/>
 	<field name="ZIP" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
 	<field name="DR_TAX" class="java.lang.String"/>
 	<field name="DR_ADDRESS1" class="java.lang.String"/>
@@ -89,8 +91,6 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 	<field name="DR_ZIP" class="java.lang.String"/>
 	<field name="PROFILE_CODE" class="java.lang.String"/>
 	<field name="PRINT_DATE" class="java.lang.String"/>
-	<field name="AUTHORITY_NAME" class="java.lang.String"/>
-	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
 
 		<group  name="doctor" isStartNewPage="true" >
@@ -175,7 +175,7 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -188,7 +188,7 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $P{print_date}.length() != 8 ? ( $F{PRINT_DATE}.length() != 8 ? "Date?" : $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543))) : ( $P{print_date}.length() != 8 ? "Date?" : $P{print_date}.substring( 6, 8 )+"/"+$P{print_date}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543))))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543)))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -273,7 +273,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -834,7 +834,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) || $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) : "เดือนกรกฎาคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) || $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.toString(Integer.parseInt($P{year})+543)) : "เดือนกรกฎาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) )]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -849,7 +849,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) : "เดือนธันวาคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.toString(Integer.parseInt($P{year})+543)) : "เดือนธันวาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) )]]></textFieldExpression>
 				</textField>
 				<image  scaleImage="FillFrame" vAlign="Bottom" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -862,7 +862,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
 				</image>
 				<image  vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -875,7 +875,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1326,7 +1326,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.parseInt($P{yyyy})+543) : "เดือนกรกฎาคม "+(Integer.parseInt($P{yyyy})+543) ): ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+$P{yyyy} : "เดือนกรกฎาคม "+$P{yyyy}))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.parseInt($P{year})+543) : "เดือนกรกฎาคม "+(Integer.parseInt($P{year})+543) ): ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+$P{year} : "เดือนกรกฎาคม "+$P{year}))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1341,7 +1341,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.parseInt($P{yyyy})+543) : "เดือนธันวาคม "+(Integer.parseInt($P{yyyy})+543) ): ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+$P{yyyy} : "เดือนธันวาคม "+$P{yyyy}))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.parseInt($P{year})+543) : "เดือนธันวาคม "+(Integer.parseInt($P{year})+543) ): ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+$P{year} : "เดือนธันวาคม "+$P{year}))]]></textFieldExpression>
 				</textField>
 			</band>
 		</pageHeader>
@@ -1383,7 +1383,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
 				</image>
 			</band>
 		</pageFooter>
