@@ -657,7 +657,13 @@ public class ViewReportSrvl extends HttpServlet {
         System.out.println("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
         System.out.println("Test : "+year+month+term+"Hospital_code"+hospital_code);
         VerifyAllowViewReportBean v = new VerifyAllowViewReportBean();
-        boolean status = v.getReportPermit(hospital_code, term, month, year);
+        boolean status = false;
+        if(reportfilename.equals("TaxLetter406ForDoctor") || reportfilename.equals("Tax402SummaryYearlyForDoctor")) {
+        	status = true;
+        }
+        else {
+        	status = v.getReportPermit(hospital_code, term, month, year);
+        }
     	if(request.getParameter("REPORT_DISPLAY").equals("view")){
     		if(status){
     			this.reportGenerateView(hm, reportfilename, response);
