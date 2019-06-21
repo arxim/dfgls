@@ -27,25 +27,34 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="yyyy" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2013"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2017"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["12"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["08"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["011"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["067"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pay_date" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["10/09/2013"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["09/10/2017"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="signature" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\dfs\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="filling_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["09/10/2017"]]></defaultValueExpression>
 	</parameter>
 	<queryString><![CDATA[SELECT ROW_NUMBER()OVER (ORDER BY ST.NORMAL_TAX_MONTH DESC) AS SEQ, ST.DOCTOR_CODE, DR.NAME_THAI,
 CASE WHEN LEN(DR.TAX_ID)>10 THEN DR.TAX_ID ELSE '' END AS NATION_ID,
 CASE WHEN LEN(DR.TAX_ID)<11 THEN DR.TAX_ID ELSE '' END AS TAX_ID,
-ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO, H.COMPANY_NAME
+ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO, H.COMPANY_NAME,
+H.AUTHORITY_NAME, H.AUTHORITY_POSITION 
 FROM SUMMARY_TAX_402 ST LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL H ON ST.HOSPITAL_CODE = H.CODE
 WHERE ST.YYYY = $P{yyyy} AND ST.MM = $P{mm} AND ST.HOSPITAL_CODE = $P{hospital_code}
 AND ST.ACTIVE = '1'
+AND SUM_NORMAL_TAX_AMT > 0
+AND DR.TAX_402_METHOD IN('STP', 'SUM')
 ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 
 	<field name="SEQ" class="java.lang.Long"/>
@@ -59,6 +68,8 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 	<field name="MM" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
 	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
 	<variable name="SUM_SUM_NORMAL_TAX_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{SUM_NORMAL_TAX_AMT}]]></variableExpression>
@@ -701,6 +712,79 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="748"
+						y="41"
+						width="11"
+						height="18"
+						key="textField-16">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["0"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="739"
+						y="41"
+						width="11"
+						height="18"
+						key="textField-17">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["0"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="759"
+						y="41"
+						width="11"
+						height="18"
+						key="textField-18">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["0"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="769"
+						y="41"
+						width="11"
+						height="18"
+						key="textField-19">
+							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["0"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="318"
+						y="69"
+						width="10"
+						height="15"
+						key="staticText-51"/>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[√]]></text>
+				</staticText>
 			</band>
 		</pageHeader>
 		<columnHeader>
@@ -1408,22 +1492,6 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<pen lineWidth="0.5" lineStyle="Dotted"/>
 </graphicElement>
 				</line>
-				<staticText>
-					<reportElement
-						x="550"
-						y="41"
-						width="220"
-						height="42"
-						key="staticText-28"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[ลงชื่อ........................................................ผู้จ่ายเงิน
-(.........................................................)
-ตำแหน่ง...............................................................
-ยื่นวันที่.......เดือน...................................พ.ศ.............]]></text>
-				</staticText>
 				<ellipse>
 					<reportElement
 						x="476"
@@ -1502,6 +1570,101 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						<font fontName="Tahoma"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_NET_TAX_MONTH_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="550"
+						y="41"
+						width="220"
+						height="42"
+						key="staticText-48"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ลงชื่อ........................................................ผู้จ่ายเงิน
+(.........................................................)
+ตำแหน่ง...............................................................
+ยื่นวันที่.......เดือน...................................พ.ศ.............]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="626"
+						y="67"
+						width="80"
+						height="13"
+						key="textField-20"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : $P{filling_date}.substring(3,5).equals("01") ? "มกราคม" :
+$P{filling_date}.substring(3,5).equals("02") ? "กุมภาพันธ์" :
+$P{filling_date}.substring(3,5).equals("03") ? "มีนาคม" :
+$P{filling_date}.substring(3,5).equals("04") ? "เมษายน" :
+$P{filling_date}.substring(3,5).equals("05") ? "พฤษภาคม" :
+$P{filling_date}.substring(3,5).equals("06") ? "มิถุนายน" :
+$P{filling_date}.substring(3,5).equals("07") ? "กรกฎาคม" :
+$P{filling_date}.substring(3,5).equals("08") ? "สิงหาคม" :
+$P{filling_date}.substring(3,5).equals("09") ? "กันยายน" :
+$P{filling_date}.substring(3,5).equals("10") ? "ตุลาคม" :
+$P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "ธันวาคม"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="718"
+						y="66"
+						width="40"
+						height="13"
+						key="textField-21">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("00005") && !$P{hospital_code}.equals("00009"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : ""+new Integer(Integer.parseInt($P{filling_date}.substring(6,10))+543)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="588"
+						y="68"
+						width="21"
+						height="13"
+						key="textField-22"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : $P{filling_date}.substring(0,2)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="604"
+						y="47"
+						width="109"
+						height="13"
+						key="textField-23"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("")? $F{AUTHORITY_NAME} : 
+$P{hospital_code}.equals("045") ? "นายอรรถพันธุ์ บุญตา" : $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="610"
+						y="56"
+						width="150"
+						height="13"
+						key="textField-24"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("")? $F{AUTHORITY_POSITION} : 
+$P{hospital_code}.equals("045") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : $P{hospital_code}.equals("067") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : ""]]></textFieldExpression>
 				</textField>
 			</band>
 		</summary>
