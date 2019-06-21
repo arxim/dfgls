@@ -40,7 +40,8 @@
             //
 
             request.setCharacterEncoding("UTF-8");
-            HashMap m = (HashMap)request.getParameterMap();
+            Map<String,String> m = (Map)request.getParameterMap();
+            //HashMap m = (HashMap)request.getParameterMap();
             //out.println(m.toString());
             Iterator keyValuePairs1 = m.entrySet().iterator();
             String list = "(";
