@@ -632,18 +632,32 @@
            	function amountType(){ ///  ทำต่อตรงนี้นะครับผม
            		if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
                		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
            			
            		}else if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
+	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
                		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
            			
            		}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=true;
+	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
                		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
            			
            		}else{
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+           				alert("");
+	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
                		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
            		}
            			
