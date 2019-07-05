@@ -2717,7 +2717,14 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("PAY_BY_CASH_AR", "Y");
 				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
-				al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
+				if( al.get(i).get("TAX_TYPE_CODE").equals("402") ){
+					al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+					al.get(i).put("DR_TAX_406", "0");					
+				}else if( al.get(i).get("TAX_TYPE_CODE").equals("406") ){
+					al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+					al.get(i).put("DR_TAX_402", "0");					
+				}
+				//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
 			}
 			System.out.println(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
@@ -2728,9 +2735,14 @@ public class ProcessGuaranteeBeanNew {
     		//Old Credit Transaction for Absorb Some
     		de.setStatement(); 
     		String s = "UPDATE TRN_DAILY SET BATCH_NO = '', AMOUNT_AFT_DISCOUNT=T.AMOUNT_AFT_DISCOUNT-Q.AMOUNT_AFT_DISCOUNT, "+
- 				   "DR_TAX_406 = T.OLD_TAX_AMT-Q.DR_TAX_406 "+
+					"DR_TAX_400 = CASE WHEN TAX_TYPE_CODE = '400' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
+					"DR_TAX_401 = CASE WHEN TAX_TYPE_CODE = '401' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
+					"DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
+					"DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END "+
+
+    			   //"DR_TAX_406 = T.OLD_TAX_AMT-Q.DR_TAX_AMT "+
  				   "FROM TRN_DAILY AS T INNER JOIN "+
- 				   "(SELECT HOSPITAL_CODE, INVOICE_NO, GUARANTEE_TERM_YYYY, GUARANTEE_TERM_MM, LINE_NO, AMOUNT_AFT_DISCOUNT, DR_TAX_406 "+
+ 				   "(SELECT HOSPITAL_CODE, INVOICE_NO, GUARANTEE_TERM_YYYY, GUARANTEE_TERM_MM, LINE_NO, AMOUNT_AFT_DISCOUNT, DR_TAX_406+DR_TAX_402 AS DR_TAX_AMT "+
  				   "FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' AND "+
  				   "GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE = 'ABSORB SOME GUARANTEE' AND "+
  				   "ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND ( BATCH_NO = '' OR BATCH_NO IS NULL) AND "+

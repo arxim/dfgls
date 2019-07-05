@@ -543,12 +543,13 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 		    				 		{
 		    				 			String sql_insert="INSERT INTO TRN_EXPENSE_DETAIL(HOSPITAL_CODE, YYYY, MM, DOCTOR_CODE, EXPENSE_CODE,"
 		    	    						+" EXPENSE_SIGN, EXPENSE_ACCOUNT_CODE, AMOUNT, TAX_AMOUNT, UPDATE_DATE, UPDATE_TIME," 
-		    	    						+" USER_ID, DOC_NO, DOC_DATE, NOTE, TAX_TYPE_CODE, DEPARTMENT_CODE, LOCATION_CODE, LINE_NO) "
+		    	    						+" USER_ID, DOC_NO, DOC_DATE, NOTE, TAX_TYPE_CODE, DEPARTMENT_CODE, LOCATION_CODE, "
+		    	    						+ "BATCH_NO, PAYMENT_DATE, PAYMENT_TERM, LINE_NO) "
 		    	    						+" VALUES('"+this.hospital_code+"','"+batch_year+"', '"+batch_month+"', '"+doctorCode+"','"+expenseCode+"', "+expenseSign+", "
 		    	    						+" '"+expenseAcc+"', "+amount+","+taxAmount+","
 		    	    						+" '"+JDate.getDate()+"','"+JDate.getTime()+"', '"+this.getUserName()+"_EXCEL"+"', '"+docNo+"',"
 		    	    						+" '"+docDate+"', '"+note+"', '"+taxTypeCode+"', '"+departmentCode+"', '"+locationCode+"', "
-		    	    						+" '"+JDate.getDate()+JDate.getTime()+"_"+r+"')";
+		    	    						+" '', '', '', '"+JDate.getDate()+JDate.getTime()+"_"+r+"')";
 		    	    	    			if(statusShow){System.out.println("sql_insert="+sql_insert);}
 		    	    					 	try
 		    	    						{
@@ -607,7 +608,7 @@ public class ImportExpenseExcelBean extends InterfaceTextFileBean
 		}
     	catch(Exception e)
     	{
-    		//System.out.println("eeee="+e);
+    		System.out.println("eeee="+e);
     		//System.out.println("connect="+da.getConnection());
     		setMessage("Can't open file excel");
     		//System.out.println("connect="+da.getConnection());
