@@ -895,7 +895,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "LEFT OUTER JOIN EXPENSE AS EX "+
                 "ON AJ.EXPENSE_CODE = EX.CODE AND AJ.HOSPITAL_CODE = EX.HOSPITAL_CODE "+
                 "WHERE DOCTOR.HOSPITAL_CODE = '"+this.hospitalCode+"' AND DOCTOR.PAYMENT_TIME = '2' "+ 
-                "AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') AND DOCTOR.ACTIVE = '1' "+
+                //"AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') "+
+                "AND DOCTOR.ACTIVE = '1' "+
                 "AND AJ.YYYY = '"+this.year+"' AND AJ.MM = '"+this.month+"' AND AJ.BATCH_NO = '' "+
                 "GROUP BY AJ.YYYY, AJ.MM, AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
@@ -1029,7 +1030,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "LEFT OUTER JOIN EXPENSE AS EX "+
                 "ON AJ.EXPENSE_CODE = EX.CODE AND AJ.HOSPITAL_CODE = EX.HOSPITAL_CODE "+
                 "WHERE DOCTOR.HOSPITAL_CODE = '"+this.hospitalCode+"' "+ 
-                "AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') AND DOCTOR.ACTIVE = '1' "+
+                //"AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') "+
+                "AND DOCTOR.ACTIVE = '1' "+
                 "AND AJ.YYYY = '"+this.year+"' AND AJ.MM = '"+this.month+"' AND ( AJ.BATCH_NO = '' OR AJ.BATCH_NO IS NULL ) "+
                 "GROUP BY AJ.YYYY, AJ.MM, AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
@@ -1071,7 +1073,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "LEFT OUTER JOIN STP_GUARANTEE AS GT "+
                 "ON DOCTOR.CODE = GT.GUARANTEE_DR_CODE AND DOCTOR.HOSPITAL_CODE = GT.HOSPITAL_CODE "+
                 "WHERE GT.HOSPITAL_CODE = '"+this.hospitalCode+"' "+
-                "AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') AND DOCTOR.ACTIVE = '1' "+
+                //"AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') "+
+                "AND DOCTOR.ACTIVE = '1' "+
                 "AND GT.YYYY = '"+this.year+"' AND GT.MM = '"+this.month+"' AND GT.ACTIVE = '1' "+
                 "GROUP BY GT.YYYY, GT.MM, GT.HOSPITAL_CODE, GT.GUARANTEE_DR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
