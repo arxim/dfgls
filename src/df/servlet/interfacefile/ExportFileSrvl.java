@@ -102,10 +102,13 @@ public class ExportFileSrvl extends HttpServlet {
             	}else if(bank_type.equals("014")){
             		reportGenerateFileBank(link + save_file+".txt", response, edtb.exportData(encrypt_target_path, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage()); 
             	}else if(bank_type.equals("062006")){ //tanachart direct
-            		reportGenerateFile(link + save_file +".txt", response, edtb.exportDataDirect(save_file, hospital_code, pay_type, year, month, cdb2, upload_path,transaction_date));
+            		reportGenerateFile(link + save_file +".txt", response, edtb.exportDataDirect(save_file, hospital_code, pay_type, year, month, cdb2, upload_path,payment_date));
                 	//reportGenerateFileBank(link + save_file+".txt", response, edtb.exportData(save_file, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage());            		
                 }else if(bank_type.equals("980067")){ //tanachart smart
-                	reportGenerateFile(link + save_file+".txt", response, edtb.exportDataSmart(save_file, hospital_code, pay_type, year, month, cdb2, upload_path,transaction_date));
+                	reportGenerateFile(link + save_file+".txt", response, edtb.exportDataSmart(save_file, hospital_code, pay_type, year, month, cdb2, upload_path,payment_date,bank_type));
+                	//reportGenerateFileBank(link + save_file+".txt", response, edtb.exportData(encrypt_target_path, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage()); 
+            	} else if(bank_type.equals("978059")){ //tanachart smart urgent
+                	reportGenerateFile(link + save_file+".txt", response, edtb.exportDataSmart(save_file, hospital_code, pay_type, year, month, cdb2, upload_path,payment_date,bank_type));
                 	//reportGenerateFileBank(link + save_file+".txt", response, edtb.exportData(encrypt_target_path, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage()); 
             	}else{ //other bank
             		reportGenerateFileBank(save_file+".txt", response, edtb.exportData(save_file, hospital_code, pay_type, year, month, cdb2, bank_upload_path),edtb.getMessage());            		
