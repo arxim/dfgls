@@ -1895,10 +1895,20 @@ public class ProcessGuaranteeBeanNew {
 		            	"HOSPITAL_CODE = '"+this.hospital_code+"' AND " +
 		            	"ACTIVE = '1' AND GUARANTEE_CODE = '"+guarantee_table[0][4]+"'";
 		        		
+		        		String con = "";
+		                if(is_paid.equals("N")){
+		                    con = "YYYY = '"+year+"', "+
+		                    "MM = '"+month+"', "+
+		                    "BATCH_NO = '', "+
+		                    "PAY_BY_CASH = 'Y', "+
+		                    "RECEIPT_NO = '"+guarantee_info+"', " +
+		                    "RECEIPT_DATE = INVOICE_DATE, ";
+		                }
+
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+
+		                "IS_PAID = '"+is_paid+"', "+con+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
@@ -2021,10 +2031,20 @@ public class ProcessGuaranteeBeanNew {
 		            	"HOSPITAL_CODE = '"+this.hospital_code+"' AND " +
 		            	"ACTIVE = '1' AND GUARANTEE_CODE = '"+guarantee_table[0][4]+"'";
 		        		
+		        		String con = "";
+		                if(is_paid.equals("N")){
+		                    con = "YYYY = '"+year+"', "+
+		                    "MM = '"+month+"', "+
+		                    "BATCH_NO = '', "+
+		                    "PAY_BY_CASH = 'Y', "+
+		                    "RECEIPT_NO = '"+guarantee_info+"', " +
+		                    "RECEIPT_DATE = INVOICE_DATE, ";
+		                }
+
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+
+		                "IS_PAID = '"+is_paid+"', "+con+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
@@ -2147,10 +2167,20 @@ public class ProcessGuaranteeBeanNew {
 		            	"HOSPITAL_CODE = '"+this.hospital_code+"' AND " +
 		            	"ACTIVE = '1' AND GUARANTEE_CODE = '"+guarantee_table[0][4]+"'";
 		        		
+		        		String con = "";
+		                if(is_paid.equals("N")){
+		                    con = "YYYY = '"+year+"', "+
+		                    "MM = '"+month+"', "+
+		                    "BATCH_NO = '', "+
+		                    "PAY_BY_CASH = 'Y', "+
+		                    "RECEIPT_NO = '"+guarantee_info+"', " +
+		                    "RECEIPT_DATE = INVOICE_DATE, ";
+		                }
+
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+
+		                "IS_PAID = '"+is_paid+"', "+con+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
