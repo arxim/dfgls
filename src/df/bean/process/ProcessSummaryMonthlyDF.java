@@ -796,7 +796,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "REF_PAID_NO, PAYMENT_DATE, EXDR_AMT, EXCR_AMT, "+
                 "EXDR_400, EXDR_401, EXDR_402, EXDR_406, " +
                 "EXCR_400, EXCR_401, EXCR_402, EXCR_406, " +
-                "IS_HOLD, SALARY_AMT, POSITION_AMT, GUARANTEE_AMT, ABSORB_AMT, EXTRA_AMT) "+
+                "IS_HOLD, SALARY_AMT, POSITION_AMT, GUARANTEE_AMT, ABSORB_AMT, EXTRA_AMT, SUM_AR_AMT, SUM_UNPAID_AMT) "+
 
                 "SELECT PAYMENT_TERM, YYYY, MM, HOSPITAL_CODE, DOCTOR_CODE, PAYMENT_TYPE, "+
                 "SUM(AMOUNT_AFT_DISCOUNT) AS AMOUNT_AFT_DISCOUNT, "+
@@ -827,7 +827,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "IS_HOLD, SALARY_AMT, POSITION_AMT,  "+
                 "SUM(GUARANTEE_AMOUNT) AS GUARANTEE_AMOUNT, "+
                 "SUM(ABSORB_AMT) AS ABSORB_AMT, "+
-                "SUM(EXTRA_AMT) AS EXTRA_AMT "+
+                "SUM(EXTRA_AMT) AS EXTRA_AMT, "+
+                "SUM(SUM_AR_AMT) AS SUM_AR_AMT, "+
+                "0 AS SUM_UNPAID_AMT "+
                 "FROM "+
                 
                 "( "+
@@ -852,12 +854,62 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "0 AS EXDR_400, 0 AS EXDR_401, 0 AS EXDR_402, 0 AS EXDR_406, "+
                 "0 AS EXCR_400, 0 AS EXCR_401, 0 AS EXCR_402, 0 AS EXCR_406, "+
                 "DOCTOR.IS_HOLD AS IS_HOLD, 0 AS SALARY_AMT, 0 AS POSITION_AMT, 0 AS GUARANTEE_AMOUNT, "+
-                "0 AS ABSORB_AMT, 0 AS EXTRA_AMT "+
+                "0 AS ABSORB_AMT, 0 AS EXTRA_AMT, "+
+                "SUM(CASE WHEN TRN_DAILY.PAY_BY_AR = 'Y' AND (TRN_DAILY.RECEIPT_NO NOT LIKE 'AdvanceAR%' AND TRN_DAILY.IS_PARTIAL != 'Y' ) THEN TRN_DAILY.AMOUNT_AFT_DISCOUNT ELSE 0 END) AS SUM_AR_AMT, "+
+                "0 AS SUM_UNPAID_AMT "+
                 this.summaryMonthlyProcessHalfMonth(this.endDate)+
                 "GROUP BY TRN_DAILY.YYYY, TRN_DAILY.MM, TRN_DAILY.HOSPITAL_CODE, TRN_DAILY.DOCTOR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
                 "DOCTOR.IS_HOLD "+
-                "UNION "+
+                "UNION ALL "+
+                
+                "SELECT '"+this.term+"' AS PAYMENT_TERM, '"+this.year+"' AS YYYY , '"+this.month+"' AS MM, TRN.HOSPITAL_CODE, TRN.DOCTOR_CODE, '04' AS PAYMENT_TYPE, "+
+                "0 AS AMOUNT_AFT_DISCOUNT, "+
+                "0 AS AMOUNT_OF_DISCOUNT, "+
+                "0 AS DR_AMT, "+
+                "0 AS HP_AMT, "+
+                "0 AS DR_NET_PAID_AMT, "+
+                "0 AS SUM_PAY_BY_CASH, "+
+                "0 AS SUM_PAY_BY_AR, "+
+                "0 AS SUM_PAY_BY_PATIENT, "+
+                "0 AS SUM_DR_IN_GUA, "+
+                "0 AS SUM_DR_IN_EXT, "+
+                "0 AS SUM_TAX_400, "+
+                "0 AS SUM_TAX_401, "+
+                "0 AS SUM_TAX_402, "+
+                "0 AS SUM_TAX_406, "+
+                "'"+JDate.getDate()+"' AS CREATE_DATE, '"+JDate.getTime()+"' AS CREATE_TIME, '' AS CREATE_USER_ID, "+
+                "DOCTOR.PAYMENT_MODE_CODE, "+
+                "DOCTOR.BANK_ACCOUNT_NO AS REF_PAID_NO, '"+this.payDate+"' AS PAYMENT_DATE, "+
+                "0 AS EXDR_AMT, "+
+                "0 AS EXCR_AMT, "+
+                "0 AS EXDR_400, "+
+                "0 AS EXDR_401, "+
+                "0 AS EXDR_402, "+
+                "0 AS EXDR_406, "+
+                "0 AS EXCR_400, "+
+                "0 AS EXCR_401, "+
+                "0 AS EXCR_402, "+
+                "0 AS EXCR_406, "+
+                "DOCTOR.IS_HOLD AS IS_HOLD, "+
+                "0 AS SALARY_AMT, "+
+                "0 AS POSITION_AMT, "+
+                "0 AS GUARANTEE_AMOUNT, "+
+                "0 AS ABSORB_AMT, "+
+                "0 AS EXTRA_AMT, "+
+                "0 AS SUM_AR_AMT, SUM(AMOUNT_AFT_DISCOUNT) AS SUM_UNPAID_AMT "+
+                "FROM TRN_DAILY TRN LEFT OUTER JOIN DOCTOR ON TRN.HOSPITAL_CODE = DOCTOR.HOSPITAL_CODE AND TRN.DOCTOR_CODE = DOCTOR.CODE "+
+                "WHERE TRN.HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
+                "BATCH_NO = '' AND "+
+                "INVOICE_TYPE <> 'ORDER' AND "+
+                "TRN.ACTIVE = '1' AND "+ 
+                "ORDER_ITEM_ACTIVE = '1' AND "+
+                "IS_PAID <> 'N' AND "+
+                "IS_ONWARD <> 'Y' "+
+                "GROUP BY TRN.YYYY, TRN.MM, TRN.HOSPITAL_CODE, TRN.DOCTOR_CODE, "+
+                "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
+                "DOCTOR.IS_HOLD "+
+                "UNION ALL "+
                 
                 "SELECT '"+this.term+"' AS PAYMENT_TERM, AJ.YYYY, AJ.MM, AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, '04' AS PAYMENT_TYPE, "+
                 "0 AS AMOUNT_AFT_DISCOUNT, "+
@@ -888,7 +940,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "SUM(CASE WHEN AJ.EXPENSE_SIGN = '-1' AND AJ.TAX_TYPE_CODE = '406' THEN AJ.TAX_AMOUNT ELSE 0 END) AS EXCR_406, "+
                 "DOCTOR.IS_HOLD AS IS_HOLD, 0 AS SALARY_AMT, 0 AS POSITION_AMT, 0 AS GUARANTEE_AMOUNT, "+
                 "SUM(CASE WHEN EX.ADJUST_TYPE = 'HP' THEN AJ.AMOUNT ELSE 0 END) AS ABSORB_AMT, "+
-                "SUM(CASE WHEN EX.ADJUST_TYPE = 'EX' THEN AJ.AMOUNT ELSE 0 END) AS EXTRA_AMT "+
+                "SUM(CASE WHEN EX.ADJUST_TYPE = 'EX' THEN AJ.AMOUNT ELSE 0 END) AS EXTRA_AMT, "+
+                "0 AS SUM_AR_AMT, 0 AS SUM_UNPAID_AMT "+
                 "FROM DOCTOR  "+
                 "LEFT OUTER JOIN TRN_EXPENSE_DETAIL AS AJ "+
                 "ON DOCTOR.CODE = AJ.DOCTOR_CODE AND DOCTOR.HOSPITAL_CODE = AJ.HOSPITAL_CODE "+
@@ -923,7 +976,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "REF_PAID_NO, PAYMENT_DATE, EXDR_AMT, EXCR_AMT, "+
                 "EXDR_400, EXDR_401, EXDR_402, EXDR_406, " +
                 "EXCR_400, EXCR_401, EXCR_402, EXCR_406, " +
-                "IS_HOLD, SALARY_AMT, POSITION_AMT, GUARANTEE_AMT, ABSORB_AMT, EXTRA_AMT) "+
+                "IS_HOLD, SALARY_AMT, POSITION_AMT, GUARANTEE_AMT, ABSORB_AMT, EXTRA_AMT, SUM_AR_AMT, SUM_UNPAID_AMT) "+
 
                 "SELECT PAYMENT_TERM, YYYY, MM, HOSPITAL_CODE, DOCTOR_CODE, PAYMENT_TYPE, "+
                 "SUM(AMOUNT_AFT_DISCOUNT) AS AMOUNT_AFT_DISCOUNT, "+
@@ -954,7 +1007,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "IS_HOLD, SALARY_AMT, POSITION_AMT,  "+
                 "SUM(GUARANTEE_AMOUNT) AS GUARANTEE_AMOUNT, "+
                 "SUM(ABSORB_AMT) AS ABSORB_AMT, "+
-                "SUM(EXTRA_AMT) AS EXTRA_AMT "+
+                "SUM(EXTRA_AMT) AS EXTRA_AMT, "+
+                "SUM(SUM_AR_AMT) AS SUM_AR_AMT, "+
+                "SUM(SUM_UNPAID_AMT) AS SUM_UNPAID_AMT "+
                 "FROM "+
                 
                 "( "+
@@ -987,13 +1042,63 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "0 AS EXCR_406, "+
                 "DOCTOR.IS_HOLD AS IS_HOLD, 0 AS SALARY_AMT, 0 AS POSITION_AMT, 0 AS GUARANTEE_AMOUNT, "+
                 "0 AS ABSORB_AMT, "+
-                "0 AS EXTRA_AMT "+
+                "0 AS EXTRA_AMT, "+
+                "SUM(CASE WHEN TRN_DAILY.PAY_BY_AR = 'Y' AND (TRN_DAILY.RECEIPT_NO NOT LIKE 'AdvanceAR%' AND TRN_DAILY.IS_PARTIAL != 'Y' ) THEN TRN_DAILY.AMOUNT_AFT_DISCOUNT ELSE 0 END) AS SUM_AR_AMT, "+
+                "0 AS SUM_UNPAID_AMT "+
                 this.summaryMonthlyProcess(this.endDate)+
                 "GROUP BY TRN_DAILY.YYYY, TRN_DAILY.MM, TRN_DAILY.HOSPITAL_CODE, TRN_DAILY.DOCTOR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
                 "DOCTOR.IS_HOLD "+
-                "UNION "+
+                "UNION ALL "+
                 
+                "SELECT '"+this.term+"' AS PAYMENT_TERM, '"+this.year+"' AS YYYY , '"+this.month+"' AS MM, TRN.HOSPITAL_CODE, TRN.DOCTOR_CODE, '04' AS PAYMENT_TYPE, "+
+                "0 AS AMOUNT_AFT_DISCOUNT, "+
+                "0 AS AMOUNT_OF_DISCOUNT, "+
+                "0 AS DR_AMT, "+
+                "0 AS HP_AMT, "+
+                "0 AS DR_NET_PAID_AMT, "+
+                "0 AS SUM_PAY_BY_CASH, "+
+                "0 AS SUM_PAY_BY_AR, "+
+                "0 AS SUM_PAY_BY_PATIENT, "+
+                "0 AS SUM_DR_IN_GUA, "+
+                "0 AS SUM_DR_IN_EXT, "+
+                "0 AS SUM_TAX_400, "+
+                "0 AS SUM_TAX_401, "+
+                "0 AS SUM_TAX_402, "+
+                "0 AS SUM_TAX_406, "+
+                "'"+JDate.getDate()+"' AS CREATE_DATE, '"+JDate.getTime()+"' AS CREATE_TIME, '' AS CREATE_USER_ID, "+
+                "DOCTOR.PAYMENT_MODE_CODE, "+
+                "DOCTOR.BANK_ACCOUNT_NO AS REF_PAID_NO, '"+this.payDate+"' AS PAYMENT_DATE, "+
+                "0 AS EXDR_AMT, "+
+                "0 AS EXCR_AMT, "+
+                "0 AS EXDR_400, "+
+                "0 AS EXDR_401, "+
+                "0 AS EXDR_402, "+
+                "0 AS EXDR_406, "+
+                "0 AS EXCR_400, "+
+                "0 AS EXCR_401, "+
+                "0 AS EXCR_402, "+
+                "0 AS EXCR_406, "+
+                "DOCTOR.IS_HOLD AS IS_HOLD, "+
+                "0 AS SALARY_AMT, "+
+                "0 AS POSITION_AMT, "+
+                "0 AS GUARANTEE_AMOUNT, "+
+                "0 AS ABSORB_AMT, "+
+                "0 AS EXTRA_AMT, "+
+                "0 AS SUM_AR_AMT, SUM(AMOUNT_AFT_DISCOUNT) AS SUM_UNPAID_AMT "+
+                "FROM TRN_DAILY TRN LEFT OUTER JOIN DOCTOR ON TRN.HOSPITAL_CODE = DOCTOR.HOSPITAL_CODE AND TRN.DOCTOR_CODE = DOCTOR.CODE "+
+                "WHERE TRN.HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
+                "BATCH_NO = '' AND "+
+                "INVOICE_TYPE <> 'ORDER' AND "+
+                "TRN.ACTIVE = '1' AND "+ 
+                "ORDER_ITEM_ACTIVE = '1' AND "+
+                "IS_PAID <> 'N' AND "+
+                "IS_ONWARD <> 'Y' "+
+                "GROUP BY TRN.YYYY, TRN.MM, TRN.HOSPITAL_CODE, TRN.DOCTOR_CODE, "+
+                "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
+                "DOCTOR.IS_HOLD "+
+                "UNION ALL "+
+
                 "SELECT '2' AS PAYMENT_TERM, AJ.YYYY, AJ.MM, AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, '04' AS PAYMENT_TYPE, "+
                 "0 AS AMOUNT_AFT_DISCOUNT, "+
                 "0 AS AMOUNT_OF_DISCOUNT, "+
@@ -1023,7 +1128,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "SUM(CASE WHEN AJ.EXPENSE_SIGN = '-1' AND AJ.TAX_TYPE_CODE = '406' THEN AJ.TAX_AMOUNT ELSE 0 END) AS EXCR_406, "+
                 "DOCTOR.IS_HOLD AS IS_HOLD, 0 AS SALARY_AMT, 0 AS POSITION_AMT, 0 AS GUARANTEE_AMOUNT, "+
                 "SUM(CASE WHEN EX.ADJUST_TYPE = 'HP' THEN AJ.AMOUNT ELSE 0 END) AS ABSORB_AMT, "+
-                "SUM(CASE WHEN EX.ADJUST_TYPE = 'EX' THEN AJ.AMOUNT ELSE 0 END) AS EXTRA_AMT "+
+                "SUM(CASE WHEN EX.ADJUST_TYPE = 'EX' THEN AJ.AMOUNT ELSE 0 END) AS EXTRA_AMT, "+
+                "0 AS SUM_AR_AMT, 0 AS SUM_UNPAID_AMT "+
                 "FROM DOCTOR  "+
                 "LEFT OUTER JOIN TRN_EXPENSE_DETAIL AS AJ "+
                 "ON DOCTOR.CODE = AJ.DOCTOR_CODE AND DOCTOR.HOSPITAL_CODE = AJ.HOSPITAL_CODE "+
@@ -1036,7 +1142,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "GROUP BY AJ.YYYY, AJ.MM, AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, "+
                 "DOCTOR.PAYMENT_MODE_CODE, DOCTOR.BANK_ACCOUNT_NO, "+
                 "DOCTOR.IS_HOLD "+
-                "UNION "+
+                "UNION ALL "+
                 
                 "SELECT '2' AS PAYMENT_TERM, GT.YYYY, GT.MM, GT.HOSPITAL_CODE, GT.GUARANTEE_DR_CODE, '04' AS PAYMENT_TYPE, "+
                 "0 AS AMOUNT_AFT_DISCOUNT, "+
@@ -1068,7 +1174,9 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "DOCTOR.IS_HOLD AS IS_HOLD, 0 AS SALARY_AMT, 0 AS POSITION_AMT, "+
                 "SUM(GT.GUARANTEE_AMOUNT) AS GUARANTEE_AMOUNT, "+
                 "0 AS ABSORB_AMT, "+
-                "0 AS EXTRA_AMT "+
+                "0 AS EXTRA_AMT, "+
+                "0 AS SUM_AR_AMT, "+
+                "0 AS SUM_UNPAID_AMT "+
                 "FROM DOCTOR  "+
                 "LEFT OUTER JOIN STP_GUARANTEE AS GT "+
                 "ON DOCTOR.CODE = GT.GUARANTEE_DR_CODE AND DOCTOR.HOSPITAL_CODE = GT.HOSPITAL_CODE "+
