@@ -1,10 +1,12 @@
+import org.apache.log4j.Logger;
 import df.bean.obj.util.JDate;
 import df.bean.process.ProcessDischargeSummary;
 
 
 public class TestModel {
 	ModelTest t;
-	
+	final static Logger logger = Logger.getLogger(TestModel.class);
+
 	private boolean modelTest(){
 		String st = "Start : "+JDate.getTime();
 		t = new ModelTest();
@@ -20,6 +22,8 @@ public class TestModel {
 	}
 	
 	public static void main(String[] test){
+		System.out.println("Test");
+		logger.debug("LDAPLOGIN");
 		//TestModel t = new TestModel();
 		//t.modelTest();
 	}
