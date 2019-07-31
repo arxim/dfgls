@@ -370,6 +370,11 @@
 					document.getElementsByName("ACTIVE_ARR[]")[intActive].value = document.getElementsByName("chkACTIVE_ARR[]")[intActive].value;
 				}
 				
+				
+				for(var intCheck=0; intCheck < document.getElementsByName("CHECK[]").length; intCheck++){
+					document.getElementsByName("hidCHECK[]")[intCheck].value = document.getElementsByName("CHECK[]")[intCheck].value;
+				}
+				
 				document.dataForm.submit();
            }
 			
@@ -400,6 +405,13 @@
         		}else{
         			event.defaultValue = 0;
         		} 
+            }
+            
+            function checkChange(row){
+            	//alert("row " + row);
+           		 console.log("CHECK" + row + " : " + document.getElementById("CHECK"+row).value);
+                 document.getElementById("CHECK"+row).checked = true;
+                 document.getElementById("CHECK"+row).value = "1";
             }
             
             // JQuery start 
@@ -583,6 +595,8 @@
 					<th colspan="13" class="buttonBar"><input type="button" id="UPDATE" name="UPDATE" class="button" value="${labelMap.SAVE}" onclick="save_data();" <%=showButtonSave %>/></th>
                 </tr>
                 <tr>
+                	<td class="sub_head">                    
+                    <input type="checkbox" id="allCheckBox" name="allCheckBox" /></td>
                     <td class="sub_head">${labelMap.INVOICE_NO}</td>
                     <td class="sub_head">${labelMap.INVOICE_DATE}</td>
                     <td class="sub_head">${labelMap.ORDER_ITEM_CODE}</td>
@@ -655,20 +669,24 @@
                 	while (rs.next()) {
                     %>
                 	<tr>
+                		<td class="row<%=i % 2%> alignCenter">
+                			<input type="checkbox" id="CHECK<%=i%>" name="CHECK[]" value="0" />
+                			<input type="hidden" id="hidCHECK[]" name="hidCHECK[]"  value="0" />		
+                		</td>
 	                    <td class="row<%=i % 2%> alignCenter">
 	                    	<input type="hidden" name="RECEIPT_DATE[]" id="RECEIPT_DATE[]" value="<%= Util.formatHTMLString(rs.getString("RECEIPT_DATE"), true)%>"/>
 	                		<input type="hidden" name="AMT_BEF_DIS[]" id="AMT_BEF_DIS[]" value="<%= Util.formatHTMLString(rs.getString("AMOUNT_BEF_DISCOUNT"), true)%>"/>
 							<input type="hidden" name="INVOICE_NUMBER[]" id="INVOICE_NUMBER[]" value="<%= Util.formatHTMLString(rs.getString("INVOICE_NO"), true)%>"/>
 							<input type="hidden" name="TRANSACTION_DATE[]" id="TRANSACTION_DATE[]" value="<%= Util.formatHTMLString(rs.getString("TRANSACTION_DATE"), true)%>"/>
-	                    	<input type="hidden" id="DIS[]" name="DIS[]" value="<%=rs.getString("LINE_NO")%>"/>
+	                    	<input type="hidden" name="DIS[]" id="DIS[]" value="<%=rs.getString("LINE_NO")%>"/>
 	                    	<%=Util.formatHTMLString(rs.getString("INVOICE_NO"), true)%>
 	                    </td>
 	                    <td class="row<%=i % 2%>"><%=JDate.showDate(rs.getString("INVOICE_DATE"))%></td>
 	                    <td class="row<%=i % 2%>">
-	                    	 <input type="text" id='ORDER_ITEM_CODE[]' class="NEW_ORDER_ITEM_CODE" name="ORDER_ITEM_CODE[]" value="<%=Util.formatHTMLString(rs.getString("ORDER_ITEM_CODE"), true)%>" style="width:70px;"/>
+	                    	 <input type="text" id='ORDER_ITEM_CODE[]' class="NEW_ORDER_ITEM_CODE" name="ORDER_ITEM_CODE[]" value="<%=Util.formatHTMLString(rs.getString("ORDER_ITEM_CODE"), true)%>" onchange="checkChange(<%=i%>)" style="width:70px;"/>
 	                    </td>
 	                    <td class="row<%=i % 2%> alignCenter">
-	                    	<input type="checkbox"  name="chkACTIVE_ARR[]" id="chkACTIVE_ARR[]" value="<%=rs.getString("ACTIVE")%>" onclick="checkActive(this)" <%=("1".equals(rs.getString("ACTIVE"))?"checked":"")%> />
+	                    	<input type="checkbox"  name="chkACTIVE_ARR[]" id="chkACTIVE_ARR[]" value="<%=rs.getString("ACTIVE")%>" onclick="checkActive(this)" <%=("1".equals(rs.getString("ACTIVE"))?"checked":"")%> onchange="checkChange(<%=i%>)" />
 	                    	<input type="hidden" size="4" name="ACTIVE_ARR[]" id="ACTIVE_ARR[]"  value="<%=rs.getString("ACTIVE")%>" />
 	                    </td>
 	                    <td class="row<%=i % 2%>">
@@ -676,17 +694,19 @@
 	                    	<%=rs.getString("LINE_NO") %>
 	                    </td>
 	                    <td class="row<%=i % 2%> alignCenter">
-	                    	<input type="text" size="7" name="DOCTOR_CODE_ARR[]" id="DOCTOR_CODE_ARR[]" class="NEW_DOCTOR_CODE" value="<%= Util.formatHTMLString(rs.getString("DOCTOR_CODE"), true)%>" />
+	                    	<input type="text" size="7" name="DOCTOR_CODE_ARR[]" id="DOCTOR_CODE_ARR[]" class="NEW_DOCTOR_CODE" value="<%= Util.formatHTMLString(rs.getString("DOCTOR_CODE"), true)%>" onchange="checkChange(<%=i%>)" />
 	                    </td>
 	                    <td class="row<%=i % 2%>">
-	                    	<input type="text" size="4" name="AMOUNT_AFT_DISCOUNT_ARR[]" id="AMOUNT_AFT_DISCOUNT_ARR[]" onkeypress="IsNumericKeyPress(event);" value="<%=rs.getString("AMOUNT_AFT_DISCOUNT")%>" />
+	                    	<input type="text" size="4" name="AMOUNT_AFT_DISCOUNT_ARR[]" id="AMOUNT_AFT_DISCOUNT_ARR[]" onkeypress="IsNumericKeyPress(event);" value="<%=rs.getString("AMOUNT_AFT_DISCOUNT")%>" onchange="checkChange(<%=i%>)" />
 	                    </td>
-	                    <td class="row<%=i % 2%>"><textarea name="NOTE_ARR[]" id="NOTE_ARR[]" rows="2" cols="6" style="padding:0px; margin:0px;	"><%=rs.getString("NOTE")%></textarea></td>
-	                    <td class="row<%=i % 2%>"><a href='#' onclick="SetNewSize('transaction_detail.jsp?LINE_NO=<%=Util.formatHTMLString(rs.getString("LINE_NO"), true) %>&INVOICE_NO=<%= Util.formatHTMLString(rs.getString("INVOICE_NO"), true)%>&RECEIPT_DATE=<%= Util.formatHTMLString(rs.getString("RECEIPT_DATE"), true)%>','600','900');">Detail</a></td>
+	                    <td class="row<%=i % 2%>"><textarea name="NOTE_ARR[]" id="NOTE_ARR[]" rows="2" cols="6" style="padding:0px; margin:0px;" onchange="checkChange(<%=i%>)" ><%=rs.getString("NOTE")%></textarea></td>
+						<td class="row<%=i % 2%>"><a href='#' onclick="SetNewSize('transaction_detail.jsp?LINE_NO=<%=Util.formatHTMLString(rs.getString("LINE_NO"), true) %>&INVOICE_NO=<%= Util.formatHTMLString(rs.getString("INVOICE_NO"), true)%>&RECEIPT_DATE=<%= Util.formatHTMLString(rs.getString("RECEIPT_DATE"), true)%>','600','900');">Detail</a></td>
              		</tr>
+             		
                 	<%
                        i++;
                 	   table_row++;
+                	   
                     }
                 	
                     if (rs != null) {
