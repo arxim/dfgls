@@ -900,7 +900,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "0 AS SUM_AR_AMT, SUM(AMOUNT_AFT_DISCOUNT) AS SUM_UNPAID_AMT "+
                 "FROM TRN_DAILY TRN LEFT OUTER JOIN DOCTOR ON TRN.HOSPITAL_CODE = DOCTOR.HOSPITAL_CODE AND TRN.DOCTOR_CODE = DOCTOR.CODE "+
                 "WHERE TRN.HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
-                "BATCH_NO = '' AND "+
+                "YYYY+MM = '' AND "+
                 "INVOICE_TYPE <> 'ORDER' AND "+
                 "TRN.ACTIVE = '1' AND "+ 
                 "ORDER_ITEM_ACTIVE = '1' AND "+
@@ -1088,7 +1088,7 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                 "0 AS SUM_AR_AMT, SUM(AMOUNT_AFT_DISCOUNT) AS SUM_UNPAID_AMT "+
                 "FROM TRN_DAILY TRN LEFT OUTER JOIN DOCTOR ON TRN.HOSPITAL_CODE = DOCTOR.HOSPITAL_CODE AND TRN.DOCTOR_CODE = DOCTOR.CODE "+
                 "WHERE TRN.HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
-                "BATCH_NO = '' AND "+
+                "YYYY+MM = '' AND "+
                 "INVOICE_TYPE <> 'ORDER' AND "+
                 "TRN.ACTIVE = '1' AND "+ 
                 "ORDER_ITEM_ACTIVE = '1' AND "+
