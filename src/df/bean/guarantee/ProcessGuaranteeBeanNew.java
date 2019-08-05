@@ -1275,7 +1275,8 @@ public class ProcessGuaranteeBeanNew {
                 }
                 if(this.guarantee_balance > 0 && this.guarantee_balance < (this.trn_guarantee_amt * (this.percent_over_allocate/100))){
                 	//trn_in_guarantee_amount = this.guarantee_balance * (percent_in_allocate /100);
-                	trn_in_guarantee_amount = (this.guarantee_balance * 100) / percent_in_allocate;
+                	//trn_in_guarantee_amount = (this.guarantee_balance * 100) / percent_in_allocate;
+                	trn_in_guarantee_amount = this.guarantee_balance;
             		if(t[t_index][26].equals("N") || t[t_index][26].equals("")){
                         over_guarantee_amount = (this.trn_guarantee_amt - trn_in_guarantee_amount) * (percent_over_allocate/100);
             		}else{
