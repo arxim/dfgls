@@ -626,6 +626,9 @@ public class ViewReportSrvl extends HttpServlet {
         		to_date = year+month+"15";
         		System.out.println("Yes");
         	}
+        	if(hospital_code.equals("VCH") && reportfilename.equals("SummaryRevenueByDetailForDoctor")){
+        		reportfilename = reportfilename+hospital_code;
+        	}
         }catch(Exception e) { }
         try{
         	if(payment_date.equals(null) || payment_date.equals("")){ payment_date = "%"; }

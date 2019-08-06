@@ -24,10 +24,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00000000"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
@@ -36,10 +36,10 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["9999999999"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["054"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="SUBREPORT_DIR" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["E:\\"]]></defaultValueExpression>
@@ -473,7 +473,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="191"  isSplitAllowed="true" >
+			<band height="252"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
@@ -989,6 +989,17 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_UNPAID_AMT}]]></textFieldExpression>
 				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="191"
+						width="539"
+						height="1"
+						key="line-15"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5" lineStyle="Dashed"/>
+</graphicElement>
+				</line>
 			</band>
 		</detail>
 		<columnFooter>
