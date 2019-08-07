@@ -577,6 +577,7 @@
                       <option value="SummaryRevenueAllDetail">${labelMap.REPORT_ALL_DETAIL_DF}</option>
                       <option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
                       <option value="SummaryRevenueByDetailStep">Revenue Detail Payment (STEP)</option>
+                      <option value="SummaryRevenueByDetailForDoctorVCH">Revenue Detail Payment (I/O)</option>
                       <option value="PaymentVoucher<%= session.getAttribute("HOSPITAL_CODE").toString() %>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
                       <option value="DFPaidCheque">${labelMap.REPORT_PAID_CHEQUE}</option>
                       <option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
