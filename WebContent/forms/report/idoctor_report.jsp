@@ -103,18 +103,24 @@
                     alert("Please Select Report");
                     document.mainForm.REPORT_FILE_NAME.focus();
                 }else{
-					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "") && document.mainForm.INVOICE_NO.value == ""){
-						alert("Please Select From Date/To Date");
+					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "")){
+						if (document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" 
+							|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" ) {
+							alert("Please Select From Date/To Date");							
+						} else {
+							document.mainForm.REPORT_DISPLAY.value = "view";
+	                    	document.mainForm.target = "_blank";
+	                    	document.mainForm.submit();
+						}
 					}else{
 						document.mainForm.REPORT_DISPLAY.value = "view";
                     	document.mainForm.target = "_blank";
-                    	document.mainForm.submit();
+                    	document.mainForm.submit();		
 					}
                 }
             }
             function Report_Save() {
                 if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.SAVE_FILE.value == ""){
-                    
                     if(document.mainForm.REPORT_FILE_NAME.value == "None"){
 						alert("Please Select Report");
                         document.mainForm.REPORT_FILE_NAME.focus();
@@ -123,15 +129,21 @@
                         document.mainForm.SAVE_FILE.focus();
                     }					
                 }else{
-					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "") && document.mainForm.INVOICE_NO.value == ""){
+                	if(document.mainForm.MM.value == "" || document.mainForm.YYYY.value == ""){
 						alert("Please Select From Date/To Date");
 					}else{
-						if(document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" || document.mainForm.REPORT_FILE_NAME.value == "DailyGuaranteeChecklist"){
+						if(document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" 
+							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
+							|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
+							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"
+							|| document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
 							document.mainForm.REPORT_DISPLAY.value = "save";
 	                    	document.mainForm.target = "_blank";
 	                    	document.mainForm.submit();
 						}else{
-							alert("Report '"+document.mainForm.REPORT_FILE_NAME.value+"' doesn't Support Text File");						
+							document.mainForm.REPORT_DISPLAY.value = "save";
+	                    	document.mainForm.target = "_blank";
+	                    	document.mainForm.submit();				
 						}
 					}
                 }
@@ -149,36 +161,114 @@
             function changeDropDownList(){
                 
                 if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
-					document.mainForm.INVOICE_NO.value = "";
-					document.mainForm.INVOICE_NO.disabled = true;
-					document.getElementById('SEARCH_INVOICE_NO').style.display = "none";
-                    document.mainForm.DOCTOR_CODE.disabled = false;
-                    document.getElementById('SEARCH_DOCTOR_CODE').style.display = "inline";
-                    document.mainForm.DOCTOR_PROFILE_CODE.disabled = false;
-                    document.getElementById('SEARCH_DOCTOR_PROFILE_CODE').style.display = "inline";
-                    document.mainForm.DOCTOR_CATEGORY_CODE.disabled = true;
-                    document.getElementById('SEARCH_DOCTOR_CATEGORY_CODE').style.display = "none";
-                    document.mainForm.DOCTOR_DEPARTMENT_CODE.disabled = true;
-                    document.getElementById('SEARCH_DOCTOR_DEPARTMENT_CODE').style.display = "none";
-                    document.mainForm.ORDER_CATEGORY_CODE.disabled = true;
-                    document.getElementById('ORDER_CATEGORY_BUTTON').style.display = "none";
-                    document.mainForm.ORDER_ITEM_CODE.disabled = false;
-                    document.getElementById('ORDER_ITEM_BUTTON').style.display = "inline";
-                    document.mainForm.TRANSACTION_MODULE.disabled = false;
-                    document.mainForm.TRANSACTION_TYPE.disabled = false;
-                    document.mainForm.ADMISSION_TYPE_CODE.disabled = false;
-                    document.mainForm.DOCUMENT_TYPE.disabled = true;
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup"){
-					
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" || document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher" || document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
-					
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"){
-                	
-                }else{
-					
+                    document.getElementById('block_from_to_date').style.display = '';
+                	document.getElementById('block_payor_office_code').style.display = 'none';
+                	document.getElementById('block_doctor_code').style.display = '';
+                	document.getElementById('block_doctor_profile_code').style.display = '';
+                	document.getElementById('block_doctor_department').style.display = 'none';
+                	document.getElementById('block_order_category_code').style.display = 'none';
+                	document.getElementById('block_doctor_category_code').style.display = 'none';
+                	document.getElementById('block_order_item_code').style.display = 'none';
+                	document.getElementById('block_invoice_no').style.display = 'none';
+                	document.getElementById('block_module').style.display = '';
+                	document.getElementById('block_transaction_type').style.display = 'none';
+                	document.getElementById('block_adminssion_type').style.display = '';
+                	document.getElementById('block_document_type').style.display = 'none';
+                	document.getElementById('block_month_year').style.display = 'none';
+                	document.getElementById('block_doctor_code_from').style.display = 'none';
+                	document.getElementById('block_doctor_code_to').style.display = 'none';
+                	document.getElementById('block_guarantee_department').style.display = 'none';
+                	document.getElementById('block_gl_type').style.display = 'none';
+                	document.getElementById('block_expense_sign').style.display = 'none';
+                	document.getElementById('block_expense_sign').style.display = 'none';
+                	document.getElementById('block_expense_account_code').style.display = 'none';
+                	document.getElementById('block_expense_code').style.display = 'none';
+                	document.getElementById('block_payment_term').style.display = 'none';
+                	document.getElementById('block_doctor_type').style.display = 'none';
+                	document.getElementById('block_payment_mode').style.display = 'none';
+                 	document.getElementById('block_save_file').style.display = '';
+                } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
+            		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"){
+                	document.getElementById('block_from_to_date').style.display = 'none';
+                 	document.getElementById('block_payor_office_code').style.display = 'none';
+                 	document.getElementById('block_doctor_code').style.display = '';
+                 	document.getElementById('block_doctor_profile_code').style.display = '';
+                 	document.getElementById('block_doctor_department').style.display = 'none';
+                 	document.getElementById('block_order_category_code').style.display = 'none';
+                 	document.getElementById('block_doctor_category_code').style.display = 'none';
+                 	document.getElementById('block_order_item_code').style.display = 'none';
+                 	document.getElementById('block_invoice_no').style.display = 'none';
+                 	document.getElementById('block_module').style.display = 'none';
+                 	document.getElementById('block_transaction_type').style.display = 'none';
+                 	document.getElementById('block_adminssion_type').style.display = 'none';
+                 	document.getElementById('block_document_type').style.display = 'none';
+                 	document.getElementById('block_month_year').style.display = '';
+                 	document.getElementById('block_doctor_code_from').style.display = 'none';
+                 	document.getElementById('block_doctor_code_to').style.display = 'none';
+                 	document.getElementById('block_guarantee_department').style.display = 'none';
+                 	document.getElementById('block_gl_type').style.display = 'none';
+                 	document.getElementById('block_expense_sign').style.display = 'none';
+                 	document.getElementById('block_expense_sign').style.display = 'none';
+                 	document.getElementById('block_expense_account_code').style.display = 'none';
+                 	document.getElementById('block_expense_code').style.display = 'none';
+                 	document.getElementById('block_payment_term').style.display = 'none';
+                 	document.getElementById('block_doctor_type').style.display = 'none';
+                 	document.getElementById('block_payment_mode').style.display = 'none';
+                 	document.getElementById('block_save_file').style.display = '';
+                } else if (document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
+                	document.getElementById('block_from_to_date').style.display = 'none';
+                 	document.getElementById('block_payor_office_code').style.display = 'none';
+                 	document.getElementById('block_doctor_code').style.display = '';
+                 	document.getElementById('block_doctor_profile_code').style.display = '';
+                 	document.getElementById('block_doctor_department').style.display = 'none';
+                 	document.getElementById('block_order_category_code').style.display = 'none';
+                 	document.getElementById('block_doctor_category_code').style.display = 'none';
+                 	document.getElementById('block_order_item_code').style.display = 'none';
+                 	document.getElementById('block_invoice_no').style.display = 'none';
+                 	document.getElementById('block_module').style.display = 'none';
+                 	document.getElementById('block_transaction_type').style.display = 'none';
+                 	document.getElementById('block_adminssion_type').style.display = 'none';
+                 	document.getElementById('block_document_type').style.display = 'none';
+                 	document.getElementById('block_month_year').style.display = '';
+                 	document.getElementById('block_doctor_code_from').style.display = 'none';
+                 	document.getElementById('block_doctor_code_to').style.display = 'none';
+                 	document.getElementById('block_guarantee_department').style.display = 'none';
+                 	document.getElementById('block_gl_type').style.display = 'none';
+                 	document.getElementById('block_expense_sign').style.display = 'none';
+                 	document.getElementById('block_expense_sign').style.display = '';
+                 	document.getElementById('block_expense_account_code').style.display = '';
+                 	document.getElementById('block_expense_code').style.display = '';
+                 	document.getElementById('block_payment_term').style.display = 'none';
+                 	document.getElementById('block_doctor_type').style.display = 'none';
+                 	document.getElementById('block_payment_mode').style.display = 'none';
+                 	document.getElementById('block_save_file').style.display = '';
+                } else {
+                	document.getElementById('block_from_to_date').style.display = 'none';
+                	document.getElementById('block_payor_office_code').style.display = 'none';
+                	document.getElementById('block_doctor_code').style.display = 'none';
+                	document.getElementById('block_doctor_profile_code').style.display = 'none';
+                	document.getElementById('block_doctor_department').style.display = 'none';
+                	document.getElementById('block_order_category_code').style.display = 'none';
+                	document.getElementById('block_doctor_category_code').style.display = 'none';
+                	document.getElementById('block_order_item_code').style.display = 'none';
+                	document.getElementById('block_invoice_no').style.display = 'none';
+                	document.getElementById('block_module').style.display = 'none';
+                	document.getElementById('block_transaction_type').style.display = 'none';
+                	document.getElementById('block_adminssion_type').style.display = 'none';
+                	document.getElementById('block_document_type').style.display = 'none';
+                	document.getElementById('block_month_year').style.display = 'none';
+                	document.getElementById('block_doctor_code_from').style.display = 'none';
+                	document.getElementById('block_doctor_code_to').style.display = 'none';
+                	document.getElementById('block_guarantee_department').style.display = 'none';
+                	document.getElementById('block_gl_type').style.display = 'none';
+                	document.getElementById('block_expense_sign').style.display = 'none';
+                	document.getElementById('block_expense_sign').style.display = 'none';
+                	document.getElementById('block_expense_account_code').style.display = 'none';
+                	document.getElementById('block_expense_code').style.display = 'none';
+                	document.getElementById('block_payment_term').style.display = 'none';
+                	document.getElementById('block_doctor_type').style.display = 'none';
+                	document.getElementById('block_payment_mode').style.display = 'none';
+                	document.getElementById('block_save_file').style.display = 'none';
                 }
             }
                         
@@ -534,13 +624,12 @@
 	}
 </script>
 </head>
-<body leftmargin="0">
-	<form id="mainForm" name="mainForm" method="get"
-		action="../../ViewReportSrvl">
+<body leftmargin="0"  onload='changeDropDownList()'>
+	<form id="mainForm" name="mainForm" method="get" action="../../ViewDFReportSrvl">
 		<center>
 			<table width="800" border="0">
 				<tr>
-					<td align="left"><b><font color='#003399'><%=Utils.getInfoPage("checklist_daily_report.jsp", labelMap.getFieldLangSuffix(),
+					<td align="left"><b><font color='#003399'><%=Utils.getInfoPage("idoctor_report.jsp", labelMap.getFieldLangSuffix(),
 					new DBConnection("" + session.getAttribute("HOSPITAL_CODE")))%></font></b>
 					</td>
 				</tr>
@@ -548,7 +637,7 @@
 		</center>
 		<table class="form">
 			<input type="hidden" id="REPORT_DISPLAY" name="REPORT_DISPLAY" />
-			<input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="checklist" />
+			<input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="iDoctor" />
 			<tr>
 				<th colspan="4">
 					<div style="float: left;">${labelMap.TITLE_MAIN}</div>
@@ -569,7 +658,7 @@
 						<option value="SummaryRevenueByDoctor">${labelMap.REPORT_SUMMARY_REVENUE}</option>
 				</select></td>
 			</tr>
-			<tr id="FROM_TO_DATE">
+			<tr id="block_from_to_date">
 				<td class="label"><label for="FROM_DATE">${labelMap.FROM_DATE}</label>
 				</td>
 				<td class="input"><input type="text" id="FROM_DATE"
@@ -583,7 +672,7 @@
 					class="image_button" src="../../images/calendar_button.png" alt=""
 					onclick="displayDatePicker('TO_DATE'); return false;" /></td>
 			</tr>
-			<tr>
+			<tr id="block_payor_office_code">
 				<td class="label"><label for="PAYOR_OFFICE_CODE">${labelMap.PAYOR_OFFICE_CODE}</label></td>
 				<td class="input" colspan="3"><input name="PAYOR_OFFICE_CODE"
 					type="text" class="short" id="PAYOR_OFFICE_CODE" maxlength="20"
@@ -597,19 +686,7 @@
 					class="mediumMax" id="PAYOR_OFFICE_DESCRIPTION" readonly="readonly"
 					value="" /></td>
 			</tr>
-			<tr>
-				<td class="label"><label for="DOCTOR_CODE">${labelMap.DOCTOR_CODE}</label></td>
-				<td colspan="3" class="input"><input type="text"
-					id="DOCTOR_CODE" name="DOCTOR_CODE" class="short" value=""
-					onkeypress="return DOCTOR_CODE_KeyPress(event);"
-					onblur="AJAX_Refresh_DOCTOR();" /> <input id="SEARCH_DOCTOR_CODE"
-					name="SEARCH_DOCTOR_CODE" type="image" class="image_button"
-					src="../../images/search_button.png" alt="Search"
-					onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&TARGET=DOCTOR_CODE&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR'); return false;" />
-					<input type="text" id="DOCTOR_NAME" name="DOCTOR_NAME"
-					class="mediumMax" readonly="readonly" value="" /></td>
-			</tr>
-			<tr>
+			<tr id="block_doctor_profile_code">
 				<td class="label"><label for="DOCTOR_PROFILE_CODE">${labelMap.DOCTOR_PROFILE_CODE}</label></td>
 				<td colspan="3" class="input"><input type="text"
 					id="DOCTOR_PROFILE_CODE" name="DOCTOR_PROFILE_CODE" class="short"
@@ -623,7 +700,21 @@
 					name="DOCTOR_PROFILE_NAME" class="mediumMax" readonly="readonly"
 					value="" /></td>
 			</tr>
-			<tr>
+			
+			<tr id="block_doctor_code">
+				<td class="label"><label for="DOCTOR_CODE">${labelMap.DOCTOR_CODE}</label></td>
+				<td colspan="3" class="input"><input type="text"
+					id="DOCTOR_CODE" name="DOCTOR_CODE" class="short" value=""
+					onkeypress="return DOCTOR_CODE_KeyPress(event);"
+					onblur="AJAX_Refresh_DOCTOR();" /> <input id="SEARCH_DOCTOR_CODE"
+					name="SEARCH_DOCTOR_CODE" type="image" class="image_button"
+					src="../../images/search_button.png" alt="Search"
+					onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&TARGET=DOCTOR_CODE&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR'); return false;" />
+					<input type="text" id="DOCTOR_NAME" name="DOCTOR_NAME"
+					class="mediumMax" readonly="readonly" value="" /></td>
+			</tr>
+			
+			<tr id="block_doctor_department">
 				<td class="label"><label for="DOCTOR_DEPARTMENT_CODE">${labelMap.DOCTOR_DEPARTMENT_CODE}</label></td>
 				<td class="input" colspan="3"><input
 					name="DOCTOR_DEPARTMENT_CODE" type="text" class="short"
@@ -638,7 +729,7 @@
 					class="mediumMax" id="DOCTOR_DEPARTMENT_DESCRIPTION"
 					readonly="readonly" value="" /></td>
 			</tr>
-			<tr>
+			<tr id="block_order_category_code">
 				<td class="label"><label for="ORDER_CATEGORY_CODE">${labelMap.ORDER_CATEGORY_CODE}</label></td>
 				<td colspan="3" class="input"><input name="ORDER_CATEGORY_CODE"
 					type="text" class="short" id="ORDER_CATEGORY_CODE" maxlength="20"
@@ -653,7 +744,7 @@
 					readonly="readonly" /></td>
 			</tr>
 
-			<tr>
+			<tr id="block_doctor_category_code">
 				<td class="label"><label for="DOCTOR_CATEGORY_CODE">${labelMap.DOCTOR_CATEGORY_CODE}</label></td>
 				<td class="input" colspan="3"><input
 					name="DOCTOR_CATEGORY_CODE" type="text" class="short"
@@ -669,7 +760,7 @@
 					readonly="readonly" value="" /></td>
 			</tr>
 
-			<tr>
+			<tr id="block_order_item_code">
 				<td class="label"><label for="ORDER_ITEM_CODE">${labelMap.ORDER_ITEM_CODE}</label></td>
 				<td colspan="3" class="input"><input name="ORDER_ITEM_CODE"
 					type="text" class="short" id="ORDER_ITEM_CODE" maxlength="20"
@@ -682,49 +773,52 @@
 					name="ORDER_ITEM_DESCRIPTION" class="mediumMax" readonly="readonly" />
 				</td>
 			</tr>
-			<tr>
-				<td class="label"><label for="INVOICE_NO">${labelMap.INVOICE_NO}</label>
-				</td>
-				<td class="input"><input type="text" id="INVOICE_NO"
-					name="INVOICE_NO" class="short" maxlength="20"
-					onkeypress="return INVOICE_NO_KeyPress(event);" /> <input
-					id="SEARCH_INVOICE_NO" name="SEARCH_INVOICE_NO" type="image"
-					class="image_button" src="../../images/search_button.png"
-					alt="Search"
+			<tr id="block_invoice_no">
+				<td class="label"><label for="INVOICE_NO">${labelMap.INVOICE_NO}</label></td>
+				<td colspan="3" class="input">
+					<input type="text" id="INVOICE_NO" name="INVOICE_NO" class="short" maxlength="20" onkeypress="return INVOICE_NO_KeyPress(event);" /> 
+					<input id="SEARCH_INVOICE_NO" name="SEARCH_INVOICE_NO" type="image" class="image_button" src="../../images/search_button.png" alt="Search"
 					onclick="openSearchForm('../search_invoice.jsp?TABLE=TRN_DAILY&RETURN_FIELD=INVOICE_NO&DISPLAY_FIELD=INVOICE_DATE&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=INVOICE_NO&HANDLE=AJAX_Refresh_INVOICE'); return false;" />
 				</td>
+				
+			</tr>
+			
+			<tr id="block_module">
 				<td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
-				<td class="input"><select class="medium"
-					id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
+				<td class="input" colspan="3"><select class="mediumMax" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
 						<option value="%">ALL</option>
 						<option value="TR">DF TRANSACTION</option>
 						<option value="AR">ACCOUNT RECEIPT</option>
-						<option value="PT">PARTIAL RECEIPT</option>
+						<!-- <option value="PT">PARTIAL RECEIPT</option>
 						<option value="OW">ONWARD TRANSACTION</option>
 						<option value="DY">DISCHARGE PAYMENT</option>
-						<option value="DH">DISCHARGE HOLD</option>
+						<option value="DH">DISCHARGE HOLD</option> -->
 				</select></td>
 			</tr>
-			<tr>
+			
+			<tr id="block_transaction_type">
 				<td class="label"><label for="aText">${labelMap.TRANSACTION_TYPE}</label>
 				</td>
-				<td class="input"><select class="short" id="TRANSACTION_TYPE"
-					name="TRANSACTION_TYPE">
+				<td class="input" colspan="3"><select class="mediumMax" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
 						<option value="%">-- Select --</option>
 						<option value="%">ALL</option>
 						<option value="INV">Credit</option>
 						<option value="REV">Cash</option>
 				</select></td>
-				<td class="label"><label for="ADMISSION_TYPE_CODE">${labelMap.ADMISSION_TYPE_CODE}</label></td>
-				<td class="input"><select class="short"
-					id="ADMISSION_TYPE_CODE" name="ADMISSION_TYPE_CODE">
-						<option value="%">-- Select --</option>
-						<option value="%">ALL</option>
-						<option value="I">IPD</option>
-						<option value="O">OPD</option>
-				</select></td>
+				
 			</tr>
-			<tr>
+			
+			<tr id="block_adminssion_type">
+				<td class="label"><label for="ADMISSION_TYPE_CODE">${labelMap.ADMISSION_TYPE_CODE}</label></td>
+					<td class="input" colspan="3"><select class="mediumMax" id="ADMISSION_TYPE_CODE" name="ADMISSION_TYPE_CODE">
+							<option value="%">-- Select --</option>
+							<option value="%">ALL</option>
+							<option value="I">IPD</option>
+							<option value="O">OPD</option>
+					</select></td>
+			</tr>
+			
+			<tr id="block_document_type">
 				<td class="label"><label for="DOCUMENT_TYPE">${labelMap.DOCUMENT_TYPE}</label><br />
 				</td>
 				<td class="input"><select class="short" id="DOCUMENT_TYPE"
@@ -733,24 +827,18 @@
 						<option value="N">INVOICE</option>
 						<option value="Y">WRITE OFF</option>
 				</select></td>
-				<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-				<td class="input"><input type="text" class="short"
-					id="SAVE_FILE" name="SAVE_FILE" /> <select id="FILE_TYPE"
-					name="FILE_TYPE" onChange="changeDropDownType();">
-						<option value="">Select</option>
-						<option value="pdf">pdf</option>
-						<option value="txt">text</option>
-						<option value="xls">xls</option>
-				</select></td>
 			</tr>
+
 			<!-- Monthly Checklist -->
-			<tr>
+			
+			<tr id="block_month_year">
 				<td class="label"><label>${labelMap.MM}</label></td>
 				<td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
 				<td class="label"><label>${labelMap.YYYY}</label></td>
 				<td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
 			</tr>
-			<tr>
+			
+			<tr id="block_doctor_code_from">
 				<td class="label"><label for="DOCTOR_CODE_FROM">${labelMap.DOCTOR_CODE_FROM}</label></td>
 				<td colspan="3" class="input"><input type="text"
 					id="DOCTOR_CODE_FROM" name="DOCTOR_CODE_FROM" class="short"
@@ -763,7 +851,7 @@
 					<input type="text" id="DOCTOR_NAME_FROM" name="DOCTOR_NAME_FROM"
 					class="mediumMax" readonly="readonly" value="" /></td>
 			</tr>
-			<tr>
+			<tr id="block_doctor_code_to">
 				<td class="label"><label for="DOCTOR_CODE_TO">${labelMap.DOCTOR_CODE_TO}</label></td>
 				<td colspan="3" class="input"><input type="text"
 					id="DOCTOR_CODE_TO" name="DOCTOR_CODE_TO" class="short" value=""
@@ -776,7 +864,7 @@
 					<input type="text" id="DOCTOR_NAME_TO" name="DOCTOR_NAME_TO"
 					class="mediumMax" readonly="readonly" value="" /></td>
 			</tr>
-			<tr>
+			<tr id="block_guarantee_department">
 				<td class="label"><label for="GUARANTEE_DEPARTMENT">${labelMap.DEPARTMENT}</label>
 				</td>
 				<td class="input" colspan="3"><input
@@ -795,7 +883,7 @@
 					readonly="readonly" value="" /></td>
 			</tr>
 
-			<tr>
+			<tr id="block_gl_type">
 				<td class="label"><label for="GL_TYPE">${labelMap.GL_TYPE}</label></td>
 				<td class="input" colspan="3"><select id="GL_TYPE"
 					name="GL_TYPE">
@@ -803,216 +891,90 @@
 						<option value="AC">ACCU</option>
 				</select></td>
 			</tr>
-			<tr>
+			
+			<tr id="block_expense_sign">
+                <td class="label"><label for="EXPENSE_SIGN">${labelMap.EXPENSE_SIGN}</label></td>
+               	<td colspan="3" class="input">
+               	<select name="EXPENSE_SIGN" class="medium">
+               		<option value="">${labelMap.EXPENSE_SING_LABEL_ALL}</option>
+               		<option value="1">${labelMap.EXPENSE_SING_LABEL_REVENUE}</option>
+               		<option value="-1">${labelMap.EXPENSE_SING_LABEL_EXPENSE}</option>
+               	</select>
+              	</td>
+           </tr>
+           <tr id="block_expense_account_code">
+                <td class="label"><label for="EXPENSE_ACCOUNT_CODE">${labelMap.EXPENSE_ACCOUNT_CODE}</label></td>
+                <td colspan="3" class="input">
+					<input type="text" id="EXPENSE_ACCOUNT_CODE" name="EXPENSE_ACCOUNT_CODE" class="short" value="" onkeypress="return EXPENSE_ACCOUNT_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_ACCOUNT_CODE();" />
+                    <input id="SEARCH_EXPENSE_ACCOUNT_CODE" name="SEARCH_EXPENSE_ACCOUNT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=ACCOUNT&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_ACCOUNT_CODE&COND=AND CODE IN (SELECT ACCOUNT_CODE FROM EXPENSE)&HANDLE=AJAX_Refresh_EXPENSE_ACCOUNT_CODE'); return false;" />
+                    <input type="text" id="EXPENSE_ACCOUNT_CODE_DESCRIPTION" name="EXPENSE_ACCOUNT_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />
+                </td>
+            </tr>
+			<tr id="block_expense_code">
+                 <td class="label"><label for="EXPENSE_CODE">${labelMap.EXPENSE_CODE}</label></td>
+                 <td colspan="3" class="input">
+					<input type="text" id="EXPENSE_CODE" name="EXPENSE_CODE" class="short" value="" onkeypress="return EXPENSE_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_CODE();" />
+					<input id="SEARCH_EXPENSE_CODE" name="SEARCH_EXPENSE_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=EXPENSE&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_CODE&HANDLE=AJAX_Refresh_EXPENSE_CODE'); return false;" />
+					<input type="text" id="EXPENSE_CODE_DESCRIPTION" name="EXPENSE_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />                    
+                 </td>
+            </tr>                
+                
+            <tr id="block_payment_term">
+            	<td class="label">
+            		<label>${labelMap.PAYMENT_TERM}</label>
+            	</td>
+            	<td class="input" colspan="3">
+            		<select id="term" name="term" class="short">
+               	 		 <option value="1">Half Month</option>
+               	 		 <option value="2" selected="selected">Month End</option>
+               	 	</select>
+            	</td>
+            </tr>
+            <tr id="block_doctor_type">
+                <td class="label">
+                    <label for="DOCTOR_TYPE_CODE"><span class="style1">${labelMap.DOCTOR_TYPE_CODE}</span></label></td>
+                <td class="input" colspan="3">
+					<select id="DOCTOR_TYPE_CODE" name="DOCTOR_TYPE_CODE" class="mediumMax">
+						<option value="%">--SELECT ALL--</option>
+						<option value="GDM">การันตีรายวันคิดเป็นเดือน(DLY_MLY)</option>
+						<option value="GM">การันตีรายเดือน(MLY)</option>
+						<option value="GMT">การันตีรายเดือนและมีค่าเวร</option>
+						<option value="GD">การันตีวัน/ช.ม. (DLY)</option>
+						<option value="SS">ขั้นบันได(STP)</option>
+						<option value="CS">ทั่วไป(CS)</option>
+						<option value="IT">แพทย์เวร</option>
+						<option value="G%">แพทย์การันตี</option>
+					</select>
+                </td>
+            </tr>
+             <tr id="block_payment_mode">
+                 <td class="label">
+                     <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>
+                 <td class="input" colspan="3">
+					<select id="PAYMENT_MODE_CODE" name="PAYMENT_MODE_CODE" class="mediumMax">
+						<option value="%">--SELECT ALL--</option>
+						<option value="B">Bank Transfer</option>
+						<option value="C">Cash</option>
+						<option value="CQ">Cheque</option>
+						<option value="PR">Payroll</option>
+						<option value="U">Unpaid</option>
+					</select>
+                 </td>
+             </tr>                
+               
+               
+			<tr id="block_save_file">
 				<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-				<td class="input" colspan="3"><input type="text" class="short"
+				<td class="input" colspan="3"><input type="text" class="mediumMax"
 					id="SAVE_FILE" name="SAVE_FILE" /> <select id="FILE_TYPE"
-					name="FILE_TYPE">
+					name="FILE_TYPE" onChange="changeDropDownType();">
 						<option value="">Select</option>
-						<option value="xls">xls</option>
 						<option value="pdf">pdf</option>
+						<option value="txt">text</option>
+						<option value="xls">xls</option>
 				</select></td>
 			</tr>
-			<!-- Monthly Payment -->
-			<tr>
-                    <td class="label">
-                        <label>${labelMap.MM}</label>					</td>
-                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM",b.getMm())%></td>
-                    <td class="label">
-                         <label>${labelMap.YYYY}</label>
-					</td>
-                    <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
-                </tr>
-                <!-- 
-                <tr align="center">
-                	<td class="label" align="right" width="25%"><label for="term">${labelMap.PAYMENT_TERM}</label></td>
-                    <td class="input" valign="middle" width="25%" align="left">
-                   	 	<select class="short" name="term" id="term">
-                   	 		 <option value="2">Month End</option>
-                   	 		 <option value="1">Half Month</option>
-                   	 	</select>
-                    </td>
-                    
-            		<td class="label" align="right" width="25%"><label for="date">${labelMap.PAYMENT_DATE}</label></td>
-                    <td class="input" valign="middle" width="25%" align="left">
-                    	<input type="text" value="<%=startDateStr%>" id="date" name="date" class="short" value="<%=request.getParameter("START_DATE") == null ? "" : request.getParameter("START_DATE")%>" />
-                        <input name="image2" type="image" class="image_button" onclick="displayDatePicker('date'); return false;" src="../../images/calendar_button.png" alt="" />
-                    </td>
-                </tr>
-                 -->           
-				<tr>
-                    <td class="label"><label for="DOCTOR_CATEGORY_CODE">${labelMap.DOCTOR_CATEGORY_CODE}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="DOCTOR_CATEGORY_CODE" name="DOCTOR_CATEGORY_CODE" class="short" value="" onkeypress="return DOCTOR_CATEGORY_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_CATEGORY();" />
-                        <input id="SEARCH_DOCTOR_CATEGORY_CODE" name="SEARCH_DOCTOR_CATEGORY_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR_CATEGORY&DISPLAY_FIELD=DESCRIPTION&TARGET=DOCTOR_CATEGORY_CODE&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_CATEGORY'); return false;" />
-                        <input type="text" id="DOCTOR_CATEGORY_DESCRIPTION" name="DOCTOR_CATEGORY_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />                    </td>
-                </tr>
-				<tr>
-                    <td class="label"><label for="DOCTOR_DEPARTMENT_CODE">${labelMap.DOCTOR_DEPARTMENT_CODE}</label></td>
-                    <td class="input" colspan="3">
-                        <input name="DOCTOR_DEPARTMENT_CODE" type="text" class="short" id="DOCTOR_DEPARTMENT_CODE" maxlength="20" value="" onkeypress="return DOCTOR_DEPARTMENT_CODE_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_DEPARTMENT();" />
-                        <input id="SEARCH_DOCTOR_DEPARTMENT_CODE" name="SEARCH_DOCTOR_DEPARTMENT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DEPARTMENT&DISPLAY_FIELD=DESCRIPTION&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=DOCTOR_DEPARTMENT_CODE&HANDLE=AJAX_Refresh_DOCTOR_DEPARTMENT'); return false;" />
-                        <input name="DOCTOR_DEPARTMENT_DESCRIPTION" type="text" class="mediumMax" id="DOCTOR_DEPARTMENT_DESCRIPTION" readonly="readonly" value="" />                    
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="ORDER_ITEM_CODE">${labelMap.ORDER_ITEM_CODE}</label></td>
-                    <td colspan="3" class="input">
-                        <input name="ORDER_ITEM_CODE" type="text" class="short" id="ORDER_ITEM_CODE" maxlength="20" value="" onkeypress="return ORDER_ITEM_CODE_KeyPress(event);" onblur="AJAX_Refresh_ORDER_ITEM();" />
-                        <input type="image" name="ORDER_ITEM_BUTTON" id="ORDER_ITEM_BUTTON" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=ORDER_ITEM&DISPLAY_FIELD=DESCRIPTION_THAI&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=ORDER_ITEM_CODE&HANDLE=AJAX_Refresh_ORDER_ITEM'); return false;" />
-                        <input type="text" id="ORDER_ITEM_DESCRIPTION" name="ORDER_ITEM_DESCRIPTION" class="mediumMax" readonly="readonly"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="ORDER_ITEM_CATEGORY_CODE">${labelMap.ORDER_ITEM_CATEGORY_CODE}</label></td>
-                    <td colspan="3" class="input">
-                        <input name="ORDER_ITEM_CATEGORY_CODE" type="text" class="short" id="ORDER_ITEM_CATEGORY_CODE" maxlength="20" value="" onkeypress="return ORDER_ITEM_CATEGORY_CODE_KeyPress(event);" onblur="AJAX_Refresh_ORDER_ITEM_CATEGORY();" />
-                        <input type="image" name="ORDER_ITEM_CATEGORY_BUTTON" id="ORDER_ITEM_CATEGORY_BUTTON" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=ORDER_ITEM_CATEGORY&DISPLAY_FIELD=DESCRIPTION_THAI&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=ORDER_ITEM_CATEGORY_CODE&HANDLE=AJAX_Refresh_ORDER_ITEM_CATEGORY'); return false;" />
-                        <input type="text" id="ORDER_ITEM_CATEGORY_DESCRIPTION" name="ORDER_ITEM_CATEGORY_DESCRIPTION" class="mediumMax" readonly="readonly"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="DOCTOR_CODE_FROM">${labelMap.DOCTOR_CODE_FROM}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="DOCTOR_CODE_FROM" name="DOCTOR_CODE_FROM" class="short" value="" onkeypress="return DOCTOR_CODE_FROM_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_FROM();" />
-                        <input id="SEARCH_DOCTOR_CODE_FROM" name="SEARCH_DOCTOR_CODE_FROM" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR_PROFILE&DISPLAY_FIELD=NAME_<%= labelMap.getFieldLangSuffix() %>&TARGET=DOCTOR_CODE_FROM&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_FROM'); return false;" />
-                        <input type="text" id="DOCTOR_NAME_FROM" name="DOCTOR_NAME_FROM" class="mediumMax" readonly="readonly" value="" />                    </td>
-                </tr>
-				<tr>
-                    <td class="label"><label for="DOCTOR_CODE_TO">${labelMap.DOCTOR_CODE_TO}</label></td>
-                    <td colspan="3" class="input">
-                        <input type="text" id="DOCTOR_CODE_TO" name="DOCTOR_CODE_TO" class="short" value="" onkeypress="return DOCTOR_CODE_TO_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_TO();" />
-                        <input id="SEARCH_DOCTOR_CODE_TO" name="SEARCH_DOCTOR_CODE_TO" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR_PROFILE&DISPLAY_FIELD=NAME_<%= labelMap.getFieldLangSuffix() %>&TARGET=DOCTOR_CODE_TO&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_TO'); return false;" />
-                        <input type="text" id="DOCTOR_NAME_TO" name="DOCTOR_NAME_TO" class="mediumMax" readonly="readonly" value="" />                    </td>
-                </tr>
-				<tr>
-                    <td class="label"><label for="EXPENSE_SIGN">${labelMap.EXPENSE_SIGN}</label></td>
-                    <td colspan="3" class="input">
-                    	<select name="EXPENSE_SIGN" class="medium">
-                    		<option value="">${labelMap.EXPENSE_SING_LABEL_ALL}</option>
-                    		<option value="1">${labelMap.EXPENSE_SING_LABEL_REVENUE}</option>
-                    		<option value="-1">${labelMap.EXPENSE_SING_LABEL_EXPENSE}</option>
-                    	</select>
-                    </td>
-                </tr>
-               <tr>
-                    <td class="label"><label for="EXPENSE_ACCOUNT_CODE">${labelMap.EXPENSE_ACCOUNT_CODE}</label></td>
-                    <td colspan="3" class="input">
-						<input type="text" id="EXPENSE_ACCOUNT_CODE" name="EXPENSE_ACCOUNT_CODE" class="short" value="" onkeypress="return EXPENSE_ACCOUNT_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_ACCOUNT_CODE();" />
-                        <input id="SEARCH_EXPENSE_ACCOUNT_CODE" name="SEARCH_EXPENSE_ACCOUNT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=ACCOUNT&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_ACCOUNT_CODE&COND=AND CODE IN (SELECT ACCOUNT_CODE FROM EXPENSE)&HANDLE=AJAX_Refresh_EXPENSE_ACCOUNT_CODE'); return false;" />
-                        <input type="text" id="EXPENSE_ACCOUNT_CODE_DESCRIPTION" name="EXPENSE_ACCOUNT_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />
-                    </td>
-                </tr>
-				<tr>
-                    <td class="label"><label for="EXPENSE_CODE">${labelMap.EXPENSE_CODE}</label></td>
-                    <td colspan="3" class="input">
-						<input type="text" id="EXPENSE_CODE" name="EXPENSE_CODE" class="short" value="" onkeypress="return EXPENSE_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_CODE();" />
-                        <input id="SEARCH_EXPENSE_CODE" name="SEARCH_EXPENSE_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=EXPENSE&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_CODE&HANDLE=AJAX_Refresh_EXPENSE_CODE'); return false;" />
-                        <input type="text" id="EXPENSE_CODE_DESCRIPTION" name="EXPENSE_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />                    
-                    </td>
-                </tr>                
-                <tr>
-                    <td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-                    <td class="input" colspan="3"><input type="text" class="short" id="SAVE_FILE" name="SAVE_FILE"/>
-                        <select id="FILE_TYPE" name="FILE_TYPE">
-                            <option value="all">all</option>
-                            <option value="txt">text</option>
-                            <option value="xls">xls</option>
-                            <option value="pdf">pdf</option>
-                        </select>                    
-                    </td>
-                </tr>
-			<!-- Doctor Revenue Report -->
-			<tr>
-                    <td class="label">
-                        <label>${labelMap.MM}</label>					</td>
-                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM", b.getMm())%></td>
-                    <td class="label">
-                         <label>${labelMap.YYYY}</label>
-					</td>
-                    <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
-                </tr>
-                <tr>
-                	<td class="label">
-                		<label>${labelMap.PAYMENT_TERM}</label>
-                	</td>
-                	<td class="input" colspan="3">
-                		<select id="term" name="term" class="short">
-                   	 		 <option value="1">Half Month</option>
-                   	 		 <option value="2" selected="selected">Month End</option>
-                   	 	</select>
-                	</td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="DOCTOR_TYPE_CODE"><span class="style1">${labelMap.DOCTOR_TYPE_CODE}</span></label>                    </td>
-                    <td class="input" colspan="3">
-						<select id="DOCTOR_TYPE_CODE" name="DOCTOR_TYPE_CODE" class="mediumMax">
-							<option value="%">--SELECT ALL--</option>
-							<option value="GDM">การันตีรายวันคิดเป็นเดือน(DLY_MLY)</option>
-							<option value="GM">การันตีรายเดือน(MLY)</option>
-							<option value="GMT">การันตีรายเดือนและมีค่าเวร</option>
-							<option value="GD">การันตีวัน/ช.ม. (DLY)</option>
-							<option value="SS">ขั้นบันได(STP)</option>
-							<option value="CS">ทั่วไป(CS)</option>
-							<option value="IT">แพทย์เวร</option>
-							<option value="G%">แพทย์การันตี</option>
-						</select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>
-                    <td class="input" colspan="3">
-						<select id="PAYMENT_MODE_CODE" name="PAYMENT_MODE_CODE" class="mediumMax">
-							<option value="%">--SELECT ALL--</option>
-							<option value="B">Bank Transfer</option>
-							<option value="C">Cash</option>
-							<option value="CQ">Cheque</option>
-							<option value="PR">Payroll</option>
-							<option value="U">Unpaid</option>
-						</select>
-                    </td>
-                </tr>                
-                <tbody id='block_doctor_profile_code'>
-	                <tr>
-	                    <td class="label"><label for="DOCTOR_PROFILE_CODE">${labelMap.DOCTOR_PROFILE_CODE}</label></td>
-	                    <td colspan="3" class="input">
-	                        <input type="text" id="DOCTOR_PROFILE_CODE" name="DOCTOR_PROFILE_CODE" class="short" value="" onkeypress="return DOCTOR_PROFILE_CODE_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_PROFILE_CODE();" />
-	                        <input id="SEARCH_DOCTOR_PROFILE_CODE" name="SEARCH_DOCTOR_PROFILE_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR_PROFILE&DISPLAY_FIELD=NAME_<%= labelMap.getFieldLangSuffix() %>&TARGET=DOCTOR_PROFILE_CODE&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_PROFILE_CODE'); return false;" />
-	                        <input type="text" id="DOCTOR_PROFILE_NAME" name="DOCTOR_PROFILE_NAME" class="mediumMax" readonly="readonly" value="" />
-	                    </td>
-	                </tr>                 
-                </tbody>
-                <tbody id='block_doctor_code'>
-	                <tr>
-	                    <td class="label"><label for="DOCTOR_CODE">${labelMap.DOCTOR_CODE}</label></td>
-	                    <td colspan="3" class="input">
-	                        <input type="text" id="DOCTOR_CODE" name="DOCTOR_CODE" class="short" value="" onkeypress="return DOCTOR_CODE_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR();" />
-	                        <input id="SEARCH_DOCTOR_CODE" name="SEARCH_DOCTOR_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_<%= labelMap.getFieldLangSuffix() %>&TARGET=DOCTOR_CODE&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR'); return false;" />
-	                        <input type="text" id="DOCTOR_NAME" name="DOCTOR_NAME" class="mediumMax" readonly="readonly" value="" />
-	                    </td>
-	                </tr>               
-                </tbody>
-                <tbody id="block_doctor_department_code">
-                <tr>
-                    <td class="label"><label for="DOCTOR_DEPARTMENT_CODE">${labelMap.DOCTOR_DEPARTMENT_CODE}</label></td>
-                    <td class="input" colspan="3">
-                        <input name="DOCTOR_DEPARTMENT_CODE" type="text" class="short" id="DOCTOR_DEPARTMENT_CODE" maxlength="20" value="" onkeypress="return DOCTOR_DEPARTMENT_CODE_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_DEPARTMENT();" />
-                        <input id="SEARCH_DOCTOR_DEPARTMENT_CODE" name="SEARCH_DOCTOR_DEPARTMENT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DEPARTMENT&DISPLAY_FIELD=DESCRIPTION&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=DOCTOR_DEPARTMENT_CODE&HANDLE=AJAX_Refresh_DOCTOR_DEPARTMENT'); return false;" />
-                        <input name="DOCTOR_DEPARTMENT_DESCRIPTION" type="text" class="mediumMax" id="DOCTOR_DEPARTMENT_DESCRIPTION" readonly="readonly" value="" />                    
-                    </td>
-                </tr>
-                </tbody>
-                <tr>
-                    <td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
-                    <td class="input" colspan="3"><input type="text" class="short" id="SAVE_FILE" name="SAVE_FILE"/>
-                        <select id="FILE_TYPE" name="FILE_TYPE">
-                            <option value="">Select</option>
-                            <option value="xls">excel</option>
-                            <option value="pdf">pdf</option>
-                        </select>                    </td>
-                </tr>
+               
 			<tr>
 				<th colspan="4" class="buttonBar">
 					<input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="Report_Save();" /> 
