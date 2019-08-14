@@ -30,10 +30,10 @@
 		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CM257"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CM257"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
@@ -276,7 +276,7 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD,ADMISSION_TYPE_CODE ,INVOICE
 	<variable name="SUM_AMD_DR_AMT" class="java.math.BigDecimal" resetType="Group" resetGroup="admission" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_HN" class="java.lang.Integer" resetType="None" calculation="DistinctCount">
+	<variable name="SUM_HN" class="java.lang.Integer" resetType="Report" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{HN_NO}]]></variableExpression>
 	</variable>
 
