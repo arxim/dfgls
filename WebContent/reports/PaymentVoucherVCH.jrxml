@@ -189,7 +189,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<bottomPen lineWidth="0.5"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_DR_NET_PAID_AMT_1}]]></textFieldExpression>
 				</textField>
@@ -252,7 +252,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="10"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PAY_DATE}.substring( 6, 8 ).concat("/"+$F{PAY_DATE}.substring( 4, 6 )).concat("/"+$F{PAY_DATE}.substring( 0, 4 ))]]></textFieldExpression>
 				</textField>
@@ -269,7 +269,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="10"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[( !$F{PAYMENT_MODE_CODE}.equals( "B" ) ? "Undefine" : "ธ."+$F{BANK_NAME})]]></textFieldExpression>
 				</textField>
@@ -382,7 +382,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="10"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[( !$F{PAYMENT_MODE_CODE}.equals( "B" ) ? "" : $F{REF_PAID_NO})]]></textFieldExpression>
 				</textField>
@@ -399,7 +399,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="10"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{PAYMENT_MODE_CODE}.equals( "B" ) ? "" : "A/C No. :"]]></textFieldExpression>
 				</textField>
@@ -515,7 +515,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AMT}]]></textFieldExpression>
 				</textField>
@@ -530,7 +530,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EXCR_AMT}]]></textFieldExpression>
 				</textField>
@@ -560,7 +560,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{DR_NET_PAID_AMT}]]></textFieldExpression>
 				</textField>
@@ -597,7 +597,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EXPENSE}]]></textFieldExpression>
 				</textField>
@@ -611,7 +611,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{GDR_402}]]></textFieldExpression>
 				</textField>
@@ -639,7 +639,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AR_AMT}]]></textFieldExpression>
 				</textField>
@@ -667,7 +667,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AFT_AMT}]]></textFieldExpression>
 				</textField>
@@ -681,7 +681,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_DR_AMT}]]></textFieldExpression>
 				</textField>
@@ -802,7 +802,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_PAY_BY_CASH}]]></textFieldExpression>
 				</textField>
@@ -816,7 +816,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_PAY_BY_AR}]]></textFieldExpression>
 				</textField>
@@ -830,7 +830,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{GDR_402}]]></textFieldExpression>
 				</textField>
@@ -844,7 +844,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="9" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{EXPENSE}]]></textFieldExpression>
 				</textField>
@@ -971,7 +971,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AFT_AMT}]]></textFieldExpression>
 				</textField>
@@ -985,7 +985,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_UNPAID_AMT}]]></textFieldExpression>
 				</textField>
@@ -1021,7 +1021,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 </box>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica" size="8" isBold="false"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<text><![CDATA[<PaymentVoucherVCH.jrxml>]]></text>
 				</staticText>
