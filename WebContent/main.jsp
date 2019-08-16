@@ -20,8 +20,11 @@
             
             DBConn conn = new DBConn();
             conn.setStatement();
-            String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +" FROM HOSPITAL WHERE CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'";
+            //String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +", 'forms/report/df_report.jsp' FROM HOSPITAL WHERE CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'";
+            String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +",  STP_MENU.LINK_PAGE FROM HOSPITAL LEFT OUTER JOIN STP_MENU ON HOSPITAL.CODE = STP_MENU.HOSPITAL_CODE "+
+            "WHERE HOSPITAL.CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' AND STP_MENU.MENU_ENG = 'Doctorfee Report'";
             String[][] arrHos = conn.query(qHos);
+            //System.out.println(arrHos[0][1]);
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -113,7 +116,11 @@
         	function onLoadPage(id){
         		var f = document.getElementById("mainFrame");
         		if(id=='5'){
-            		f.src = "./forms/report/df_report.jsp";
+            		//for gls
+        			//f.src = "./forms/report/df_report.jsp";
+            		//for non gls
+            		//f.src = "./forms/report/df_report_doctor.jsp";
+            		f.src = "./<%=arrHos[0][1]%>";
         		}
         	}
             
