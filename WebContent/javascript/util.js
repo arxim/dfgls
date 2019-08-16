@@ -497,5 +497,54 @@ function CheckDate(dt,start_date, stop_date){
     }
     return true;
 }
+function CheckEndDate(dt,start_date, stop_date){
+    var arrstr = dt.split('/');
+    if(arrstr.length != 3){
+        if(dt.length<1){
+        }else{
+          alert('Invalid format Date!');            
+        }
+    }else{
+        if(!OnlyNumber(arrstr[0]) || !OnlyNumber(arrstr[1]) || !OnlyNumber(arrstr[2])){
+            alert("Invalid Date Number!");
+            document.getElementById(stop_date).focus();
+            return false;
+        }else{
+            if(arrstr[1]>12){
+                alert("Invalid Month!");
+                return false;
+            }
+            if(arrstr[0]>31){
+                alert("Invalid Date!");
+                return false;
+            }
+        }
+        
+
+        var str = '';
+        if(CountString(arrstr[0],2)){
+            str += FormatString(arrstr[0],2) + '/';
+        }
+        if(CountString(arrstr[1],2)){
+            str += FormatString(arrstr[1],2) + '/';
+        }
+        if(CountString(arrstr[2],4)){
+            str += FormatString(arrstr[2],4);
+        }
+
+        if(str.length == 10){
+            document.getElementById(stop_date).value = str;
+            //document.mainForm.START_DATE.value = str;
+            if(start_date!=''){
+                if(document.getElementById(start_date).value == ''){
+                    document.getElementById(start_date).value = str;
+                }
+            }
+        }else{
+            alert('error');
+        }
+    }
+    return true;
+}
 parent.CloseSearch();
 

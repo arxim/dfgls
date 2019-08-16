@@ -666,17 +666,25 @@
 
             function startDate(val){ 
                 if(val != ''){
-	            	CheckDate(val,'START_DATE','END_DATE');
-	            	amountType();
+                	CheckDate(val,'START_DATE','END_DATE');
+                	if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
+                		alert("Plese choose start date before end date.");
+                		document.mainForm.START_DATE.value = "";
+                	}
+                	amountType();
                 }
             }
             
             function endDate(val) { 
             	//CheckDate(val,'START_DATE','END_DATE');
             	if(val != '') { 
-            		checkEndDate(val,'START_DATE','END_DATE');
+            		CheckEndDate(val,'START_DATE','END_DATE');
             		//CheckDate(val,'START_DATE','END_DATE');
-	            	amountType();
+            		if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
+                		alert("Plese choose start date before end date.");
+                		document.mainForm.END_DATE.value = "";
+                	}
+            		amountType();
 	            	return true;
             	}
             	return false;
@@ -688,6 +696,11 @@
 	                 if(!checkKeyTime(val)){
 	                	 document.getElementById(val.id).value="";
 	                 }
+	                 
+	                 if(!document.mainForm.EARLY_TIME.value == "" || !document.mainForm.EARLY_TIME.value =="00:00:00"){
+	                	 document.mainForm.EARLY_TIME.value = val.value;
+	                 }
+	                 
 					 amountType();
                 }
 		    }
@@ -697,8 +710,20 @@
 					if(!checkKeyTime(val)){
 	                	 document.getElementById(val.id).value="";
 	                 }
+					if(!document.mainForm.LATE_TIME.value == "" || !document.mainForm.LATE_TIME.value =="00:00:00"){
+	                	 document.mainForm.LATE_TIME.value = val.value;
+	                 }
 				  	amountType();
 				}
+            }
+            
+            function guaranteeType(){
+            	if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
+            		amountType();
+            	}else{
+            		document.mainForm.AMOUNT_PER_TIME.value="";
+                	amountType();
+            	}
             }
             
             /* function amount_of_time(val) { 
@@ -916,7 +941,7 @@
                 		<input name="AMOUNT_OF_TIME" type="text" class="short alignRight" id="AMOUNT_OF_TIME" maxlength="13" value = "<%=DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_OF_TIME") %>" readonly="readonly" /> Hour
                 	</td>
                 	<td class="input" colspan="1">
-                		<select id="GUARANTEE_TYPE" name="GUARANTEE_TYPE" class="medium" onchange="amountType()">
+                		<select id="GUARANTEE_TYPE" name="GUARANTEE_TYPE" class="medium" onchange="guaranteeType()">
                 			<option value="NONE">--- Amount Type ---</option>
                 			<option value="GA" <%
                 				 if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){ 
