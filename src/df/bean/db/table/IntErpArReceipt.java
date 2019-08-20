@@ -268,7 +268,7 @@ public class IntErpArReceipt extends ABSTable {
                                                 " AND E.HOSPITAL_CODE='" + hospitalCode + "'" +
                                                 " AND E.DOC_TYPE='" + Status.RECEIPT_TYPE_WRITEOFF + "') " 
 //                                                " AND E.IS_LOADED = 'N') "
-                + ", WRITE_OFF_RECEIPT_AMT = (SELECT DISTINCT E.PAYMENT_AMOUNT " +
+                + ", WRITE_OFF_RECEIPT_AMT = (SELECT DISTINCT CASE WHEN E.PAYMENT_AMOUNT > 0 THEN E.PAYMENT_AMOUNT ELSE E.BILL_AMOUNT-E.WRITE_OFF_AMOUNT END AS PAYMENT_AMOUNT  " +
                                                 " FROM INT_ERP_AR_RECEIPT E " +
                                                 " WHERE E.BILL_NO = " + tableName + ".INVOICE_NO " +
                                                 " AND E.IS_LAST_RECEIPT = 'Y' " +
@@ -278,7 +278,7 @@ public class IntErpArReceipt extends ABSTable {
 ///                                                " AND E.IS_LOADED = 'N') "                                         
                 + " WHERE " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'"
                 + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
-                + " AND (YYYY IS NULL OR YYYY = '') "
+//              + " AND (YYYY IS NULL OR YYYY = '') "
                 + " AND (TRN_DAILY.IS_WRITE_OFF = 'N') "
 //                + " AND " + tableName + ".INVOICE_DATE BETWEEN '" + startDate + "' AND '" + endDate + "'" 
                 + " AND " + tableName + ".INVOICE_NO = (SELECT DISTINCT E.BILL_NO " +
@@ -292,7 +292,7 @@ public class IntErpArReceipt extends ABSTable {
             rows = this.getDBConnection().executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
-        	System.out.println(sql);
+        	System.out.println("error: "+sql);
         	System.out.println(e);        	
             TRN_Error.writeErrorLog(this.getDBConnection().getConnection(), 
                     TRN_Error.PROCESS_RECEIPT_BY_AR, " write off fail.", e.getMessage() ,sql);
@@ -326,7 +326,7 @@ public class IntErpArReceipt extends ABSTable {
 
                 + " WHERE " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'"
                 + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
-                + " AND (YYYY IS NULL OR YYYY = '') "
+//              + " AND (YYYY IS NULL OR YYYY = '') "
                 + " AND (TRN_DAILY.IS_WRITE_OFF = 'Y') "
 //                + " AND " + tableName + ".INVOICE_DATE BETWEEN '" + startDate + "' AND '" + endDate + "'" 
                 + " AND " + tableName + ".INVOICE_NO = (SELECT DISTINCT E.BILL_NO " +
@@ -340,7 +340,7 @@ public class IntErpArReceipt extends ABSTable {
             if (rows > 0) rows = this.getDBConnection().executeUpdate(sql);
             System.out.println(sql);
         } catch (Exception e) {
-        	System.out.println(sql);
+        	System.out.println("error 2: "+sql);
             TRN_Error.writeErrorLog(this.getDBConnection().getConnection(), 
                     TRN_Error.PROCESS_RECEIPT_BY_AR, " write off fail.", e.getMessage() ,sql);
             e.printStackTrace();
