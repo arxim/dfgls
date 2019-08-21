@@ -95,7 +95,7 @@
         <script type="text/javascript" src="../../javascript/util.js"></script>
         <script type="text/javascript">
             function Report_View() {
-            	window.location.replace("df_report_vch.jsp?payTerm="+document.mainForm.term.value+"&MM="+document.mainForm.MM.value+"&YYYY="+document.mainForm.YYYY.value);
+            	window.location.replace("df_report_doctor.jsp?payTerm="+document.mainForm.term.value+"&MM="+document.mainForm.MM.value+"&YYYY="+document.mainForm.YYYY.value);
 		        
                 if(document.mainForm.REPORT_FILE_NAME.value == "None"){
                     alert("Please Select Report");
@@ -170,7 +170,7 @@
                     <th colspan="4" class="buttonBar">
                         <input type="button" id="VIEW" name="VIEW" class="button" value="${labelMap.VIEW}" onclick="Report_View();" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
-                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='df_report.jsp'" />
+                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='df_report_doctor.jsp'" />
 					</th>
                 </tr>
             </table>
