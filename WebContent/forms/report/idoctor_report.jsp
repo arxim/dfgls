@@ -37,6 +37,7 @@
 	labelMap.add("REPORT_IMPORT_CHECKLIST", "Import DF Transaction", "นำเข้ารายการค่าแพทย์เข้าระบบ");
 	labelMap.add("REPORT_GUARANTEE_TRANSACTION", "Guarantee Setup", "รายการกำหนดการันตีแพทย์");
 	labelMap.add("REPORT_DETAIL_DF", "Revenue Detail Payment", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
+	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
 	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Report", "Summary Revenue");
@@ -136,6 +137,7 @@
 							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
 							|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
 							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"
+							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
 							|| document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
 							document.mainForm.REPORT_DISPLAY.value = "save";
 	                    	document.mainForm.target = "_blank";
@@ -188,7 +190,8 @@
                 	document.getElementById('block_payment_mode').style.display = 'none';
                  	document.getElementById('block_save_file').style.display = '';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
-            		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"){
+            		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	document.getElementById('block_doctor_code').style.display = '';
@@ -652,6 +655,7 @@
 						<option value="ImportTransaction">${labelMap.REPORT_TRANSACTION}</option>
 						<option value="ImportChecklist">${labelMap.REPORT_IMPORT_CHECKLIST}</option>
 						<option value="GuaranteeSetup">${labelMap.REPORT_GUARANTEE_TRANSACTION}</option>
+						<option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
 						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>

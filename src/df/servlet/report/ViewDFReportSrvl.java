@@ -125,7 +125,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 		String is_onward = "%";
 		String is_partial = "%";
 		String is_discharge = "%";
-		
+
 		String from_doctor = "";
 		String to_doctor = "";
 
@@ -139,40 +139,74 @@ public class ViewDFReportSrvl extends HttpServlet {
 		String path = Variables.IS_WINDOWS ? windows_path : linux_path;
 
 		try {
-			if (from_date.equals("") || from_date.equals(null)) { from_date = "00000000"; }
-		} catch (Exception e) {}
+			if (from_date.equals("") || from_date.equals(null)) {
+				from_date = "00000000";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (to_date.equals("") || to_date.equals(null)) { to_date = "99999999"; }
-		} catch (Exception e) {}
+			if (to_date.equals("") || to_date.equals(null)) {
+				to_date = "99999999";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (doctor_code.equals("") || doctor_code.equals(null)) { doctor_code = "%"; }
-		} catch (Exception e) {}
+			if (doctor_code.equals("") || doctor_code.equals(null)) {
+				doctor_code = "%";
+			}
+		} catch (Exception e) {
+		}
+		// try {
+		// if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) {
+		// doctor_profile_code = "%";
+		// }
+		// } catch (Exception e) {}
+		try {
+			if (doctor_category.equals("") || doctor_category.equals(null)) {
+				doctor_category = "%";
+			}
+		} catch (Exception e) {
+		}
+		// TODO
+		System.out.println(">> order_item_category << "+ order_item_category);
+		
 //		try {
-//			if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) { 
-//				doctor_profile_code = "%"; 
-//				}
-//		} catch (Exception e) {} 
+//			if (order_item_category.equals("") || order_item_category.equals(null) ||  order_item_category.equals("null")) {
+				order_item_category = "%";
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//		}
 		try {
-			if (doctor_category.equals("") || doctor_category.equals(null)) { doctor_category = "%"; }
-		} catch (Exception e) {}
+			if (order_category_code.equals("") || order_category_code.equals(null)) {
+				order_category_code = "%";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (order_item_category.equals("") || order_item_category.equals(null)) { order_item_category = "%"; }
-		} catch (Exception e) {}
+			if (order_item_code.equals("") || order_item_code.equals(null)) {
+				order_item_code = "%";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (order_category_code.equals("") || order_category_code.equals(null)) { order_category_code = "%"; }
-		} catch (Exception e) {}
+			if (doctor_department.equals("") || doctor_department.equals(null)) {
+				doctor_department = "%";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (order_item_code.equals("") || order_item_code.equals(null)) { order_item_code = "%"; }
-		} catch (Exception e) {}
+			if (transaction_type.equals("") || transaction_type.equals(null)) {
+				transaction_type = "%";
+			}
+		} catch (Exception e) {
+		}
 		try {
-			if (doctor_department.equals("") || doctor_department.equals(null)) { doctor_department = "%"; }
-		} catch (Exception e) {}
-		try {
-			if (transaction_type.equals("") || transaction_type.equals(null)) { transaction_type = "%"; }
-		} catch (Exception e) {}
-		try {
-			if (payor_office_code.equals("") || payor_office_code.equals(null)) { payor_office_code = "%"; }
-		} catch (Exception e) {}
+			if (payor_office_code.equals("") || payor_office_code.equals(null)) {
+				payor_office_code = "%";
+			}
+		} catch (Exception e) {
+		}
 		try {
 			if (transaction_module.equals("OW")) {
 				is_onward = "Y";
@@ -200,64 +234,85 @@ public class ViewDFReportSrvl extends HttpServlet {
 					transaction_module = "%";
 				}
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		try {
 			if (invoice_no.equals("") || invoice_no.equals(null)) {
 				invoice_no = "%";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (admission_type_code.equals("") || admission_type_code.equals(null)) {
 				admission_type_code = "%";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (save_file.equals("") || save_file.equals(null)) {
 				save_file = "temp";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (document_type.equals("") || document_type.equals(null)) {
 				document_type = "%";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (doctor_code_from.equals("") || doctor_code_from.equals(null)) {
 				doctor_code_from = "0";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (doctor_code_to.equals("") || doctor_code_to.equals(null)) {
 				doctor_code_to = "Z";
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			if (guarantee_department_code.equals("") || guarantee_department_code.equals(null)) {
 				guarantee_department_code = "%";
 			}
-		} catch (Exception e) {}
-		try{
-            if( paymentDate.equals("") || paymentDate.equals(null) ){paymentDate = "%";}
-        }catch(Exception e){}
-		try{
-		        if( expense_sign.equals("") || expense_sign.equals(null) ){expense_sign = "%";}
-		}catch(Exception e){}
-		try{
-		    if( expense_account_code.equals("") || expense_account_code.equals(null) ){expense_account_code = "%";}
-		}catch(Exception e){}
-		try{
-		    if( expense_code.equals("") || expense_code.equals(null) ){expense_code = "%";}
-		}catch(Exception e){}
+		} catch (Exception e) {
+		}
+		try {
+			if (paymentDate.equals("") || paymentDate.equals(null)) {
+				paymentDate = "%";
+			}
+		} catch (Exception e) {
+		}
+		try {
+			if (expense_sign.equals("") || expense_sign.equals(null)) {
+				expense_sign = "%";
+			}
+		} catch (Exception e) {
+		}
+		try {
+			if (expense_account_code.equals("") || expense_account_code.equals(null)) {
+				expense_account_code = "%";
+			}
+		} catch (Exception e) {
+		}
+		try {
+			if (expense_code.equals("") || expense_code.equals(null)) {
+				expense_code = "%";
+			}
+		} catch (Exception e) {
+		}
 
 		if (reportfilename.equals("ImportTransaction") || reportfilename.equals("ImportChecklist")) {
-			
+
 			try {
-			if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) { 
-				doctor_profile_code = "%"; 
+				if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) {
+					doctor_profile_code = "%";
 				}
-			} catch (Exception e) {} 
-			
+			} catch (Exception e) {
+			}
+
 			HashMap hm = new HashMap();
 			ReportQuery rq = new ReportQuery();
 
@@ -277,7 +332,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 			rq.setOrderItem(order_item_code);
 			hm.put("admission_type", admission_type_code);
 			rq.setAdmissionType(admission_type_code);
-			
+
 			hm.put("doctor_department", doctor_department);
 			rq.setDoctorDepartment(doctor_department);
 			hm.put("order_category", order_category_code);
@@ -299,11 +354,11 @@ public class ViewDFReportSrvl extends HttpServlet {
 					}
 				}
 			} else if (reportfilename.equals("ImportChecklist")) {
-				
+
 				hm.put("transaction_type", transaction_type);
-	            rq.setTransactionType(transaction_type);
-	            hm.put("transaction_module", transaction_module);
-	            rq.setTransactionModule(transaction_module);
+				rq.setTransactionType(transaction_type);
+				hm.put("transaction_module", transaction_module);
+				rq.setTransactionModule(transaction_module);
 				hm.put("invoice_no", invoice_no);
 				rq.setInvoiceNo(invoice_no);
 				hm.put("doc_type", document_type);
@@ -322,9 +377,11 @@ public class ViewDFReportSrvl extends HttpServlet {
 					}
 				}
 			}
-		} else if (reportfilename.equals("GuaranteeSetup") || reportfilename.equals("SummaryRevenueByDetail") || reportfilename.equals("PaymentVoucher"+hospital_code) 
-					|| reportfilename.equals("ExpenseDetail") || reportfilename.equals("SummaryRevenueByDoctor")) {
-			
+		} else if (reportfilename.equals("GuaranteeSetup") || reportfilename.equals("SummaryRevenueByDetail")
+				|| reportfilename.equals("PaymentVoucher" + hospital_code) || reportfilename.equals("ExpenseDetail")
+				|| reportfilename.equals("SummaryRevenueByDoctor")
+				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
+
 			if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) {
 				from_doctor = "0";
 				to_doctor = "Z";
@@ -332,122 +389,149 @@ public class ViewDFReportSrvl extends HttpServlet {
 				from_doctor = doctor_profile_code;
 				to_doctor = doctor_profile_code;
 			}
-			
+
 			HashMap hm = new HashMap();
 			ReportQuery rq = new ReportQuery();
-			
+
 			hm.put("hospital_code", hospital_code);
 			hm.put("month", month);
 			hm.put("year", year);
-			
+
+			System.out.println("month : " + month);
+			System.out.println("year : " + year);
+
 			if (reportfilename.equals("GuaranteeSetup")) {
 				System.out.println("GuaranteeSetup");
-				
+
 				hm.put("from_doctor", from_doctor);
 				hm.put("to_doctor", to_doctor);
 				hm.put("guarantee_department_code", guarantee_department_code);
-				
+
 				System.out.println("from_doctor >> " + from_doctor);
 				System.out.println("to_doctor >> " + to_doctor);
 				System.out.println("guarantee_department_code >> " + guarantee_department_code);
-				
+
 				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
 					this.reportGenerateView(hm, reportfilename, response);
 				} else {
 					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
 				}
-				
+
 			} else if (reportfilename.equals("SummaryRevenueByDetail")) {
 				System.out.println("SummaryRevenueByDetail");
-				
-				hm.put("payment_date",paymentDate);
+
+				hm.put("payment_date", paymentDate);
 				hm.put("doctor_category", doctor_category);
 				hm.put("doctor_department", doctor_department);
 				hm.put("order_item", order_item_code);
 				hm.put("order_item_category", order_item_category);
 				hm.put("from_doctor", from_doctor);
 				hm.put("to_doctor", to_doctor);
-				hm.put("term","%");
-				
-				hm.put("hospital_logo", logo_path);
-				
-				if(request.getParameter("REPORT_DISPLAY").equals("view")){
-		            this.reportGenerateView(hm, reportfilename, response);
-		        }else{
-		            System.out.println(reportfilename);
-		            if(file_type.equals("txt")){
-		            	System.out.println(file_type+"<>"+path);
-		                System.out.println(rq.getReport(reportfilename));
-		                this.reportGenerateFile(null, save_file, null, response, request, ""+ers.exportData(path, reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
-		                cdb.closeDB("");
-		            }else{
-		                this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
-		            }
-		        }
-			} else if (reportfilename.equals("PaymentVoucher"+hospital_code)) {
-				System.out.println("PaymentVoucher"+hospital_code);
-				// TODO
-				
-				String subreport_path=getServletConfig().getServletContext().getRealPath("")+"\\reports";
-				
-				hm.put("from_doctor", from_doctor);
-		        hm.put("to_doctor", to_doctor);
-		        hm.put("payment_date",paymentDate);
-		        hm.put("hospital_logo", logo_path);
-		        hm.put("SUBREPORT_DIR", subreport_path);
-		        hm.put("term","%");
+				hm.put("term", "%");
 
-		        if(request.getParameter("REPORT_DISPLAY").equals("view")){
-		            this.reportGenerateView(hm, reportfilename, response);
-		        }else{
-		            this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
-		        }
-		        
-				
+				hm.put("hospital_logo", logo_path);
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					System.out.println(reportfilename);
+					if (file_type.equals("txt")) {
+						System.out.println(file_type + "<>" + path);
+						System.out.println(rq.getReport(reportfilename));
+						this.reportGenerateFile(null, save_file, null, response, request, "" + ers.exportData(path,
+								reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
+						cdb.closeDB("");
+					} else {
+						this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+					}
+				}
+			} else if (reportfilename.equals("PaymentVoucher" + hospital_code)) {
+				System.out.println("PaymentVoucher" + hospital_code);
+				// TODO
+
+				String subreport_path = getServletConfig().getServletContext().getRealPath("") + "\\reports";
+
+				hm.put("from_doctor", from_doctor);
+				hm.put("to_doctor", to_doctor);
+				hm.put("payment_date", paymentDate);
+				hm.put("hospital_logo", logo_path);
+				hm.put("SUBREPORT_DIR", subreport_path);
+				hm.put("term", "%");
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+				}
+
 			} else if (reportfilename.equals("ExpenseDetail")) {
 				System.out.println("ExpenseDetail");
-				// TODO
-				hm.put("payment_date",paymentDate);
+				hm.put("payment_date", paymentDate);
 				hm.put("doctor_category", doctor_category);
 				hm.put("doctor_department", doctor_department);
 				hm.put("order_item", order_item_code);
 				hm.put("from_doctor", from_doctor);
 				hm.put("to_doctor", to_doctor);
 				hm.put("expense_sign", expense_sign);
-			    hm.put("expense_account_code", expense_account_code);
-			    hm.put("expense_code", expense_code);
-			    
-			    if(request.getParameter("REPORT_DISPLAY").equals("view")){
-		            //System.out.println("Payment Date = "+paymentDate+" - "+from_doctor+"<>"+to_doctor+":"+doctor+" | "+file_type+" | "+doctor_department);
-		            this.reportGenerateView(hm, reportfilename, response);
-		        }else{
-		            System.out.println(reportfilename);
-		            if(file_type.equals("txt")){
-		            	System.out.println(file_type+"<>"+path);
-		                System.out.println(rq.getReport(reportfilename));
-		                this.reportGenerateFile(null, save_file, null, response, request, ""+ers.exportData(path, reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
-		                cdb.closeDB("");
-		            }else{
-		                this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
-		            }
-		        }
-			    
+				hm.put("expense_account_code", expense_account_code);
+				hm.put("expense_code", expense_code);
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					System.out.println(reportfilename);
+					if (file_type.equals("txt")) {
+						System.out.println(file_type + "<>" + path);
+						System.out.println(rq.getReport(reportfilename));
+						this.reportGenerateFile(null, save_file, null, response, request, "" + ers.exportData(path,
+								reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
+						cdb.closeDB("");
+					} else {
+						this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+					}
+				}
+
 			} else if (reportfilename.equals("SummaryRevenueByDoctor")) {
 				System.out.println("SummaryRevenueByDoctor");
-				// TODO
 				hm.put("term", term);
-		        hm.put("doctor_type_code", doctor_type_code);
-		        hm.put("payment_mode_code", payment_mode_code);
-		        hm.put("doctor_department", doctor_department);
-		        
-		        if(request.getParameter("REPORT_DISPLAY").equals("view")){
-		            this.reportGenerateView(hm, reportfilename, response);
-		        }else{
-		            this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
-		        }   
-				
+				hm.put("doctor_type_code", doctor_type_code);
+				hm.put("payment_mode_code", payment_mode_code);
+				hm.put("doctor_department", doctor_department);
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+				}
+
+			} else if (reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
+				System.out.println("SummaryRevenueByDetailInMonthVCH");
+				hm.put("from_doctor", from_doctor);
+				hm.put("to_doctor", to_doctor);
+				hm.put("doctor_category", doctor_category);
+				hm.put("doctor_department", doctor_department);
+				hm.put("order_item", order_item_code);
+				hm.put("order_item_category", order_item_category);
+				hm.put("term", "%");
+				hm.put("payment_date", paymentDate);
+				hm.put("hospital_logo", logo_path);
+
+				System.out.println("from_doctor : " + from_doctor);
+				System.out.println("to_doctor : " + to_doctor);
+				System.out.println("doctor_category : " + doctor_category);
+				System.out.println("doctor_department : " + doctor_department);
+				System.out.println("order_item_code : " + order_item_code);
+				System.out.println("order_item_category : " + order_item_category);
+				System.out.println("paymentDate : " + paymentDate);
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+				}
+
 			}
-		} 
+		}
 
 	}
 
@@ -568,8 +652,8 @@ public class ViewDFReportSrvl extends HttpServlet {
 				out.println("</head>");
 				out.println("<body bgcolor=\"#dde4e8\">");
 				out.println("<h1 align=\"center\">Report Generate File</h1>");
-				out.println("<p align=\"center\">" + "<a href=\"" + link + report_file_gen + ".xls\">" +
-						"<img src=\"./images/xls_icon.gif\" width=\"50\" height=\"50\" border=\"0\"/></a></p><br>");
+				out.println("<p align=\"center\">" + "<a href=\"" + link + report_file_gen + ".xls\">"
+						+ "<img src=\"./images/xls_icon.gif\" width=\"50\" height=\"50\" border=\"0\"/></a></p><br>");
 				out.println("<p align=\"center\">Write File Report Complete</p><br>");
 				out.println("</body>");
 				out.println("</html>");
@@ -588,7 +672,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 			}
 		} else if (report_type.equals("pdf")) {
 			grb.setPath(upload_path);
-			
+
 			if (grb.exportReportPDF(report_file_gen, URLpath, hashM)) {
 				response.setContentType("text/html");
 				out.println("<html>");

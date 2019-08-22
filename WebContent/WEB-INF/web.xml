@@ -108,6 +108,14 @@
     <servlet-name>ProcessEnableTaxReportSrvl</servlet-name>
     <servlet-class>df.servlet.process.ProcessEnableTaxReportSrvl</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>ViewDFReportSrvl</servlet-name>
+    <servlet-class>df.servlet.report.ViewDFReportSrvl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewDFReportSrvl</servlet-name>
+    <url-pattern>/ViewDFReportSrvl</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ProcessEnableTaxReportSrvl</servlet-name>
     <url-pattern>/ProcessEnableTaxReportSrvl</url-pattern>

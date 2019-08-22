@@ -47,6 +47,7 @@
 			labelMap.add("REPORT_PAID_CHEQUE","Summary Cheque Paid","รายงานทำจ่ายเช็คค่าแพทย์");
 			labelMap.add("REPORT_EXPENSE","Adjust Revenue Report","รายงานรายการปรับปรุงค่าแพทย์");
 			labelMap.add("REPORT_DF_HOLD","DF Hold Report","รายงานรายการระงับจ่ายค่าแพทย์");
+			labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
 			labelMap.add("REPORT_TAX_406","Tax 40(6) Report","หนังสือรับรองรายได้ 40(6)"); 
 			labelMap.add("REPORT_TAX_402","Tax 40(2) Report","ใบรับรองภาษี 50 ทวิ");
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
@@ -145,6 +146,7 @@
 	                      <option value="<%=report_payment_detail%>">${labelMap.REPORT_DETAIL_DF}</option>
 	                      <option value="ExpenseDetailForDoctor">${labelMap.REPORT_EXPENSE}</option>
 			      		  <option value="<%=report_unpaid%>">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
+	                      <option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
 	                      <option value="TaxLetter406ForDoctor">${labelMap.REPORT_TAX_406}</option>
 						  <option value="Tax402SummaryYearlyForDoctor">${labelMap.REPORT_TAX_402}</option>
 	                    </select>
