@@ -52,7 +52,7 @@ public class ImportTransactionArReceiptBean extends InterfaceTextFileBean {
                     rs.updateDouble("CREDIT_NOTE_AMOUNT",Double.parseDouble(""+sub_data[6].trim()));
                     rs.updateDouble("DEBIT_NOTE_AMOUNT",Double.parseDouble(""+sub_data[7].trim()));
                     try{
-	                    if(sub_data[10].trim().equals("W")){
+	                    if(sub_data[10].trim().equals("W") && Double.parseDouble(""+sub_data[8].trim()) == 0){
 	                    	pay_amount = Double.parseDouble(""+sub_data[5].trim())-Double.parseDouble(""+sub_data[9].trim());
 	                    	if(pay_amount>1){
 	                    		rs.updateDouble("PAYMENT_AMOUNT",pay_amount);

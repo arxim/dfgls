@@ -449,7 +449,33 @@ public class ProcessPartialPayment {
 		//ArrayList<HashMap<String, String>> arrData = new ArrayList<HashMap<String, String>>();
 		String qMessage="";
 		boolean result =true;
+		//Update Payment Amount if exceed or equal Bill Amount
+		String sqlUpdatePartial = "UPDATE INT_ERP_AR_RECEIPT SET IS_LAST_RECEIPT = 'Y', PAYMENT_AMOUNT = BILL_AMOUNT "
+			  +	"WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' "
+			  +	"AND DOC_TYPE = 'R' AND IS_LAST_RECEIPT = 'N' AND PAYMENT_AMOUNT >= BILL_AMOUNT";
+		
 		//Insert Combind bill case N/N or N in month
+		String sqlCombineBillNew = "INSERT INTO INT_ERP_AR_RECEIPT "
+			  +	"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,"
+			  + "IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, IAR.DEBIT_NOTE_AMOUNT, PAYMENT_AMT, "
+			  + "IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE,IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE, IAR.UPDATE_DATE, "
+			  + "IAR.UPDATE_TIME,'COMBINE' AS USER_ID,IAR.IS_LOADED "
+			  + "FROM INT_ERP_AR_RECEIPT IAR JOIN ( "
+			  + "SELECT I.HOSPITAL_CODE, I.BILL_NO, I2.RECEIPT_DATE, I2.RECEIPT_NO, I2.TRANSACTION_DATE, PAYMENT_AMT "
+			  + "FROM INT_ERP_AR_RECEIPT I JOIN ( "
+			  + "SELECT INT_ERP_AR_RECEIPT.HOSPITAL_CODE, INT_ERP_AR_RECEIPT.BILL_NO, RECEIPT_NO,RECEIPT_DATE,TRANSACTION_DATE, "
+			  + "ROW_NUMBER() OVER(PARTITION BY INT_ERP_AR_RECEIPT.BILL_NO ORDER BY INT_ERP_AR_RECEIPT.BILL_NO ) AS PT_NUM, "
+			  + "PAYMENT_AMT FROM INT_ERP_AR_RECEIPT LEFT OUTER JOIN ( "
+			  + "SELECT HOSPITAL_CODE, BILL_NO, SUM(PAYMENT_AMOUNT) AS PAYMENT_AMT FROM INT_ERP_AR_RECEIPT "
+			  + "WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"' "
+			  + "AND DOC_TYPE+IS_LAST_RECEIPT='RN' GROUP BY HOSPITAL_CODE, BILL_NO HAVING COUNT(*) > 1) A "
+			  + "ON INT_ERP_AR_RECEIPT.HOSPITAL_CODE = A.HOSPITAL_CODE AND INT_ERP_AR_RECEIPT.BILL_NO = A.BILL_NO "
+			  + "WHERE A.HOSPITAL_CODE='"+this.hospitalCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' ) I2 "
+			  + "ON I.HOSPITAL_CODE =I2.HOSPITAL_CODE AND I.BILL_NO = I2.BILL_NO AND I.RECEIPT_NO = I2.RECEIPT_NO WHERE PT_NUM = 1) I3 "
+			  + "ON I3.HOSPITAL_CODE = IAR.HOSPITAL_CODE and I3.BILL_NO = IAR.BILL_NO AND I3.RECEIPT_DATE = IAR.RECEIPT_DATE "
+			  + "WHERE IAR.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND IS_LAST_RECEIPT = 'N' "
+			  + "AND IAR.HOSPITAL_CODE = '"+this.hospitalCode+"'"; 
+		/*
 		String sqlCombineBill = "INSERT INTO INT_ERP_AR_RECEIPT "
 				 +"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, " 
 				 +"IAR.DEBIT_NOTE_AMOUNT,SUM(IAR.PAYMENT_AMOUNT)AS PAYMENT_AMONT,IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE,IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE, "
@@ -468,6 +494,7 @@ public class ProcessPartialPayment {
 				 + "GROUP BY IAR.BILL_NO, I3.RECEIPT_DATE, I3.RECEIPT_NO,IAR.HOSPITAL_CODE,IAR.RECEIPT_TYPE_CODE, "
 				 + "IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT,IAR.DEBIT_NOTE_AMOUNT,IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE, "
 				 + "IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE,IAR.UPDATE_DATE,IAR.UPDATE_TIME,IAR.USER_ID,IAR.IS_LOADED";
+		*/
 		//delete dupicate bill in month N/N
 		String sqlDeleteBeforeCombineBill ="DELETE INT_ERP_AR_RECEIPT  WHERE HOSPITAL_CODE='"+this.hospitalCode+"'AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"'  AND BILL_NO IN ( "
 				+ "SELECT BILL_NO   FROM INT_ERP_AR_RECEIPT WHERE TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND HOSPITAL_CODE='"+this.hospitalCode+"' "
@@ -489,13 +516,14 @@ public class ProcessPartialPayment {
 		
 		try { 
 			this.dbConn.setStatement(); 
-			dbConn.insert(sqlCombineBill); 
-			qMessage =sqlCombineBill;	
+			dbConn.insert(sqlUpdatePartial); 
+			qMessage =sqlUpdatePartial;	
+			dbConn.insert(sqlCombineBillNew); 
+			qMessage =sqlCombineBillNew;	
 			dbConn.insert(sqlDeleteBeforeCombineBill);
 			qMessage =sqlDeleteBeforeCombineBill;	
 			dbConn.insert(sqlDeleteDupBill);
 			qMessage =sqlDeleteDupBill;	
-			//System.out.println(qMessage);
 			this.dbConn.commitDB();
 			result = true; 
 		} catch (Exception e1) { 
@@ -539,8 +567,8 @@ public class ProcessPartialPayment {
 				   "("+
 				   "SELECT BILL_NO FROM INT_ERP_AR_RECEIPT "+
 				   "WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND "+
-				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_LAST_RECEIPT = 'Y') AND "+
-				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND IS_LAST_RECEIPT = 'N' AND TRANSACTION_DATE NOT BETWEEN '"+this.startDate+"' AND '"+this.endDate+"'   GROUP BY BILL_NO HAVING COUNT(*)>1) "+
+				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND DOC_TYPE = 'R' AND IS_LAST_RECEIPT = 'Y') AND "+
+				   "BILL_NO NOT IN (SELECT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND DOC_TYPE = 'R' AND IS_LAST_RECEIPT = 'N' AND TRANSACTION_DATE NOT BETWEEN '"+this.startDate+"' AND '"+this.endDate+"'   GROUP BY BILL_NO HAVING COUNT(*)>1) "+
 				   ") "+
 				   "AND TRANSACTION_DATE BETWEEN '"+this.startDate+"' AND '"+this.endDate+"' "+
 				   ") "+
