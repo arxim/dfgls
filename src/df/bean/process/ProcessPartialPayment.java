@@ -561,7 +561,7 @@ public class ProcessPartialPayment {
 				   "SELECT HOSPITAL_CODE, INVOICE_NO, INVOICE_DATE, RECEIPT_NO, RECEIPT_DATE, TRANSACTION_DATE, "+
 				   "LINE_NO, INVOICE_TYPE, AMOUNT_AFT_DISCOUNT, DR_AMT, DR_TAX_401+DR_TAX_402+DR_TAX_406, "+
 				   "'"+this.startDate+"', '"+JDate.getTime()+"' "+
-				   "FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND INVOICE_NO IN "+
+				   "FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND YYYY+MM = '' AND INVOICE_NO IN "+
 				   "("+
 				   "SELECT DISTINCT BILL_NO FROM INT_ERP_AR_RECEIPT WHERE BILL_NO IN "+
 				   "("+
@@ -573,7 +573,7 @@ public class ProcessPartialPayment {
 				   "AND TRANSACTION_DATE BETWEEN '"+this.startDate+"' AND '"+this.endDate+"' "+
 				   ") "+
 				   "AND INVOICE_NO+LINE_NO NOT IN (SELECT INVOICE_NO+LINE_NO FROM TRN_PARTIAL WHERE HOSPITAL_CODE = '"+this.hospitalCode+"')";
-		System.out.println("TRN_PARTIAL : "+qn );
+		//System.out.println("TRN_PARTIAL : "+qn );
 		return qn;
 	}
 	private String clearTransactionMaster(){
