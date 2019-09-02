@@ -1908,7 +1908,8 @@ public class ProcessGuaranteeBeanNew {
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+con+
+		                //"IS_PAID = '"+is_paid+"', "+con+
+		                "IS_PAID = '"+is_paid+"', "+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
@@ -2044,7 +2045,8 @@ public class ProcessGuaranteeBeanNew {
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+con+
+		                //"IS_PAID = '"+is_paid+"', "+con+
+		                "IS_PAID = '"+is_paid+"', "+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
@@ -2180,7 +2182,8 @@ public class ProcessGuaranteeBeanNew {
 		        		String ss = "UPDATE TRN_DAILY SET "+
 		                "DR_AMT = '"+Double.parseDouble(transaction_table[i][7])+"', "+
 		                "DR_TAX_406 = '"+Double.parseDouble(transaction_table[i][12])+"', "+
-		                "IS_PAID = '"+is_paid+"', "+con+
+		                //"IS_PAID = '"+is_paid+"', "+con+
+		                "IS_PAID = '"+is_paid+"', "+
 		                "GUARANTEE_NOTE = '"+guarantee_info+"' " +
 		                "WHERE INVOICE_NO = '"+transaction_table[i][0]+"' "+
 		                "AND HOSPITAL_CODE = '"+this.hospital_code+"' "+
