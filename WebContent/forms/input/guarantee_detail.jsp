@@ -669,7 +669,7 @@
                 	CheckDate(val,'START_DATE','END_DATE');
                 	if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
                 		alert("Plese choose start date before end date.");
-                		document.mainForm.START_DATE.value = "";
+                		document.mainForm.START_DATE.value = document.mainForm.HID_START_DATE.value;
                 	}
                 	amountType();
                 }
@@ -682,7 +682,7 @@
             		//CheckDate(val,'START_DATE','END_DATE');
             		if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
                 		alert("Plese choose start date before end date.");
-                		document.mainForm.END_DATE.value = "";
+                		document.mainForm.END_DATE.value = document.mainForm.HID_END_DATE.value;
                 	}
             		amountType();
 	            	return true;
@@ -900,12 +900,14 @@
                     <label for="START_DATE"><span class="style1">${labelMap.START_DATE}* </span></label>                    </td>
                     <td class="input">
                         <input name="START_DATE" type="text" class="short" id="START_DATE" maxlength="10" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "START_DATE"))%>" onblur="return startDate(this.value)" />
+                        <input name="HID_START_DATE" type="hidden" class="short" id="HID_START_DATE" maxlength="10" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "START_DATE"))%>" />
                         <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('START_DATE'); return false;" />
                         </td>
                     <td class="labelRequest">
                         <label for="END_DATE">${labelMap.END_DATE} *</label>                    </td>
                     <td class="input">
                         <input name="END_DATE" type="text" class="short" id="END_DATE" maxlength="10" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "END_DATE"))%>" onblur="return endDate(this.value)" />
+                        <input name="HID_END_DATE" type="hidden" class="short" id="HID_END_DATE" maxlength="10" value="<%= JDate.showDate(DBMgr.getRecordValue(stpGuaranteeRec, "END_DATE"))%>" />
                         <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('END_DATE'); return false;" />
                         </td>
                 </tr>
