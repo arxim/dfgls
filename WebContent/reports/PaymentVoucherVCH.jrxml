@@ -24,7 +24,7 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CR017"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
@@ -36,7 +36,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR086"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CR017"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
@@ -49,7 +49,7 @@
 	</parameter>
 	<queryString><![CDATA[SELECT PM.YYYY,PM.MM, PM.PAYMENT_DATE, PM.SUM_AMT-PM.SUM_AR_AMT AS SUM_AMT, PM.SUM_DR_AMT, PM.HP_SUM_AMT,
 PM.EXDR_AMT, PM.EXCR_AMT * -1 AS EXCR_AMT, PM.GUARANTEE_AMT, PM.EXTRA_AMT, PM.ABSORB_AMT, PM.REMARK,
-PM.DR_NET_PAID_AMT, PM.DOCTOR_CODE, DR.NAME_ENG AS NAME_THAI, PM.REF_PAID_NO, 
+PM.DR_NET_PAID_AMT, PM.DOCTOR_CODE, DR.NAME_THAI AS NAME_THAI, PM.REF_PAID_NO, 
 CASE WHEN LEN(PM.PAYMENT_DATE) < 8 THEN PM.YYYY+'00'+PM.MM ELSE PM.PAYMENT_DATE END AS 'PAY_DATE',
 PM.SUM_DR_AMT+PM.EXDR_AMT AS REVENUE, PM.SUM_AMT+PM.EXDR_AMT AS REVENUE_BEF, BK.DESCRIPTION_THAI AS BANK_NAME,
 CASE WHEN PM.EXDR_AMT-(CASE WHEN SG.SUM_TAX_402 IS NULL THEN 0 ELSE SG.SUM_TAX_402 END+CASE WHEN SG.SUM_TAX_406 IS NULL 
@@ -458,9 +458,9 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="1"
-						y="-14"
-						width="101"
-						height="62"
+						y="0"
+						width="168"
+						height="48"
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
@@ -473,11 +473,11 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="252"  isSplitAllowed="true" >
+			<band height="225"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
-						y="19"
+						y="34"
 						width="329"
 						height="15"
 						key="staticText-9"/>
@@ -503,12 +503,12 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[ค่าใช้จ่ายเงินหักอื่นๆ]]></text>
+				<text><![CDATA[ค่าใช้จ่ายและเงินหักอื่นๆ]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="329"
-						y="19"
+						y="34"
 						width="105"
 						height="15"
 						key="textField"/>
@@ -618,7 +618,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<staticText>
 					<reportElement
 						x="0"
-						y="34"
+						y="19"
 						width="329"
 						height="15"
 						key="staticText-32"/>
@@ -631,8 +631,8 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="329"
-						y="34"
+						x="330"
+						y="19"
 						width="105"
 						height="15"
 						key="textField-12"/>
@@ -655,7 +655,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[รวมรายได้ค่า DF]]></text>
+				<text><![CDATA[รวมเงินได้ค่า DF]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -697,7 +697,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[รวมรายได้ทั้งหมด]]></text>
+				<text><![CDATA[รวมเงินได้ทั้งหมด]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -795,7 +795,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="434"
-						y="19"
+						y="34"
 						width="105"
 						height="15"
 						key="textField-21"/>
@@ -808,8 +808,8 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="434"
-						y="34"
+						x="435"
+						y="19"
 						width="105"
 						height="15"
 						key="textField-22"/>
@@ -933,23 +933,9 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<staticText>
 					<reportElement
 						x="1"
-						y="157"
-						width="329"
-						height="17"
-						key="staticText-46"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
-</box>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[รวม DF ที่คิดทั้งหมดในเดือน]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="1"
-						y="174"
-						width="329"
-						height="17"
+						y="149"
+						width="327"
+						height="20"
 						key="staticText-47"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -959,28 +945,14 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[รวม DF ค้างจ่าย (สะสม) ในเดือน]]></text>
+				<text><![CDATA[รวม DF ค้างจ่าย (สะสม) ณ สิ้นเดือน]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="330"
-						y="157"
+						y="149"
 						width="105"
-						height="17"
-						key="textField-26"/>
-					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AFT_AMT}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="330"
-						y="174"
-						width="105"
-						height="17"
+						height="18"
 						key="textField-27"/>
 					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
 </box>
@@ -992,7 +964,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="191"
+						y="168"
 						width="539"
 						height="1"
 						key="line-15"/>
@@ -1000,6 +972,34 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 					<pen lineWidth="0.5" lineStyle="Dashed"/>
 </graphicElement>
 				</line>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="164"
+						y="150"
+						width="165"
+						height="18"
+						key="textField-28"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) ? "มกราคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "02" ) ? "กุมภาพันธ์ "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "03" ) ? "มีนาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "04" ) ? "เมษายน "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "05" ) ? "พฤษภาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "06" ) ? "มิถุนายน "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "07" ) ? "กรกฏาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "08" ) ? "สิงหาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "09" ) ? "กันยายน "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "10" ) ? "ตุลาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) :
+$F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer.parseInt($P{year})+543)) : 
+"ธันวาคม "+(Integer.toString(Integer.parseInt($P{year})+543)) )]]></textFieldExpression>
+				</textField>
 			</band>
 		</detail>
 		<columnFooter>
