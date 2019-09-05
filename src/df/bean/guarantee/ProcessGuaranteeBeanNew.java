@@ -1287,8 +1287,8 @@ public class ProcessGuaranteeBeanNew {
                             this.dr_amt = (trn_in_guarantee_amount * percent_in_allocate/100)+over_guarantee_amount;
                             //this.dr_amt = (trn_in_guarantee_amount * (percent_in_allocate/100))+over_guarantee_amount;
                 		}else{
-                			this.dr_amt = trn_in_guarantee_amount * percent_in_allocate/100;
-                			//this.dr_amt = this.trn_guarantee_amt;
+                			//this.dr_amt = trn_in_guarantee_amount * percent_in_allocate/100;
+                			this.dr_amt = this.trn_guarantee_amt;
                 		}
 
                 		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
@@ -2723,12 +2723,34 @@ public class ProcessGuaranteeBeanNew {
         HP_PREMIUM = backup for AMOUNT_AFT_DISCOUNT rollback
         */
     	try { d.setStatement(); } catch (SQLException e) {}
+    	
+		up = d.getMultiData(
+				"SELECT STP_GUARANTEE.GUARANTEE_ALLOCATE_PCT, "+
+				"STP_GUARANTEE.OVER_ALLOCATE_PCT, "+
+				"HOSPITAL.GUARANTEE_ALL_ALLOC, TRN_DAILY.* "+
+				"FROM TRN_DAILY "+
+				"LEFT OUTER JOIN HOSPITAL ON TRN_DAILY.HOSPITAL_CODE = HOSPITAL.CODE "+
+				"LEFT OUTER JOIN STP_GUARANTEE ON "+
+				"TRN_DAILY.HOSPITAL_CODE = STP_GUARANTEE.HOSPITAL_CODE "+
+				"AND TRN_DAILY.GUARANTEE_DR_CODE = STP_GUARANTEE.GUARANTEE_DR_CODE "+
+				"AND TRN_DAILY.GUARANTEE_CODE = STP_GUARANTEE.GUARANTEE_CODE "+
+				"AND TRN_DAILY.GUARANTEE_TERM_YYYY = STP_GUARANTEE.YYYY "+
+				"AND TRN_DAILY.GUARANTEE_TERM_MM = STP_GUARANTEE.MM "+
+				"AND STP_GUARANTEE.ACTIVE = '1' "+
+				"WHERE TRN_DAILY.HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' "+
+				"AND GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE = 'ABSORB SOME GUARANTEE' "+ 
+				"AND TRN_DAILY.ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' "+
+				"AND BATCH_NO = '' AND COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' "+
+				"AND IS_PAID = 'Y' AND TRN_DAILY.YYYY+TRN_DAILY.MM = '' "
+		);
+    	
 		al = d.getMultiData("SELECT * FROM TRN_DAILY WHERE "+
 		"HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' AND " +
 		"GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE = 'ABSORB SOME GUARANTEE' AND " +
 		"ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND BATCH_NO = '' AND "+
         "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
         "IS_PAID = 'Y' AND YYYY+MM = ''");
+		
 		if(al.size()>0){
 			for(int i = 0; i < al.size(); i++){
 			//New Payment Transaction for Absorb Some
@@ -2738,8 +2760,10 @@ public class ProcessGuaranteeBeanNew {
 				}else{
 					percenAft = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(al.get(i).get("OLD_DR_AMT"));
 				}
-				double percentage = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100) / Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
-				//System.out.println(al.get(i).get("LINE_NO")+"ADV"+"<>"+percentage+"<>"+al.get(i).get("AMOUNT_AFT_DISCOUNT"));
+				if( up.get(i).get("GUARANTEE_ALL_ALLOC").equals("A") ){
+					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(up.get(i).get("GUARANTEE_ALLOCATE_PCT")))
+							    * 100 / Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"));
+				}
 				al.get(i).put("LINE_NO", al.get(i).get("LINE_NO")+"ADV");
 				al.get(i).put("RECEIPT_NO", al.get(i).get("INVOICE_NO"));
 				al.get(i).put("RECEIPT_DATE", al.get(i).get("INVOICE_DATE"));
@@ -2751,11 +2775,21 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
 				if( al.get(i).get("TAX_TYPE_CODE").equals("402") ){
-					al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
-					al.get(i).put("DR_TAX_406", "0");					
+					if( al.get(i).get("TAX_FROM_ALLOCATE").equals("Y")){
+						al.get(i).put("DR_TAX_402", al.get(i).get("GUARANTEE_PAID_AMT"));					
+						al.get(i).put("DR_TAX_406", "0");					
+					}else{
+						al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_406", "0");					
+					}
 				}else if( al.get(i).get("TAX_TYPE_CODE").equals("406") ){
-					al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
-					al.get(i).put("DR_TAX_402", "0");					
+					if( al.get(i).get("TAX_FROM_ALLOCATE").equals("Y")){
+						al.get(i).put("DR_TAX_406", al.get(i).get("GUARANTEE_PAID_AMT"));			
+						al.get(i).put("DR_TAX_402", "0");			
+					}else{
+						al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_402", "0");			
+					}
 				}
 				//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
 			}
@@ -2768,10 +2802,10 @@ public class ProcessGuaranteeBeanNew {
     		//Old Credit Transaction for Absorb Some
     		de.setStatement(); 
     		String s = "UPDATE TRN_DAILY SET BATCH_NO = '', AMOUNT_AFT_DISCOUNT=T.AMOUNT_AFT_DISCOUNT-Q.AMOUNT_AFT_DISCOUNT, "+
-					"DR_TAX_400 = CASE WHEN TAX_TYPE_CODE = '400' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
-					"DR_TAX_401 = CASE WHEN TAX_TYPE_CODE = '401' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
-					"DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END , "+
-					"DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN T.OLD_TAX_AMT-Q.DR_TAX_AMT ELSE '0.0' END "+
+					"DR_TAX_400 = CASE WHEN TAX_TYPE_CODE = '400' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+					"DR_TAX_401 = CASE WHEN TAX_TYPE_CODE = '401' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+					"DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+					"DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END "+
 
     			   //"DR_TAX_406 = T.OLD_TAX_AMT-Q.DR_TAX_AMT "+
  				   "FROM TRN_DAILY AS T INNER JOIN "+
@@ -2787,6 +2821,8 @@ public class ProcessGuaranteeBeanNew {
  				   "ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND ( BATCH_NO = '' OR BATCH_NO IS NULL) AND "+
  				   "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
  				   "IS_PAID = 'Y' AND YYYY+MM = ''";
+    		
+    		System.out.println(s);
     		de.insert(s);
     		de.commitDB();
     	} catch (SQLException e) {
