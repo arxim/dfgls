@@ -202,7 +202,7 @@
             String activeIcon;
             while (rs.next()) {
             	activeIcon = "<img src=\"../../images/" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? "" : "in") + "active_icon.png\" alt=\"" + (rs.getString("ACTIVE") != null && rs.getString("ACTIVE").equalsIgnoreCase("1") ? labelMap.get(LabelMap.ACTIVE_1) : labelMap.get(LabelMap.ACTIVE_0)) + "\" />";
-                linkEdit = "<a href=\"guarantee_detail.jsp?GUARANTEE_CODE="+ rs.getString("GUARANTEE_CODE")+"&GUARANTEE_DR_CODE=" + rs.getString("GUARANTEE_DR_CODE") + "&ADMISSION_TYPE_CODE=" + rs.getString("ADMISSION_TYPE_CODE") + "&GUARANTEE_TYPE_CODE=" + rs.getString("GUARANTEE_TYPE_CODE") + "&MM=" + rs.getString("MM") + "&YYYY=" + rs.getString("YYYY") + "&START_DATE=" + rs.getString("START_DATE") + "&START_TIME=" + rs.getString("START_TIME") + "&END_DATE=" + rs.getString("END_DATE") + "&END_TIME=" + rs.getString("END_TIME") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
+                linkEdit = "<a href=\"guarantee_detail_new.jsp?GUARANTEE_CODE="+ rs.getString("GUARANTEE_CODE")+"&GUARANTEE_DR_CODE=" + rs.getString("GUARANTEE_DR_CODE") + "&ADMISSION_TYPE_CODE=" + rs.getString("ADMISSION_TYPE_CODE") + "&GUARANTEE_TYPE_CODE=" + rs.getString("GUARANTEE_TYPE_CODE") + "&MM=" + rs.getString("MM") + "&YYYY=" + rs.getString("YYYY") + "&START_DATE=" + rs.getString("START_DATE") + "&START_TIME=" + rs.getString("START_TIME") + "&END_DATE=" + rs.getString("END_DATE") + "&END_TIME=" + rs.getString("END_TIME") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
                 %>                
                 <tr>
                     <td class="row<%=i % 2%>"><%= Util.formatHTMLString(rs.getString("ADMISSION_TYPE_CODE"), true)%></td>
@@ -228,7 +228,7 @@
                 %>                
                 <tr>
                     <th colspan="11" class="buttonBar">
-                        <input type="button" id="NEW" name="NEW" class="button" value="${labelMap.NEW}" onclick="window.location = 'guarantee_detail.jsp?GUARANTEE_DR_CODE=' + document.mainForm.GUARANTEE_DR_CODE.value + '&MM=' + document.mainForm.MM.value + '&YYYY=' + document.mainForm.YYYY.value;" >
+                        <input type="button" id="NEW" name="NEW" class="button" value="${labelMap.NEW}" onclick="window.location = 'guarantee_detail_new.jsp?GUARANTEE_DR_CODE=' + document.mainForm.GUARANTEE_DR_CODE.value + '&MM=' + document.mainForm.MM.value + '&YYYY=' + document.mainForm.YYYY.value;" >
                     </th>
                 </tr>
             </table>
