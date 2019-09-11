@@ -121,7 +121,7 @@
 				var year = document.getElementById('Tax402Year');
 				var d = document.getElementById('Tax402');
                 if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406'){
-                    e.style.display = 'block';
+                    e.style.display = "";
                 	d.style.display = 'none';
                 	term.style.display = 'none';
                 	year.style.display = 'none';
@@ -130,8 +130,8 @@
                     document.getElementById('PRINT_DATE').disabled = "";
                     document.getElementById('DOCTOR_CODE_FROM').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='tax402_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax3_monthly' || document.mainForm.REPORT_FILE_NAME.value=='tax53_monthly'){
-                    d.style.display = 'block';
-                    term.style.display = 'block';
+                    d.style.display = "";
+                    term.style.display = "";
                 	e.style.display = 'none';
                 	year.style.display = 'none';
                 	year_term.style.display = 'none';
@@ -140,7 +140,7 @@
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='ReportSummaryFrontPage01'){
-                    term.style.display = 'block';
+                    term.style.display = "";
                 	e.style.display = 'none';
                 	d.style.display = 'none';
                 	year.style.display = 'none';
@@ -148,19 +148,19 @@
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
-                    year_term.style.display = 'block';
+                    year_term.style.display = "";
                 	e.style.display = 'none';
-                	d.style.display = 'block';
+                	d.style.display = "";
                 	term.style.display = 'none';
                 	year.style.display = 'none';
                     document.getElementById('YYYY').disabled = "";
 					document.getElementById('LABEL_PAYDATE').style.display = "none";
 					document.getElementById('INPUT_PAYDATE').style.display = "none";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='Tax402SummaryYearly' || mainForm.REPORT_FILE_NAME.value=='Tax91_52'){
-                    year.style.display = 'block';
+                    year.style.display = "";
                 	e.style.display = 'none';
                 	d.style.display = 'none';
-                	term.style.display = 'block';
+                	term.style.display = "";
                 	year_term.style.display = 'none';
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY402').disabled = "";
