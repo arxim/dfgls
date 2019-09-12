@@ -382,12 +382,12 @@ public class ViewDFReportSrvl extends HttpServlet {
 				|| reportfilename.equals("SummaryRevenueByDoctor")
 				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
 
-			if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) {
+			if (doctor_code.equals("") || doctor_code.equals(null)) {
 				from_doctor = "0";
 				to_doctor = "Z";
 			} else {
-				from_doctor = doctor_profile_code;
-				to_doctor = doctor_profile_code;
+				from_doctor = doctor_code;
+				to_doctor = doctor_code;
 			}
 
 			HashMap hm = new HashMap();

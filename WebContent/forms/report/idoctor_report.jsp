@@ -166,7 +166,7 @@
                     document.getElementById('block_from_to_date').style.display = '';
                 	document.getElementById('block_payor_office_code').style.display = 'none';
                 	document.getElementById('block_doctor_code').style.display = '';
-                	document.getElementById('block_doctor_profile_code').style.display = '';
+                	document.getElementById('block_doctor_profile_code').style.display = 'none';
                 	document.getElementById('block_doctor_department').style.display = 'none';
                 	document.getElementById('block_order_category_code').style.display = 'none';
                 	document.getElementById('block_doctor_category_code').style.display = 'none';
@@ -195,7 +195,7 @@
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	document.getElementById('block_doctor_code').style.display = '';
-                 	document.getElementById('block_doctor_profile_code').style.display = '';
+                 	document.getElementById('block_doctor_profile_code').style.display = 'none';
                  	document.getElementById('block_doctor_department').style.display = 'none';
                  	document.getElementById('block_order_category_code').style.display = 'none';
                  	document.getElementById('block_doctor_category_code').style.display = 'none';
@@ -222,7 +222,7 @@
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	document.getElementById('block_doctor_code').style.display = '';
-                 	document.getElementById('block_doctor_profile_code').style.display = '';
+                 	document.getElementById('block_doctor_profile_code').style.display = 'none';
                  	document.getElementById('block_doctor_department').style.display = 'none';
                  	document.getElementById('block_order_category_code').style.display = 'none';
                  	document.getElementById('block_doctor_category_code').style.display = 'none';
