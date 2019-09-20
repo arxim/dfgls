@@ -121,6 +121,7 @@
         $(document).ready(function() {
         	document.getElementById("progress_discharge").innerHTML = "0/1";     
         	document.getElementById("progress_monthly").innerHTML = "0/1";
+        	document.getElementById("progress_summary_in_month").innerHTML = "0/1";
         // 	document.getElementById("progress_bank").innerHTML = "0/1";     
         	
 			function dischargeCalulate(){
@@ -181,7 +182,7 @@
 									if(data.count>0){
 										document.getElementById("img_monthly_calculate").src="../../images/succeed_icon.gif";
 										if(data.count == 1){
-								        	alert("    Monthly Process Complete    ");
+								        	ProcressSummary();
 										}else{
 											document.getElementById("img_monthly_calculate").src="../../images/failed_icon.gif";
 											//document.getElementById("img_bank_payment").src="../../images/failed_icon.gif";
@@ -203,6 +204,43 @@
 					    }); 
 	        	
 			}
+			
+			function ProcressSummary(){
+				document.getElementById("img_progress_summary_in_month").src="../../images/processing_icon.gif";
+				xhr = $.ajaxQueue({
+					type: "GET",
+					url: "../../ProcessAllMonthlySrvl",
+					data: {mode:"processSummaryInMonth",date:$("#date").val(),term:$("#term").val(),hospitalCode : $("#hospitalCode").val(), user:'<%=user%>'},
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					cache : false,
+					success: function(data){
+						
+						document.getElementById("progress_summary_in_month").innerHTML = data.count+" / 1";
+						if(data.count>0){
+							document.getElementById("img_progress_summary_in_month").src="../../images/succeed_icon.gif";
+							if(data.count == 1){
+					        	alert("    Process Summary In Month Complete    ");
+							}else{
+								document.getElementById("img_progress_summary_in_month").src="../../images/failed_icon.gif";
+								document.getElementById("RUN").disabled = "";
+								document.getElementById("STOP").disabled = "";
+					        	alert("    Fail!!!  ");
+							}
+						}else{
+							document.getElementById("img_progress_summary_in_month").src="../../images/failed_icon.gif";
+							document.getElementById("RUN").disabled = "";
+							document.getElementById("STOP").disabled = "";
+				        	alert("    Fail!!!  ");
+						}
+					},
+					error: function(xhr,state,exception) {
+						alert("exception summaryInMonth => " + exception);
+					}
+				});
+			}
+			
+			
 			function bankPayment(){
 				xhr = $.ajaxQueue({
 					type: "GET",
@@ -237,9 +275,11 @@
 	        $("#RUN").click(function () {
 	        	document.getElementById("progress_discharge").innerHTML = "0/1";
 	        	document.getElementById("progress_monthly").innerHTML = "0/1";
+	        	document.getElementById("progress_summary_in_month").innerHTML = "0/1";
 	        	//document.getElementById("progress_bank").innerHTML = "0/1";
 				document.getElementById("img_discharge_monthly").src="../../images/waiting_icon.gif";
 				document.getElementById("img_monthly_calculate").src="../../images/waiting_icon.gif";
+				document.getElementById("img_progress_summary_in_month").src="../../images/waiting_icon.gif";
 				//document.getElementById("img_bank_payment").src="../../images/waiting_icon.gif";
 				document.getElementById("RUN").disabled = "disabled";
 				document.getElementById("STOP").disabled = "disabled";
@@ -308,6 +348,11 @@
                     <td class="row0 alignCenter">Monthly Calculate</td>
                     <td class="row0 alignCenter"><div id="progress_monthly" name="progress_monthly"></div></td>
                     <td class="row0 alignCenter"><img src="../../images/waiting_icon.gif" alt="" name="img_monthly_calculate" id="img_monthly_calculate"/></td>
+                </tr>
+                <tr>
+                    <td class="row0 alignCenter">Summary In Month</td>
+                    <td class="row0 alignCenter"><div id="progress_summary_in_month" name="progress_summary_in_month"></div></td>
+                    <td class="row0 alignCenter"><img src="../../images/waiting_icon.gif" alt="" name="img_progress_summary_in_month" id="img_progress_summary_in_month"/></td>
                 </tr>
             </table>
         </form>

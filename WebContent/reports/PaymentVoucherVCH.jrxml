@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="PaymentVoucherVCH"
+		 name="PaymentVoucherVCH_BK"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -24,10 +24,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR017"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["54ANE01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
@@ -36,7 +36,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CR017"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["54ANE01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
@@ -61,7 +61,8 @@ DP.NAME_ENG AS PROFILE_NAME,
 DR.DOCTOR_PROFILE_CODE AS PROFILE_CODE, PM.PAYMENT_MODE_CODE, PY.DESCRIPTION AS PAYMENT_METHOD,
 PM.SUM_PAY_BY_CASH, 
 CASE WHEN PM.SUM_PAY_BY_AR-PM.SUM_PAY_BY_PATIENT <= 0 THEN 0 ELSE PM.SUM_PAY_BY_AR-PM.SUM_PAY_BY_PATIENT END AS SUM_PAY_BY_AR,
-PM.SUM_PAY_BY_PATIENT, PM.SUM_AR_AMT, PM.SUM_AMT AS SUM_AFT_AMT, PM.SUM_UNPAID_AMT
+PM.SUM_PAY_BY_PATIENT, PM.SUM_AR_AMT, PM.SUM_AMT AS SUM_AFT_AMT, PM.SUM_UNPAID_AMT, 
+CASE WHEN SM.SUM_AMOUNT_AFT_DISCOUNT IS NULL THEN 0 ELSE SM.SUM_AMOUNT_AFT_DISCOUNT END AS SUM_AMOUNT_AFT_DISCOUNT
 FROM SUMMARY_PAYMENT PM
 LEFT OUTER JOIN DOCTOR DR ON (PM.DOCTOR_CODE = DR.CODE AND PM.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
@@ -69,6 +70,7 @@ LEFT OUTER JOIN BANK BK ON (DR.BANK_CODE = BK.CODE)
 LEFT OUTER JOIN PAYMENT_MODE PY ON PM.PAYMENT_MODE_CODE = PY.CODE
 LEFT OUTER JOIN VW_EXPENSE_VOUCHER SG ON (PM.DOCTOR_CODE = SG.DOCTOR_CODE AND PM.HOSPITAL_CODE = SG.HOSPITAL_CODE 
 AND PM.YYYY+PM.MM = SG.YYYY+SG.MM)
+LEFT JOIN SUMMARY_IN_MONTH SM ON PM.DOCTOR_CODE = SM.DOCTOR_CODE
 WHERE PM.YYYY LIKE $P{year} AND PM.MM LIKE $P{month}
 AND (DR.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 AND PM.PAYMENT_MODE_CODE <> 'U'
@@ -109,6 +111,7 @@ ORDER BY DR.DOCTOR_PROFILE_CODE, DR.CODE]]></queryString>
 	<field name="SUM_AR_AMT" class="java.math.BigDecimal"/>
 	<field name="SUM_AFT_AMT" class="java.math.BigDecimal"/>
 	<field name="SUM_UNPAID_AMT" class="java.math.BigDecimal"/>
+	<field name="SUM_AMOUNT_AFT_DISCOUNT" class="java.math.BigDecimal"/>
 
 	<variable name="SUM_DR_NET_PAID_AMT_1" class="java.math.BigDecimal" resetType="Group" resetGroup="profile_code" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_NET_PAID_AMT}]]></variableExpression>
@@ -473,7 +476,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="225"  isSplitAllowed="true" >
+			<band height="252"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
 						x="0"
@@ -808,7 +811,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="435"
+						x="434"
 						y="19"
 						width="105"
 						height="15"
@@ -933,7 +936,21 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<staticText>
 					<reportElement
 						x="1"
-						y="149"
+						y="157"
+						width="329"
+						height="17"
+						key="staticText-46"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[รวม DF ที่คิดทั้งหมดในเดือน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="177"
 						width="327"
 						height="20"
 						key="staticText-47"/>
@@ -950,7 +967,21 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="330"
-						y="149"
+						y="157"
+						width="105"
+						height="17"
+						key="textField-26"/>
+					<box>					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_AMOUNT_AFT_DISCOUNT}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="330"
+						y="177"
 						width="105"
 						height="18"
 						key="textField-27"/>
@@ -964,7 +995,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="168"
+						y="196"
 						width="539"
 						height="1"
 						key="line-15"/>
@@ -975,7 +1006,7 @@ $F{MM}.equals( "11" ) ? "พฤศจิกายน "+(Integer.toString(Integer
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="164"
-						y="150"
+						y="178"
 						width="165"
 						height="18"
 						key="textField-28"/>

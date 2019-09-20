@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import df.bean.process.ProcessDischargeSummary;
+import df.bean.process.ProcessSummaryInMonth;
 import df.bean.db.conn.DBConn;
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.Batch;
@@ -111,6 +112,28 @@ public class ProcessAllMonthlySrvl extends HttpServlet {
 				} catch (IOException e) {
 					System.out.println("Error Message = > " + e.getMessage());
 				}
+			}else if (mode.equals("processSummaryInMonth")) {
+				//TODO 
+				ProcessSummaryInMonth processSummaryInMonth = new ProcessSummaryInMonth();
+				try {
+					if(term.equals("2")){
+						if(processSummaryInMonth.doProcessSummaryInMonth(hospitalCode,date,"","")){
+							bothJson = "{\"count\" : \"1\"}";						
+						}else{
+							bothJson = "{\"count\" : \"0\"}";
+						}
+					}
+				} catch (Exception e) {
+					bothJson = "{\"count\" : \"0\"}";
+				}
+				try {
+			        response.setContentType("application/json"); 
+					response.setCharacterEncoding("utf-8"); 
+					response.getWriter().write(bothJson);
+				} catch (IOException e) {
+					System.out.println("Error Message = > " + e.getMessage());
+				}
+				
 			}else if( mode.equals("processDischarge") && term.equals("2") ){
 				ProcessDischargeSummary PD=new ProcessDischargeSummary();
 				try {
