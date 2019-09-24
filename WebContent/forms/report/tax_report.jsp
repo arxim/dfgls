@@ -28,6 +28,7 @@
 			labelMap.add("REPORT_402", "รายงานสรุปภาษี 40(2) รายเดือน", "รายงานสรุปภาษี 40(2) รายเดือน");
 			labelMap.add("REPORT_402_NEW", "รายงานภาษี 40(2) รายเดือน", "รายงานภาษี 40(2) รายเดือน");
 			labelMap.add("REPORT_402_FRONT", "ใบปะหน้าภาษี 40(2) รายเดือน", "ใบปะหน้าภาษี 40(2)รายเดือน");
+			labelMap.add("REPORT_402_YEARLY_FRONT", "ใบปะหน้าภาษี 40(2) รายปี", "ใบปะหน้าภาษี 40(2) รายปี");	
 			labelMap.add("REPORT_402_YEARLY", "หนังสือรับรอง 50 ทวิ", "หนังสือรับรอง 50 ทวิ");			
 			labelMap.add("REPORT_SUMMARY_402_YEARLY", "รายงานสรุปภาษี 40(2)รายปี", "รายงานสรุปภาษี 40(2)รายปี");
 			labelMap.add("REPORT_TAX91", "รายงาน ภ.ง.ด.91", "รายงาน ภ.ง.ด.91");
@@ -67,7 +68,7 @@
         <script type="text/javascript" src="../../javascript/util.js"></script>
         <script type="text/javascript">
             function Report_View() {
-            	if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
+            	if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly' || document.mainForm.REPORT_FILE_NAME.value=='Tax402SummaryYearlyFrontPage'){
             		document.getElementById('YYYY').value = document.getElementById('YYYY1').value;
                 }
             	if(document.mainForm.REPORT_FILE_NAME.value == "None"){
@@ -140,13 +141,24 @@
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='ReportSummaryFrontPage01'){
+                	d.style.display = "";
                     term.style.display = "";
                 	e.style.display = 'none';
-                	d.style.display = 'none';
                 	year.style.display = 'none';
                 	year_term.style.display = 'none';
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
+                    document.getElementById('LABEL_PAYDATE').style.display = "none";
+					document.getElementById('INPUT_PAYDATE').style.display = "none";
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='Tax402SummaryYearlyFrontPage'){
+                	d.style.display = "";
+                	year_term.style.display = "";
+                	e.style.display = 'none';
+                	term.style.display = 'none';
+                	year.style.display = 'none';
+                    document.getElementById('YYYY').disabled = "";
+					document.getElementById('LABEL_PAYDATE').style.display = "none";
+					document.getElementById('INPUT_PAYDATE').style.display = "none";
                 }else if(document.mainForm.REPORT_FILE_NAME.value=='SummaryTax402Yearly'){
                     year_term.style.display = "";
                 	e.style.display = 'none';
@@ -179,7 +191,6 @@
  */            
             function DOCTOR_CODE_FROM_KeyPress(e) {
                 var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
-
                 if (key == 13) {
                     document.mainForm.DOCTOR_CODE_FROM.blur();
                     return false;
@@ -188,7 +199,6 @@
                     return true;
                 }
             }
-
             function AJAX_Refresh_DOCTOR_FROM() {
             //alert("code1="+code);
             //alert("code2="+document.mainForm.DOCTOR_CODE_FROM.value);
@@ -227,7 +237,6 @@
  */            
             function DOCTOR_CODE_TO_KeyPress(e) {
                 var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
-
                 if (key == 13) {
                     document.mainForm.DOCTOR_CODE_TO.blur();
                     return false;
@@ -236,7 +245,6 @@
                     return true;
                 }
             }
-
             function AJAX_Refresh_DOCTOR_TO() {
                 var target = "../../RetrieveData?A=1&TABLE=DOCTOR&COND=CODE='" + document.mainForm.DOCTOR_CODE_TO.value +"' AND HOSPITAL_CODE='<%=session.getAttribute("HOSPITAL_CODE")%>'";
                 AJAX_Request(target, AJAX_Handle_Refresh_DOCTOR_TO);
@@ -245,7 +253,6 @@
             function AJAX_Handle_Refresh_DOCTOR_TO() {
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
-
                     if (!isXMLNodeExist(xmlDoc, "CODE")) {
                         document.mainForm.DOCTOR_CODE_TO.value = "";
                         document.mainForm.DOCTOR_NAME_TO.value = "";
@@ -285,6 +292,7 @@
 						<option value="TaxLetter406">${labelMap.REPORT_406}</option>
 						<option value="tax402_monthly">${labelMap.REPORT_402}</option>
                         <option value="ReportSummaryFrontPage01">${labelMap.REPORT_402_FRONT}</option>
+                        <option value="Tax402SummaryYearlyFrontPage">${labelMap.REPORT_402_YEARLY_FRONT}</option>
                         <option value="Tax402SummaryYearly">${labelMap.REPORT_402_YEARLY}</option>
                         <option value="SummaryTax402Yearly">${labelMap.REPORT_SUMMARY_402_YEARLY}</option>
                         <option value="Tax91_52">${labelMap.REPORT_TAX91}</option>
