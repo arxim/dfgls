@@ -156,27 +156,17 @@ public class ViewDFReportSrvl extends HttpServlet {
 			}
 		} catch (Exception e) {
 		}
-		// try {
-		// if (doctor_profile_code.equals("") || doctor_profile_code.equals(null)) {
-		// doctor_profile_code = "%";
-		// }
-		// } catch (Exception e) {}
+
 		try {
 			if (doctor_category.equals("") || doctor_category.equals(null)) {
 				doctor_category = "%";
 			}
 		} catch (Exception e) {
 		}
-		// TODO
-		System.out.println(">> order_item_category << "+ order_item_category);
 		
-//		try {
-//			if (order_item_category.equals("") || order_item_category.equals(null) ||  order_item_category.equals("null")) {
-				order_item_category = "%";
-//			}
-//		} catch (Exception e) {
-//			System.out.println(e.toString());
-//		}
+		System.out.println(">> order_item_category << "+ order_item_category);
+		order_item_category = "%";
+
 		try {
 			if (order_category_code.equals("") || order_category_code.equals(null)) {
 				order_category_code = "%";
@@ -382,7 +372,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 				|| reportfilename.equals("SummaryRevenueByDoctor")
 				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
 
-			if (doctor_code.equals("") || doctor_code.equals(null)) {
+			if (doctor_code.equals("") || doctor_code.equals(null) || doctor_code.equals("%")) {
 				from_doctor = "0";
 				to_doctor = "Z";
 			} else {
