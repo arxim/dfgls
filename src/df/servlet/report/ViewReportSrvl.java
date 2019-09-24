@@ -19,6 +19,8 @@ import java.util.HashMap;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.apache.log4j.Logger;
+
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
@@ -29,6 +31,8 @@ import net.sf.jasperreports.engine.JasperRunManager;
  */
 
 public class ViewReportSrvl extends HttpServlet {
+	final static Logger logger = Logger.getLogger(ViewReportSrvl.class);
+	
     String link = "./reports/output/";
     ExportReportSummaryDailyBean ers;
     private String hp_name;
@@ -50,7 +54,7 @@ public class ViewReportSrvl extends HttpServlet {
 			this.hp_name = arr[0][0];
 		}catch(Exception err){
 			conn.closeDB("");
-			System.out.println(err.getMessage());
+			logger.error(err.getMessage());
 		}
 		conn.closeDB("");
 	}
@@ -144,8 +148,8 @@ public class ViewReportSrvl extends HttpServlet {
             if( file_save.equals("") || file_save.equals(null) ){file_save = "temp";}
         }catch(Exception e){}
 
-         System.out.println("to_doctor="+to_doctor);
-         System.out.println("from_doctor="+from_doctor);
+         logger.info("to_doctor="+to_doctor);
+         logger.info("from_doctor="+from_doctor);
         hm.put("hospital_code", hospital_code);
         hm.put("hospital_name", this.getHp_name());
         hm.put("from_doctor", from_doctor);
@@ -159,7 +163,7 @@ public class ViewReportSrvl extends HttpServlet {
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
             this.reportGenerateView(hm, reportfilename, response);
         }else{
-            System.out.println(reportfilename);
+            logger.info(reportfilename);
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
     }
@@ -208,7 +212,7 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("order_item_code", order_item_code);
         hm.put("hn_no", hn_no);
         hm.put("invoice_no", invoice_no);
-        //System.out.println("type_report="+type_report+" : "+year+" : "+month+":"+hospital_code+
+        //logger.info("type_report="+type_report+" : "+year+" : "+month+":"+hospital_code+
         //		":"+doctor_code+":"+payor_office_code+":"+order_item_code+":"+hn_no+":"+invoice_no);
         
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
@@ -251,6 +255,7 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("hospital_logo", path);
         hm.put("mm", month);
         hm.put("path_show", path_show);
+        hm.put("filling_date", filling_date);
         
         if("TaxLetter406".equalsIgnoreCase(reportfilename)){
         	hm.put("term", term);
@@ -258,7 +263,7 @@ public class ViewReportSrvl extends HttpServlet {
         	hm.put("yyyy", term_year);
         	hm.put("print_date", JDate.saveDate(print_date));
             hm.put("signature", path);
-        }else if("ReportSummaryFrontPage01".equalsIgnoreCase(reportfilename)){
+        }else if("ReportSummaryFrontPage01".equalsIgnoreCase(reportfilename)||"Tax402SummaryYearlyFrontPage".equalsIgnoreCase(reportfilename)){
         	hm.put("yyyy", Integer.parseInt(year));
         }else if("Tax402SummaryYearly".equalsIgnoreCase(reportfilename)){
         	hm.put("doctor", doctor_code_to);
@@ -269,7 +274,6 @@ public class ViewReportSrvl extends HttpServlet {
         }else{
         	hm.put("yyyy", year);
         	hm.put("pay_date", pay_date);
-        	hm.put("filling_date", filling_date);
         }
 
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
@@ -277,7 +281,7 @@ public class ViewReportSrvl extends HttpServlet {
         }else{
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
-    	System.out.println(hospital_code+"<>"+reportfilename+" Year : "+year+" Pay : "+pay_date+" Print : "+JDate.saveDate(printing_date)+" Month : "+month+" Doctor : "+doctor_code_to);
+        logger.info(hospital_code+"<>"+reportfilename+" Year : "+year+" Pay : "+pay_date+" Print : "+JDate.saveDate(printing_date)+" Month : "+month+" Doctor : "+doctor_code_to);
     }
     private void reportDoctorProfileGuarantee(HttpServletRequest request, HttpServletResponse response){
         HashMap hm = new HashMap();
@@ -386,7 +390,7 @@ public class ViewReportSrvl extends HttpServlet {
         try {
             cdb.setStatement();
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.error(ex);
         }
         HttpSession session = request.getSession(true);
         String hospital_code = session.getAttribute("HOSPITAL_CODE").toString(); //request.getParameter("HOSPITAL_CODE");
@@ -418,7 +422,7 @@ public class ViewReportSrvl extends HttpServlet {
         String is_onward = "%";
         String is_partial = "%";
         String is_discharge="%";
-        System.out.println("\nPath Logo : "+logo_path+"\\"+hospital_code);
+        logger.info("\nPath Logo : "+logo_path+"\\"+hospital_code);
 
         try{
             if( from_date.equals("") || from_date.equals(null) ){from_date = "00000000";}
@@ -478,7 +482,7 @@ public class ViewReportSrvl extends HttpServlet {
                 	transaction_module = "%";
             	}
             }
-            System.out.println(is_discharge+"><"+transaction_module);
+            logger.info(is_discharge+"><"+transaction_module);
         }catch(Exception e){}
 
         try{
@@ -542,9 +546,9 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("MM_START", month_start);
         hm.put("MM_END", month_end);
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
-        	//System.out.println(hm);
-            //System.out.println(hospital_code+""+from_date+":"+to_date);
-            //System.out.println(transaction_module);
+        	//logger.info(hm);
+            //logger.info(hospital_code+""+from_date+":"+to_date);
+            //logger.info(transaction_module);
             this.reportGenerateView(hm, reportfilename, response);
         }else{
             if(file_type.equals("txt")){
@@ -569,7 +573,7 @@ public class ViewReportSrvl extends HttpServlet {
         String gl_type = request.getParameter("GL_TYPE");
         String guarantee_department_code = request.getParameter("GUARANTEE_DEPARTMENT_CODE");
         
-        System.out.println("from "+from_doctor+" to "+to_doctor);
+        logger.info("from "+from_doctor+" to "+to_doctor);
         try{
             if( from_doctor.equals("") || from_doctor.equals(null) ){from_doctor = "0";}
         }catch(Exception e){}
@@ -624,7 +628,7 @@ public class ViewReportSrvl extends HttpServlet {
         try{
         	if(reportfilename.equals("SummaryDFUnpaidByDetailForDoctor") && term.equals("1")){
         		to_date = year+month+"15";
-        		System.out.println("Yes");
+        		logger.info("Yes");
         	}
         	if(hospital_code.equals("VCH") && reportfilename.equals("SummaryRevenueByDetailForDoctor")){
         		reportfilename = reportfilename+hospital_code;
@@ -644,7 +648,7 @@ public class ViewReportSrvl extends HttpServlet {
         }catch(Exception e){}
         
         hm.put("hospital_code", hospital_code);
-        System.out.println("Path Logo : "+logo_path);
+        logger.info("Path Logo : "+logo_path);
         hm.put("hospital_logo", logo_path);
         hm.put("from_doctor", from_doctor);
         hm.put("to_doctor", to_doctor);
@@ -657,8 +661,8 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("batch", batch);
         hm.put("payment_date", payment_date);
         hm.put("term", term);
-        System.out.println("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
-        System.out.println("Test : "+year+month+term+"Hospital_code"+hospital_code);
+        logger.info("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
+        logger.info("Test : "+year+month+term+"Hospital_code"+hospital_code);
         VerifyAllowViewReportBean v = new VerifyAllowViewReportBean();
         boolean status = false;
         if(reportfilename.equals("TaxLetter406ForDoctor") || reportfilename.equals("Tax402SummaryYearlyForDoctor")) {
@@ -686,7 +690,7 @@ public class ViewReportSrvl extends HttpServlet {
         try {
             cdb.setStatement();
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.error(ex);
         }
 
         HttpSession session = request.getSession(true);
@@ -766,7 +770,7 @@ public class ViewReportSrvl extends HttpServlet {
         		reportfilename = "SummaryRevenueByDetail00001";
         	}
         }catch(Exception e){}
-        //System.out.println("Payment Date : "+paymentDate);
+        //logger.error("Payment Date : "+paymentDate);
         hm.put("hospital_code", hospital_code);
         rq.setHospitalCode(hospital_code);
         hm.put("hospital_name", this.getHp_name());
@@ -798,13 +802,13 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("SUBREPORT_DIR", subreport_path);
         
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
-            System.out.println("Payment Date = "+paymentDate+" - "+from_doctor+"<>"+to_doctor+":"+doctor+" | "+file_type+" | "+doctor_department);
+            logger.info("Payment Date = "+paymentDate+" - "+from_doctor+"<>"+to_doctor+":"+doctor+" | "+file_type+" | "+doctor_department);
             this.reportGenerateView(hm, reportfilename, response);
         }else{
-            System.out.println(reportfilename);
+            logger.info(reportfilename);
             if(file_type.equals("txt")){
-            	System.out.println(file_type+"<>"+path);
-                System.out.println(rq.getReport(reportfilename));
+            	logger.info(file_type+"<>"+path);
+                logger.info(rq.getReport(reportfilename));
                 this.reportGenerateFile(null, file_save, null, response, request, ""+ers.exportData(path, reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
                 cdb.closeDB("");
             }else{
@@ -835,14 +839,14 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("year", year);
         hm.put("path_show",path_show);
 
-        System.out.println("hospital_code = "+hospital_code);
-        System.out.println("doctor_code = "+doctor_code);
-        System.out.println("year = "+year);
+        logger.info("hospital_code = "+hospital_code);
+        logger.info("doctor_code = "+doctor_code);
+        logger.info("year = "+year);
         
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
             this.reportGenerateView(hm, reportfilename, response);
         }else{
-            System.out.println(reportfilename);
+            logger.info(reportfilename);
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
         
@@ -857,7 +861,7 @@ public class ViewReportSrvl extends HttpServlet {
         String group_code = request.getParameter("GROUP_CODE");
         String path_show=getServletConfig().getServletContext().getRealPath("")+"\\reports\\";
         
-        System.out.println("REPORT_FILE_NAME = "+request.getParameter("REPORT_FILE_NAME")+" Report Show Path ="+path_show);
+        logger.info("REPORT_FILE_NAME = "+request.getParameter("REPORT_FILE_NAME")+" Report Show Path ="+path_show);
         
         try{
             if( group_code.equals("") || group_code.equals(null) ){group_code = "%";}
@@ -923,12 +927,12 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("year", year);
         hm.put("term", term);
         hm.put("batch_no", year+month);
-        System.out.println("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
+        logger.info("Doctor = "+from_doctor+" - "+to_doctor+" Term : "+term+" Payment Date : "+payment_date);
         
         if(request.getParameter("REPORT_DISPLAY").equals("view")){
             this.reportGenerateView(hm, reportfilename, response);
         }else{
-            System.out.println(reportfilename);
+            logger.info(reportfilename);
             this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
         }
     }
@@ -991,13 +995,13 @@ public class ViewReportSrvl extends HttpServlet {
 
     private void reportMonthlyBehindPayment(HttpServletRequest request, HttpServletResponse response){
         ReportQuery rq = new ReportQuery();
-    	//System.out.println("Update 2010/03/31");
+    	//logger.info("Update 2010/03/31");
         HashMap hm = new HashMap();
         DBConn cdb = new DBConn();
         try {
             cdb.setStatement();
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.error(ex);
         }
 
         HttpSession session = request.getSession(true);
@@ -1046,7 +1050,7 @@ public class ViewReportSrvl extends HttpServlet {
             	batch_no = as_of_date.substring(0, 6);
             }
         }catch(Exception e){}
-        System.out.println("Report file : "+reportfilename);
+        logger.error("Report file : "+reportfilename);
         try{
             if( department_code.equals("") || department_code.equals(null) ){department_code = "%";}
         }catch(Exception e){}
@@ -1161,13 +1165,13 @@ public class ViewReportSrvl extends HttpServlet {
         try {
             cdb.setStatement();
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.error(ex);
         }
 
         try {
             out = response.getWriter();
-            System.out.println("upload_path : "+upload_path);
-            System.out.println("URLpath : "+URLpath);
+            logger.info("upload_path : "+upload_path);
+            logger.info("URLpath : "+URLpath);
 
         } catch (IOException ex) {}
         
@@ -1303,11 +1307,11 @@ public class ViewReportSrvl extends HttpServlet {
         try {
             cdb.setStatement();
         } catch (Exception ex) {
-            System.out.println(ex);
+            logger.error(ex);
         }
 
         //ServletContext context = this.getServletConfig().getServletContext();
-        //System.out.println(this.getServletConfig().getServletContext().getRealPath("/reports/"+report_source_file+".jasper"));
+        //logger.info(this.getServletConfig().getServletContext().getRealPath("/reports/"+report_source_file+".jasper"));
         
         File reportFile = new File(this.getServletConfig().getServletContext().getRealPath("/reports/"+report_source_file+".jasper"));
         hashM.put("SUBREPORT_DIR", this.getServletConfig().getServletContext().getRealPath("/reports/"));
