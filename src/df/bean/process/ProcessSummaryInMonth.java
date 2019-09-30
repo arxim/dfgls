@@ -35,6 +35,7 @@ public class ProcessSummaryInMonth {
 
     	DeleteSummaryInMonth(this.hospitalcode,this.yyyy,this.mm);
     
+    	String yymm = this.yyyy+this.mm+"%";
     	// insert into table Summary In Month
 		String sqlqu = " INSERT INTO SUMMARY_IN_MONTH ( " + 
 				" HOSPITAL_CODE, " + 
@@ -45,15 +46,12 @@ public class ProcessSummaryInMonth {
 				" SUM_DR_AMOUNT  " + 
 				" ) " + 
 				
-				" SELECT  S.HOSPITAL_CODE,S.DOCTOR_CODE,S.YYYY,S.MM,T.SUM_AMOUNT_AFT_DISCOUNT,T.SUM_DR_AMOUNT FROM SUMMARY_PAYMENT AS S " + 
-				" inner join " + 
-				" (SELECT DOCTOR_CODE,SUM(AMOUNT_AFT_DISCOUNT) AS SUM_AMOUNT_AFT_DISCOUNT ,SUM(DR_AMT) AS SUM_DR_AMOUNT FROM TRN_DAILY " + 
-				" WHERE HOSPITAL_CODE LIKE '"+this.hospitalcode+"' AND DOCTOR_CODE IN ( " + 
-				"	SELECT DOCTOR_CODE FROM SUMMARY_PAYMENT " + 
-				"	WHERE YYYY LIKE '"+this.yyyy+"' AND MM LIKE '"+this.mm+"' AND HOSPITAL_CODE LIKE '"+this.hospitalcode+"') " + 
-				" GROUP BY DOCTOR_CODE) AS T " + 
-				" on S.DOCTOR_CODE = T.DOCTOR_CODE " +
-				" WHERE S.PAYMENT_TERM='2'";
+				" SELECT  HOSPITAL_CODE,DOCTOR_CODE,"+this.yyyy+","+this.mm+",SUM(AMOUNT_AFT_DISCOUNT) AS SUM_AMOUNT_AFT_DISCOUNT ,SUM(DR_AMT) AS SUM_DR_AMOUNT " +
+				" FROM TRN_DAILY " +
+				" WHERE HOSPITAL_CODE = '"+this.hospitalcode+"' AND TRANSACTION_DATE LIKE '"+yymm+"' " + 
+				" AND ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1'" + 
+				" GROUP BY HOSPITAL_CODE ,DOCTOR_CODE" ;
+		
 		System.out.println(sqlqu);
 		status = db.executeUpdate(sqlqu)<0 ? false : true;
 		db.Close();		

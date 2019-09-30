@@ -320,6 +320,8 @@ public class ViewDFReportSrvl extends HttpServlet {
 			rq.setDoctorProfileCode(doctor_profile_code);
 			hm.put("order_item", order_item_code);
 			rq.setOrderItem(order_item_code);
+			hm.put("transaction_type", transaction_type);
+			rq.setTransactionType(transaction_type);
 			hm.put("admission_type", admission_type_code);
 			rq.setAdmissionType(admission_type_code);
 
@@ -496,6 +498,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 
 			} else if (reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
 				System.out.println("SummaryRevenueByDetailInMonthVCH");
+				String yyyymm = year+month+"%";
 				hm.put("from_doctor", from_doctor);
 				hm.put("to_doctor", to_doctor);
 				hm.put("doctor_category", doctor_category);
@@ -503,7 +506,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 				hm.put("order_item", order_item_code);
 				hm.put("order_item_category", order_item_category);
 				hm.put("term", "%");
-				hm.put("payment_date", paymentDate);
+				hm.put("payment_date", yyyymm );
 				hm.put("hospital_logo", logo_path);
 
 				System.out.println("from_doctor : " + from_doctor);
@@ -512,7 +515,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 				System.out.println("doctor_department : " + doctor_department);
 				System.out.println("order_item_code : " + order_item_code);
 				System.out.println("order_item_category : " + order_item_category);
-				System.out.println("paymentDate : " + paymentDate);
+				System.out.println("paymentDate : " + yyyymm);
 
 				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
 					this.reportGenerateView(hm, reportfilename, response);
