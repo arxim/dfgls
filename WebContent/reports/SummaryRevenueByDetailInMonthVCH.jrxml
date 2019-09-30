@@ -27,13 +27,13 @@
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["09"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54OBG03"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["54MED01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54OBG03"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["54MED01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["054"]]></defaultValueExpression>
@@ -54,14 +54,14 @@
 		<defaultValueExpression ><![CDATA["D:\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="payment_date" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["201901%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="term" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<queryString><![CDATA[(SELECT 
-		DP.CODE AS PROFILE_CODE,
-		PO.NAME_THAI AS PROFILE_NAME,
+		D.CODE AS PROFILE_CODE,
+		D.NAME_THAI AS PROFILE_NAME,
 		2 AS 'TYPE_QUERY',
 		CASE WHEN SD.GUARANTEE_TYPE != '' THEN SUBSTRING(SD.GUARANTEE_DATE_TIME,0,9) ELSE
 		SD.VERIFY_DATE END AS 'VERIFY_DATE',
@@ -69,52 +69,35 @@
 		SD.VERIFY_TIME AS 'START_TIME',
 		'' AS 'END_DATE',
 		'' AS 'END_TIME',
+		0.00 AS 'ABSORB_AMOUNT',
 		SD.GUARANTEE_DATE_TIME AS 'DATE_TIME',
 		SD.ADMISSION_TYPE_CODE,
 		SD.EPISODE_NO,
-		0.00 AS 'ABSORB_AMOUNT',
 		SD.YYYY AS 'YYYY', 
 		SD.MM AS 'MM', 
-		D.NAME_THAI AS 'NAME_THAI',
-		D.DOCTOR_CATEGORY_CODE,
 		SD.INVOICE_NO AS 'INVOICE_NO', 
 		SD.INVOICE_DATE AS 'INVOICE_DATE',
+		SD.AMOUNT_AFT_DISCOUNT AS 'OLD_AMOUNT',
 		SUBSTRING(SD.PATIENT_NAME,0,40) AS 'PATIENT_NAME',
 		SD.HN_NO AS 'HN_NO', 
-		SD.IS_PAID, 
-		SD.AMOUNT_AFT_DISCOUNT AS 'OLD_AMOUNT',
-		SD.AMOUNT_BEF_DISCOUNT-SD.AMOUNT_OF_DISCOUNT AS 'WRITE_OFF_AMOUNT', 
+		SD.GUARANTEE_NOTE,
 		SD.INVOICE_TYPE,
 		SD.LINE_NO AS 'LINE_NO',
-		SD.ORDER_ITEM_CODE AS 'ORDER_ITEM_CODE', 
-		SUBSTRING(OI.DESCRIPTION_THAI,0,30) AS 'ORDER_ITEM_NAME',
 		SD.DR_AMT AS 'DR_AMT',
-		SD.GUARANTEE_NOTE,
-		SD.IS_WRITE_OFF AS 'IS_WRITE_OFF', 
+		D.DOCTOR_CATEGORY_CODE,
 		SD.IS_PARTIAL, SD.GUARANTEE_PAID_AMT,
 		CASE WHEN SD.PAY_BY_AR = 'Y' THEN 'A' ELSE 'C' END AS PAY_METHOD,
-		SD.DR_TAX_406 AS DR_TAX_AMT, SD.DR_TAX_402, SD.OLD_DR_AMT ,
-		CASE WHEN SD.GUARANTEE_NOTE LIKE '%EXTRA%' THEN 'EXT' ELSE CASE WHEN SD.GUARANTEE_TERM_YYYY+SD.GUARANTEE_TERM_MM <> $P{year}+$P{month} THEN '' ELSE SD.GUARANTEE_TYPE END END AS GUARANTEE_TYPE_CODE , 
-		SD.GUARANTEE_CODE AS GUARANTEE_CODE , 
-	    	CASE WHEN SD.GUARANTEE_TERM_YYYY+SD.GUARANTEE_TERM_MM <> $P{year}+$P{month} THEN '1' 
-		ELSE CASE WHEN SD.GUARANTEE_CODE = '' THEN  '1' ELSE  '0' END END AS SHORT_TRANSACTION , 
-		
 		HP.DESCRIPTION_THAI
 		
 	FROM TRN_DAILY SD LEFT OUTER JOIN DOCTOR D ON SD.DOCTOR_CODE = D.CODE AND SD.HOSPITAL_CODE = D.HOSPITAL_CODE
-	LEFT OUTER JOIN ORDER_ITEM OI ON SD.ORDER_ITEM_CODE = OI.CODE AND SD.HOSPITAL_CODE = OI.HOSPITAL_CODE
-	LEFT OUTER JOIN PAYOR_OFFICE PO ON SD.PAYOR_OFFICE_CODE = PO.CODE AND SD.HOSPITAL_CODE = PO.HOSPITAL_CODE
-	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (D.DOCTOR_PROFILE_CODE = DP.CODE AND D.HOSPITAL_CODE =DP.HOSPITAL_CODE)
 	LEFT OUTER JOIN HOSPITAL HP ON (SD.HOSPITAL_CODE = HP.CODE)
 		
 
 	
 	WHERE D.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor} AND 
-	D.DEPARTMENT_CODE LIKE $P{doctor_department} AND
-	SD.ORDER_ITEM_CODE LIKE $P{order_item} AND
-	D.DOCTOR_CATEGORY_CODE LIKE $P{doctor_category} AND
-	OI.ORDER_ITEM_CATEGORY_CODE LIKE $P{order_item_category} AND
 	SD.HOSPITAL_CODE LIKE $P{hospital_code}
+	AND SD.ACTIVE = '1' AND SD.ORDER_ITEM_ACTIVE = '1'
+	AND TRANSACTION_DATE LIKE $P{payment_date}
 	)
 ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 
@@ -126,44 +109,29 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 	<field name="START_TIME" class="java.lang.String"/>
 	<field name="END_DATE" class="java.lang.String"/>
 	<field name="END_TIME" class="java.lang.String"/>
+	<field name="ABSORB_AMOUNT" class="java.math.BigDecimal"/>
 	<field name="DATE_TIME" class="java.lang.String"/>
 	<field name="ADMISSION_TYPE_CODE" class="java.lang.String"/>
 	<field name="EPISODE_NO" class="java.lang.String"/>
-	<field name="ABSORB_AMOUNT" class="java.math.BigDecimal"/>
 	<field name="YYYY" class="java.lang.String"/>
 	<field name="MM" class="java.lang.String"/>
-	<field name="NAME_THAI" class="java.lang.String"/>
-	<field name="DOCTOR_CATEGORY_CODE" class="java.lang.String"/>
 	<field name="INVOICE_NO" class="java.lang.String"/>
 	<field name="INVOICE_DATE" class="java.lang.String"/>
+	<field name="OLD_AMOUNT" class="java.math.BigDecimal"/>
 	<field name="PATIENT_NAME" class="java.lang.String"/>
 	<field name="HN_NO" class="java.lang.String"/>
-	<field name="IS_PAID" class="java.lang.String"/>
-	<field name="OLD_AMOUNT" class="java.math.BigDecimal"/>
-	<field name="WRITE_OFF_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="GUARANTEE_NOTE" class="java.lang.String"/>
 	<field name="INVOICE_TYPE" class="java.lang.String"/>
 	<field name="LINE_NO" class="java.lang.String"/>
-	<field name="ORDER_ITEM_CODE" class="java.lang.String"/>
-	<field name="ORDER_ITEM_NAME" class="java.lang.String"/>
 	<field name="DR_AMT" class="java.math.BigDecimal"/>
-	<field name="GUARANTEE_NOTE" class="java.lang.String"/>
-	<field name="IS_WRITE_OFF" class="java.lang.String"/>
+	<field name="DOCTOR_CATEGORY_CODE" class="java.lang.String"/>
 	<field name="IS_PARTIAL" class="java.lang.String"/>
 	<field name="GUARANTEE_PAID_AMT" class="java.math.BigDecimal"/>
 	<field name="PAY_METHOD" class="java.lang.String"/>
-	<field name="DR_TAX_AMT" class="java.math.BigDecimal"/>
-	<field name="DR_TAX_402" class="java.math.BigDecimal"/>
-	<field name="OLD_DR_AMT" class="java.math.BigDecimal"/>
-	<field name="GUARANTEE_TYPE_CODE" class="java.lang.String"/>
-	<field name="GUARANTEE_CODE" class="java.lang.String"/>
-	<field name="SHORT_TRANSACTION" class="java.lang.String"/>
 	<field name="DESCRIPTION_THAI" class="java.lang.String"/>
 
 	<variable name="SUM_DR_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_AMT_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
 	</variable>
 	<variable name="SUM_DR_AMT_2" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
@@ -183,15 +151,6 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 	<variable name="SUM_ABSORB_AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor_profile" calculation="Sum">
 		<variableExpression><![CDATA[$F{ABSORB_AMOUNT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_DR_TAX_AMT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor_profile" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_AMT_3" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_AMT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
-	</variable>
 	<variable name="SUM_DR_AMT_5" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
 	</variable>
@@ -210,9 +169,6 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 	<variable name="SUM_OLD_AMOUNT_5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{OLD_AMOUNT}]]></variableExpression>
 	</variable>
-	<variable name="SUM_DR_TAX_AMT_5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_AMT}]]></variableExpression>
-	</variable>
 	<variable name="SUM_DR_AMT_6" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{DR_AMT}]]></variableExpression>
 	</variable>
@@ -221,36 +177,6 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 	</variable>
 	<variable name="SUM_ABSORB_AMOUNT_5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
 		<variableExpression><![CDATA[$F{ABSORB_AMOUNT}]]></variableExpression>
-	</variable>
-	<variable name="Deduct" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
-		<variableExpression><![CDATA[( $F{GUARANTEE_NOTE}.equals( "ABSORB SOME GUARANTEE" ) ? $F{DR_TAX_AMT}.subtract( $F{DR_AMT} ) : $F{OLD_AMOUNT}.subtract( $F{DR_AMT} ) )]]></variableExpression>
-	</variable>
-	<variable name="SUM_Deduct_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$V{Deduct}]]></variableExpression>
-	</variable>
-	<variable name="SUM_Deduct_2" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$V{Deduct}]]></variableExpression>
-	</variable>
-	<variable name="SUM_Deduct_3" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor" calculation="Sum">
-		<variableExpression><![CDATA[$V{Deduct}]]></variableExpression>
-	</variable>
-	<variable name="SUM_Deduct_4" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor_profile" calculation="Sum">
-		<variableExpression><![CDATA[$V{Deduct}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_402_1" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_402}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_402_2" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_402}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_402_3" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_402}]]></variableExpression>
-	</variable>
-	<variable name="SUM_DR_TAX_402_4" class="java.math.BigDecimal" resetType="Group" resetGroup="doctor_profile" calculation="Sum">
-		<variableExpression><![CDATA[$F{DR_TAX_402}]]></variableExpression>
-	</variable>
-	<variable name="SUM_Deduct_5" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
-		<variableExpression><![CDATA[$V{Deduct}]]></variableExpression>
 	</variable>
 	<variable name="SUM_ADM_AMT" class="java.math.BigDecimal" resetType="Group" resetGroup="admission" calculation="Sum">
 		<variableExpression><![CDATA[$F{OLD_AMOUNT}]]></variableExpression>
@@ -396,7 +322,7 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["แพทย์ "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" (Category Code : "+$F{DOCTOR_CATEGORY_CODE}+")"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["แพทย์ "+$F{DOCTOR_CODE}+" : "+$F{PROFILE_NAME}+" (Category Code : "+$F{DOCTOR_CATEGORY_CODE}+")"]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>
@@ -426,7 +352,7 @@ ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["รวมรายได้ทั้งหมดในเดือน "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" รวม "]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["รวมรายได้ทั้งหมดในเดือน "+$F{DOCTOR_CODE}+" : "+$F{PROFILE_NAME}+" รวม "]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
