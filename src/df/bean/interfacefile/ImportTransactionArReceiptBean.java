@@ -97,9 +97,9 @@ public class ImportTransactionArReceiptBean extends InterfaceTextFileBean {
                     if(sub_data[10].trim().equals("W") && sub_data[11].trim().equals("N") && Double.parseDouble(""+sub_data[5].trim()) == Double.parseDouble(""+sub_data[9].trim())){
                     	isLastReceipt = "Y";
                     }
-                    //if doc type is Receipt and it is not last receipt of document 
-                    //but bill amount is more or equals to payment amount then isLastReceipt = "Y"
-                    else if(sub_data[10].trim().equals("R") && sub_data[11].trim().equals("N") && Double.parseDouble(""+sub_data[5].trim()) >= Double.parseDouble(""+sub_data[8].trim())){
+	                //if doc type is Receipt and it is not last receipt of document
+	                //but payment amount is more or equals to bill amount then isLastReceipt = "Y"
+                    else if(sub_data[10].trim().equals("R") && sub_data[11].trim().equals("N") && Double.parseDouble(""+sub_data[8].trim()) >= Double.parseDouble(""+sub_data[5].trim())){
                     	isLastReceipt = "Y";
                     }
                   //other conditions set isLastReceipt = isLastReceipt from flat file
