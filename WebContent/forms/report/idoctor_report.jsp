@@ -787,18 +787,36 @@
 				
 			</tr>
 			
+			
 			<tr id="block_module">
-				<td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
-				<td class="input" colspan="3"><select class="mediumMax" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
-						<option value="%">ALL</option>
+                  <td class="label">
+                   	<label for="aText">${labelMap.TRANSACTION_TYPE}</label>                    
+                   </td>
+                   <td class="input">
+                       <select class="short" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
+                           <option value="%">-- Select --</option>
+                           <option value="%">ALL</option>
+                           <option value="INV">Credit</option>
+                           <option value="REV">Cash</option>
+                   </select>                    
+                   </td>
+                   
+                   
+                   <td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
+                   <td class="input">
+                       <select class="medium" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
+                           <option value="%">ALL</option>
 						<option value="TR">DF TRANSACTION</option>
 						<option value="AR">ACCOUNT RECEIPT</option>
 						<!-- <option value="PT">PARTIAL RECEIPT</option>
 						<option value="OW">ONWARD TRANSACTION</option>
 						<option value="DY">DISCHARGE PAYMENT</option>
 						<option value="DH">DISCHARGE HOLD</option> -->
-				</select></td>
-			</tr>
+                   	</select>
+				</td>
+
+            </tr>                
+
 			
 			<tr id="block_transaction_type">
 				<td class="label"><label for="aText">${labelMap.TRANSACTION_TYPE}</label>
