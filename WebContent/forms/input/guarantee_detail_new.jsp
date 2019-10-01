@@ -651,7 +651,8 @@
             	if(val != ''){
 	            	CheckDate(val,'START_DATE','END_DATE');
 	            	if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
-	            		alert("Plese choose start date before end date.");
+	            		//alert("Plese choose start date before end date.");
+	            		document.mainForm.END_DATE.value = document.mainForm.START_DATE.value;
 	            	} else {
 	            		AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");
 	            	}
@@ -662,7 +663,8 @@
             	if(val != '') { 
             		CheckEndDate(val,'START_DATE','END_DATE');
             		if(toSaveDate(document.mainForm.START_DATE.value) > toSaveDate(document.mainForm.END_DATE.value)){
-                		alert("Plese choose start date before end date.");
+                		//alert("Plese choose start date before end date.");
+	            		document.mainForm.START_DATE.value = document.mainForm.END_DATE.value;
                 	} else {
 	            		AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");
                 	}
