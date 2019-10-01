@@ -729,7 +729,12 @@
            			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
            			document.mainForm.GUARANTEE_AMOUNT.readOnly=true;
            			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
-           		} 
+           		}else{
+           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
+           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;		
+           		}
            		AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");
 	        }
             
@@ -960,7 +965,7 @@
                 	</td>
                 	<td class="input" colspan="1">
                 		<select id="GUARANTEE_TYPE" name="GUARANTEE_TYPE" class="medium" onchange="guaranteeType()">
-                			<!-- <option value="NONE">--- Amount Type ---</option> -->
+                			<option value="NONE">--- Amount Type ---</option>
                 			<option value="GA" <%
                 				 if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){ 
                 					 if(!"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){
@@ -1007,7 +1012,7 @@
                 <td class="label">
                         <label for="GUARANTEE_EXCLUDE_AMOUNT">${labelMap.EXCLUDE_AMOUNT}</label></td>
                     <td class="input">
-                        <input name="GUARANTEE_EXCLUDE_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_EXCLUDE_AMOUNT" maxlength="13"  readonly="readonly"  value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT") %>" onchange="return guaranteeExcludeAmount(this);" /> Baht</td>
+                        <input name="GUARANTEE_EXCLUDE_AMOUNT" type="text" class="short alignRight" id="GUARANTEE_EXCLUDE_AMOUNT" maxlength="13" value="<%= DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT") %>" onchange="return guaranteeExcludeAmount(this);" /> Baht</td>
                   
                      <td class="label"><label for="ABSORB_AMOUNT">${labelMap.ABSORB_AMOUNT}</label></td>
                     <td class="input"><input name="ABSORB_AMOUNT" type="text" class="short alignRight" readonly="readonly" id="ABSORB_AMOUNT" maxlength="13" value="<%= JNumber.getShowMoney(Double.parseDouble(DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT").equalsIgnoreCase("") ? "0" : DBMgr.getRecordValue(stpGuaranteeRec, "HP402_ABSORB_AMOUNT"))) %>" /> Baht</td>
