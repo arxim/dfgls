@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="PaymentVoucherVCH_BK"
+		 name="PaymentVoucherVCH"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -24,10 +24,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54ANE01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["AE3"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["06"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
@@ -36,7 +36,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54ANE01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["AE3"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
@@ -70,7 +70,8 @@ LEFT OUTER JOIN BANK BK ON (DR.BANK_CODE = BK.CODE)
 LEFT OUTER JOIN PAYMENT_MODE PY ON PM.PAYMENT_MODE_CODE = PY.CODE
 LEFT OUTER JOIN VW_EXPENSE_VOUCHER SG ON (PM.DOCTOR_CODE = SG.DOCTOR_CODE AND PM.HOSPITAL_CODE = SG.HOSPITAL_CODE 
 AND PM.YYYY+PM.MM = SG.YYYY+SG.MM)
-LEFT JOIN SUMMARY_IN_MONTH SM ON PM.DOCTOR_CODE = SM.DOCTOR_CODE
+LEFT JOIN SUMMARY_IN_MONTH SM ON PM.DOCTOR_CODE = SM.DOCTOR_CODE AND PM.HOSPITAL_CODE = SM.HOSPITAL_CODE 
+
 WHERE PM.YYYY LIKE $P{year} AND PM.MM LIKE $P{month}
 AND (DR.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 AND PM.PAYMENT_MODE_CODE <> 'U'

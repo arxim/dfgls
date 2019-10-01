@@ -35,6 +35,7 @@
 	labelMap.add("PAYOR_OFFICE_CODE", "Payor Office Code", "รหัสบริษัทคู่สัญญา");
 	labelMap.add("REPORT_TRANSACTION", "Interface DF Transaction", "นำเข้ารายการค่าแพทย์ชั่วคราว");
 	labelMap.add("REPORT_IMPORT_CHECKLIST", "Import DF Transaction", "นำเข้ารายการค่าแพทย์เข้าระบบ");
+	labelMap.add("REPORT_TRANSACTION_RESULT", "Interface Result Transaction", "นำเข้ารายการแพทย์อ่านผลชั่วคราว");
 	labelMap.add("REPORT_GUARANTEE_TRANSACTION", "Guarantee Setup", "รายการกำหนดการันตีแพทย์");
 	labelMap.add("REPORT_DETAIL_DF", "Revenue Detail Payment", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
 	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
@@ -106,7 +107,8 @@
                 }else{
 					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "")){
 						if (document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" 
-							|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" ) {
+							|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" 
+							|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction") {
 							alert("Please Select From Date/To Date");							
 						} else {
 							document.mainForm.REPORT_DISPLAY.value = "view";
@@ -162,7 +164,8 @@
 			
             function changeDropDownList(){
                 
-                if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
+                if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"
+                		|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction" ){
                     document.getElementById('block_from_to_date').style.display = '';
                 	document.getElementById('block_payor_office_code').style.display = 'none';
                 	document.getElementById('block_doctor_code').style.display = '';
@@ -654,6 +657,7 @@
 						<option value="None">-- Select Report --</option>
 						<option value="ImportTransaction">${labelMap.REPORT_TRANSACTION}</option>
 						<option value="ImportChecklist">${labelMap.REPORT_IMPORT_CHECKLIST}</option>
+						<option value="ImportVerifyTransaction">${labelMap.REPORT_TRANSACTION_RESULT}</option>
 						<option value="GuaranteeSetup">${labelMap.REPORT_GUARANTEE_TRANSACTION}</option>
 						<option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
 						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
@@ -787,18 +791,36 @@
 				
 			</tr>
 			
+			
 			<tr id="block_module">
-				<td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
-				<td class="input" colspan="3"><select class="mediumMax" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
-						<option value="%">ALL</option>
+                  <td class="label">
+                   	<label for="aText">${labelMap.TRANSACTION_TYPE}</label>                    
+                   </td>
+                   <td class="input">
+                       <select class="short" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
+                           <option value="%">-- Select --</option>
+                           <option value="%">ALL</option>
+                           <option value="INV">Credit</option>
+                           <option value="REV">Cash</option>
+                   </select>                    
+                   </td>
+                   
+                   
+                   <td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
+                   <td class="input">
+                       <select class="medium" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
+                           <option value="%">ALL</option>
 						<option value="TR">DF TRANSACTION</option>
 						<option value="AR">ACCOUNT RECEIPT</option>
 						<!-- <option value="PT">PARTIAL RECEIPT</option>
 						<option value="OW">ONWARD TRANSACTION</option>
 						<option value="DY">DISCHARGE PAYMENT</option>
 						<option value="DH">DISCHARGE HOLD</option> -->
-				</select></td>
-			</tr>
+                   	</select>
+				</td>
+
+            </tr>                
+
 			
 			<tr id="block_transaction_type">
 				<td class="label"><label for="aText">${labelMap.TRANSACTION_TYPE}</label>
