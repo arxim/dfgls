@@ -46,7 +46,7 @@ public class ProcessSummaryInMonth {
 				" SUM_DR_AMOUNT  " + 
 				" ) " + 
 				
-				" SELECT  HOSPITAL_CODE,DOCTOR_CODE,"+this.yyyy+","+this.mm+",SUM(AMOUNT_AFT_DISCOUNT) AS SUM_AMOUNT_AFT_DISCOUNT ,SUM(DR_AMT) AS SUM_DR_AMOUNT " +
+				" SELECT  HOSPITAL_CODE,DOCTOR_CODE,'"+this.yyyy+"','"+this.mm+"',SUM(AMOUNT_AFT_DISCOUNT) AS SUM_AMOUNT_AFT_DISCOUNT ,SUM(DR_AMT) AS SUM_DR_AMOUNT " +
 				" FROM TRN_DAILY " +
 				" WHERE HOSPITAL_CODE = '"+this.hospitalcode+"' AND TRANSACTION_DATE LIKE '"+yymm+"' " + 
 				" AND ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1'" + 
