@@ -768,6 +768,8 @@ public class ViewReportSrvl extends HttpServlet {
         try{
         	if( reportfilename.equals("SummaryRevenueByDetail") && hospital_code.equals("00001")){
         		reportfilename = "SummaryRevenueByDetail00001";
+        	}else if(reportfilename.equals("SummaryRevenueByDetail") && hospital_code.equals("00029")) {
+        		reportfilename = "SummaryRevenueByDetail00029";
         	}
         }catch(Exception e){}
         //logger.error("Payment Date : "+paymentDate);
@@ -860,9 +862,9 @@ public class ViewReportSrvl extends HttpServlet {
         String year = request.getParameter("YYYY");
         String group_code = request.getParameter("GROUP_CODE");
         String path_show=getServletConfig().getServletContext().getRealPath("")+"\\reports\\";
-        
+
         logger.info("REPORT_FILE_NAME = "+request.getParameter("REPORT_FILE_NAME")+" Report Show Path ="+path_show);
-        
+
         try{
             if( group_code.equals("") || group_code.equals(null) ){group_code = "%";}
         }catch(Exception e){}
