@@ -687,7 +687,7 @@
 	               	 if (document.mainForm.START_TIME.value != "" &&  document.mainForm.END_TIME.value != "") {
 	               		 if(toSaveDate(document.mainForm.START_DATE.value) <= toSaveDate(document.mainForm.END_DATE.value)){
 	                		if(document.mainForm.START_TIME.value > document.mainForm.END_TIME.value){
-	                			alert("Plese choose start time before end time.");
+	                			//alert("Plese choose start time before end time.");
 	                		} else {
 			                	AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");
 			                }
@@ -708,7 +708,7 @@
 					if (document.mainForm.START_TIME.value != "" &&  document.mainForm.END_TIME.value != "") {
 	               		 if(toSaveDate(document.mainForm.START_DATE.value) <= toSaveDate(document.mainForm.END_DATE.value)){
 	                		if(document.mainForm.START_TIME.value > document.mainForm.END_TIME.value){
-	                			alert("Plese choose start time before end time.");
+	                			//alert("Plese choose start time before end time.");
 	                		} else {
 			                	AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");
 			                }
@@ -967,30 +967,27 @@
                 	</td>
                 	<td class="input" colspan="1">
                 		<select id="GUARANTEE_TYPE" name="GUARANTEE_TYPE" class="medium" onchange="guaranteeType()">
-                			<option value="NONE">--- Amount Type ---</option>
+                			<option value="NONE" <%
+               					 if("0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME"))){
+            						 out.print(" selected='selected'");
+            					 }else{ 
+            						 out.print("");
+            					 }
+                				%>>--- Amount Type ---</option>
                 			<option value="GA" <%
-                				 if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){ 
-                					 if(!"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){
-                						 out.print(" selected='selected'");
-                					 }else{ 
-                						 out.print("");
-                					 }
-                				 } else { 
-                					 out.print("");
-                				 }
-                					%>>Guarantee Amount</option>
-
+               					 if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT")) && !"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT")) && !"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME"))){
+               						 out.print(" selected='selected'");
+               					 }else{ 
+               						 out.print("");
+               					 }
+               					 %>>Guarantee Amount</option>
                             <option value="GEA" <%
-                       		if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT"))){ 
-                            	  if(!"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT"))){
-                            		  out.print(" selected='selected'");  
-                            	  } else {
-                            		  out.print("");
-                            	  }
-                            } else { 
-                            		 out.print("");
-                            }
-									%>>Extra Amount</option>
+								if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT")) && !"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT")) && !"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME"))){
+									out.print(" selected='selected'");  
+                         	  	} else {
+                         			out.print("");
+                         	  	}
+					  			%>>Extra Amount</option>
                         </select>
                     </td>
                 </tr>

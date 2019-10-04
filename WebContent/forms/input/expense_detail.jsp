@@ -127,7 +127,12 @@
         locationRec = DBMgr.getRecord(query);
         
         //check summary monthly
-        query = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
+        
+        query = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' "+
+        "AND (BATCH_NO = '' AND HOSPITAL_CODE IN (SELECT HOSPITAL_CODE FROM BATCH WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND CLOSE_DATE = ''))"+
+        "GROUP BY MM ";
+        
+        //query = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
         summaryMounthlyRec = DBMgr.getRecord(query);
         System.out.println(query);
     
@@ -505,8 +510,10 @@
                 </tr>
                 <tr>
                     <th colspan="4" class="buttonBar">
-                        <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" <%=!DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") || !DBMgr.getRecordValue(summaryMounthlyRec, "MM").equals("")  ? " disabled=\"disabled\"" : ""%> onclick="validateData();" />
-                        <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
+                        <input type="button" id="SAVE" name="SAVE"
+					class="button" value="${labelMap.SAVE}"
+					<%=!DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") || !DBMgr.getRecordValue(summaryMounthlyRec, "MM").equals("")  ? " disabled=\"disabled\"" : ""%>
+					onclick="validateData();" /> <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location.href='expense_main.jsp?EXPENSE_DR_CODE=<%=request.getParameter("DOCTOR_CODE")%>&MM=<%=MM%>&YYYY=<%=YYYY%>'" />                    
                     </th>
                 </tr>
