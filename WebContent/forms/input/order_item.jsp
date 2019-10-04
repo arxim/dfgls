@@ -348,7 +348,7 @@
                 <tr>
                     <td class="label"><label for="ACCOUNT_CODE"><span class="style1">${labelMap.ACCOUNT_CODE}*</span></label></td>
                     <td colspan="3" class="input">
-					<%=DBMgr.generateDropDownList("ACCOUNT_CODE", "long", "SELECT CODE, CODE + ' : ' + DESCRIPTION AS DESCRIPTION FROM ACCOUNT ORDER BY DESCRIPTION", "DESCRIPTION", "CODE", ( DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE")=="" ? "602101" : DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE") ))%>
+					<%=DBMgr.generateDropDownList("ACCOUNT_CODE", "long", "SELECT CODE, CODE + ' : ' + DESCRIPTION AS DESCRIPTION FROM ACCOUNT ORDER BY DESCRIPTION", "DESCRIPTION", "CODE", ( DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE")=="" ? "61070001" : DBMgr.getRecordValue(orderItemRec, "ACCOUNT_CODE") ))%>
 					</td>
                 </tr>
                 <tr>
