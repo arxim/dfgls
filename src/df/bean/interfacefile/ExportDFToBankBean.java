@@ -240,7 +240,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+ 
 				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE = '065' AND YYYY='"+year+"' AND MM='"+month+"' "+
-				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' P.DR_NET_PAID_AMT > 0 "+
+				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' AND  P.DR_NET_PAID_AMT > 0 "+
 				" UNION ALL "+
 				"SELECT D.BANK_ACCOUNT_NO AS ACCOUNT_NO, '"+transaction_date+"' AS EFFECTIVE_DATE,'0' AS AMOUNT_SIGN ,"+//1-3
 				"replace(convert(nvarchar(255),P.DR_NET_PAID_AMT),'.','') AS AMOUNT,ISNULL(D.BANK_ACCOUNT_NAME,'') AS NAME,'' AS STATUS_RETURN ,"+//4-6
@@ -250,7 +250,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='"+hp_code+"' "+
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
 				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE ='065' AND YYYY='"+year+"' AND MM='"+month+"' "+
-				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' P.DR_NET_PAID_AMT > 0 ";
+				"AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' AND  P.DR_NET_PAID_AMT > 0 ";
 		System.out.println(payment_date);
 		boolean status = true;
 		String[][] revenue_data_direct= null;
@@ -272,7 +272,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"FROM SUMMARY_PAYMENT P "+
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
-				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'065'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' P.DR_NET_PAID_AMT > 0 "+
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'065'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' AND P.DR_NET_PAID_AMT > 0 "+
 				// End of header
 				" UNION ALL "+
 				//start detail
@@ -289,7 +289,7 @@ public class ExportDFToBankBean extends InterfaceTextFileBean {
 				"INNER JOIN DOCTOR D ON D.CODE = P.DOCTOR_CODE AND D.HOSPITAL_CODE = P.HOSPITAL_CODE "+
 				"INNER JOIN HOSPITAL H ON H.CODE = P.HOSPITAL_CODE AND H.CODE='"+hp_code+"'" +
 				"LEFT JOIN BANK B ON B.CODE = D.BANK_CODE "+
-				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'065'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' P.DR_NET_PAID_AMT > 0 ";
+				"WHERE P.HOSPITAL_CODE='"+hp_code+"' AND D.PAYMENT_MODE_CODE='B' AND B.CODE <>'065'AND YYYY='"+year+"' AND MM='"+month+"' AND P.PAYMENT_DATE='"+JDate.saveDate(this.payment_date)+"' AND P.DR_NET_PAID_AMT > 0 ";
 			boolean status = true;
 			String[][] revenue_data = null;
 			setFileName(path);
