@@ -376,7 +376,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 		} else if (reportfilename.equals("GuaranteeSetup") || reportfilename.equals("SummaryRevenueByDetail")
 				|| reportfilename.equals("PaymentVoucher" + hospital_code) || reportfilename.equals("ExpenseDetail")
 				|| reportfilename.equals("SummaryRevenueByDoctor")
-				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH")) {
+				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH") || reportfilename.equals("SummaryRevenueByDetailForDoctorVCH")) {
 
 			if (doctor_code.equals("") || doctor_code.equals(null) || doctor_code.equals("%")) {
 				from_doctor = "0";
@@ -413,7 +413,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
 				}
 
-			} else if (reportfilename.equals("SummaryRevenueByDetail")) {
+			} else if (reportfilename.equals("SummaryRevenueByDetail") || reportfilename.equals("SummaryRevenueByDetailForDoctorVCH")) {
 				System.out.println("SummaryRevenueByDetail");
 
 				hm.put("payment_date", paymentDate);
