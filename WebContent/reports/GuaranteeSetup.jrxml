@@ -49,7 +49,7 @@ CASE WHEN SG.EARLY_TIME = '000000' OR SG.EARLY_TIME = START_TIME THEN '' ELSE SG
 SG.END_DATE, SG.END_TIME, 
 CASE WHEN SG.LATE_TIME = '000000' OR SG.LATE_TIME = SG.END_TIME THEN '' ELSE SG.LATE_TIME END AS LATE_TIME,
 SG.GUARANTEE_AMOUNT, SG.GUARANTEE_FIX_AMOUNT, SG.GUARANTEE_INCLUDE_AMOUNT, SG.GUARANTEE_EXCLUDE_AMOUNT,
-DR.NAME_THAI, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE  , HP.DESCRIPTION_THAI,
+DR.NAME_THAI,SG.UPDATE_DATE, SG.USER_ID, CASE WHEN SG.ACTIVE = '0' THEN 'INACTIVE' ELSE 'ACTIVE' END AS ACTIVE  , HP.DESCRIPTION_THAI,
 ROW_NUMBER ( ) OVER ( PARTITION BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE,SG.GUARANTEE_CODE ORDER BY SG.START_DATE+SG.START_TIME) AS ROWNO,
 ISNULL((CASE WHEN ROW_NUMBER ( ) OVER ( PARTITION BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE, SG.GUARANTEE_CODE ORDER BY SG.START_DATE+SG.START_TIME) = 1 AND SG.GUARANTEE_TYPE_CODE = 'MLY' THEN
 			(SELECT SUM(DISTINCT GUARANTEE_AMOUNT)
@@ -93,6 +93,7 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 	<field name="GUARANTEE_INCLUDE_AMOUNT" class="java.math.BigDecimal"/>
 	<field name="GUARANTEE_EXCLUDE_AMOUNT" class="java.math.BigDecimal"/>
 	<field name="NAME_THAI" class="java.lang.String"/>
+	<field name="UPDATE_DATE" class="java.lang.String"/>
 	<field name="USER_ID" class="java.lang.String"/>
 	<field name="ACTIVE" class="java.lang.String"/>
 	<field name="DESCRIPTION_THAI" class="java.lang.String"/>
@@ -695,20 +696,20 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 					<reportElement
 						x="406"
 						y="19"
-						width="77"
+						width="104"
 						height="15"
 						key="staticText-22"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<text><![CDATA[User Info.]]></text>
+				<text><![CDATA[Update Date/User Info.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="483"
+						x="510"
 						y="19"
-						width="63"
+						width="36"
 						height="15"
 						key="staticText-23"/>
 					<box></box>
@@ -883,16 +884,16 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="406"
+						x="411"
 						y="0"
-						width="77"
+						width="91"
 						height="15"
 						key="textField-5"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{USER_ID}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{UPDATE_DATE}.substring( 6, 8 )+"/"+$F{UPDATE_DATE}.substring( 4, 6 )+"/"+$F{UPDATE_DATE}.substring( 0, 4 )+'-'+$F{USER_ID}]]></textFieldExpression>
 				</textField>
 				<line direction="TopDown">
 					<reportElement
@@ -914,9 +915,9 @@ ORDER BY SG.GL_DEPARTMENT_CODE, SG.GUARANTEE_DR_CODE, SG.ACTIVE DESC, SG.START_D
 				</line>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="483"
+						x="491"
 						y="0"
-						width="63"
+						width="55"
 						height="15"
 						key="textField-11"/>
 					<box></box>
