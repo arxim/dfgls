@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="df.jsp.LabelMap,java.util.*" errorPage="../error.jsp"%>
+﻿<%@page contentType="text/html" pageEncoding="UTF-8" import="df.jsp.LabelMap,java.util.*" errorPage="../error.jsp"%>
 <%@page import="df.jsp.Guard"%>
 <%@page import="df.jsp.LabelMap"%>
 <%@page import="df.bean.db.DBMgr"%>
@@ -41,9 +41,7 @@
     
 	    DBConnection conn = new DBConnection();
 	    conn.connectToLocal();
-	    
 		String report = ""; 
-	
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -59,7 +57,6 @@
         <script type="text/javascript" src="../../javascript/ajax.js"></script>
         <script type="text/javascript" src="../../javascript/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="../../javascript/jquery-ui-1.8.16.custom.min.js"></script>
-<!--         <script type="text/javascript" src="../../javascript/jqueryUtil.js"></script> -->
 		<script type="text/javascript">
                 function Interface_Save() {
                 var selectTypeDF = document.mainForm.INTERFACE_PROCESS;
@@ -92,7 +89,7 @@
                     }
                 }
                 document.mainForm.SOURCE_FILE.value = document.mainForm.FILE_INTERFACE.value;
-                document.mainForm.action = "http://localhost:8885/interfaceDF";
+                document.mainForm.action = "http://localhost:8883/interfaceFileDF";
                 document.mainForm.submit();
                 return true;
 			}
@@ -114,12 +111,6 @@
                     g.style.display = 'none';
                 }
 			}
-			/*
-			function AJAX_Import_Transaction() {
-                var target = "../../ImportFileSrvl?INTERFACE_PROCESS='"+document.mainForm.INTERFACE_PROCESS.value+"'&SOURCE_FILE='" + document.mainForm.FILE_INTERFACE.value + "'";
-				AJAX_Request(target, AJAX_Handle_Refresh_Result_Message());
-            }
-			*/            
             function AJAX_Handle_Refresh_Result_Message() {
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
@@ -128,7 +119,6 @@
 					alert(getXMLNodeValue(xmlDoc, "SUCCESS"));
                 }
             }
-			///> Tom[My] 06/12/2012 11:19 AM
 			$(document).ready(function() {
 				 $(function() {
 				     $("select#INTERFACE_PROCESS").change(function() {
@@ -143,8 +133,6 @@
 				     });
 		            });
 				});
-	         //<  
-
 		</script>
 		<style>
 			.no-close .ui-dialog-titlebar-close {display: none }
@@ -154,14 +142,13 @@
    		 <div style="visibility: hidden;" id="dialog-modal" title="Message">
    		 	<p>Please Wait...</p>
          </div>
-        <form id="mainForm" name="mainForm" method="post" action="../../ImportFileSrvl" target="myiframe" enctype="multipart/form-data">
+        <form id="mainForm" name="mainForm" method="post" target="myiframe" enctype="multipart/form-data">
         <input type="hidden" id="SOURCE_FILE" name="SOURCE_FILE"/>
-        <input type="hidden" id="businessCode" name="businessCode" value="VCH"/>
-        <%-- <input type="hidden" id="businessCode" name="businessCode" value=<%=session.getAttribute("HOSPITAL_CODE")%>/> --%>
+        <input type="hidden" id="businessCode" name="businessCode" value=<%=session.getAttribute("HOSPITAL_CODE")%> />
             <center>
                 <table width="800" border="0">
 				<tr><td align="left">
-				<b><font color='#003399'><%=Utils.getInfoPage("trakcare_import.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
+				<b><font color='#003399'><%=Utils.getInfoPage("trakcare_import_jar.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
 				</td></tr>
 				</table>
             </center>
@@ -215,7 +202,7 @@
         </tr>
     </table>
     </form>
-    <iframe name="myiframe" src="../../ImportFileSrvl" width="0" height="0"></iframe>
+ 	<iframe name="myiframe" width="0" height="0"></iframe>
 	</body>
 </html>
 <script language="javascript">
@@ -223,7 +210,6 @@
         var e = document.getElementById('FILE_INTERFACE');
         var d = document.getElementById('INTERFACE_DATE');
         var s = ck;
-        //alert(s.value);
         if(s.value == 'date'){
             e.disabled = true;
             d.disabled = false;

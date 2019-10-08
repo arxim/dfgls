@@ -225,13 +225,13 @@
 								document.getElementById("img_progress_summary_in_month").src="../../images/failed_icon.gif";
 								document.getElementById("RUN").disabled = "";
 								document.getElementById("STOP").disabled = "";
-					        	alert("    Fail!!!  ");
+					        	alert("Process Summary Revenue In Month Incomplete");
 							}
 						}else{
 							document.getElementById("img_progress_summary_in_month").src="../../images/failed_icon.gif";
 							document.getElementById("RUN").disabled = "";
 							document.getElementById("STOP").disabled = "";
-				        	alert("    Fail!!!  ");
+				        	alert("Process Summary Revenue In Month Incomplete");
 						}
 					},
 					error: function(xhr,state,exception) {

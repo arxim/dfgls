@@ -579,29 +579,23 @@
 				var end_time = document.mainForm.END_TIME.value;
 				var dr_code = document.mainForm.GUARANTEE_DR_CODE.value;
 				var amount_per_time = document.mainForm.AMOUNT_PER_TIME.value;
-				
-				
 				var target = "../../GetHourTimeSrvl?start_date=" + start_date + "&end_date=" + end_date + "&start_time=" + start_time + "&end_time=" + end_time + "&ga_type="+ga_type+"&dr_code="+dr_code+ "&amount_per_time="+amount_per_time;
-					
 				AJAX_Request(target, AJAX_Handle_GUARANTEE_AMOUNT); // ให้ทำ  function AJAX_Handle_GUARANTEE_AMOUNT 
-				
-				
 			}
             
            function AJAX_Handle_GUARANTEE_AMOUNT(){
                 if (AJAX_IsComplete()) {
                     var xmlDoc = AJAX.responseXML;
-                    //alert(document.mainForm.GUARANTEE_TYPE.value);
                      if(document.mainForm.GUARANTEE_TYPE.value=="GA"){
-                    			document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
-                        		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
-                        		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
-                        		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
-        	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
-        	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
-        	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
-        	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-                    	}else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
+                   			document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
+                       		document.mainForm.GUARANTEE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
+                       		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
+                       		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
+       	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=true;
+       	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
+       	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
+       	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
+                    }else if(document.mainForm.GUARANTEE_TYPE.value=="GEA"){
                     		document.mainForm.AMOUNT_PER_TIME.value =getXMLNodeValue(xmlDoc, "STATUS2");
                     		document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value = getXMLNodeValue(xmlDoc, "STATUS");
                     		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
@@ -613,8 +607,7 @@
     	           			document.mainForm.GUARANTEE_INCLUDE_AMOUNT.value=num_default_value;
     	           			document.mainForm.INCLUDE_AMOUNT_PER_HOUR.value=num_default_value;
     	           			document.mainForm.INCLUDE_HOUR.value=num_default_value;
-    	           			
-                    	}else if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
+                    }else if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
                     		document.mainForm.GUARANTEE_FIX_AMOUNT.readOnly=false;
                     		document.mainForm.AMOUNT_OF_TIME.value = getXMLNodeValue(xmlDoc,"STATUS1");
     	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
@@ -622,14 +615,15 @@
     	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.value=num_default_value;
     	           			document.mainForm.GUARANTEE_AMOUNT.value=num_default_value;
     	           			document.mainForm.GUARANTEE_FIX_AMOUNT.value=num_default_value;
-                    	}
-                    } 		
-           	}
+                    }
+            } 		
+       	}
            	
            //+++++++++++++++++++++++++++++++++++++++ 20090819
            	//function chkStepSharing(){
             //}
            	function amountType(){ ///  ทำต่อตรงนี้นะครับผม
+           		alert("");
            		if(document.mainForm.GUARANTEE_TYPE.value=="NONE"){
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
 	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
@@ -655,12 +649,10 @@
            			
            		}else{
            			if(document.mainForm.AMOUNT_PER_TIME.value=="0.00"){
-           				alert("");
 	           			document.mainForm.GUARANTEE_EXCLUDE_AMOUNT.readOnly=false;
 	           			document.mainForm.GUARANTEE_AMOUNT.readOnly=false;
                		}else{AJAX_GUARANTEE_AMOUNT(document.mainForm.GUARANTEE_TYPE.value,"0","");} 
            		}
-           			
            	}	
            		
 
@@ -944,30 +936,8 @@
                 	</td>
                 	<td class="input" colspan="1">
                 		<select id="GUARANTEE_TYPE" name="GUARANTEE_TYPE" class="medium" onchange="guaranteeType()">
-                			<option value="NONE">--- Amount Type ---</option>
-                			<option value="GA" <%
-                				 if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){ 
-                					 if(!"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_AMOUNT"))){
-                						 out.print(" selected='selected'");
-                					 }else{ 
-                						 out.print("");
-                					 }
-                				 } else { 
-                					 out.print("");
-                				 }
-                					%>>Guarantee Amount</option>
-
-                            <option value="GEA" <%
-                       		if(!"".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT"))){ 
-                            	  if(!"0.00".equals(DBMgr.getRecordValue(stpGuaranteeRec, "GUARANTEE_EXCLUDE_AMOUNT"))){
-                            		  out.print(" selected='selected'");  
-                            	  } else {
-                            		  out.print("");
-                            	  }
-                            } else { 
-                            		 out.print("");
-                            }
-									%>>Extra Amount</option>
+                			<option value="NONE" <%= DBMgr.getRecordValue(stpGuaranteeRec, "AMOUNT_PER_TIME").equals("0.00") ? "selected=\"selected\"" : "" %>>--- Amount Type ---</option>
+                            <option value="GEA">Extra Amount</option>
                         </select>
                     </td>
                 </tr>
