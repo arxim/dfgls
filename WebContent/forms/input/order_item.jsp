@@ -54,6 +54,9 @@
             labelMap.add("IS_GUARANTEE", "Guarantee Process", "คำนวณการันตี");
             labelMap.add("IS_GUARANTEE_0", "No", "ไม่คำนวณ");
             labelMap.add("IS_GUARANTEE_1", "Yes", "คำนวณ");
+            labelMap.add("IS_PROCEDURE", "Procedure", "หัตถการ");
+            labelMap.add("IS_PROCEDURE_0", "No", "ไม่ใช่");
+            labelMap.add("IS_PROCEDURE_1", "Yes", "ใช่");
             labelMap.add("EXCLUDE_TREATMENT", "Step Calculate", "คำนวณแบ่งขั้นบันได");
             labelMap.add("EXCLUDE_TREATMENT_0", "No", "ไม่");
             labelMap.add("EXCLUDE_TREATMENT_1", "Yes", "คำนวณ");
@@ -90,12 +93,13 @@
                 orderItemRec.addField("IS_ALLOC_FULL_TAX", Types.VARCHAR, request.getParameter("IS_ALLOC_FULL_TAX"));
                 orderItemRec.addField("IS_GUARANTEE", Types.VARCHAR, request.getParameter("IS_GUARANTEE"));
                 orderItemRec.addField("EXCLUDE_TREATMENT", Types.VARCHAR, request.getParameter("EXCLUDE_TREATMENT"));
+                orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE"));
                 orderItemRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
                 orderItemRec.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
                 orderItemRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 orderItemRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 orderItemRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
-                orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE"));
+/*                 orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE")); */
                 
                 //for log
                 orderItemRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -109,6 +113,7 @@
                 orderItemRecLog.addField("IS_STEP_COMPUTE", Types.VARCHAR, request.getParameter("IS_STEP_COMPUTE"));
                 orderItemRecLog.addField("IS_ALLOC_FULL_TAX", Types.VARCHAR, request.getParameter("IS_ALLOC_FULL_TAX"));
                 orderItemRecLog.addField("IS_GUARANTEE", Types.VARCHAR, request.getParameter("IS_GUARANTEE"));
+/*                 orderItemRecLog.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE")); */
                 orderItemRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
                 orderItemRecLog.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
                 orderItemRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
@@ -289,6 +294,7 @@
                 document.mainForm.IS_COMPUTE_1.checked = true;
                 //document.mainForm.IS_ALLOC_FULL_TAX_1.checked = true;
                 document.mainForm.IS_GUARANTEE_1.checked = true;
+                document.mainForm.IS_PROCEDURE_1.checked = true;
                 //document.mainForm.EXCLUDE_TREATMENT_1.checked = true;
                 document.mainForm.ACTIVE_1.checked = true;
                 return false;
@@ -307,7 +313,7 @@
             <input type="hidden" id="MODE" name="MODE" value="<%=MODE%>" />
             <input type="hidden" id="EXCLUDE_TREATMENT" name="EXCLUDE_TREATMENT" value="N" />
             <input type="hidden" id="IS_ALLOC_FULL_TAX" name="IS_ALLOC_FULL_TAX" value="Y" />
-            <input type="hidden" id="IS_PROCEDURE" name="IS_PROCEDURE" value="" />
+            <!-- <input type="hidden" id="IS_PROCEDURE" name="IS_PROCEDURE" value="" /> -->
             
             <input type="hidden" id="TAX_TYPE_CODE" name="TAX_TYPE_CODE" value="406" />            
 			<center>
@@ -385,6 +391,15 @@
                                <label for="IS_GUARANTEE_1">${labelMap.IS_GUARANTEE_1} </label>
                         <input type="radio" id="IS_GUARANTEE_0" name="IS_GUARANTEE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_GUARANTEE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
                                <label for="IS_GUARANTEE_0"> ${labelMap.IS_GUARANTEE_0}</label>
+					</td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="IS_PROCEDURE_1"><span class="style1">${labelMap.IS_PROCEDURE}*</span></label></td>
+                    <td colspan="3" class="input">
+                        <input type="radio" id="IS_PROCEDURE_1" name="IS_PROCEDURE" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE")=="" ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_PROCEDURE_1">${labelMap.IS_PROCEDURE_1} </label>
+                        <input type="radio" id="IS_PROCEDURE_0" name="IS_PROCEDURE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_PROCEDURE_0"> ${labelMap.IS_PROCEDURE_0}</label>
 					</td>
                 </tr>
                 <tr>
