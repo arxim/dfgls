@@ -102,6 +102,7 @@
             labelMap.add("taxG_h","Hospital","โรงพยาบาล");
             labelMap.add("ALERT_BANK","Plase select BANK","กรุณาเลือกธนาคาร");
             labelMap.add("SPECIAL_TYPE" ,  "Specialty" , "ความชำนาญพิเศษ");
+            labelMap.add("SALARY" ,  "Salary" , "เงินเดือน");
             labelMap.add("TAX_SUM","Summary Revenue","คำนวณรวมรายได้");
             labelMap.add("TAX_STEP","Step Allocate","คำนวณอัตราก้าวหน้า");
             labelMap.add("TAX_3","WithHolding Tax 3%","หักภาษี ณ ที่จ่าย 3%");
@@ -180,6 +181,7 @@
                 doctorRec.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRec.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRec.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
+                doctorRec.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));
                 
                 // for log
                 doctorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -224,6 +226,7 @@
                 doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRecLog.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
+                doctorRecLog.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));
 
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
@@ -258,7 +261,7 @@
                				"DOCTOR_TYPE_CODE, DOCTOR_CATEGORY_CODE, HOSPITAL_UNIT_CODE, DEPARTMENT_CODE, PAYMENT_MODE_CODE, GUARANTEE_DAY, GUARANTEE_DR_CODE, GUARANTEE_SOURCE, "+
                				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, IS_LEGAL_ENTITY, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_CODE, BANK_BRANCH_CODE, "+
                				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
-               				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, ACTIVE FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
+               				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, SALARY, ACTIVE FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
                		System.out.println(doctor.getSize());
                		System.out.println(doctorRec.getSize());
                		
@@ -661,7 +664,7 @@
 						isObjectValidDate(document.mainForm.TO_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
 						isObjectValidDate(document.mainForm.GUARANTEE_START_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
 						isObjectValidDate(document.mainForm.GUARANTEE_EXPIRE_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
-						//isObjectValidNumber(document.mainForm.SALARY, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
+						isObjectValidNumber(document.mainForm.SALARY, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
 						//isObjectValidNumber(document.mainForm.POSITION_AMT, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
 						isObjectValidNumber(document.mainForm.OVER_GUARANTEE_PCT, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>')) {
 					AJAX_VerifyData();
@@ -678,7 +681,7 @@
 						isObjectValidDate(document.mainForm.TO_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
 						isObjectValidDate(document.mainForm.GUARANTEE_START_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
 						isObjectValidDate(document.mainForm.GUARANTEE_EXPIRE_DATE, '<%=labelMap.get(LabelMap.ALERT_INVALID_DATE)%>') && 
-						//isObjectValidNumber(document.mainForm.SALARY, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
+						isObjectValidNumber(document.mainForm.SALARY, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
 						//isObjectValidNumber(document.mainForm.POSITION_AMT, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
 						isObjectValidNumber(document.mainForm.OVER_GUARANTEE_PCT, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>')) {
                 	AJAX_VerifyData();
@@ -928,8 +931,13 @@
 				<tr>
                     <td class="label">
                         <label for="LICENSE_ID">${labelMap.LICENSE_ID}</label>                    </td>
-                    <td class="input" colspan="3">
+                    <td class="input">
                         <input name="LICENSE_ID" type="text" class="short" id="LICENSE_ID" value="<%= DBMgr.getRecordValue(doctorRec, "LICENSE_ID")%>" maxlength="50"  <%=readonlyManager%>/>                    </td>
+                	<td class="label">
+                        <label for="SALARY">${labelMap.SALARY}</label>                    </td>
+                    <td class="input" >
+                        <input name="SALARY" type="text" class="short" id="SALARY" value="<%= DBMgr.getRecordValue(doctorRec, "SALARY")%>" maxlength="50"  <%=readonlyManager%>/>                    </td>
+                
                 </tr>
                 <tr>
                     <td class="label">
