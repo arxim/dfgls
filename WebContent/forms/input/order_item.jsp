@@ -57,6 +57,9 @@
             labelMap.add("IS_PROCEDURE", "Procedure", "หัตถการ");
             labelMap.add("IS_PROCEDURE_0", "No", "ไม่ใช่");
             labelMap.add("IS_PROCEDURE_1", "Yes", "ใช่");
+            labelMap.add("IS_ADVANCE_PAYMENT", "Advance Payment", "จ่ายค่าแพทย์ทุกกรณี");
+            labelMap.add("IS_ADVANCE_PAYMENT_0", "No", "ไม่ใช่");
+            labelMap.add("IS_ADVANCE_PAYMENT_1", "Yes", "ใช่");
             labelMap.add("EXCLUDE_TREATMENT", "Step Calculate", "คำนวณแบ่งขั้นบันได");
             labelMap.add("EXCLUDE_TREATMENT_0", "No", "ไม่");
             labelMap.add("EXCLUDE_TREATMENT_1", "Yes", "คำนวณ");
@@ -94,6 +97,7 @@
                 orderItemRec.addField("IS_GUARANTEE", Types.VARCHAR, request.getParameter("IS_GUARANTEE"));
                 orderItemRec.addField("EXCLUDE_TREATMENT", Types.VARCHAR, request.getParameter("EXCLUDE_TREATMENT"));
                 orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE"));
+                orderItemRec.addField("IS_ADVANCE_PAYMENT", Types.VARCHAR, request.getParameter("IS_ADVANCE_PAYMENT"));
                 orderItemRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
                 orderItemRec.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
                 orderItemRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
@@ -114,6 +118,7 @@
                 orderItemRecLog.addField("IS_ALLOC_FULL_TAX", Types.VARCHAR, request.getParameter("IS_ALLOC_FULL_TAX"));
                 orderItemRecLog.addField("IS_GUARANTEE", Types.VARCHAR, request.getParameter("IS_GUARANTEE"));
 /*                 orderItemRecLog.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE")); */
+				orderItemRecLog.addField("IS_ADVANCE_PAYMENT", Types.VARCHAR, request.getParameter("IS_ADVANCE_PAYMENT"));
                 orderItemRecLog.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
                 orderItemRecLog.addField("TAX_TYPE_CODE", Types.VARCHAR, request.getParameter("TAX_TYPE_CODE"));
                 orderItemRecLog.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate(), true);
@@ -130,7 +135,7 @@
                 } else if (MODE == DBMgr.MODE_UPDATE) {
                 	DataRecord orderItem = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION_THAI, DESCRIPTION_ENG, "+
                 			"PAYMENT_TIME, ORDER_ITEM_CATEGORY_CODE, ACCOUNT_CODE, IS_COMPUTE, IS_STEP_COMPUTE, IS_ALLOC_FULL_TAX, IS_GUARANTEE, "+
-                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID, IS_PROCEDURE "+
+                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID, IS_PROCEDURE, IS_ADVANCE_PAYMENT "+
                				"FROM ORDER_ITEM WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
              		
                		remark = "แก้ไข ";
@@ -400,6 +405,15 @@
                                <label for="IS_PROCEDURE_1">${labelMap.IS_PROCEDURE_1} </label>
                         <input type="radio" id="IS_PROCEDURE_0" name="IS_PROCEDURE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
                                <label for="IS_PROCEDURE_0"> ${labelMap.IS_PROCEDURE_0}</label>
+					</td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="IS_ADVANCE_PAYMENT_1"><span class="style1">${labelMap.IS_ADVANCE_PAYMENT}*</span></label></td>
+                    <td colspan="3" class="input">
+                        <input type="radio" id="IS_ADVANCE_PAYMENT_1" name="IS_ADVANCE_PAYMENT" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_ADVANCE_PAYMENT").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_ADVANCE_PAYMENT")=="" ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_ADVANCE_PAYMENT_1">${labelMap.IS_PROCEDURE_1} </label>
+                        <input type="radio" id="IS_ADVANCE_PAYMENT_0" name="IS_ADVANCE_PAYMENT" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_ADVANCE_PAYMENT").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_ADVANCE_PAYMENT_0"> ${labelMap.IS_PROCEDURE_0}</label>
 					</td>
                 </tr>
                 <tr>
