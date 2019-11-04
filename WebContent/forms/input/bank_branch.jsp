@@ -32,6 +32,7 @@
             labelMap.add("TITLE_MAIN", "Bank Branch", "สาขาธนาคาร");
             labelMap.add("CODE", "Code", "รหัส");
             labelMap.add("BANK_CODE", "Bank", "ธนาคาร");
+            labelMap.add("BANK_COUNTRY_CODE", "Country", "Country");
             labelMap.add("DESCRIPTION_THAI", "Description (Thai)", "ชื่อ (ไทย)");
             labelMap.add("DESCRIPTION_ENG", "Description (Eng)", "ชื่อ (อังกฤษ)");
             request.setAttribute("labelMap", labelMap.getHashMap());
@@ -57,11 +58,12 @@
                 bankBranchRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 bankBranchRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 bankBranchRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+                bankBranchRec.addField("BANK_COUNTRY_CODE", Types.VARCHAR, request.getParameter("BANK_COUNTRY_CODE"), true);
 
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
 
                     if (DBMgr.insertRecord(bankBranchRec)) {
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/bank.jsp?CODE=" + bankBranchRec.getField("BANK_CODE").getValue()));
+                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/bank.jsp?CODE=" + bankBranchRec.getField("BANK_CODE").getValue()+"&COUNTRY_CODE="+ bankBranchRec.getField("BANK_COUNTRY_CODE").getValue()));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -69,7 +71,7 @@
                 } 
                 else if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_UPDATE) {
                     if (DBMgr.updateRecord(bankBranchRec)) {
-                        session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/bank.jsp?CODE=" + bankBranchRec.getField("BANK_CODE").getValue()));
+                    	session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/bank.jsp?CODE=" + bankBranchRec.getField("BANK_CODE").getValue()+"&COUNTRY_CODE="+ bankBranchRec.getField("BANK_COUNTRY_CODE").getValue()));
                     } 
                     else {
                         session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
@@ -80,14 +82,14 @@
                 return;
             }
             else if (request.getParameter("BANK_CODE") != null && request.getParameter("CODE") != null) {
-                bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + request.getParameter("BANK_CODE") + "'");
+                bankRec = DBMgr.getRecord("SELECT B.CODE, B.DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION, C.CODE AS COUNTRY_CODE, C.DESCRIPTION_ENG AS COUNTRY_DESCRIPTION  FROM BANK B LEFT JOIN COUNTRY C ON B.COUNTRY_CODE = C.CODE WHERE B.CODE = '" + request.getParameter("BANK_CODE") + "' AND B.COUNTRY_CODE ='" + request.getParameter("BANK_COUNTRY_CODE") + "' ");
                 if (bankRec != null) {
                     MODE = DBMgr.MODE_UPDATE;
-                    bankBranchRec = DBMgr.getRecord("SELECT * FROM BANK_BRANCH WHERE CODE = '" + request.getParameter("CODE") + "' AND BANK_CODE = '" + request.getParameter("BANK_CODE") + "'");
+                    bankBranchRec = DBMgr.getRecord("SELECT * FROM BANK_BRANCH WHERE CODE = '" + request.getParameter("CODE") + "' AND BANK_CODE = '" + request.getParameter("BANK_CODE") + "' AND BANK_COUNTRY_CODE = '"+ request.getParameter("BANK_COUNTRY_CODE") + "' ");
                 }
             }
             else if (request.getParameter("BANK_CODE") != null) {
-                bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + request.getParameter("BANK_CODE") + "'");
+                bankRec = DBMgr.getRecord("SELECT B.CODE, B.DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION, C.CODE AS COUNTRY_CODE, C.DESCRIPTION_ENG AS COUNTRY_DESCRIPTION  FROM BANK B LEFT JOIN COUNTRY C ON B.COUNTRY_CODE = C.CODE WHERE B.CODE = '" + request.getParameter("BANK_CODE") + "' AND B.COUNTRY_CODE = '" + request.getParameter("BANK_COUNTRY_CODE") + "'");
             }
             else {
                 response.sendRedirect("../message.jsp");
@@ -108,7 +110,7 @@
         <script type="text/javascript">
           
             function AJAX_VerifyData() {
-                var target = "../../RetrieveData?TABLE=BANK_BRANCH&COND=CODE='" + document.mainForm.CODE.value + "' AND BANK_CODE='" + document.mainForm.BANK_CODE.value + "'";
+                var target = "../../RetrieveData?TABLE=BANK_BRANCH&COND=CODE='" + document.mainForm.CODE.value + "' AND BANK_CODE='" + document.mainForm.BANK_CODE.value + "' AND BANK_COUNTRY_CODE='" + document.mainForm.BANK_COUNTRY_CODE.value + "'";
                 AJAX_Request(target, AJAX_Handle_VerifyData);
             }
             
@@ -203,6 +205,13 @@
                     <td colspan="3" class="input">
                         <input type="text" id="BANK_CODE" name="BANK_CODE" class="short" maxlength="20" readonly="readonly" value="<%= DBMgr.getRecordValue(bankRec, "CODE") %>" />
                         <input type="text" id="BANK_DESCRIPTION" name="BANK_DESCRIPTION" class="long" readonly="readonly" value="<%= DBMgr.getRecordValue(bankRec, "DESCRIPTION") %>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="BANK_COUNTRY_CODE">${labelMap.BANK_COUNTRY_CODE}</label></td>
+                    <td colspan="3" class="input">
+                        <input type="text" id="BANK_COUNTRY_CODE" name="BANK_COUNTRY_CODE" class="short" maxlength="20" readonly="readonly" value="<%= DBMgr.getRecordValue(bankRec, "COUNTRY_CODE") %>" />
+                        <input type="text" id="COUNTRY_DESCRIPTION" name="COUNTRY_DESCRIPTION" class="long" readonly="readonly" value="<%= DBMgr.getRecordValue(bankRec, "COUNTRY_DESCRIPTION") %>" />
                     </td>
                 </tr>
                 <tr>

@@ -35,14 +35,25 @@
             request.setCharacterEncoding("UTF-8");
             String condition_include = request.getParameter("COND");
             String returnField = "";
-
-            if (request.getParameter("RETURN_FIELD") == null) {
+            String table = request.getParameter("TABLE");
+            if(table.equals("BANK")){
+            	returnField = "BANK";
+            }
+            else if (request.getParameter("RETURN_FIELD") == null) {
                 returnField = "CODE";
             }
             else {
                 returnField = request.getParameter("RETURN_FIELD");
+            } 
+			/* if (table.equals("BANK")) {
+                returnField = "COUNTRY_CODE+CODE AS CODE";
             }
-
+			else if (request.getParameter("RETURN_FIELD") == null && !table.equals("BANK")) {
+                returnField = "CODE";
+            }
+            else if (request.getParameter("RETURN_FIELD") != null && !table.equals("BANK")){
+                returnField = request.getParameter("RETURN_FIELD");
+            }  */
             String displaysubfiled = "";
             if(request.getParameter("DISPLAY_SUB_CODE")==null){
                 displaysubfiled = "";
@@ -53,7 +64,7 @@
             if (request.getParameter("TABLE") == null) {
                 throw new Exception("Table name is not specified");
             }
-            String table = request.getParameter("TABLE");
+            
             String table1=request.getParameter("TABLE1");
             //System.out.println("table1="+table1);
            /* if(request.getParameter("TABLE1") !=null && !request.getParameter("TABLE1").equals(""))
@@ -200,14 +211,22 @@
             if (keywords != null && searchFields != null){
             	//System.out.println("table111111="+table1);
             	if(!table1.equals("null")){
+            		System.out.println("1");
                 	query = String.format("SELECT DISTINCT TOP 300 %3$s.%1$s, %3$s.%2$s,  %3$s."+displayField_second+" FROM %3$s,%4$s WHERE %4$s.ACTIVE='1' AND %4$s.HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' AND %3$s.HOSPITAL_CODE =%4$s.HOSPITAL_CODE", returnField, displayField, table, table1);
                 }else if (displayField.equalsIgnoreCase(returnField)) {
+                	System.out.println("2");
                     query = String.format("SELECT DISTINCT TOP 300 %1$s,  "+displayField_second+" FROM %2$s WHERE", returnField, table);
                 }else if(returnField.equalsIgnoreCase(displayField_second)){
+                	System.out.println("3");
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s FROM %3$s WHERE", returnField, displayField, table);
                 }else if(!"".equalsIgnoreCase(displaysubfiled.toString()) && (returnField!=displayField)){
+                	System.out.println("4");
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s, %3$s, "+displayField_second+" FROM %4$s WHERE", returnField, displayField, displaysubfiled, table);
-                }else {
+                }else if(table.equals("BANK")){
+                	query = String.format("SELECT DISTINCT TOP 300 CODE, COUNTRY_CODE+CODE AS BANK, %2$s, "+displayField_second+" FROM %3$s WHERE", returnField, displayField, table);
+                }
+                else {
+                	System.out.println("5");
                     query = String.format("SELECT DISTINCT TOP 300 %1$s, %2$s, "+displayField_second+" FROM %3$s WHERE", returnField, displayField, table);
                 }
                 if(table1.equals("null"))
@@ -260,6 +279,10 @@
 					}
                 }
 				if (orderByField != null) {
+					if(table.equals("BANK") && orderByField.equals("COUNTRY_CODE")){
+						orderByField = "BANK";
+					}
+					
 					if(table1.equals("null"))
 					{
                     	query += " ORDER BY " + orderByField + " " + orderByDir;
@@ -269,7 +292,7 @@
 						query += " ORDER BY " + table+"."+ orderByField + " " + orderByDir;
 					}
                 }
-                //System.out.println(beInsideHospital+"<>"+query);                
+                System.out.println(beInsideHospital+"<>"+query);                
                 try{
                     rs = con.executeQuery(query);
                     System.out.println(query);
@@ -294,7 +317,10 @@
                 if(!"".equalsIgnoreCase(displaysubfiled.toString())){
                     display_sub_code = displaysubfiled;
                 }
-
+                if(table.equals("BANK")){
+                	display_sub_code = "CODE";
+                }
+				System.out.println(display_sub_code);
                 int i = 0;
                 while (rs.next()) {
                 %>

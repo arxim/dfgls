@@ -114,6 +114,7 @@
             labelMap.add("GUARANTEE_PER_HOUR","Guarantee Amount / hour","ค่าการันตีต่อชั่วโมง");
             labelMap.add("EXTRA_PER_HOUR","Extra / hour","ค่าเวรต่อชั่วโมง");
             labelMap.add("DOCTOR_GROUP_CODE","Doctor Group","กลุ่มแพทย์");
+            labelMap.add("BANK_COUNTRY_CODE","Country","ประเทศ");
             request.setAttribute("labelMap", labelMap.getHashMap());
 
             String[] taxGT = {labelMap.get("taxG_d"),labelMap.get("taxG_h")};
@@ -163,6 +164,7 @@
                 doctorRec.addField("IS_LEGAL_ENTITY", Types.VARCHAR, request.getParameter("IS_LEGAL_ENTITY"));
                 doctorRec.addField("BANK_ACCOUNT_NO", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NO"));
                 doctorRec.addField("BANK_ACCOUNT_NAME", Types.VARCHAR, request.getParameter("BANK_ACCOUNT_NAME"));
+                doctorRec.addField("BANK_COUNTRY_CODE", Types.VARCHAR, request.getParameter("BANK_COUNTRY_CODE"));
                 doctorRec.addField("BANK_CODE", Types.VARCHAR, request.getParameter("BANK_CODE"));
                 doctorRec.addField("BANK_BRANCH_CODE", Types.VARCHAR, request.getParameter("BANK_BRANCH_CODE"));
                 doctorRec.addField("NOTE", Types.VARCHAR, request.getParameter("NOTE"));
@@ -181,7 +183,7 @@
                 doctorRec.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRec.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRec.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
-                doctorRec.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));
+                doctorRec.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));                
                 
                 // for log
                 doctorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -226,7 +228,7 @@
                 doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRecLog.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
-                doctorRecLog.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));
+                doctorRecLog.addField("SALARY", Types.VARCHAR, request.getParameter("SALARY"));                
 
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
@@ -259,7 +261,7 @@
                		}
                		DataRecord doctor = DBMgr.getRecord("SELECT HOSPITAL_CODE, DOCTOR_PROFILE_CODE, CODE, NAME_THAI, NAME_ENG, TAX_ID, LICENSE_ID, FROM_DATE, TO_DATE, ADDRESS1, ADDRESS2, ADDRESS3, ZIP, "+
                				"DOCTOR_TYPE_CODE, DOCTOR_CATEGORY_CODE, HOSPITAL_UNIT_CODE, DEPARTMENT_CODE, PAYMENT_MODE_CODE, GUARANTEE_DAY, GUARANTEE_DR_CODE, GUARANTEE_SOURCE, "+
-               				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, IS_LEGAL_ENTITY, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_CODE, BANK_BRANCH_CODE, "+
+               				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, IS_LEGAL_ENTITY, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_COUNTRY_CODE, BANK_CODE, BANK_BRANCH_CODE, "+
                				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
                				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, SALARY, ACTIVE FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
                		System.out.println(doctor.getSize());
@@ -276,6 +278,9 @@
                			}
                			//System.out.println("doctor: "+doctor.getValueOfIndex(i).getName()+","+doctor.getValueOfIndex(i).getValue());
                			//System.out.println(i+": "+doctorRec.getValueOfIndex(i).getName()+", "+doctorRec.getValueOfIndex(i).getValue());
+               		}
+               		if(remark.equalsIgnoreCase("แก้ไข ")){
+               			remark = "ไม่มีการแก้ไขข้อมูล";
                		}
                		doctorRecLog.addField("REMARK", Types.VARCHAR, remark);
                 	
@@ -300,8 +305,8 @@
                 else {
                     MODE = DBMgr.MODE_UPDATE;
                     doctorCategoryRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DOCTOR_CATEGORY WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DOCTOR_CATEGORY_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
-                    bankRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_CODE") + "' ");
-                    bankBranchRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK_BRANCH WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_BRANCH_CODE") + "' AND BANK_CODE='"+DBMgr.getRecordValue(doctorRec, "BANK_CODE")+"'");
+                    bankRec = DBMgr.getRecord("SELECT B.CODE, B.DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION, B.COUNTRY_CODE, C.DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS COUNTRY_DESCRIPTION FROM BANK B LEFT JOIN COUNTRY C ON B.COUNTRY_CODE = C.CODE WHERE B.CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_CODE") + "' AND B.COUNTRY_CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_COUNTRY_CODE") + "' ");
+                    bankBranchRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + " AS DESCRIPTION FROM BANK_BRANCH WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_BRANCH_CODE") + "' AND BANK_CODE='"+DBMgr.getRecordValue(doctorRec, "BANK_CODE")+"'  AND BANK_COUNTRY_CODE = '" + DBMgr.getRecordValue(doctorRec, "BANK_COUNTRY_CODE") + "' ");
                     departmentRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM DEPARTMENT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "DEPARTMENT_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
                     hospitalUnitRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION FROM HOSPITAL_UNIT WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "HOSPITAL_UNIT_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' ");
                     specialTypeRec = DBMgr.getRecord("SELECT CODE, DESCRIPTION_ENG FROM SPECIAL_TYPE WHERE CODE = '" + DBMgr.getRecordValue(doctorRec, "SPECIAL_TYPE_CODE") + "' ");
@@ -572,10 +577,14 @@
                     
                     // Data found
                     document.mainForm.BANK_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
+                    document.mainForm.BANK_COUNTRY_CODE.value = getXMLNodeValue(xmlDoc, "COUNTRY_CODE");
                     //document.mainForm.SEARCH_BANK_BRANCH_CODE.disabled = true;
 
                     if(document.mainForm.BANK_BRANCH_CODE.value != ""){
                         AJAX_Refresh_BANK_BRANCH();
+                    }
+                    if(document.mainForm.BANK_COUNTRY_CODE.value != ""){
+                        AJAX_Refresh_BANK_COUNTRY_CODE();
                     }
                 }
             }
@@ -610,6 +619,27 @@
                     
                     // Data found
                     document.mainForm.BANK_BRANCH_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
+                }
+            }
+            
+            function AJAX_Refresh_BANK_COUNTRY_CODE() {
+                var target = "../../RetrieveData?TABLE=COUNTRY&COND=CODE='" + document.mainForm.BANK_COUNTRY_CODE.value + "' ";
+                AJAX_Request(target, AJAX_Handle_Refresh_BANK_COUNTRY_CODE);
+            }
+            
+            function AJAX_Handle_Refresh_BANK_COUNTRY_CODE() {
+                if (AJAX_IsComplete()) {
+                    var xmlDoc = AJAX.responseXML;
+
+                    // Data not found
+                    if (!isXMLNodeExist(xmlDoc, "CODE")) {
+                        document.mainForm.BANK_COUNTRY_CODE.value = "";
+                        document.mainForm.COUNTRY_DESCRIPTION.value = "";
+                        return;
+                    }
+                    
+                    // Data found
+                    document.mainForm.COUNTRY_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
                 }
             }
 
@@ -920,8 +950,7 @@
                         <input name="ZIP" type="text" class="short" id="ZIP" value="<%= DBMgr.getRecordValue(doctorRec, "ZIP")%>" maxlength="50" <%=readonlyManager%>/>                    </td>
                 </tr>
                 <tr>
-                    <td class="label">
-                        <label for="EMAIL">${labelMap.EMAIL}</label>                    </td>
+                    <td class="label"><label for="EMAIL">${labelMap.EMAIL}</label></td>
                     <td class="input" colspan="3">
 						<input name="EMAIL" type="text" class="long" id="EMAIL" value="<%= DBMgr.getRecordValue(doctorRec, "EMAIL")%>" maxlength="50" <%=readonlyManager%> onblur="validate();"/>   
 						<img id="validMail" src="../../images/pass_icon.png" alt="validMail" style="display: none;"/>              
@@ -929,15 +958,14 @@
 				</tr>
                 <tr><th colspan="4">${labelMap.SUBTITLE_INFORMATION}</th></tr>
 				<tr>
-                    <td class="label">
-                        <label for="LICENSE_ID">${labelMap.LICENSE_ID}</label>                    </td>
+                    <td class="label"><label for="LICENSE_ID">${labelMap.LICENSE_ID}</label></td>
                     <td class="input">
-                        <input name="LICENSE_ID" type="text" class="short" id="LICENSE_ID" value="<%= DBMgr.getRecordValue(doctorRec, "LICENSE_ID")%>" maxlength="50"  <%=readonlyManager%>/>                    </td>
-                	<td class="label">
-                        <label for="SALARY">${labelMap.SALARY}</label>                    </td>
-                    <td class="input" >
-                        <input name="SALARY" type="text" class="short" id="SALARY" value="<%= DBMgr.getRecordValue(doctorRec, "SALARY")%>" maxlength="50"  <%=readonlyManager%>/>                    </td>
-                
+                        <input name="LICENSE_ID" type="text" class="short" id="LICENSE_ID" value="<%= DBMgr.getRecordValue(doctorRec, "LICENSE_ID")%>" maxlength="50"  <%=readonlyManager%>/>
+                    </td>
+                    <td class="label"><label for="SALARY">${labelMap.SALARY}</label></td>
+                    <td class="input">
+                    	<input name="SALARY" type="text" class="short" id="SALARY" value="<%= DBMgr.getRecordValue(doctorRec, "SALARY") %>" maxlength="50" <%=readonlyManager%>/>
+                    </td>
                 </tr>
                 <tr>
                     <td class="label">
@@ -1219,6 +1247,13 @@
                         %>                  
                     </td>
                 </tr>
+                <tr>
+                    <td class="label"><label for="BANK_COUNTRY_CODE">${labelMap.BANK_COUNTRY_CODE}</label></td>
+                    <td colspan="3" class="input">
+                        <input type="text" id="BANK_COUNTRY_CODE" name="BANK_COUNTRY_CODE" class="short" readonly="readonly" maxlength="20" value="<%= DBMgr.getRecordValue(bankRec, "COUNTRY_CODE") %>" />
+                        <input type="text" id="COUNTRY_DESCRIPTION" name="COUNTRY_DESCRIPTION" class="long" readonly="readonly" value="<%= DBMgr.getRecordValue(bankRec, "COUNTRY_DESCRIPTION") %>" />                    
+                    </td>
+                </tr>
                 <tr><th colspan="4">${labelMap.SUBTITLE_OTHER}</th></tr>
                 <tr>
                     <td class="label">
@@ -1267,7 +1302,7 @@
 				            alert("${labelMap.ALERT_BANK}");
 				            document.mainForm.BANK_CODE.focus();
 				        }else{
-				            openSearchForm('../search.jsp?TABLE=BANK_BRANCH&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&COND=[ and BANK_CODE=\''+ document.mainForm.BANK_CODE.value +'\']&TARGET=BANK_BRANCH_CODE&HANDLE=AJAX_Refresh_BANK_BRANCH');
+				            openSearchForm('../search.jsp?TABLE=BANK_BRANCH&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&COND=[ and BANK_CODE=\''+ document.mainForm.BANK_CODE.value+'\'+ and BANK_COUNTRY_CODE=\''+ document.mainForm.BANK_COUNTRY_CODE.value +'\']&TARGET=BANK_BRANCH_CODE&HANDLE=AJAX_Refresh_BANK_BRANCH');
 				        }
 				        return false;
 					}

@@ -156,6 +156,7 @@
             else if (request.getParameter("CODE") != null) {
                 doctorProfileRec = DBMgr.getRecord("SELECT * FROM DOCTOR_PROFILE WHERE CODE = '" + request.getParameter("CODE") + 
                 		"' AND HOSPITAL_CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'");
+                
                 if (doctorProfileRec == null) {
                     MODE = DBMgr.MODE_INSERT;
                 } else {
@@ -349,7 +350,7 @@
 
             DBConnection con = new DBConnection();
             con.connectToLocal();
-            ResultSet rs = con.executeQuery("SELECT CODE, NAME_" + labelMap.getFieldLangSuffix() + " AS NAME, DOCTOR_CATEGORY_CODE, BANK_ACCOUNT_NO, ACTIVE , (SELECT DESCRIPTION_" + labelMap.getFieldLangSuffix() + " FROM BANK WHERE CODE=D.BANK_CODE) AS 'BANK_NAME' FROM DOCTOR AS D WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE").toString()+"' AND DOCTOR_PROFILE_CODE = '" + DBMgr.getRecordValue(doctorProfileRec, "CODE") + "' ORDER BY ACTIVE DESC");
+            ResultSet rs = con.executeQuery("SELECT CODE, NAME_" + labelMap.getFieldLangSuffix() + " AS NAME, DOCTOR_CATEGORY_CODE, BANK_ACCOUNT_NO, ACTIVE , (SELECT DESCRIPTION_" + labelMap.getFieldLangSuffix() + " FROM BANK WHERE CODE=D.BANK_CODE AND COUNTRY_CODE = D.BANK_COUNTRY_CODE) AS 'BANK_NAME' FROM DOCTOR AS D WHERE HOSPITAL_CODE = '"+session.getAttribute("HOSPITAL_CODE").toString()+"' AND DOCTOR_PROFILE_CODE = '" + DBMgr.getRecordValue(doctorProfileRec, "CODE") + "' ORDER BY ACTIVE DESC");
             int i = 0;
             String activeIcon, linkEdit;
             while (rs.next()) {

@@ -34,6 +34,8 @@
             labelMap.add("CODE", "Code", "รหัส");
             labelMap.add("DESCRIPTION_THAI", "Description (Thai)", "ชื่อ (ไทย)");
             labelMap.add("DESCRIPTION_ENG", "Description (Eng)", "ชื่อ (อังกฤษ)");
+            labelMap.add("SWIFT_CODE", "Swift Code", "Swift Code");
+            labelMap.add("COUNTRY_CODE", "Country", "ประเทศ");
             //labelMap.add("ACTIVE", "Status", "สถานะ");
             //labelMap.add("ACTIVE_0", "Inactive", "ไม่ใช้งาน");
             //labelMap.add("ACTIVE_1", "Active", "ใช้งาน");
@@ -50,7 +52,7 @@
             //
 
             request.setCharacterEncoding("UTF-8");
-            DataRecord bankRec = null;
+            DataRecord bankRec = null, countryRec = null;
             byte MODE = DBMgr.MODE_INSERT;
 			String getcode = "";
 			String codescript = "";
@@ -67,6 +69,8 @@
                 record.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 record.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 record.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
+               	record.addField("COUNTRY_CODE", Types.VARCHAR, request.getParameter("COUNTRY_CODE").toString(), true);
+                record.addField("SWIFT_CODE", Types.VARCHAR, request.getParameter("SWIFT_CODE").toString());
 
                 if (Byte.parseByte(request.getParameter("MODE")) == DBMgr.MODE_INSERT) {
 
@@ -90,7 +94,7 @@
                 return;
             }
             else if (request.getParameter("CODE") != null) {
-                bankRec = DBMgr.getRecord("SELECT * FROM BANK WHERE CODE = '" + request.getParameter("CODE") + "'");
+            	bankRec = DBMgr.getRecord("SELECT * FROM BANK WHERE CODE = '" + request.getParameter("CODE") + "' AND COUNTRY_CODE ='"+ request.getParameter("COUNTRY_CODE") + "' ");
                 if (bankRec == null) {
                     MODE = DBMgr.MODE_INSERT;
 					getcode = request.getParameter("CODE");
@@ -134,16 +138,26 @@
             
             function Refresh_BANK() {
                 var to = document.location.pathname.lastIndexOf('?');
+                var code;
+                var country_code;
                 if (to < 0) {
-                    window.location = document.location.pathname + '?CODE=' + document.mainForm.CODE.value;
+                	if(!(/^\d+$/.test(document.mainForm.CODE.value))){
+                		code = document.mainForm.CODE.value.substring(2, document.mainForm.CODE.value.length);
+                        country_code = document.mainForm.CODE.value.substring(0, 2);
+                	}
+                	else{
+                		code = document.mainForm.CODE.value;
+                        country_code = document.mainForm.COUNTRY_CODE.value;
+                	}
+                    window.location = document.location.pathname + '?CODE=' +code +'&COUNTRY_CODE='+ country_code;
                 }
                 else {
-                    window.location = document.location.pathname.substr(0, to) + '?CODE=' + document.mainForm.CODE.value;
+                    window.location = document.location.pathname.substr(0, to) + '?CODE=' + document.mainForm.CODE.value+'&COUNTRY_CODE='+ document.mainForm.COUNTRY_CODE.value;
                 }
             }
             
             function AJAX_VerifyData() {
-                var target = "../../RetrieveData?TABLE=BANK&COND=CODE='" + document.mainForm.CODE.value + "'";
+                var target = "../../RetrieveData?TABLE=BANK&COND=CODE='" + document.mainForm.CODE.value + "' AND COUNTRY_CODE='" + document.mainForm.COUNTRY_CODE.value+ "' ";
                 AJAX_Request(target, AJAX_Handle_VerifyData);
             }
             
@@ -178,9 +192,11 @@
             }
             
             function SAVE_Click() {
+            	//alert(document.mainForm.COUNTRY_CODE.value);
                 if (!isObjectEmptyString(document.mainForm.CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
                     !isObjectEmptyString(document.mainForm.DESCRIPTION_ENG, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    !isObjectEmptyString(document.mainForm.DESCRIPTION_THAI, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')) {
+                    !isObjectEmptyString(document.mainForm.DESCRIPTION_THAI, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                    !isObjectEmptyString(document.mainForm.COUNTRY_CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')) {
                     AJAX_VerifyData();
                 }
             }
@@ -193,6 +209,8 @@
                 document.mainForm.DESCRIPTION_THAI.value = '';
                 document.mainForm.DESCRIPTION_ENG.value = '';
                 document.mainForm.ACTIVE_1.checked = true;
+                document.mainForm.COUNTRY_CODE.value = '';
+                document.mainForm.SWIFT_CODE.value = '';
                 return false;
             }
         </script>
@@ -224,6 +242,12 @@
 				  	</th>
                 </tr>
                 <tr>
+                	<td class="labelRequest"><label for="COUNTRY_CODE">${labelMap.COUNTRY_CODE} *</label></td>
+					<td colspan="" class="input">
+                        <%= DBMgr.generateDropDownList("COUNTRY_CODE", "medium", "inActive", "SELECT CODE, DESCRIPTION_ENG FROM COUNTRY WHERE ACTIVE = '1' ORDER BY DESCRIPTION_ENG", "DESCRIPTION_ENG", "CODE", DBMgr.getRecordValue(bankRec, "COUNTRY_CODE")) %>
+					</td>
+                </tr>
+                <tr>
                     <td class="label"><label for="CODE"><span class="style1">${labelMap.CODE} *</span></label></td>
                     <td colspan="3" class="input">
                         <input type="text" id="CODE" name="CODE" class="short" maxlength="20" value="<%= getcode %>"<%= MODE == DBMgr.MODE_UPDATE ? " readonly=\"readonly\"" : "" %> onkeypress="return CODE_KeyPress(event);" />
@@ -240,6 +264,12 @@
                     <td class="label"><label for="DESCRIPTION_THAI"><span class="style1">${labelMap.DESCRIPTION_THAI} *</span></label></td>
                     <td colspan="3" class="input">
                         <input type="text" id="DESCRIPTION_THAI" name="DESCRIPTION_THAI" class="long" maxlength="255" value="<%= DBMgr.getRecordValue(bankRec, "DESCRIPTION_THAI") %>" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="SWIFT_CODE">${labelMap.SWIFT_CODE} </label></td>
+                    <td colspan="3" class="input">
+                        <input type="text" id="SWIFT_CODE" name="SWIFT_CODE" class="long" maxlength="255" value="<%= DBMgr.getRecordValue(bankRec, "SWIFT_CODE") %>" />
                     </td>
                 </tr>
                 <tr>
@@ -273,11 +303,11 @@
                 <%
 
             
-            ResultSet rs = con.executeQuery("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + ", ACTIVE FROM BANK_BRANCH WHERE BANK_CODE = '" + DBMgr.getRecordValue(bankRec, "CODE") + "' ORDER BY ACTIVE DESC");
+            ResultSet rs = con.executeQuery("SELECT CODE, DESCRIPTION_" + labelMap.getFieldLangSuffix() + ", ACTIVE FROM BANK_BRANCH WHERE BANK_CODE = '" + DBMgr.getRecordValue(bankRec, "CODE") + "' AND BANK_COUNTRY_CODE = '"+ DBMgr.getRecordValue(bankRec, "COUNTRY_CODE") +"' ORDER BY ACTIVE DESC");
             int i = 0;
             String linkEdit;
             while (rs.next()) {
-                linkEdit = "<a href=\"bank_branch.jsp?BANK_CODE=" + DBMgr.getRecordValue(bankRec, "CODE") + "&CODE=" + rs.getString("CODE") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
+                linkEdit = "<a href=\"bank_branch.jsp?BANK_CODE=" + DBMgr.getRecordValue(bankRec, "CODE") + "&CODE=" + rs.getString("CODE") + "&BANK_COUNTRY_CODE=" + DBMgr.getRecordValue(bankRec, "COUNTRY_CODE") + "\" title=\"" + labelMap.get(LabelMap.EDIT) + "\"><img src=\"../../images/edit_button.png\" alt=\"" + labelMap.get(LabelMap.EDIT) + "\" /></a>";
                 String status = "";
                 if("1".equals(Util.formatHTMLString(rs.getString("ACTIVE"), true))){
                     status = "<input type='checkbox' name='' value='' checked disabled>";
@@ -299,7 +329,7 @@
                 %>                
                 <tr>
                     <th colspan="6" class="buttonBar">                        
-                        <input type="button" id="NEW" name="NEW" class="button" value="${labelMap.NEW}"<%= MODE == DBMgr.MODE_UPDATE ? "" : " disabled=\"disabled\""%> onclick="window.location = 'bank_branch.jsp?BANK_CODE=' + document.mainForm.CODE.value;" />
+                        <input type="button" id="NEW" name="NEW" class="button" value="${labelMap.NEW}"<%= MODE == DBMgr.MODE_UPDATE ? "" : " disabled=\"disabled\""%> onclick="window.location = 'bank_branch.jsp?BANK_CODE=' + document.mainForm.CODE.value+'&BANK_COUNTRY_CODE='+document.mainForm.COUNTRY_CODE.value;" />
                     </th>
                 </tr>
             </table>
