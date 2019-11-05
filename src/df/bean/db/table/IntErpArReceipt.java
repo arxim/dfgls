@@ -278,6 +278,7 @@ public class IntErpArReceipt extends ABSTable {
 ///                                                " AND E.IS_LOADED = 'N') "                                         
                 + " WHERE " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'"
                 + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
+                + " AND (TRN_DAILY.INVOICE_NO <> TRN_DAILY.RECEIPT_NO AND TRN_DAILY.PAY_BY_CASH <> 'Y') "
 //              + " AND (YYYY IS NULL OR YYYY = '') "
                 + " AND (TRN_DAILY.IS_WRITE_OFF = 'N') "
 //                + " AND " + tableName + ".INVOICE_DATE BETWEEN '" + startDate + "' AND '" + endDate + "'" 
