@@ -90,9 +90,43 @@
                 }
                 document.mainForm.SOURCE_FILE.value = document.mainForm.FILE_INTERFACE.value;
                 document.mainForm.action = "http://localhost:8883/interfaceFileDF";
-                document.mainForm.submit();
+                
+                document.getElementById("messageModal").style.display = "block";
+                document.getElementById('msgBody').textContent = "Please Wait..";
+                
+                // When the user clicks on <span> (x), close the modal
+                document.getElementsByClassName("close")[0].onclick = function() {
+                	document.getElementById("messageModal").style.display = "none";
+                }
+                /* window.onclick = function(event) {
+                	  if (event.target == modal) {
+                	    modal.style.display = "none";
+                	  }
+                } */
+                
+                var target = "http://localhost:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
+                AJAX_Request(target, AJAX_Result_Message);
+                
+                //document.mainForm.submit();
                 return true;
 			}
+            
+            function AJAX_Result_Message(){
+            	
+            	if (AJAX_IsComplete()) {
+            		var xmlDoc = AJAX.responseText;
+            		
+            		document.getElementById('messageModal').style.display = 'none';
+            		document.getElementById('msgBody').textContent = xmlDoc;
+            		document.getElementById('messageModal').style.display = 'block';
+            		document.getElementById('btnClose').style.display = 'block';
+            		
+                    
+                    //Data found
+					//alert(xmlDoc);
+                }
+            }
+                
             function changeDropDownList(){
 				var e = document.getElementById('excel');
 				var f = document.getElementById('download_excel');
@@ -136,6 +170,62 @@
 		</script>
 		<style>
 			.no-close .ui-dialog-titlebar-close {display: none }
+			
+			/* The Modal (background) */
+			.modal {
+  				display: none; /* Hidden by default */
+  				position: fixed; /* Stay in place */
+  				z-index: 1; /* Sit on top */
+  				padding-top: 100px; /* Location of the box */
+  				left: 0;
+  				top: 0;
+  				width: 100%; /* Full width */
+  				height: 100%; /* Full height */
+  				overflow: auto; /* Enable scroll if needed */
+  				background-color: rgb(0,0,0); /* Fallback color */
+  				background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+			}
+
+			/* Modal Content */
+			.modal-content {
+				position: relative;
+  				background-color: #fefefe;
+  				margin: auto;
+  				padding: 0px;
+  				border: 1px solid #888;
+  				width: 30%;
+			}
+
+			/* The Close Button */
+			.close {
+  				color: #aaaaaa;
+  				float: right;
+  				font-size: 28px;
+  				font-weight: bold;
+			}
+			
+			#btnClose {
+				display: none; /* Hidden by default */
+  				float: right;
+			}
+
+			.close:hover, .close:focus {
+  				color: #000;
+  				text-decoration: none;
+  				cursor: pointer;
+			}
+			
+			.modal-header {
+  				padding: 2px 10px;
+  				color: white;
+			}
+
+			.modal-body {padding: 2px 20px;}
+
+			.modal-footer {
+  				padding: 2px 10px;
+  				color: white;
+			}
 		</style>
     </head>
 	<body onload="changeDropDownList();">
@@ -202,6 +292,23 @@
         </tr>
     </table>
     </form>
+    <div id="messageModal" class="modal">
+  		<!-- Modal content -->
+  		<div class="modal-content">
+    	<div class="modal-header">
+      		<span class="close">&times;</span>
+      		<h3>Message</h3>
+    	</div>
+    	<div class="modal-body">
+      		<span id='msgBody'></span>
+    	</div>
+    	<div class="modal-footer">
+      		<h3>.
+      			<input type="button" id="btnClose" name="btnClose" class="button" value="${labelMap.CLOSE}" onclick="document.getElementById('messageModal').style.display = 'none';"/>
+      		</h3>
+    	</div>	
+  		</div>
+	</div>
  	<iframe name="myiframe" width="0" height="0"></iframe>
 	</body>
 </html>
