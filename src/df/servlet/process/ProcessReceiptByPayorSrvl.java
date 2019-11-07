@@ -48,10 +48,23 @@ public class ProcessReceiptByPayorSrvl extends ProcessServlet {
         String YYYY = request.getParameter("YYYY");
         String MM = request.getParameter("MM");
         String rowNum = request.getParameter("ROW");
+        String cond = "";
+        try{
+        	cond = request.getParameter("PWD");
+        }catch(Exception e){
+        	cond = "";
+        }
+        
         int numAffRec = 0;
-        if (pr.CalculateReceiptByPayor(YYYY, MM, hospitalCode, payorCode)) {
-            numAffRec = 1;
-        }else numAffRec = 0;
+        if(cond.equals("")){
+            if (pr.CalculateReceiptByPayor(YYYY, MM, hospitalCode, payorCode)) {
+                numAffRec = 1;
+            }else numAffRec = 0;        	
+        }else{
+            if (pr.updateReceiptByPayorWithOrderItem(YYYY, MM, hospitalCode, "TRN_DAILY", payorCode)) {
+                numAffRec = 1;
+            }else numAffRec = 0;
+        }
 
         try {
             Thread.sleep(20);

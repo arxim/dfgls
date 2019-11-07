@@ -37,5 +37,20 @@ public class ProcessReceiptBean {
                 TRN_Error.PROCESS_RECEIPT_BY_PAYOR,"Receipt By Payor is Error.",e.getMessage());
             }
             return ret;
-    }     
+    }
+    public boolean updateReceiptByPayorWithOrderItem(String YYYY, String MM, String hospitalCode, String tableName, String payorCode) {
+        boolean ret = false;
+        if(this.conn.IsClosed()||this.conn==null){
+        	System.out.println("Connection in Pay by Payor Process is null or closed!!!");
+        	this.conn.connectToLocal();
+        }else{/*not implement*/}
+        PayorOffice rec = new PayorOffice(this.conn);
+            try {
+                ret = rec.updateReceiptByOrderItem(YYYY, MM, hospitalCode, tableName, payorCode) > -1 ? true : false;
+            } catch (Exception e) {
+                TRN_Error.writeErrorLog(this.conn.getConnection(), 
+                TRN_Error.PROCESS_RECEIPT_BY_PAYOR,"Receipt By Payor is Error.",e.getMessage());
+            }
+            return ret;
+    }
 }

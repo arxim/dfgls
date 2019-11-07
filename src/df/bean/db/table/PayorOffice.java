@@ -119,7 +119,6 @@ public class PayorOffice extends ABSTable {
     public void setIsAdvancePayment(String isAdvancePayment) {
         this.isAdvancePayment = isAdvancePayment;
     }
-    
         
     //update receipt by PAYOR
     public int updateReceipt(String YYYY, String MM, String hospitalCode, String tableName) {
@@ -166,8 +165,33 @@ public class PayorOffice extends ABSTable {
             e.printStackTrace();
         }
         return rows;
+    }
+
+    public int updateReceiptByOrderItem(String YYYY, String MM, String hospitalCode, String tableName, String payorCode) {
+        int rows = -1;
+        String sql = "";
+        try {
+            sql = "UPDATE " + tableName + " SET " + tableName + ".PAY_BY_PAYOR = 'Y' "
+            		+ " ,RECEIPT_DATE = INVOICE_DATE, RECEIPT_NO = INVOICE_NO "
+                    + " ,YYYY = '" + YYYY + "'"
+                    + " ,MM = '" + MM + "'"
+                    + " WHERE " + tableName + ".PAY_BY_PAYOR = 'N' "
+                    + " AND IS_ONWARD != 'Y' "
+                    + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
+                    + " AND " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'" 
+                    + " AND TRN_DAILY.ORDER_ITEM_CODE NOT IN (SELECT ORDER_ITEM_CODE FROM STP_PAYOR_RECEIPT_MAPPING WHERE HOSPITAL_CODE = '"+hospitalCode+"' AND PAYOR_OFFICE_CODE = '"+payorCode+"') "
+                    + " AND " + tableName + ".PAYOR_OFFICE_CODE = '" + payorCode + "'"
+                    + " AND(TRANSACTION_DATE BETWEEN '" + YYYY + MM + "00' AND '" + YYYY + MM + "31')";
+            rows = this.getDBConnection().executeUpdate(sql);
+            //System.out.println(sql+":"+rows);
+        } catch (Exception e) {
+            TRN_Error.writeErrorLog(this.getDBConnection().getConnection(), 
+            TRN_Error.PROCESS_RECEIPT_BY_PAYOR, "Receipt By Payor is Error.", e.getMessage(), sql);
+            e.printStackTrace();
+        }
+        return rows;
     } 
-    
+
     public boolean rollBackUpdate(String YYYY, String MM, String hospitalCode, String tableName) {
         List sqlCommand = new ArrayList();
         boolean ret = false;
