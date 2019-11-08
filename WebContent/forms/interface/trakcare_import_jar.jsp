@@ -251,14 +251,16 @@
 		          <td colspan="3" class="input"><select class="mediumMax" id="INTERFACE_PROCESS" name="INTERFACE_PROCESS" onchange="changeDropDownList();">
                     <option value="">-- Select --</option>
                     <option value="ImportTransaction">${labelMap.INTERFACE_TRANSACTION}</option>
+                    <option value="ImportARTransaction">${labelMap.INTERFACE_AR_TRANSACTION}</option>
+                    <!-- 
                     <option value="ImportVerifyTransaction">${labelMap.INTERFACE_TRANSACTION_RESULT}</option>
                     <option value="ImportOnWard">${labelMap.INTERFACE_ONWARD}</option>
                     <option value="ImportOPDCheckup">${labelMap.INTERFACE_OPD_CHECKUP}</option>
-                    <option value="ImportARTransaction">${labelMap.INTERFACE_AR_TRANSACTION}</option>
                     <option value="ImportExpense">${labelMap.INTERFACE_CO}</option>
                     <option value="ImportExpenseExcel">${labelMap.INTERFACE_EXPENSE}</option>
                     <option value="ImportTimeTable">${labelMap.INTERFACE_TIME_TABLE}</option>
                     <option value="ImportDischargeSummary">${labelMap.INTERFACE_DISCHARGE_SUMMARY}</option>
+                     -->
                   </select></td>
         		</tr>
         	<tr id='download_excel'>
