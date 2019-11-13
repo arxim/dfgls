@@ -83,6 +83,7 @@
 
                     // Data found
                     document.mainForm.EXPENSE_DR_NAME.value = getXMLNodeValue(xmlDoc, "NAME_" + "<%= labelMap.getFieldLangSuffix() %>");
+                    window.location = 'expense_main.jsp?EXPENSE_DR_CODE=' + document.mainForm.EXPENSE_DR_CODE.value + '&MM=' +  document.mainForm.MM.value + '&YYYY=' +  document.mainForm.YYYY.value;
                 }
             }
         </script>

@@ -127,6 +127,7 @@
                     
                     // Data found
                     document.mainForm.GUARANTEE_DR_NAME.value = getXMLNodeValue(xmlDoc, "NAME_" + "<%= labelMap.getFieldLangSuffix() %>");
+                    window.location = 'guarantee_main.jsp?GUARANTEE_DR_CODE=' + document.mainForm.GUARANTEE_DR_CODE.value + '&MM=' +  document.mainForm.MM.value + '&YYYY=' +  document.mainForm.YYYY.value;
                 }
             }           
         </script>
