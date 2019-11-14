@@ -908,7 +908,7 @@
             }
         
             function NEW_DETAIL_Click() {
-                document.mainForm.MODE.value = '<%= MODE_INSERT_DETAIL %>';
+            	document.mainForm.MODE.value = '<%= MODE_INSERT_DETAIL %>';
                 document.mainForm.submit();
             }
         
@@ -1244,7 +1244,7 @@
                 <tr>
                     <td class="label"><label for="LINE_NO"><span class="style1">${labelMap.LINE_NO} *</span></label></td>
                     <td class="input">
-                        <input type="text" id="LINE_NO" name="LINE_NO" class="medium" maxlength="50" value="<%= MODE == MODE_INSERT_DETAIL ? "" : DBMgr.getRecordValue(trnDailyRec, "LINE_NO")%>"<%= MODE == MODE_UPDATE_DETAIL ? "readonly=\"readonly\"" : ""%> />
+                        <input type="text" id="LINE_NO" name="LINE_NO" class="medium" maxlength="50" value="<%= MODE == MODE_INSERT_DETAIL ? session.getAttribute("HOSPITAL_CODE").toString()+JDate.getTimeInMillis() : DBMgr.getRecordValue(trnDailyRec, "LINE_NO")%>"<%= MODE == MODE_UPDATE_DETAIL ? "readonly=\"readonly\"" : ""%> />
                     </td>
                     <td class="label"><label for="INVOICE_TYPE"><span class="style1">${labelMap.INVOICE_TYPE} *</span></label></td>
                     <td class="input">

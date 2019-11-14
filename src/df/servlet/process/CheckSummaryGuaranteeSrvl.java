@@ -74,16 +74,16 @@ public class CheckSummaryGuaranteeSrvl extends HttpServlet {
         	String[][] resultBatch = conn.query(qCheckBatch);
         	
         	if(result.length > 0 || resultBatch.length >0 ){
-        		System.out.println("Is Process Guarantee Ready");
+        		//System.out.println("Is Process Guarantee Ready");
         		numAffRec = "YES";
         	}else{
         		if(year+month != getBatch.getBatchNo() ){
-            		System.out.println("Term Payment Does't Match In Month :"+year+month+" and Batch : "+getBatch.getBatchNo());
+            		//System.out.println("Term Payment Does't Match In Month :"+year+month+" and Batch : "+getBatch.getBatchNo());
             		numAffRec = "NO";
         		}
         	}
         	dbConn.Close();
-            System.out.println(year+month+numAffRec);
+            //System.out.println(year+month+numAffRec);
             out.print("<RESULT><STATUS>" + numAffRec + "</STATUS></RESULT>");
         }
         catch (Exception  e) {
