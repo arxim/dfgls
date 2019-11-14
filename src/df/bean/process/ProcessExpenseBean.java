@@ -1588,8 +1588,10 @@ public class ProcessExpenseBean {
 			            		else if(typeExpense.equals("2"))//จำนวนเงินแบ่งจ่ายเป็นรายเดือน
 			            		 {
 			            			System.out.println("Type Expense: 2");
-			            			if(Double.parseDouble(year)+Double.parseDouble(month)>=getStartYear+getStartMonth &&
-			            			   Double.parseDouble(year)+Double.parseDouble(month)<=getEndYear+getEndMonth){
+			            			//if(Double.parseDouble(year+month)>=getStartYear+getStartMonth &&
+			            			//   Double.parseDouble(year+month)<=getEndYear+getEndMonth){
+			            			if(Double.parseDouble(year+month) >= Double.parseDouble(PeriodArr[i][11]+PeriodArr[i][10])
+			            			   && Double.parseDouble(year+month) <= Double.parseDouble(PeriodArr[i][13]+PeriodArr[i][12])) {
 				            			num++;
 				            			double NumMonth=0, NumPayMonth=0;
 				            			NumMonth=JDate.GetDiffMonth(Double.parseDouble(month), Double.parseDouble(year), getEndMonth, getEndYear);
