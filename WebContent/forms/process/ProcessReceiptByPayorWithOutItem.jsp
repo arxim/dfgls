@@ -68,7 +68,7 @@
                     table.rows[currentRowID].cells[3].innerHTML = '<img src="../../images/processing_icon.gif" alt="" />';
                     var target = "../../ProcessReceiptByPayorSrvl?"
                             + "USER=<%=session.getAttribute("USER_ID").toString()%>"
-                            + "&PWD="
+                            + "&PWD=OR"
                             + "&HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
                             + "&PAYOR_CODE=" + table.rows[currentRowID].cells[1].innerHTML
                             + "&REC_NO=" + currentRowID
@@ -146,13 +146,13 @@
         </script>
     </head>
     <body>
-        <form id="mainForm" name="mainForm" method="post" action="ProcessReceiptByPayor.jsp">
+        <form id="mainForm" name="mainForm" method="post" action="ProcessReceiptByPayorWithOutItem.jsp">
         <input type="hidden" name="MM" id="MM" value="<%=b.getMm() %>">
         <input type="hidden" name="YYYY" id="YYYY" value="<%=b.getYyyy() %>">
         	<center>
                 <table width="800" border="0">
                     <tr><td align="left">
-                        <b><font color='#003399'><%=Utils.getInfoPage("ProcessReceiptByPayor.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
+                        <b><font color='#003399'><%=Utils.getInfoPage("ProcessReceiptByPayorWithOutItem.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
                     </td></tr>
 				</table>
             </center>
