@@ -1,5 +1,6 @@
 package df.bean.tax;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 
 import df.bean.db.conn.DBConn;
@@ -200,7 +201,8 @@ public class ProcessTax402Bean {
     	boolean status = false;
         try {
             String s = "UPDATE SUMMARY_TAX_402 SET " +
-            "ACCU_NORMAL_TAX_MONTH = '"+new BigDecimal(JNumber.setFormat(taxNormalAccu, "0.00"))+"' "+   //ACCRU REVENUE
+            "ACCU_NORMAL_TAX_MONTH = '"+new BigDecimal(JNumber.setFormat(taxNormalAccu, "0.00")).setScale(2, RoundingMode.HALF_UP)+"' "+
+            //"ACCU_NORMAL_TAX_MONTH = '"+new BigDecimal(JNumber.setFormat(taxNormalAccu, "0.00"))+"' "+   //ACCRU REVENUE
             ",SUM_NORMAL_TAX_AMT = '"+JNumber.setFormat(incomeNormalTotal, "0.00")+"' "+ //REVENUE OF THIS MONTH
             ",NORMAL_TAX_MONTH = '"+JNumber.setFormat(firstTaxNormal, "0.00") +"' "+ 	  //TAX FROM REVENUE IN MONTH
             ",TEXT_NET_TAX_MONTH = '"+Utils.toThaiMoney(taxNormal)+"' "+
