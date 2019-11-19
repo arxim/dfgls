@@ -183,7 +183,7 @@
                 doctorRec.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRec.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRec.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
-                doctorRec.addField("SALARY", Types.NUMERIC, request.getParameter("SALARY"));                
+                doctorRec.addField("SALARY", Types.NUMERIC , request.getParameter("SALARY"));                
                 
                 // for log
                 doctorRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -228,7 +228,7 @@
                 doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRecLog.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
-                doctorRecLog.addField("SALARY", Types.NUMERIC, request.getParameter("SALARY"));                
+                doctorRecLog.addField("SALARY", Types.NUMERIC , request.getParameter("SALARY"));                
 
                 if (MODE == DBMgr.MODE_INSERT) {
                 	doctorRec.addField("ACTIVE", Types.VARCHAR, request.getParameter("ACTIVE"));
@@ -559,7 +559,19 @@
             }
             
             function AJAX_Refresh_BANK() {
-                var target = "../../RetrieveData?TABLE=BANK&COND=CODE='" + document.mainForm.BANK_CODE.value + "'";
+            	var code;
+                var country_code;
+            	if(!(/^\d+$/.test(document.mainForm.BANK_CODE.value))){
+            		code = document.mainForm.BANK_CODE.value.substring(2, document.mainForm.BANK_CODE.value.length);
+                    country_code = document.mainForm.BANK_CODE.value.substring(0, 2);
+            	}
+            	else{
+            		code = document.mainForm.BANK_CODE.value;
+                    country_code = document.mainForm.BANK_COUNTRY_CODE.value;
+            	}
+            	document.mainForm.BANK_CODE.value = code;
+            	document.mainForm.BANK_COUNTRY_CODE.value
+                var target = "../../RetrieveData?TABLE=BANK&COND=CODE='" + code + "' AND COUNTRY_CODE='"+country_code+"' ";
                 AJAX_Request(target, AJAX_Handle_Refresh_BANK);
             }
             
@@ -574,7 +586,6 @@
                         //document.mainForm.SEARCH_BANK_BRANCH_CODE.disabled = false;
                         return;
                     }
-                    
                     // Data found
                     document.mainForm.BANK_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>");
                     document.mainForm.BANK_COUNTRY_CODE.value = getXMLNodeValue(xmlDoc, "COUNTRY_CODE");
