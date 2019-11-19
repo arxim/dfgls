@@ -223,8 +223,8 @@
 					<select name="TYPE" id="TYPE" class="medium">
 						<option value="">-- Select Type --</option>
 						<option value="DF" <%= DBMgr.getRecordValue(GroupRec, "TYPE").equalsIgnoreCase("DF") ? " selected=\"selected\"" : ""%>>DF</option>
-						<option value="ADJUST" <%= DBMgr.getRecordValue(GroupRec, "TYPE").equalsIgnoreCase("ADJUST") ? " selected=\"selected\"" : ""%>>Adjust</option>
-						<option value="ALL" <%= DBMgr.getRecordValue(GroupRec, "TYPE").equalsIgnoreCase("ALL") ? " selected=\"selected\"" : ""%>>All</option>
+						<%-- <option value="ADJUST" <%= DBMgr.getRecordValue(GroupRec, "TYPE").equalsIgnoreCase("ADJUST") ? " selected=\"selected\"" : ""%>>Adjust</option>
+						<option value="ALL" <%= DBMgr.getRecordValue(GroupRec, "TYPE").equalsIgnoreCase("ALL") ? " selected=\"selected\"" : ""%>>All</option> --%>
 					</select>
 				</td>
 			</tr>
