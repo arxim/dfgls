@@ -10,8 +10,6 @@ import java.util.HashMap;
 import df.bean.db.conn.DBConn;
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.TRN_Error;
-import df.bean.interfacefile.ImportTimeTableCaseBean;
-import df.bean.obj.util.FindDate;
 import df.bean.obj.util.JDate;
 
 public class ProcessTimeTableCase {
