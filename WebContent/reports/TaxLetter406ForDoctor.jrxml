@@ -8,12 +8,12 @@
 		 orientation="Portrait"
 		 pageWidth="595"
 		 pageHeight="842"
-		 columnWidth="535"
+		 columnWidth="595"
 		 columnSpacing="0"
-		 leftMargin="30"
-		 rightMargin="30"
-		 topMargin="20"
-		 bottomMargin="20"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
@@ -23,23 +23,23 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<parameter name="doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["036140428"]]></defaultValueExpression>
+	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="term" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2018"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["D:\\DF_Report\\logo\\"]]></defaultValueExpression>
+	<parameter name="signature" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["036"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["058"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20150109"]]></defaultValueExpression>
@@ -47,21 +47,21 @@
 	<queryString><![CDATA[SELECT ST.YYYY, ST.MM, ST.DOCTOR_CODE, ST.HOSPITAL_CODE, DR.NAME_THAI, ST.SUM_TAX_DR_AMT, ST.SUM_DR_AMT,
 HOS.DESCRIPTION_THAI, ST.SUM_TAX_DR_AMT, ST.TEXT_SUM_TAX_DR_AMT,
 DP.NATION_ID, DR.TAX_ID, HOS.DESCRIPTION_THAI AS HOSPITAL_NAME,
-HOS.COMPANY_NAME, HOS.ADDRESS1, HOS.ADDRESS2, HOS.ADDRESS3, HOS.ZIP,HOS.AUTHORITY_NAME, HOS.AUTHORITY_POSITION, 
+HOS.COMPANY_NAME, HOS.ADDRESS1, HOS.ADDRESS2, HOS.ADDRESS3, HOS.ZIP,
 HOS.TAXNO, CASE WHEN DR.TAX_ID <> '' THEN DR.TAX_ID ELSE DP.NATION_ID END AS DR_TAX,
 DR.ADDRESS1 AS DR_ADDRESS1, DR.ADDRESS2 AS DR_ADDRESS2,
-DR.ADDRESS3 AS DR_ADDRESS3, DR.ZIP AS DR_ZIP, DP.CODE AS PROFILE_CODE, ST.PRINT_DATE
+DR.ADDRESS3 AS DR_ADDRESS3, DR.ZIP AS DR_ZIP, DP.CODE AS PROFILE_CODE, ST.PRINT_DATE,
+HOS.AUTHORITY_NAME, HOS.AUTHORITY_POSITION
 FROM SUMMARY_TAX_406 ST
 LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE 
 AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN DOCTOR_PROFILE DP on DR.DOCTOR_PROFILE_CODE = DP.CODE
 AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
-where ST.DOCTOR_CODE like $P{doctor}
+where ST.DOCTOR_CODE like $P{doctor_code}
 AND ST.HOSPITAL_CODE = $P{hospital_code}
-AND YYYY = $P{year}
+AND MM LIKE $P{term} AND YYYY = $P{year}
 AND SUM_TAX_DR_AMT > 0
-AND PRINT_DATE <> ''
 order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 
 	<field name="YYYY" class="java.lang.String"/>
@@ -81,8 +81,6 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 	<field name="ADDRESS2" class="java.lang.String"/>
 	<field name="ADDRESS3" class="java.lang.String"/>
 	<field name="ZIP" class="java.lang.String"/>
-	<field name="AUTHORITY_NAME" class="java.lang.String"/>
-	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
 	<field name="DR_TAX" class="java.lang.String"/>
 	<field name="DR_ADDRESS1" class="java.lang.String"/>
@@ -91,6 +89,8 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 	<field name="DR_ZIP" class="java.lang.String"/>
 	<field name="PROFILE_CODE" class="java.lang.String"/>
 	<field name="PRINT_DATE" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
 
 		<group  name="doctor" isStartNewPage="true" >
@@ -135,11 +135,11 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 			</band>
 		</title>
 		<pageHeader>
-			<band height="625"  isSplitAllowed="true" >
+			<band height="671"  isSplitAllowed="true" >
 				<staticText>
 					<reportElement
-						x="147"
-						y="461"
+						x="170"
+						y="503"
 						width="327"
 						height="18"
 						key="staticText-22">
@@ -157,8 +157,8 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="301"
-						y="553"
+						x="324"
+						y="595"
 						width="162"
 						height="0"
 						key="line-2">
@@ -168,19 +168,19 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 				</line>
 				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="308"
-						y="516"
+						x="331"
+						y="558"
 						width="148"
 						height="36"
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="301"
-						y="601"
+						x="324"
+						y="643"
 						width="162"
 						height="18"
 						key="textField"/>
@@ -188,12 +188,12 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543)))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $P{print_date}.length() != 8 ? ( $F{PRINT_DATE}.length() != 8 ? "Date?" : $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543))) : ( $P{print_date}.length() != 8 ? "Date?" : $P{print_date}.substring( 6, 8 )+"/"+$P{print_date}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543))))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="301"
-						y="556"
+						x="324"
+						y="598"
 						width="162"
 						height="18"
 						key="textField"/>
@@ -201,10 +201,11 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? $F{AUTHORITY_NAME} : 
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? "( "+ $F{AUTHORITY_NAME} +" )" :
 $F{HOSPITAL_CODE}.equals("00002") ? "( นางพงษ์แก้ว  ทิพนาค )" : 
+$F{HOSPITAL_CODE}.equals("004") ? "( นางสาวชฎาพร ประสานทอง )" : 
 $F{HOSPITAL_CODE}.equals("00005") || $F{HOSPITAL_CODE}.equals("051")? "( นางสาวขวัญตา รักษ์ธรรมกิจ )" : 
-$F{HOSPITAL_CODE}.equals("006") ? "( นางสาวจันทรา  วรรณรัตน )์" : 
+$F{HOSPITAL_CODE}.equals("006") ? "( นางสาวจันทรา  วรรณรัตน์ )" : 
 $F{HOSPITAL_CODE}.equals("007") ? "( กุลชญา  เมธาธีรกูล )" : 
 $F{HOSPITAL_CODE}.equals("00009") ? "( นางสาวรัตนา  มาโนชญ์ภิญโญ )"  : 
 $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012")? "( สุภัคนิต ลิ่มวงค์สวัสดิ์ )" : 
@@ -221,8 +222,8 @@ $F{HOSPITAL_CODE}.equals("063") ? "( นายสุธี โพธิ์พั
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="301"
-						y="576"
+						x="324"
+						y="618"
 						width="162"
 						height="18"
 						key="textField-12"/>
@@ -230,8 +231,9 @@ $F{HOSPITAL_CODE}.equals("063") ? "( นายสุธี โพธิ์พั
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? $F{AUTHORITY_POSITION} : 
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? "( "+ $F{AUTHORITY_POSITION} +" )" :
 $F{HOSPITAL_CODE}.equals("00002") ? "( ผู้จัดการฝ่ายบริหารการเงิน )" : 
+$F{HOSPITAL_CODE}.equals("004") ? "( หัวหน้าแผนกบัญชี )" : 
 $F{HOSPITAL_CODE}.equals("00005") || $F{HOSPITAL_CODE}.equals("051") ? "( ผู้จัดการแผนกบัญชีและการเงิน )" : 
 $F{HOSPITAL_CODE}.equals("006")||$F{HOSPITAL_CODE}.equals("007") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" : 
 $F{HOSPITAL_CODE}.equals("00009") ? "( ผู้อำนวยการฝ่ายการเงิน )" : 
@@ -245,8 +247,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<staticText>
 					<reportElement
-						x="101"
-						y="461"
+						x="124"
+						y="503"
 						width="364"
 						height="18"
 						key="staticText-45">
@@ -264,21 +266,21 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="205"
-						y="479"
+						x="228"
+						y="521"
 						width="120"
 						height="94"
 						key="image-5">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("006"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("006") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") )]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="346"
-						y="369"
+						x="369"
+						y="411"
 						width="98"
 						height="18"
 						key="textField-2">
@@ -296,8 +298,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<staticText>
 					<reportElement
-						x="445"
-						y="371"
+						x="468"
+						y="413"
 						width="29"
 						height="18"
 						key="staticText-26">
@@ -315,8 +317,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="294"
-						y="348"
+						x="317"
+						y="390"
 						width="35"
 						height="18"
 						key="staticText-20">
@@ -334,8 +336,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="371"
+						x="90"
+						y="413"
 						width="280"
 						height="18"
 						key="staticText-21">
@@ -353,8 +355,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="325"
+						x="90"
+						y="367"
 						width="407"
 						height="18"
 						key="staticText-30">
@@ -372,8 +374,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="348"
+						x="90"
+						y="390"
 						width="86"
 						height="18"
 						key="staticText-31">
@@ -391,8 +393,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="67"
-						y="394"
+						x="90"
+						y="436"
 						width="407"
 						height="18"
 						key="textField-3">
@@ -410,8 +412,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<staticText>
 					<reportElement
-						x="217"
-						y="210"
+						x="240"
+						y="252"
 						width="147"
 						height="18"
 						key="staticText-37">
@@ -429,8 +431,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="364"
-						y="224"
+						x="387"
+						y="266"
 						width="110"
 						height="0"
 						key="line-3">
@@ -442,8 +444,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="233"
+						x="90"
+						y="275"
 						width="63"
 						height="18"
 						key="staticText-38">
@@ -461,8 +463,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="129"
-						y="247"
+						x="152"
+						y="289"
 						width="345"
 						height="0"
 						key="line-4">
@@ -474,8 +476,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="256"
+						x="90"
+						y="298"
 						width="234"
 						height="18"
 						key="staticText-39">
@@ -493,8 +495,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="300"
-						y="270"
+						x="323"
+						y="312"
 						width="174"
 						height="0"
 						key="line-5">
@@ -506,8 +508,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="0"
-						y="87"
+						x="29"
+						y="143"
 						width="535"
 						height="29"
 						key="staticText-40"/>
@@ -523,8 +525,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="94"
-						y="293"
+						x="117"
+						y="335"
 						width="380"
 						height="0"
 						key="line-6">
@@ -536,8 +538,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="279"
+						x="90"
+						y="321"
 						width="28"
 						height="18"
 						key="staticText-41">
@@ -555,8 +557,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="94"
-						y="316"
+						x="117"
+						y="358"
 						width="282"
 						height="0"
 						key="line-7">
@@ -568,8 +570,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="376"
-						y="302"
+						x="399"
+						y="344"
 						width="97"
 						height="18"
 						key="staticText-42">
@@ -587,8 +589,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="330"
-						y="363"
+						x="353"
+						y="405"
 						width="143"
 						height="0"
 						key="line-8">
@@ -600,8 +602,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="153"
-						y="363"
+						x="176"
+						y="405"
 						width="133"
 						height="0"
 						key="line-9">
@@ -613,8 +615,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="417"
+						x="90"
+						y="459"
 						width="208"
 						height="18"
 						key="staticText-43">
@@ -632,8 +634,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="187"
+						x="90"
+						y="229"
 						width="74"
 						height="18"
 						key="staticText-44">
@@ -651,8 +653,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="141"
-						y="201"
+						x="164"
+						y="243"
 						width="333"
 						height="0"
 						key="line-10">
@@ -664,8 +666,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="67"
-						y="224"
+						x="90"
+						y="266"
 						width="145"
 						height="0"
 						key="line-11">
@@ -677,8 +679,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="147"
-						y="164"
+						x="170"
+						y="206"
 						width="327"
 						height="18"
 						key="textField">
@@ -692,8 +694,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="67"
-						y="208"
+						x="90"
+						y="250"
 						width="145"
 						height="18"
 						key="textField-4">
@@ -707,8 +709,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="141"
-						y="185"
+						x="164"
+						y="227"
 						width="333"
 						height="18"
 						key="textField-5">
@@ -722,8 +724,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="369"
-						y="208"
+						x="392"
+						y="250"
 						width="105"
 						height="18"
 						key="textField-6">
@@ -737,8 +739,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="129"
-						y="231"
+						x="152"
+						y="273"
 						width="345"
 						height="18"
 						key="textField-7">
@@ -752,8 +754,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="301"
-						y="254"
+						x="324"
+						y="296"
 						width="173"
 						height="18"
 						key="textField-8">
@@ -767,8 +769,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="99"
-						y="277"
+						x="122"
+						y="319"
 						width="375"
 						height="18"
 						key="textField-9">
@@ -782,8 +784,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="99"
-						y="301"
+						x="122"
+						y="343"
 						width="269"
 						height="18"
 						key="textField-10">
@@ -797,8 +799,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<line direction="TopDown">
 					<reportElement
-						x="346"
-						y="385"
+						x="369"
+						y="427"
 						width="98"
 						height="0"
 						key="line-12">
@@ -810,8 +812,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="67"
-						y="409"
+						x="90"
+						y="451"
 						width="407"
 						height="0"
 						key="line-13">
@@ -823,8 +825,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="153"
-						y="347"
+						x="176"
+						y="389"
 						width="133"
 						height="18"
 						key="textField">
@@ -838,8 +840,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="329"
-						y="348"
+						x="352"
+						y="390"
 						width="145"
 						height="18"
 						key="textField-11">
@@ -853,8 +855,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<image  scaleImage="FillFrame" vAlign="Bottom" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="0"
-						y="-16"
+						x="31"
+						y="16"
 						width="535"
 						height="87"
 						key="image-2">
@@ -862,25 +864,25 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
 				</image>
 				<image  vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="-29"
-						y="3"
+						x="2"
+						y="35"
 						width="590"
 						height="76"
 						key="image-4">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00019") || $F{HOSPITAL_CODE}.equals("046") || $F{HOSPITAL_CODE}.equals("036")|| $F{HOSPITAL_CODE}.equals("006"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") ||$F{HOSPITAL_CODE}.equals("00019") || $F{HOSPITAL_CODE}.equals("046") || $F{HOSPITAL_CODE}.equals("036")|| $F{HOSPITAL_CODE}.equals("006"))]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="67"
-						y="164"
+						x="90"
+						y="206"
 						width="408"
 						height="18"
 						key="textField-13">
@@ -894,8 +896,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="346"
-						y="354"
+						x="369"
+						y="396"
 						width="98"
 						height="18"
 						key="textField-14">
@@ -913,8 +915,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<staticText>
 					<reportElement
-						x="445"
-						y="355"
+						x="468"
+						y="397"
 						width="29"
 						height="18"
 						key="staticText-46">
@@ -932,8 +934,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="350"
-						y="329"
+						x="373"
+						y="371"
 						width="30"
 						height="18"
 						key="staticText-47">
@@ -951,8 +953,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="355"
+						x="90"
+						y="397"
 						width="280"
 						height="18"
 						key="staticText-48">
@@ -970,8 +972,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="329"
+						x="90"
+						y="371"
 						width="183"
 						height="18"
 						key="staticText-49">
@@ -989,8 +991,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="67"
-						y="380"
+						x="90"
+						y="422"
 						width="407"
 						height="18"
 						key="textField-15">
@@ -1008,8 +1010,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<staticText>
 					<reportElement
-						x="67"
-						y="209"
+						x="90"
+						y="251"
 						width="147"
 						height="18"
 						key="staticText-50">
@@ -1027,8 +1029,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="214"
-						y="224"
+						x="237"
+						y="266"
 						width="260"
 						height="1"
 						key="line-15">
@@ -1038,8 +1040,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="232"
+						x="90"
+						y="274"
 						width="63"
 						height="18"
 						key="staticText-51">
@@ -1057,8 +1059,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="129"
-						y="248"
+						x="152"
+						y="290"
 						width="345"
 						height="1"
 						key="line-16">
@@ -1068,8 +1070,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="255"
+						x="90"
+						y="297"
 						width="234"
 						height="18"
 						key="staticText-52">
@@ -1087,8 +1089,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="300"
-						y="269"
+						x="323"
+						y="311"
 						width="174"
 						height="1"
 						key="line-17">
@@ -1098,8 +1100,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="94"
-						y="294"
+						x="117"
+						y="336"
 						width="380"
 						height="1"
 						key="line-18">
@@ -1109,8 +1111,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="278"
+						x="90"
+						y="320"
 						width="28"
 						height="18"
 						key="staticText-53">
@@ -1128,8 +1130,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="303"
+						x="90"
+						y="345"
 						width="407"
 						height="18"
 						key="staticText-54">
@@ -1147,8 +1149,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="380"
-						y="346"
+						x="403"
+						y="388"
 						width="94"
 						height="1"
 						key="line-19">
@@ -1158,8 +1160,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="250"
-						y="346"
+						x="273"
+						y="388"
 						width="100"
 						height="1"
 						key="line-20">
@@ -1169,8 +1171,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<staticText>
 					<reportElement
-						x="67"
-						y="403"
+						x="90"
+						y="445"
 						width="208"
 						height="18"
 						key="staticText-55">
@@ -1188,8 +1190,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<staticText>
 					<reportElement
-						x="67"
-						y="186"
+						x="90"
+						y="228"
 						width="74"
 						height="18"
 						key="staticText-56">
@@ -1207,8 +1209,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
-						x="141"
-						y="202"
+						x="164"
+						y="244"
 						width="333"
 						height="1"
 						key="line-21">
@@ -1218,8 +1220,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="141"
-						y="186"
+						x="164"
+						y="228"
 						width="333"
 						height="18"
 						key="textField-16">
@@ -1233,8 +1235,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="219"
-						y="208"
+						x="242"
+						y="250"
 						width="255"
 						height="18"
 						key="textField-17">
@@ -1248,8 +1250,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="129"
-						y="232"
+						x="152"
+						y="274"
 						width="345"
 						height="18"
 						key="textField-18">
@@ -1263,8 +1265,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="301"
-						y="253"
+						x="324"
+						y="295"
 						width="173"
 						height="18"
 						key="textField-19">
@@ -1278,8 +1280,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="94"
-						y="276"
+						x="117"
+						y="318"
 						width="380"
 						height="18"
 						key="textField-20">
@@ -1293,8 +1295,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<line direction="TopDown">
 					<reportElement
-						x="346"
-						y="370"
+						x="369"
+						y="412"
 						width="98"
 						height="1"
 						key="line-22">
@@ -1304,8 +1306,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="67"
-						y="395"
+						x="90"
+						y="437"
 						width="407"
 						height="1"
 						key="line-23">
@@ -1315,8 +1317,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</line>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="250"
-						y="328"
+						x="273"
+						y="370"
 						width="103"
 						height="18"
 						key="textField-21">
@@ -1330,8 +1332,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="376"
-						y="328"
+						x="399"
+						y="370"
 						width="98"
 						height="18"
 						key="textField-22">
@@ -1358,11 +1360,11 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="87"  isSplitAllowed="true" >
+			<band height="166"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="67"
-						y="0"
+						x="30"
+						y="82"
 						width="302"
 						height="15"
 						key="textField"/>
@@ -1374,8 +1376,8 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 				</textField>
 				<image  vAlign="Middle" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="0"
-						y="42"
+						x="30"
+						y="103"
 						width="535"
 						height="44"
 						key="image-3">
@@ -1383,7 +1385,20 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+				</image>
+				<image  vAlign="Bottom" hAlign="Right" onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="381"
+						y="1"
+						width="213"
+						height="165"
+						key="image-6">
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00019")|| $F{HOSPITAL_CODE}.equals("058"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
 				</image>
 			</band>
 		</pageFooter>

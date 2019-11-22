@@ -1402,7 +1402,7 @@
             <hr />
             <table class="data">
                 <tr>
-                    <th colspan="8" class="alignLeft">${labelMap.TITLE_DATA}</th>
+                    <th colspan="10" class="alignLeft">${labelMap.TITLE_DATA}</th>
                 </tr>
                 <tr>
                 	<td class="sub_head">${labelMap.EXECUTE_DATE}</td>
@@ -1411,6 +1411,7 @@
                     <td class="sub_head">${labelMap.DOCTOR_CODE}</td>
                     <td class="sub_head">${labelMap.AMOUNT_AFT_DISCOUNT}</td>
                     <td class="sub_head">${labelMap.DR_AMT}</td>
+                    <td class="sub_head">${labelMap.RECEIPT_DATE}</td>
                     <td class="sub_head">${labelMap.ACTIVE}</td>
                     <td class="sub_head">${labelMap.EDIT}</td>
                 </tr>
@@ -1420,10 +1421,11 @@
             con.connectToLocal();
             query = "SELECT a.LINE_NO, SUBSTRING(a.VERIFY_DATE,7,2)+'/'+SUBSTRING(a.VERIFY_DATE,5,2)+'/'+SUBSTRING(a.VERIFY_DATE,1,4) as EXECUTE_DATE, "+
             "a.ORDER_ITEM_CODE, a.DOCTOR_CODE,a.AMOUNT_AFT_DISCOUNT, a.DR_AMT, a.ACTIVE, a.ORDER_ITEM_DESCRIPTION, b.NAME_THAI, a.TRANSACTION_DATE, "+
-            "a.INVOICE_TYPE,a.RECEIPT_NO,a.RECEIPT_DATE "+
+            "a.INVOICE_TYPE,a.RECEIPT_NO, a.RECEIPT_DATE, " +
+            "CASE WHEN a.RECEIPT_DATE = '' THEN '' ELSE SUBSTRING(a.RECEIPT_DATE,7,2)+'/'+SUBSTRING(a.RECEIPT_DATE,5,2)+'/'+SUBSTRING(a.RECEIPT_DATE,1,4) END as DATE_RECEIPT "+
             "FROM TRN_DAILY as a "+
             "LEFT JOIN DOCTOR as b on b.CODE=a.DOCTOR_CODE AND b.HOSPITAL_CODE = a.HOSPITAL_CODE WHERE a.HOSPITAL_CODE = '"
-            + session.getAttribute("HOSPITAL_CODE").toString() + "' AND a.INVOICE_NO = '" + Util.formatHTMLString(request.getParameter("INVOICE_NO"), false) + "' ORDER BY a.LINE_NO, a.ACTIVE DESC ";
+            + session.getAttribute("HOSPITAL_CODE").toString() + "' AND a.INVOICE_NO = '" + Util.formatHTMLString(request.getParameter("INVOICE_NO"), false) + "' ORDER BY a.LINE_NO, a.ACTIVE DESC, A.RECEIPT_DATE ASC ";
             rs = con.executeQuery(query);
             int i = 0;
             String activeIcon, linkEdit;
@@ -1438,6 +1440,7 @@
                     <td class="row<%=i % 2%> alignLeft"><%= Util.formatHTMLString(rs.getString("DOCTOR_CODE"), true)%> : <%= Util.formatHTMLString(rs.getString("NAME_THAI"), true)%></td>
                     <td class="row<%=i % 2%> alignRight"><%= Util.formatHTMLString(rs.getString("AMOUNT_AFT_DISCOUNT"), true)%></td>
                     <td class="row<%=i % 2%> alignRight"><%= Util.formatHTMLString(rs.getString("DR_AMT"), true)%></td>
+                    <td class="row<%=i % 2%> alignRight"><%= Util.formatHTMLString(rs.getString("DATE_RECEIPT"), true)%></td>
                     <td class="row<%=i % 2%> alignCenter"><%= activeIcon%></td>
                     <td class="row<%=i % 2%> alignCenter"><%= linkEdit%></td>
                 </tr>
@@ -1450,7 +1453,7 @@
             con.Close();
                 %>                
                 <tr>
-                    <th colspan="8" class="buttonBar">                        
+                    <th colspan="10" class="buttonBar">                        
                         <input type="button" id="NEW_DETAIL" name="NEW_DETAIL" class="button" value="${labelMap.NEW}" onclick="NEW_DETAIL_Click()" />
                     </th>
                 </tr>

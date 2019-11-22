@@ -213,6 +213,16 @@
                 document.mainForm.SWIFT_CODE.value = '';
                 return false;
             }
+            
+            function defaultCountry(){
+            	var hosid = '<%= ""+session.getAttribute("HOSPITAL_CODE") %>';
+            	if(hosid == '027'){
+            		document.mainForm.COUNTRY_CODE.value = 'KH';
+            	}
+            	else{
+            		document.mainForm.COUNTRY_CODE.value = 'TH';
+            	}
+            }
         </script>
         <style type="text/css">
 <!--
@@ -220,13 +230,14 @@
 -->
         </style>
 </head>
-    <body>
+    <body onload="defaultCountry()">
         <form id="mainForm" name="mainForm" method="post" action="bank.jsp">
             <input type="hidden" id="MODE" name="MODE" value="<%=MODE%>" />
             <center>
 			<table width="800" border="0">
 			<tr><td align="left">
 		<b><font color='#003399'><%=Utils.getInfoPage("bank.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
+		
 		</td></tr>
 		</table>
             </center>
@@ -251,7 +262,7 @@
                     <td class="label"><label for="CODE"><span class="style1">${labelMap.CODE} *</span></label></td>
                     <td colspan="3" class="input">
                         <input type="text" id="CODE" name="CODE" class="short" maxlength="20" value="<%= getcode %>"<%= MODE == DBMgr.MODE_UPDATE ? " readonly=\"readonly\"" : "" %> onkeypress="return CODE_KeyPress(event);" />
-                        <input id="SEARCH_CODE" name="SEARCH_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=BANK&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&TARGET=CODE&HANDLE=Refresh_BANK'); return false;" />
+                        <input id="SEARCH_CODE" name="SEARCH_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=BANK&COND=AND COUNTRY_CODE=[' + document.mainForm.COUNTRY_CODE.value + ']&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&TARGET=CODE&HANDLE=Refresh_BANK'); return false;" />
                     </td>
                 </tr>
                 <tr>

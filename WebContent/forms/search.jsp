@@ -33,6 +33,7 @@
             //
             
             request.setCharacterEncoding("UTF-8");
+            System.out.println(request.getParameter("COND"));
             String condition_include = request.getParameter("COND");
             String returnField = "";
             String table = request.getParameter("TABLE");
@@ -257,9 +258,14 @@
                		query += ")";
                 }
  
-                if(condition_include.toString() != "null" && condition_include.toString() != null && condition_include.toString().length() > 4){
+                if(!table.equals("BANK") && condition_include.toString() != "null" && condition_include.toString() != null && condition_include.toString().length() > 4){
                     condition_include = condition_include.replace('[', ' ');
                     condition_include = condition_include.replace(']', ' ');
+                    query += condition_include + " ";
+                }
+                if(table.equals("BANK") && condition_include.toString() != "null" && condition_include.toString() != null && condition_include.toString().length() > 4){
+                    condition_include = condition_include.replace('[', '\'');
+                    condition_include = condition_include.replace(']', '\'');
                     query += condition_include + " ";
                 }
                 //System.out.println("Test2 : "+query);                    	
@@ -320,7 +326,7 @@
                 if(table.equals("BANK")){
                 	display_sub_code = "CODE";
                 }
-				System.out.println(display_sub_code);
+				//System.out.println(display_sub_code);
                 int i = 0;
                 while (rs.next()) {
                 %>
