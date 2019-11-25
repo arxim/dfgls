@@ -17,13 +17,14 @@ public class ProcessBasicAllocateBean {
 	List<Map<String,Object>> trnsaction = null;
 	String userID = null;
 	
-	//----- Initial Zone -----
+	//----- Initial -----
 	public ProcessBasicAllocateBean(){
 		methodStepDoctorList = new ArrayList<Map<String, Object>>();
 		trnDailyList = new ArrayList<Map<String, Object>>();
 		orderConditionList = new ArrayList<String>();
 	}
 	private void prepareCondition(){
+		// define condition
 		orderConditionList.add("DOCTOR_CATEGORY");
 		orderConditionList.add("PAYOR_CATEGORY");
 		orderConditionList.add("PAYOR");
@@ -36,7 +37,7 @@ public class ProcessBasicAllocateBean {
 		orderConditionList.add("ORDER_ITEM");
 	}
 	
-	//----- Functional Zone -----
+	//----- Functional -----
 	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE, String userId) {
 		if(curRow.equals("0")){
 			trn = new TrnDailyDAO();
@@ -51,7 +52,7 @@ public class ProcessBasicAllocateBean {
 		trnDailyList = this.trn.getPsTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // PrepareStatement
 		//trnDailyList = this.trn.getTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // Statement
     	return this.calculateBasicAllocate();
-	}	
+	}
 	public String calculateBasicAllocate(){
 		double amountStart=0.00, amountEnd=0.00, amountAftDiscount = 0.00;
 		double allocatePct = 0.00, allocateAmt = 0.00, taxRate = 0.00, taxAmt = 0.00;
@@ -66,7 +67,37 @@ public class ProcessBasicAllocateBean {
 						if(!methodStepDoctorList.get(x).get(orderConditionList.get(icon).toString()).equals(trnDailyList.get(i).get(orderConditionList.get(icon).toString()))){
 							continue methodStepDoctor;
 						}else{
-							match = true;
+							//match = true;
+							
+							//check set time range (new condition)
+							try{
+								//System.out.println(methodStepDoctorList.get(x).get("TIME_START"));
+								if( methodStepDoctorList.get(x).get("TIME_START") == null || methodStepDoctorList.get(x).get("TIME_START").equals("")){
+									//if not set time range
+									//System.out.println("Time Start - End not in database");
+									match = true;
+								}else{
+									int timeStart = Integer.parseInt(methodStepDoctorList.get(x).get("TIME_START").toString());
+									int timeEnd = Integer.parseInt(methodStepDoctorList.get(x).get("TIME_END").toString());
+									int tranTime = Integer.parseInt( trnDailyList.get(i).get("VERIFY_TIME").toString());
+									if( timeStart < timeEnd || timeStart == timeEnd ){
+										if( tranTime > timeStart && tranTime < timeEnd ){
+											match = true;
+										}else{
+											continue methodStepDoctor;
+										}
+									}else{
+										if( tranTime > timeStart || tranTime < timeEnd ){
+											match = true;
+										}else{
+											continue methodStepDoctor;
+										}
+									}
+								}
+							}catch (Exception e){
+								match = true;
+							}
+							//end new condition
 						}
 					}else{
 						match = true;
@@ -82,58 +113,43 @@ public class ProcessBasicAllocateBean {
 					double df = 0.00;
 					if( (amountStart == 0 && amountEnd == 0) || (amountStart <= amountAftDiscount && amountEnd >= amountAftDiscount) ){
 						if(allocateAmt > 0.00){
+						//allocate amount
 							if(allocateAmt > amountAftDiscount){
 								df = amountAftDiscount;
 							}else{
 								df = allocateAmt;
 							}
 						}else{
+						// allocate pencentage
 							df = ( Double.parseDouble(trnDailyList.get(i).get("AMOUNT_AFT_DISCOUNT").toString()) * allocatePct ) / 100;
 						}
-/*						
-						+ "AMOUNT_START, AMOUNT_END, NORMAL_ALLOCATE_AMT, NORMAL_ALLOCATE_PCT, GUARANTEE_SOURCE, TAX_TYPE_CODE, TAX_RATE, TAX_SOURCE "
-*/						taxRate = Double.parseDouble(methodStepDoctorList.get(x).get("TAX_RATE").toString());
+						taxRate = Double.parseDouble(methodStepDoctorList.get(x).get("TAX_RATE").toString());
 						taxAmt = methodStepDoctorList.get(x).get("TAX_SOURCE").toString().equals("BF") ? amountAftDiscount*taxRate : df*taxRate ;
-						trnDailyList.get(i).put("SEQ_STEP", 0.00);
-						trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
-						trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
-						trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
-						trnDailyList.get(i).put("DR_AMT", df+"");
-						trnDailyList.get(i).put("HP_AMT", amountAftDiscount - df);
-						trnDailyList.get(i).put("TAX_TYPE_CODE", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString());
-						trnDailyList.get(i).put("DR_TAX_400", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("400") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_401", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("401") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_402", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("402") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_406", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("406") ? taxAmt : "0" );
-						trnDailyList.get(i).put("IS_GUARANTEE_FROM_ALLOC", methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("") ? "" : methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("BF") ? "N" : "Y");
-						trnDailyList.get(i).put("TAX_FROM_ALLOCATE", methodStepDoctorList.get(x).get("TAX_SOURCE").toString());
-						upTrn.updatePrepareCalculate(trnDailyList.get(i));
-						status = "1";
-						//System.out.println(trnDaily.get(i));
-						break methodStepDoctor;
-					}else if(amountStart == amountAftDiscount){
+					}else if(amountStart == amountAftDiscount){ 
+						// allocate fix price
 						df = allocateAmt;
 						taxRate = Double.parseDouble(methodStepDoctorList.get(x).get("TAX_RATE").toString());
 						taxAmt = methodStepDoctorList.get(x).get("TAX_SOURCE").toString().equals("BF") ? amountAftDiscount*taxRate : df*taxRate ;
-						trnDailyList.get(i).put("SEQ_STEP", 0.00);
-						trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
-						trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
-						trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
-						trnDailyList.get(i).put("DR_AMT", df+"");
-						trnDailyList.get(i).put("HP_AMT", amountAftDiscount - df);
-						trnDailyList.get(i).put("TAX_TYPE_CODE", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString());
-						trnDailyList.get(i).put("DR_TAX_400", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("400") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_401", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("401") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_402", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("402") ? taxAmt : "0" );
-						trnDailyList.get(i).put("DR_TAX_406", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("406") ? taxAmt : "0" );
-						trnDailyList.get(i).put("IS_GUARANTEE_FROM_ALLOC", methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("") ? "" : methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("BF") ? "N" : "Y");
-						trnDailyList.get(i).put("TAX_FROM_ALLOCATE", methodStepDoctorList.get(x).get("TAX_SOURCE").toString());
-						upTrn.updatePrepareCalculate(trnDailyList.get(i));
-						status = "1";
-						break methodStepDoctor;
 					}else{
 						continue methodStepDoctor;
 					}
+					trnDailyList.get(i).put("SEQ_STEP", 0.00);
+					trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
+					trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
+					trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
+					trnDailyList.get(i).put("DR_AMT", df+"");
+					trnDailyList.get(i).put("HP_AMT", amountAftDiscount - df);
+					trnDailyList.get(i).put("TAX_TYPE_CODE", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString());
+					trnDailyList.get(i).put("DR_TAX_400", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("400") ? taxAmt : "0" );
+					trnDailyList.get(i).put("DR_TAX_401", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("401") ? taxAmt : "0" );
+					trnDailyList.get(i).put("DR_TAX_402", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("402") ? taxAmt : "0" );
+					trnDailyList.get(i).put("DR_TAX_406", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("406") ? taxAmt : "0" );
+					trnDailyList.get(i).put("IS_GUARANTEE_FROM_ALLOC", methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("") ? "" : methodStepDoctorList.get(x).get("GUARANTEE_SOURCE").toString().equals("BF") ? "N" : "Y");
+					trnDailyList.get(i).put("TAX_FROM_ALLOCATE", methodStepDoctorList.get(x).get("TAX_SOURCE").toString());
+					upTrn.updatePrepareCalculate(trnDailyList.get(i));
+					status = "1";
+					break methodStepDoctor;
+
 				}else{
 					continue methodStepDoctor;
 				}
@@ -142,7 +158,8 @@ public class ProcessBasicAllocateBean {
 		return status;
 	} // End Method Basic Allocate
 	
-	//----- Test Zone -----
+	
+	//----- Test -----
 	public static void main(String[] args) {
 		ProcessBasicAllocateBean t = new ProcessBasicAllocateBean();
 		t.calculateTest();
