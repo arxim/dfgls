@@ -27,16 +27,16 @@
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["09"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["10"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54MED01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CM178"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["54MED01"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CM178"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["054"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["VCH"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -97,7 +97,7 @@
 	WHERE D.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor} AND 
 	SD.HOSPITAL_CODE LIKE $P{hospital_code}
 	AND SD.ACTIVE = '1' AND SD.ORDER_ITEM_ACTIVE = '1'
-	AND TRANSACTION_DATE LIKE $P{payment_date}
+	AND TRANSACTION_DATE LIKE $P{year}+$P{month}+'%'
 	)
 ORDER BY SD.ADMISSION_TYPE_CODE,SD.INVOICE_NO]]></queryString>
 
