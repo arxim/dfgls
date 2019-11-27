@@ -1,2 +1,3 @@
 *.class
 *.bak
+/build/classes/ApplicationClient.class
