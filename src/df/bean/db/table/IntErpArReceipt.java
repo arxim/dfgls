@@ -278,7 +278,8 @@ public class IntErpArReceipt extends ABSTable {
 ///                                                " AND E.IS_LOADED = 'N') "                                         
                 + " WHERE " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'"
                 + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
-                + " AND (TRN_DAILY.INVOICE_NO <> TRN_DAILY.RECEIPT_NO AND TRN_DAILY.PAY_BY_CASH <> 'Y') "
+                + " AND (TRN_DAILY.PAY_BY_CASH_AR <> 'Y' AND TRN_DAILY.DD = '') "
+//                + " AND (TRN_DAILY.INVOICE_NO <> TRN_DAILY.RECEIPT_NO AND TRN_DAILY.PAY_BY_CASH <> 'Y') "
 //              + " AND (YYYY IS NULL OR YYYY = '') "
                 + " AND (TRN_DAILY.IS_WRITE_OFF = 'N') "
 //                + " AND " + tableName + ".INVOICE_DATE BETWEEN '" + startDate + "' AND '" + endDate + "'" 
@@ -419,12 +420,10 @@ public class IntErpArReceipt extends ABSTable {
                     + ", TRANSACTION_MODULE = 'TR'"
                     + ", " + tableName + ".RECEIPT_NO = '' "
                     + ", " + tableName + ".RECEIPT_DATE = '' "                    
-                    + " WHERE (PAY_BY_CASH <> 'Y' AND PAY_BY_PAYOR <> 'Y' AND PAY_BY_DOCTOR <> 'Y' AND (PAY_BY_AR = 'Y' OR PAY_BY_CASH_AR = 'Y')) "
+                    + " WHERE (PAY_BY_CASH <> 'Y' AND PAY_BY_PAYOR <> 'Y' AND PAY_BY_DOCTOR <> 'Y' AND ( (PAY_BY_AR = 'Y' OR PAY_BY_CASH_AR = 'Y') AND DD = '' )) "
                     + " AND HOSPITAL_CODE='" + hospitalCode + "'" 
                     + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
-                    //+ " AND (YYYY = '" + YYYY + "') "
                     + " AND(RECEIPT_DATE BETWEEN '" +startDate+"' AND '" + endDate + "')"
-                    //+ " AND (MM = '" + MM + "') "
                     + " AND " + tableName + ".INVOICE_NO = (SELECT DISTINCT E.BILL_NO " +
                                                 " FROM INT_ERP_AR_RECEIPT E " +
                                                 " WHERE E.BILL_NO = " + tableName + ".INVOICE_NO " +
@@ -466,7 +465,7 @@ public class IntErpArReceipt extends ABSTable {
         */        
         sqlCommand.add( sql1 );
         sqlCommand.add( sql2 );
-        sqlCommand.add( sql3 );
+        //sqlCommand.add( sql3 );
         ret = super.rollBack(sqlCommand);
         return ret;
     }
