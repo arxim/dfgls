@@ -40,296 +40,447 @@ public class ProcessTimeTableCase {
 		this.hospitalCode=hospitalCode;
 		this.userId=userId;
 	}
-
+	
 	public boolean runTimeTableCase(String yyyy, String mm) {
+		boolean status = false;
+		status = updateGuaranteeNote(yyyy, mm);
+		status = updatePackageCase(yyyy, mm);
+		status = updateOverCase(yyyy, mm);
+		status = updateCompareCase(yyyy, mm);
+		status = updateCalculateAmount(yyyy, mm);
+		status = insertMappingCaseExpenseDetail(yyyy, mm);
+		return status;
+	}
+	
+	public boolean updateGuaranteeNote(String yyyy, String mm) {
 		DBConnection conn = new DBConnection();
 		boolean status = false;
+		String sqlUpdate ="";
 		try {
 			conn.connectToLocal();
-	        String sqlSelect = "SELECT * FROM TRN_TIME_TABLE_CASE\r\n" + 
-	        		"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY = '"+yyyy+"' AND MM = '"+mm+"'";
-	
-	        ResultSet rs = conn.executeQuery(sqlSelect);
-	        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
-	        while(rs.next()) {
-				HashMap<String, String> hm = new HashMap<>();
-				hm.put("HOSPITAL_CODE", rs.getString("HOSPITAL_CODE"));
-				hm.put("DOCTOR_CODE", rs.getString("DOCTOR_CODE"));
-				hm.put("CASE_CODE", rs.getString("CASE_CODE"));
-				hm.put("TYPE", rs.getString("TYPE"));
-				hm.put("START_TIME", rs.getString("START_TIME"));
-				hm.put("END_TIME", rs.getString("END_TIME"));
-				hm.put("START_DATE", rs.getString("START_DATE"));
-				hm.put("END_DATE", rs.getString("END_DATE"));
-				mapList.add(hm);
-			}
+			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+					"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN STP_PACKAGE_ITEM_MAPPING SPIM ON STTC.HOSPITAL_CODE=SPIM.HOSPITAL_CODE AND STTC.PACKAGE_CODE=SPIM.PACKAGE_CODE\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON STTC.HOSPITAL_CODE=TD.HOSPITAL_CODE AND STTC.DOCTOR_CODE=TD.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"WHERE STTC.HOSPITAL_CODE='"+this.hospitalCode+"' \r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+					"AND MSC.CAL_TYPE='OVER'\r\n" + 
+					"AND TD.GUARANTEE_NOTE = ''\r\n" + 
+					"AND TD.ORDER_ITEM_CODE=SPIM.ORDER_ITEM_CODE\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME";
+			conn.executeUpdate(sqlUpdate);
 			
-			for(int i=0;i<mapList.size();i++) {
-				double amount = calculateMappingCase(mapList.get(i).get("DOCTOR_CODE"), mapList.get(i).get("CASE_CODE"), mapList.get(i).get("START_DATE"), mapList.get(i).get("END_DATE"), mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"), mapList.get(i).get("TYPE"));
-				String sqlUpdate = "";
-				try {
-					sqlUpdate = "UPDATE TRN_TIME_TABLE_CASE SET AMOUNT = '"+amount+"', UPDATE_DATE = '"+JDate.getDate()+"', UPDATE_TIME='"+JDate.getTime()+"', USER_ID='"+this.userId+"'\r\n" + 
-							"WHERE HOSPITAL_CODE = '"+mapList.get(i).get("HOSPITAL_CODE")+"' \r\n" + 
-							"AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' \r\n" + 
-							"AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' \r\n" + 
-							"AND START_DATE='"+mapList.get(i).get("START_DATE")+"'\r\n" + 
-							"AND END_DATE='"+mapList.get(i).get("END_DATE")+"'\r\n" + 
-							"AND START_TIME='"+mapList.get(i).get("START_TIME")+"'\r\n" + 
-							"AND END_TIME='"+mapList.get(i).get("END_TIME")+"'\r\n" + 
-							"AND TYPE='"+mapList.get(i).get("TYPE")+"'";
-					conn.executeUpdate(sqlUpdate);
-				}catch (Exception e) {
-					// TODO: handle exception
-					TRN_Error.setHospital_code(this.hospitalCode);
-					TRN_Error.setUser_name(this.userId);
-					TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update TRN_TIME_TABLE_CASE Error row : "+i, e.getMessage(), sqlUpdate,"");
-					e.printStackTrace();
-				}
-				
-			}
+			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+					"FROM  STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+					"AND MSC.CAL_TYPE='OVER'\r\n" + 
+//					"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
+					"AND TD.GUARANTEE_NOTE = ''\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
+					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
+					"SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					")";
+			conn.executeUpdate(sqlUpdate);
 			
-			
-			String sqlDelete = "";
-			String sqlInsert = "";
-			
-			try {
-				sqlDelete = "DELETE TRN_EXPENSE_DETAIL WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND EXPENSE_CODE='ADD_CASE' AND BATCH_NO = ''";
-				conn.executeUpdate(sqlDelete);
-				System.out.println("Delete time table case to TRN_EXPENSE_DETAIL complete");
-				
-				
-				sqlInsert = "INSERT INTO TRN_EXPENSE_DETAIL (HOSPITAL_CODE,YYYY,MM,DOCTOR_CODE,LINE_NO,EXPENSE_CODE,EXPENSE_SIGN,EXPENSE_ACCOUNT_CODE,AMOUNT,TAX_AMOUNT,TAX_TYPE_CODE,UPDATE_DATE,UPDATE_TIME,USER_ID) \r\n" + 
-						"SELECT TTC.HOSPITAL_CODE,TTC.YYYY,TTC.MM, TTC.DOCTOR_CODE,'"+JDate.getDate()+JDate.getTime()+JDate.getSeconds()+"', E.CODE AS EXPENSE_CODE, E.SIGN AS EXPENSE_SIGN, E.ACCOUNT_CODE, SUM(TTC.AMOUNT) AS AMOUNT, SUM(TTC.AMOUNT) AS TAX_AMOUNT, E.TAX_TYPE_CODE ,'"+JDate.getDate()+"','"+JDate.getTime()+"','"+this.userId+"' \r\n" + 
-						"FROM TRN_TIME_TABLE_CASE TTC\r\n" + 
-						"JOIN EXPENSE E ON  TTC.HOSPITAL_CODE=E.HOSPITAL_CODE\r\n" + 
-						"WHERE TTC.HOSPITAL_CODE='"+this.hospitalCode+"' AND E.ADJUST_TYPE ='MC' AND TTC.YYYY+TTC.MM='"+yyyy+mm+"'\r\n"+
-						"GROUP BY TTC.HOSPITAL_CODE,TTC.YYYY,TTC.MM, TTC.DOCTOR_CODE, E.CODE, E.SIGN , E.ACCOUNT_CODE, E.TAX_TYPE_CODE\r\n"+
-						"HAVING SUM(TTC.AMOUNT) > 0";
-				
-				conn.executeUpdate(sqlInsert);
-				System.out.println("Insert time table case to TRN_EXPENSE_DETAIL complete");
-				status = true;
-			}catch (Exception e) {
-				// TODO: handle exception
-				status = false;
-				TRN_Error.setHospital_code(this.hospitalCode);
-				TRN_Error.setUser_name(this.userId);
-				TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Insert TRN_EXPENSE_DETAIL Error", e.getMessage(), sqlInsert,"");
-				e.printStackTrace();
-			}
-			
-		} catch (Exception e) {
+			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'  \r\n" + 
+					"FROM  STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"LEFT JOIN STP_MAPPING_CASE SMC ON MSC.HOSPITAL_CODE=SMC.HOSPITAL_CODE AND MSC.CASE_MAPPING_CODE=SMC.CASE_MAPPING_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"LEFT JOIN ORDER_ITEM OI ON TD.HOSPITAL_CODE=OI.HOSPITAL_CODE AND TD.ORDER_ITEM_CODE=OI.CODE\r\n" + 
+					"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+					"AND MSC.CAL_TYPE='COMPARE'\r\n" + 
+//					"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
+					"AND TD.GUARANTEE_NOTE = ''\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME NOT BETWEEN STTC.END_TIME AND STTC.START_TIME\r\n" + 
+					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
+					"SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					")\r\n" + 
+					"AND TD.ORDER_ITEM_CODE=SMC.ORDER_ITEM_CODE\r\n" + 
+					"--AND TD.PAYOR_OFFICE_CATEGORY_CODE=SMC.PAYOR_OFFICE_CATEGORY_CODE\r\n" + 
+					"AND TD.ADMISSION_TYPE_CODE=SMC.ADMISSION_TYPE_CODE";
+			conn.executeUpdate(sqlUpdate);
+			status = true;
+		}catch (Exception e) {
 			// TODO: handle exception
-			status = false;
 			TRN_Error.setHospital_code(this.hospitalCode);
 			TRN_Error.setUser_name(this.userId);
-			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Process Error", e.getMessage(), "","");
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update GUARANTEE_NOTE in TRN_DAILY Error", e.getMessage(), sqlUpdate,"");
 			e.printStackTrace();
 		}
 		return status;
 	}
 	
-	public double calculateMappingCase(String doctorCode, String caseCode,String startDate,String endDate, String startTime,String endTime,String type) {
-
-		DBConnection conn = new DBConnection();	
-		conn.connectToLocal();
-		double total_case = 0.0;
-		double stp_amount_per_time = 0.0;
-		double trn_amount_per_time = 0.0;
-		double max_case = 0.0;
-		double over_case = 0.0;
-		double amount = 0.0;
-		String sqlMapping = "SELECT TOTAL_CASE.CASE_CODE,TOTAL_CASE.CASE_TYPE,TOTAL_CASE.PAYOR_OFFICE_CATEGORY_CODE,TOTAL_CASE.ORDER_ITEM_CODE,TOTAL_CASE.START_TIME,TOTAL_CASE.END_TIME,TOTAL_CASE.AMOUNT_PER_CASE, TOTAL_CASE.MAX_CASE , COUNT(*) AS SUM_CASE FROM (\r\n" + 
-				"SELECT DISTINCT TD.HOSPITAL_CODE\r\n" + 
-				"      ,TD.TRANSACTION_DATE\r\n" + 
-				"      ,TD.HN_NO\r\n" + 
-				"      ,TD.EPISODE_NO\r\n" + 
-				"	   ,TD.DOCTOR_CODE\r\n" + 
-				"	   ,SMC.CASE_CODE\r\n" + 
-				"	   ,SMC.START_TIME\r\n" + 
-				"      ,SMC.END_TIME\r\n" + 
-				"      ,SMC.MAX_CASE\r\n" + 
-				"      ,SMC.AMOUNT_PER_CASE\r\n" + 
-				"      ,SMC.PAYOR_OFFICE_CATEGORY_CODE\r\n" + 
-				"      ,SMC.ORDER_ITEM_CODE\r\n" + 
-				"      ,SMC.CASE_TYPE\r\n" + 
-				"  FROM TRN_DAILY TD\r\n" + 
-				"  LEFT OUTER JOIN STP_MAPPING_CASE SMC ON SMC.HOSPITAL_CODE=TD.HOSPITAL_CODE\r\n" + 
-				"  WHERE TD.HOSPITAL_CODE='054' AND DOCTOR_CODE='"+doctorCode+"' AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' \r\n" + 
-				"  AND CASE_CODE='"+caseCode+"'\r\n" + 
-				"  AND SMC.ACTIVE = '1' \r\n" + 
-				"  AND TD.ORDER_ITEM_CODE LIKE (\r\n" + 
-				"	CASE WHEN SMC.ORDER_ITEM_CODE <> '' THEN SMC.ORDER_ITEM_CODE \r\n" + 
-				"	ELSE '%' END )\r\n" + 
-				"  AND TD.PAYOR_OFFICE_CATEGORY_CODE LIKE (\r\n" + 
-				"	CASE WHEN SMC.PAYOR_OFFICE_CATEGORY_CODE <> '' THEN SMC.PAYOR_OFFICE_CATEGORY_CODE \r\n" + 
-				"	ELSE '%' END ) \r\n" +
-				"  ) TOTAL_CASE\r\n" + 
-				"  GROUP BY TOTAL_CASE.CASE_CODE,TOTAL_CASE.CASE_TYPE,TOTAL_CASE.PAYOR_OFFICE_CATEGORY_CODE,TOTAL_CASE.ORDER_ITEM_CODE,TOTAL_CASE.START_TIME,TOTAL_CASE.END_TIME,TOTAL_CASE.AMOUNT_PER_CASE,TOTAL_CASE.MAX_CASE";
-		System.out.println(sqlMapping);
-		ResultSet rs = conn.executeQuery(sqlMapping);
-		ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+	public boolean updatePackageCase(String yyyy,String mm) {
+		DBConnection conn = new DBConnection();
+		boolean status = false;
+		String sqlSelect = "";
+		String sqlUpdate = "";
 		try {
+			conn.connectToLocal();
+			sqlSelect = "SELECT STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE,MP.NUM_CASE,MP.PAY_CASE, COUNT(*) COUNT_CASE\r\n" + 
+					"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN STP_PACKAGE_ITEM_MAPPING SPIM ON STTC.HOSPITAL_CODE=SPIM.HOSPITAL_CODE AND STTC.PACKAGE_CODE=SPIM.PACKAGE_CODE\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON STTC.HOSPITAL_CODE=TD.HOSPITAL_CODE AND STTC.DOCTOR_CODE=TD.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"WHERE STTC.HOSPITAL_CODE='"+this.hospitalCode+"' \r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+					"AND MSC.CAL_TYPE='OVER'\r\n" + 
+					"AND TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+					"AND TD.ORDER_ITEM_CODE=SPIM.ORDER_ITEM_CODE\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
+					"GROUP BY STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE,MP.NUM_CASE,MP.PAY_CASE";
+			
+			ResultSet rs = conn.executeQuery(sqlSelect);
+			ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
 			while(rs.next()) {
 				HashMap<String, String> hm = new HashMap<>();
+				hm.put("START_DATE", rs.getString("START_DATE"));
+				hm.put("DOCTOR_CODE", rs.getString("DOCTOR_CODE"));
 				hm.put("CASE_CODE", rs.getString("CASE_CODE"));
-				hm.put("CASE_TYPE", rs.getString("CASE_TYPE"));
-				hm.put("PAYOR_OFFICE_CATEGORY_CODE", rs.getString("PAYOR_OFFICE_CATEGORY_CODE"));
-				hm.put("ORDER_ITEM_CODE", rs.getString("ORDER_ITEM_CODE"));
-				hm.put("START_TIME", rs.getString("START_TIME"));
-				hm.put("END_TIME", rs.getString("END_TIME"));
-				hm.put("AMOUNT_PER_CASE", rs.getString("AMOUNT_PER_CASE"));
-				hm.put("MAX_CASE", rs.getString("MAX_CASE"));
-				hm.put("SUM_CASE", rs.getString("SUM_CASE"));
+				hm.put("PACKAGE_CODE", rs.getString("PACKAGE_CODE"));
+				hm.put("NUM_CASE", rs.getString("NUM_CASE"));
+				hm.put("PAY_CASE", rs.getString("PAY_CASE"));
+				hm.put("COUNT_CASE", rs.getString("COUNT_CASE"));
 				mapList.add(hm);
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
+			int numPackageCase = 0;
+			int mod = 0;
+			
+			for(int i=0;i<mapList.size();i++) {
+//				System.out.println("COUNT_CASE = "+ mapList.get(i).get("COUNT_CASE"));
+//				System.out.println("mod >> "+Integer.parseInt(mapList.get(i).get("COUNT_CASE")) %  Integer.parseInt(mapList.get(i).get("NUM_CASE")));
+				mod = Integer.parseInt(mapList.get(i).get("COUNT_CASE")) %  Integer.parseInt(mapList.get(i).get("NUM_CASE"));
+				
+				if(mod == 0) {
+					//(count_case/num_case)*pay_case
+					numPackageCase =  ((Integer.parseInt(mapList.get(i).get("COUNT_CASE"))/Integer.parseInt(mapList.get(i).get("NUM_CASE")))*Integer.parseInt(mapList.get(i).get("PAY_CASE")));
+				}else {
+					//((count_case/num_case)*pay_case) +  (mod-1) // เพิ่มขึ้นครั้งละ1
+					numPackageCase =  ((Integer.parseInt(mapList.get(i).get("COUNT_CASE"))/Integer.parseInt(mapList.get(i).get("NUM_CASE")))*Integer.parseInt(mapList.get(i).get("PAY_CASE"))) + (mod - 1);
+				}
+//				System.out.println(numPackageCase);
+				mapList.get(i).put("NUM_PACKAGE_CASE", String.valueOf(numPackageCase));
+				
+				sqlUpdate = "UPDATE STP_TIME_TABLE_CASE SET NUM_PACKAGE_CASE='"+numPackageCase+"', UPDATE_DATE='"+JDate.getDate()+"', UPDATE_TIME='"+JDate.getTime()+"', USER_ID='"+this.userId+"' \r\n" + 
+						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
+				conn.executeUpdate(sqlUpdate);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update calculate NUM_PACKAGE_CASE in STP_TIME_TABLE_CASE Error", e.getMessage(), sqlUpdate,"");
 			e.printStackTrace();
 		}
-		
-//		System.out.println("SQL >> "+sqlMapping);
-		System.out.println("Total Case >> "+mapList.size());
-		
-		if(type.equals("DLY")) {
-			for(int i=0; i<mapList.size();i++) {
-				
-				stp_amount_per_time = JDate.getDiffTimes(startDate, endDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-				trn_amount_per_time = JDate.getDiffTimes(startDate, endDate, startTime, endTime);
-				max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time);
-				System.out.println("Max Case >> " + max_case) ;
-				//check over case for pay
-				if(max_case < Double.parseDouble( mapList.get(i).get("SUM_CASE") )) {
-					over_case = Double.parseDouble( mapList.get(i).get("SUM_CASE") ) - max_case;
-					amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-				}
-				
-				
-//				if(mapList.get(i).get("CASE_TYPE").equals("ALL") && mapList.get(i).get("ORDER_ITEM_CODE").equals("")) {
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, endDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, endDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time);
-//					System.out.println("Max Case >> " + max_case) ;
-//					//check over case for pay
-//					if(max_case < Double.parseDouble( mapList.get(i).get("SUM_CASE") )) {
-//						over_case = Double.parseDouble( mapList.get(i).get("SUM_CASE") ) - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//					
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("ALL") && mapList.get(i).get("ORDER_ITEM_CODE") != ""){
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, endDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, endDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time);
-//					System.out.println("Max Case >> " + max_case);
-//					//check over case for pay
-//					if(max_case < Double.parseDouble( mapList.get(i).get("SUM_CASE") )) {
-//						over_case = Double.parseDouble( mapList.get(i).get("SUM_CASE") ) - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("EPISODE") && mapList.get(i).get("PAYOR_OFFICE_CATEGORY_CODE").equals("")) {
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, endDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, endDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time);
-//					System.out.println("Max Case >> " + max_case) ;
-//					//check over case for pay
-//					if(max_case < Double.parseDouble( mapList.get(i).get("SUM_CASE") )) {
-//						over_case = Double.parseDouble( mapList.get(i).get("SUM_CASE") ) - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("EPISODE") && mapList.get(i).get("PAYOR_OFFICE_CATEGORY_CODE") != ""){
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, endDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, endDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time);
-//					System.out.println("Max Case >> " + max_case);
-//					//check over case for pay
-//					if(max_case < Double.parseDouble( mapList.get(i).get("SUM_CASE") )) {
-//						over_case = Double.parseDouble( mapList.get(i).get("SUM_CASE") ) - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}
-			}
-		}else if (type.equals("MLY")) {
-			
-			String year_from = startDate.substring(0, 4);
-	    	String year_to = endDate.substring(0, 4);;
-	    	String month_from = startDate.substring(4, 6);
-	    	String month_to = endDate.substring(4, 6);
-	    	String date_from = startDate.substring(6, 8);
-	    	String date_to = endDate.substring(6, 8);
-			Date day_from = new GregorianCalendar(Integer.parseInt(year_from), Integer.parseInt(month_from), Integer.parseInt(date_from),00,00).getTime();
-		    Date day_to = new GregorianCalendar(Integer.parseInt(year_to), Integer.parseInt(month_to), Integer.parseInt(date_to),24,00).getTime();
-		    //Date today = new Date();
-
-		    long diff = day_to.getTime() - day_from.getTime();
-		    long day_num = (diff / (1000 * 60 * 60 * 24));
-		    
-		    for(int i=0; i<mapList.size();i++) {	
-		    	
-		    	stp_amount_per_time = JDate.getDiffTimes(startDate, startDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-				trn_amount_per_time = JDate.getDiffTimes(startDate, startDate, startTime, endTime);
-				max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time) * day_num;
-				System.out.println("Max Case >> " + max_case) ;
-				total_case = Double.parseDouble(mapList.get(i).get("SUM_CASE"));
-				//check over case for pay
-				if(max_case < total_case) {
-					over_case = total_case - max_case;
-					amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-				}
-		    	
-//				if(mapList.get(i).get("CASE_TYPE").equals("ALL") && mapList.get(i).get("ORDER_ITEM_CODE").equals("")) {
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, startDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, startDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time) * day_num;
-//					System.out.println("Max Case >> " + max_case) ;
-//					total_case = Double.parseDouble(mapList.get(i).get("SUM_CASE"));
-//					//check over case for pay
-//					if(max_case < total_case) {
-//						over_case = total_case - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//					
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("ALL") && mapList.get(i).get("ORDER_ITEM_CODE") != ""){
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, startDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, startDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time) * day_num;
-//					System.out.println("Max Case >> " + max_case);
-//					total_case = Double.parseDouble(mapList.get(i).get("SUM_CASE"));
-//					//check over case for pay
-//					if(max_case < total_case) {
-//						over_case = total_case - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("EPISODE") && mapList.get(i).get("PAYOR_OFFICE_CATEGORY_CODE").equals("")) {
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, startDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, startDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time) * day_num;
-//					System.out.println("Max Case >> " + max_case) ;
-//					total_case = Double.parseDouble(mapList.get(i).get("SUM_CASE")) ;
-//					//check over case for pay
-//					if(max_case < total_case) {
-//						over_case = total_case - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}else if(mapList.get(i).get("CASE_TYPE").equals("EPISODE") && mapList.get(i).get("PAYOR_OFFICE_CATEGORY_CODE") != ""){
-//					stp_amount_per_time = JDate.getDiffTimes(startDate, startDate, mapList.get(i).get("START_TIME"), mapList.get(i).get("END_TIME"));
-//					trn_amount_per_time = JDate.getDiffTimes(startDate, startDate, startTime, endTime);
-//					max_case = (int) ((trn_amount_per_time*Double.parseDouble(mapList.get(i).get("MAX_CASE")) ) / stp_amount_per_time) * day_num;
-//					System.out.println("Max Case >> " + max_case);
-//					total_case = Double.parseDouble(mapList.get(i).get("SUM_CASE"));
-//					//check over case for pay
-//					if(max_case < total_case) {
-//						over_case = total_case - max_case;
-//						amount += over_case * Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
-//					}
-//				}
-			}
-		}
-		
-		
-		
-		System.out.println("amount >> "+ amount);
-		
-		return amount;
+		return status;
 	}
+	
+	public boolean updateOverCase(String yyyy,String mm) {
+		DBConnection conn = new DBConnection();
+		boolean status = false;
+		String sqlSelect = "";
+		String sqlUpdate = "";
+		try {
+			conn.connectToLocal();
+			// OVER CASE
+			sqlSelect = "SELECT  STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
+					",MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE, COUNT(*) COUNT_OVER_CASE\r\n" + 
+					"FROM  STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+					"AND TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+					"AND MSC.CAL_TYPE='OVER'\r\n" + 
+					"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
+					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
+					"	SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					")\r\n" + 
+					"GROUP BY  STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
+					",MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE\r\n"+
+					"UNION ALL\r\n" + 
+					"SELECT START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
+					",MAX_CASE,AMOUNT,AMOUNT_PER_CASE, COUNT(*) COUNT_OVER_CASE FROM (\r\n" + 
+					"SELECT DISTINCT STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
+					",MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE,TD.EPISODE_NO\r\n" + 
+					"FROM  STP_TIME_TABLE_CASE STTC\r\n" + 
+					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
+					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+					"WHERE TD.HOSPITAL_CODE='MCH2'\r\n" + 
+					"AND STTC.YYYY+STTC.MM='201909'\r\n" + 
+					"AND TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+					"AND MSC.CAL_TYPE='OVER'\r\n" + 
+					"AND MSC.CASE_TYPE='EPISODE'\r\n" + 
+					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
+					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
+					"SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='MCH2'\r\n" + 
+					")\r\n" + 
+					") T\r\n" + 
+					"GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
+					",MAX_CASE,AMOUNT,AMOUNT_PER_CASE";
+			
+			ResultSet rs = conn.executeQuery(sqlSelect);
+			ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+			while(rs.next()) {
+				HashMap<String, String> hm = new HashMap<>();
+				hm.put("START_DATE", rs.getString("START_DATE"));
+				hm.put("DOCTOR_CODE", rs.getString("DOCTOR_CODE"));
+				hm.put("CASE_CODE", rs.getString("CASE_CODE"));
+				hm.put("PACKAGE_CODE", rs.getString("PACKAGE_CODE"));
+				hm.put("MAX_CASE", rs.getString("MAX_CASE"));
+				hm.put("AMOUNT", rs.getString("AMOUNT"));
+				hm.put("AMOUNT_PER_CASE", rs.getString("AMOUNT_PER_CASE"));
+				hm.put("COUNT_OVER_CASE", rs.getString("COUNT_OVER_CASE"));
+				mapList.add(hm);
+			}
+			
+			for(int i=0;i<mapList.size();i++) {
+				sqlUpdate = "UPDATE STP_TIME_TABLE_CASE SET NUM_CASE='"+mapList.get(i).get("COUNT_OVER_CASE")+"', UPDATE_DATE='"+JDate.getDate()+"', UPDATE_TIME='"+JDate.getTime()+"', USER_ID='"+this.userId+"' \r\n" + 
+						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
+				conn.executeUpdate(sqlUpdate);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update calculate NUM_PACKAGE_CASE in STP_TIME_TABLE_CASE Error", e.getMessage(), sqlUpdate,"");
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
+	public boolean updateCompareCase(String yyyy,String mm) {
+		DBConnection conn = new DBConnection();
+		boolean status = false;
+		String sqlSelect = "";
+		String sqlUpdate = "";
+		try {
+			conn.connectToLocal();
+			 sqlSelect = "SELECT START_DATE,DOCTOR_CODE\r\n" + 
+		        		",CASE_CODE,PACKAGE_CODE\r\n" + 
+		        		",CAL_TYPE,CASE_TYPE,AMOUNT\r\n" + 
+		        		",SUM(AMOUNT_PER_ITEM) + SUM(AMOUNT_OF_PERCENT) AS SUM_AMOUNT\r\n" + 
+		        		"FROM (\r\n" + 
+		        		"SELECT  STTC.START_DATE,TD.VERIFY_DATE,TD.VERIFY_TIME,TD.DOCTOR_CODE,TD.EPISODE_NO,TD.PAYOR_OFFICE_CATEGORY_CODE,TD.ORDER_ITEM_CODE,TD.AMOUNT_AFT_DISCOUNT\r\n" + 
+		        		",STTC.CASE_CODE,STTC.PACKAGE_CODE,STTC.START_TIME,STTC.END_TIME\r\n" + 
+		        		",MSC.CAL_TYPE,MSC.CASE_TYPE,MSC.CASE_MAPPING_CODE,MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE\r\n" + 
+		        		",SMC.AMOUNT_PER_ITEM,SMC.PERCENT_PER_ITEM\r\n" + 
+		        		",(PERCENT_PER_ITEM/100)*AMOUNT_AFT_DISCOUNT AS AMOUNT_OF_PERCENT\r\n" + 
+		        		"FROM  STP_TIME_TABLE_CASE STTC\r\n" + 
+		        		"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
+		        		"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+		        		"LEFT JOIN STP_MAPPING_CASE SMC ON MSC.HOSPITAL_CODE=SMC.HOSPITAL_CODE AND MSC.CASE_MAPPING_CODE=SMC.CASE_MAPPING_CODE\r\n" + 
+		        		"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
+		        		"LEFT JOIN ORDER_ITEM OI ON TD.HOSPITAL_CODE=OI.HOSPITAL_CODE AND TD.ORDER_ITEM_CODE=OI.CODE\r\n" + 
+		        		"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+		        		"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+		        		"AND TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
+		        		"AND MSC.CAL_TYPE='COMPARE'\r\n" + 
+//		        		"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
+		        		"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
+		        		"AND TD.VERIFY_TIME NOT BETWEEN STTC.END_TIME AND STTC.START_TIME\r\n" + 
+		        		"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
+		        		"	SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+		        		")\r\n" + 
+		        		"AND TD.ORDER_ITEM_CODE=SMC.ORDER_ITEM_CODE\r\n" + 
+		        		"--AND TD.PAYOR_OFFICE_CATEGORY_CODE=SMC.PAYOR_OFFICE_CATEGORY_CODE\r\n" + 
+		        		"AND TD.ADMISSION_TYPE_CODE=SMC.ADMISSION_TYPE_CODE\r\n" + 
+		        		") T\r\n" + 
+		        		"GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
+		        		",CAL_TYPE,CASE_TYPE,AMOUNT,AMOUNT_PER_CASE\r\n";
+				
+			 	ResultSet rs = conn.executeQuery(sqlSelect);
+		        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+		        while(rs.next()) {
+					HashMap<String, String> hm = new HashMap<>();
+					hm.put("START_DATE", rs.getString("START_DATE"));
+					hm.put("DOCTOR_CODE", rs.getString("DOCTOR_CODE"));
+					hm.put("CASE_CODE", rs.getString("CASE_CODE"));
+					hm.put("PACKAGE_CODE", rs.getString("PACKAGE_CODE"));
+					hm.put("CAL_TYPE", rs.getString("CAL_TYPE"));
+					hm.put("CASE_TYPE", rs.getString("CASE_TYPE"));
+					hm.put("AMOUNT", rs.getString("AMOUNT"));
+					hm.put("SUM_AMOUNT", rs.getString("SUM_AMOUNT"));
+					mapList.add(hm);
+				}
+		        
+		        double amountPerCase = 0.0;
+		        double sumAmount = 0.0;
+		        double amount = 0.0;
+		        
+		        for(int i=0;i<mapList.size();i++) {
+		        	
+		        	amountPerCase = Double.parseDouble(mapList.get(i).get("AMOUNT"));
+		        	sumAmount = Double.parseDouble(mapList.get(i).get("SUM_AMOUNT"));
+		        	
+		        	
+		        	if( amountPerCase > sumAmount) {
+		        		amount = amountPerCase;
+		        	}else {
+		        		amount = sumAmount;
+		        	}
+		        	
+		        	sqlUpdate = "UPDATE STP_TIME_TABLE_CASE SET AMOUNT='"+amount+"', UPDATE_DATE='"+JDate.getDate()+"', UPDATE_TIME='"+JDate.getTime()+"', USER_ID='"+this.userId+"' \r\n" + 
+							"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
+					conn.executeUpdate(sqlUpdate);
+		        }
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update calculate NUM_PACKAGE_CASE in STP_TIME_TABLE_CASE Error", e.getMessage(), sqlUpdate,"");
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
+	public boolean updateCalculateAmount(String yyyy,String mm) {
+		DBConnection conn = new DBConnection();
+		boolean status = false;
+		String sqlSelect = "";
+		String sqlUpdate = "";
+		try {
+			conn.connectToLocal();
+			sqlSelect = "SELECT STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
+	        		",MSC.START_TIME MST_START_TIME,MSC.END_TIME MST_END_TIME\r\n" + 
+	        		",STTC.START_TIME,STTC.END_TIME\r\n" + 
+	        		",MSC.AMOUNT,MSC.MAX_CASE,AMOUNT_PER_CASE\r\n" + 
+	        		",NUM_CASE,NUM_PACKAGE_CASE\r\n" + 
+	        		", CASE WHEN STTC.NUM_CASE IS NULL THEN 0 ELSE STTC.NUM_CASE END + CASE WHEN STTC.NUM_PACKAGE_CASE IS NULL THEN 0 ELSE STTC.NUM_PACKAGE_CASE END  AS ALL_CASE \r\n" + 
+	        		"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
+	        		"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
+	        		"WHERE STTC.HOSPITAL_CODE='"+this.hospitalCode+"' AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
+	        		"AND MSC.CAL_TYPE='OVER'";
+			ResultSet rs = conn.executeQuery(sqlSelect);
+	        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+	        while(rs.next()) {
+				HashMap<String, String> hm = new HashMap<>();
+				hm.put("START_DATE", rs.getString("START_DATE"));
+				hm.put("DOCTOR_CODE", rs.getString("DOCTOR_CODE"));
+				hm.put("CASE_CODE", rs.getString("CASE_CODE"));
+				hm.put("PACKAGE_CODE", rs.getString("PACKAGE_CODE"));
+				hm.put("MST_START_TIME", rs.getString("MST_START_TIME"));
+				hm.put("MST_END_TIME", rs.getString("MST_END_TIME"));
+				hm.put("START_TIME", rs.getString("START_TIME"));
+				hm.put("END_TIME", rs.getString("END_TIME"));
+				hm.put("AMOUNT", rs.getString("AMOUNT"));
+				hm.put("MAX_CASE", rs.getString("MAX_CASE"));
+				hm.put("AMOUNT_PER_CASE", rs.getString("AMOUNT_PER_CASE"));
+				hm.put("NUM_CASE", rs.getString("NUM_CASE"));
+				hm.put("NUM_PACKAGE_CASE", rs.getString("NUM_PACKAGE_CASE"));
+				hm.put("ALL_CASE", rs.getString("ALL_CASE"));
+				mapList.add(hm);
+			}
+	        
+	        String mstStartTime = "";
+	        String mstEndTime = "";
+	        String stpStartTime = "";
+	        String stpEndTime = "";
+	        double mstAmount = 0.0;
+	        double mstMaxCase = 0.0;
+	        double mstAmountPerCase = 0.0;
+	        double allCase = 0.0;
+	        double stpMaxCase = 0.0;
+	        double stpAmount = 0.0;
+	        double mstHour = 0.0;
+	        double stpHour = 0.0;
+	        double overCase = 0.0;
+	        
+	        for(int i=0; i< mapList.size(); i++) {
+	        	
+	        	mstStartTime = mapList.get(i).get("MST_START_TIME");
+		        mstEndTime = mapList.get(i).get("MST_END_TIME");
+		        stpStartTime = mapList.get(i).get("START_TIME");
+		        stpEndTime = mapList.get(i).get("END_TIME");
+		        mstAmount = Double.parseDouble(mapList.get(i).get("AMOUNT"));
+		        mstMaxCase = Double.parseDouble(mapList.get(i).get("MAX_CASE"));
+		        mstAmountPerCase = Double.parseDouble(mapList.get(i).get("AMOUNT_PER_CASE"));
+		        allCase = Double.parseDouble(mapList.get(i).get("ALL_CASE"));
+		        
+				mstHour = JDate.getDiffTimes(mapList.get(i).get("START_DATE"), mapList.get(i).get("START_DATE"), mstStartTime, mstEndTime);
+				stpHour = JDate.getDiffTimes(mapList.get(i).get("START_DATE"), mapList.get(i).get("START_DATE"), stpStartTime, stpEndTime);
+				stpMaxCase = (int) ((stpHour * mstMaxCase ) / mstHour);
+//				System.out.println("STP Max Case >> " + stpMaxCase) ;
+				
+				//check over case for pay
+				if(stpMaxCase < allCase ) {
+					overCase = stpMaxCase - allCase;
+					stpAmount = mstAmount + (overCase * mstAmountPerCase);
+				}else {
+					stpAmount = mstAmount;
+				}
+				System.out.println("STP Amount >> " + stpAmount) ;
+				sqlUpdate = "UPDATE STP_TIME_TABLE_CASE SET AMOUNT='"+stpAmount+"', UPDATE_DATE='"+JDate.getDate()+"', UPDATE_TIME='"+JDate.getTime()+"', USER_ID='"+this.userId+"' \r\n" + 
+						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
+				conn.executeUpdate(sqlUpdate);
+	        }
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update calculate amount in STP_TIME_TABLE_CASE Error", e.getMessage(), sqlUpdate,"");
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
 
+	public boolean insertMappingCaseExpenseDetail(String yyyy,String mm) {
+		DBConnection conn = new DBConnection();
+		String sqlDelete = "";
+		String sqlInsert = "";
+		boolean status = false;
+		try {
+			conn.connectToLocal();
+			sqlDelete = "DELETE TRN_EXPENSE_DETAIL WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND EXPENSE_CODE='ADD_CASE' AND BATCH_NO = ''";
+			conn.executeUpdate(sqlDelete);
+			System.out.println("Delete time table case to STP_EXPENSE_DETAIL complete");
+			
+			
+			sqlInsert = "INSERT INTO TRN_EXPENSE_DETAIL (HOSPITAL_CODE,YYYY,MM,DOCTOR_CODE,LINE_NO,EXPENSE_CODE,EXPENSE_SIGN,EXPENSE_ACCOUNT_CODE,AMOUNT,TAX_AMOUNT,TAX_TYPE_CODE,UPDATE_DATE,UPDATE_TIME,USER_ID) \r\n" + 
+					"SELECT TTC.HOSPITAL_CODE,TTC.YYYY,TTC.MM, TTC.DOCTOR_CODE,'"+JDate.getDate()+JDate.getTime()+JDate.getSeconds()+"', E.CODE AS EXPENSE_CODE, E.SIGN AS EXPENSE_SIGN, E.ACCOUNT_CODE, SUM(TTC.AMOUNT) AS AMOUNT, SUM(TTC.AMOUNT) AS TAX_AMOUNT, E.TAX_TYPE_CODE ,'"+JDate.getDate()+"','"+JDate.getTime()+"','"+this.userId+"' \r\n" + 
+					"FROM STP_TIME_TABLE_CASE TTC\r\n" + 
+					"JOIN EXPENSE E ON  TTC.HOSPITAL_CODE=E.HOSPITAL_CODE\r\n" + 
+					"WHERE TTC.HOSPITAL_CODE='"+this.hospitalCode+"' AND E.ADJUST_TYPE ='MC' AND TTC.YYYY+TTC.MM='"+yyyy+mm+"'\r\n"+
+					"GROUP BY TTC.HOSPITAL_CODE,TTC.YYYY,TTC.MM, TTC.DOCTOR_CODE, E.CODE, E.SIGN , E.ACCOUNT_CODE, E.TAX_TYPE_CODE\r\n"+
+					"HAVING SUM(TTC.AMOUNT) > 0";
+			
+			conn.executeUpdate(sqlInsert);
+			System.out.println("Insert time table case to TRN_EXPENSE_DETAIL complete");
+			status = true;
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Insert TRN_EXPENSE_DETAIL Error", e.getMessage(), sqlInsert,"");
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
 }

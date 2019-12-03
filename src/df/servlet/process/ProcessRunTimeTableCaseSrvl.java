@@ -52,20 +52,20 @@ public class ProcessRunTimeTableCaseSrvl extends HttpServlet {
 		        String yyyy = request.getParameter("YYYY");
 		        String mm = request.getParameter("MM");
 		        try {
-//		            ProcessTimeTableCase processTimeTableCase = new ProcessTimeTableCase();
-//		            try {
-//		                Thread.sleep(20);
-//		                processTimeTableCase.initProcessMappingCase(hospitalCode, userId);
-//		                if(processTimeTableCase.runTimeTableCase(yyyy,mm)){
+		            ProcessTimeTableCase processTimeTableCase = new ProcessTimeTableCase();
+		            try {
+		                Thread.sleep(20);
+		                processTimeTableCase.initProcessMappingCase(hospitalCode, userId);
+		                if(processTimeTableCase.runTimeTableCase(yyyy,mm)){
 		                    out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");
-//		                }else{
-//		                    out.print("<RESULT><SUCCESS>false</SUCCESS></RESULT>");
-//		                }
-//		            }
-//		            catch (Exception  e) {
-//		                out.print("<RESULT><SUCCESS>Error</SUCCESS></RESULT>");
-//		                e.printStackTrace(out);
-//		            }
+		                }else{
+		                    out.print("<RESULT><SUCCESS>false</SUCCESS></RESULT>");
+		                }
+		            }
+		            catch (Exception  e) {
+		                out.print("<RESULT><SUCCESS>Error</SUCCESS></RESULT>");
+		                e.printStackTrace(out);
+		            }
 		        } finally {
 		            out.close();
 		        }

@@ -330,16 +330,29 @@
             }
 
             function SAVE_Click() {
-                if (!isObjectEmptyString(document.mainForm.CASE_CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    !isObjectEmptyString(document.mainForm.CASE_TYPE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    !isObjectEmptyString(document.mainForm.START_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    !isObjectEmptyString(document.mainForm.END_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    isObjectValidNumber(document.mainForm.MAX_CASE, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
-                    isObjectValidNumber(document.mainForm.AMOUNT_PER_CASE, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
-                    !isObjectEmptyString(document.mainForm.MAX_CASE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
-                    !isObjectEmptyString(document.mainForm.AMOUNT_PER_CASE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')) {
-                    AJAX_VerifyData();
-                }
+            	if(document.mainForm.CAL_TYPE.value == "OVER"){
+            		if (!isObjectEmptyString(document.mainForm.CASE_CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.CASE_TYPE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.START_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.END_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')&& 
+                            isObjectValidNumber(document.mainForm.MAX_CASE, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
+                            isObjectValidNumber(document.mainForm.AMOUNT_PER_CASE, '<%=labelMap.get(LabelMap.ALERT_INVALID_NUMBER)%>') && 
+                            !isObjectEmptyString(document.mainForm.MAX_CASE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.AMOUNT_PER_CASE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')
+                            ) {
+                            AJAX_VerifyData();
+                        }
+            	}else{
+            		if (!isObjectEmptyString(document.mainForm.CASE_CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.CASE_TYPE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.START_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') && 
+                            !isObjectEmptyString(document.mainForm.END_TIME, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>')&&  
+                            !isObjectEmptyString(document.mainForm.CASE_MAPPING_CODE, '<%=labelMap.get(LabelMap.ALERT_REQUIRED_FIELD)%>') 
+                            ) {
+                            AJAX_VerifyData();
+                        }
+            	}
+                
             }
           
             function changeType(){
@@ -429,9 +442,9 @@
                     <td class="label"><label for="CASE_TYPE"><span class="style1">${labelMap.CASE_TYPE}*</span></label></td>
                     <td colspan="" class="input">
 					<select class="medium" id="CASE_TYPE" name="CASE_TYPE">
-						<option value="EPISODE"<%= DBMgr.getRecordValue(methodRec, "CASE_TYPE").equalsIgnoreCase("EPISODE") ? " selected=\"selected\"" : "" %>>${labelMap.EPISODE}</option>
 						<option value="TRANSACTION"<%= DBMgr.getRecordValue(methodRec, "CASE_TYPE").equalsIgnoreCase("TRANSACTION") ? " selected=\"selected\"" : "" %>>${labelMap.TRANSACTION}</option>
-                    </select>
+						<option value="EPISODE"<%= DBMgr.getRecordValue(methodRec, "CASE_TYPE").equalsIgnoreCase("EPISODE") ? " selected=\"selected\"" : "" %>>${labelMap.EPISODE}</option>
+					</select>
 					</td>
                     <td class="label"><label for="CASE_MAPPING_CODE"><span class="style1">${labelMap.CASE_MAPPING_CODE}*</span></label></td>
                     <td class="input" colspan="3">
