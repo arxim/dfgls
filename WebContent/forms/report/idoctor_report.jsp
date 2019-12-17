@@ -107,7 +107,7 @@
                 }else{
 					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "")){
 						if (document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" 
-							|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" 
+							//|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" 
 							|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction") {
 							alert("Please Select From Date/To Date");							
 						} else {
