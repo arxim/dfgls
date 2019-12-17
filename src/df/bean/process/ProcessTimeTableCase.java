@@ -43,12 +43,23 @@ public class ProcessTimeTableCase {
 	
 	public boolean runTimeTableCase(String yyyy, String mm) {
 		boolean status = false;
+		
 		status = updateGuaranteeNote(yyyy, mm);
-		status = updatePackageCase(yyyy, mm);
-		status = updateOverCase(yyyy, mm);
-		status = updateCompareCase(yyyy, mm);
-		status = updateCalculateAmount(yyyy, mm);
-		status = insertMappingCaseExpenseDetail(yyyy, mm);
+		if(status) {
+			status = updatePackageCase(yyyy, mm);
+		}
+		if(status) {
+			status = updateOverCase(yyyy, mm);
+		}
+		if(status) {
+			status = updateCompareCase(yyyy, mm);
+		}
+		if(status) {
+			status = updateCalculateAmount(yyyy, mm);
+		}
+		if(status) {
+			status = insertMappingCaseExpenseDetail(yyyy, mm);
+		}
 		return status;
 	}
 	
@@ -70,7 +81,8 @@ public class ProcessTimeTableCase {
 					"AND TD.GUARANTEE_NOTE = ''\r\n" + 
 					"AND TD.ORDER_ITEM_CODE=SPIM.ORDER_ITEM_CODE\r\n" + 
 					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
-					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME";
+					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n"+
+					"AND SPIM.ACTIVE='1' AND MP.ACTIVE='1' AND MSC.ACTIVE='1'";
 			conn.executeUpdate(sqlUpdate);
 			
 			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
@@ -85,9 +97,8 @@ public class ProcessTimeTableCase {
 					"AND TD.GUARANTEE_NOTE = ''\r\n" + 
 					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
 					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
-					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
-					"SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
-					")";
+					"AND TD.ORDER_ITEM_CODE NOT IN (SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"')\r\n"+
+					"AND MP.ACTIVE='1' AND MSC.ACTIVE='1'";
 			conn.executeUpdate(sqlUpdate);
 			
 			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'  \r\n" + 
@@ -95,7 +106,6 @@ public class ProcessTimeTableCase {
 					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
 					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
 					"LEFT JOIN STP_MAPPING_CASE SMC ON MSC.HOSPITAL_CODE=SMC.HOSPITAL_CODE AND MSC.CASE_MAPPING_CODE=SMC.CASE_MAPPING_CODE\r\n" + 
-					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
 					"LEFT JOIN ORDER_ITEM OI ON TD.HOSPITAL_CODE=OI.HOSPITAL_CODE AND TD.ORDER_ITEM_CODE=OI.CODE\r\n" + 
 					"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
 					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
@@ -109,11 +119,13 @@ public class ProcessTimeTableCase {
 					")\r\n" + 
 					"AND TD.ORDER_ITEM_CODE=SMC.ORDER_ITEM_CODE\r\n" + 
 					"--AND TD.PAYOR_OFFICE_CATEGORY_CODE=SMC.PAYOR_OFFICE_CATEGORY_CODE\r\n" + 
-					"AND TD.ADMISSION_TYPE_CODE=SMC.ADMISSION_TYPE_CODE";
+					"AND TD.ADMISSION_TYPE_CODE=SMC.ADMISSION_TYPE_CODE\r\n"+
+					"AND MSC.ACTIVE='1' AND SMC.ACTIVE='1' AND OI.ACTIVE='1'";
 			conn.executeUpdate(sqlUpdate);
 			status = true;
 		}catch (Exception e) {
 			// TODO: handle exception
+			status = false;
 			TRN_Error.setHospital_code(this.hospitalCode);
 			TRN_Error.setUser_name(this.userId);
 			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Update GUARANTEE_NOTE in TRN_DAILY Error", e.getMessage(), sqlUpdate,"");
@@ -142,6 +154,7 @@ public class ProcessTimeTableCase {
 					"AND TD.ORDER_ITEM_CODE=SPIM.ORDER_ITEM_CODE\r\n" + 
 					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
 					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
+					"AND SPIM.ACTIVE='1' AND MP.ACTIVE='1' AND MSC.ACTIVE='1'\r\n" + 
 					"GROUP BY STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE,MP.NUM_CASE,MP.PAY_CASE";
 			
 			ResultSet rs = conn.executeQuery(sqlSelect);
@@ -180,6 +193,7 @@ public class ProcessTimeTableCase {
 						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
 				conn.executeUpdate(sqlUpdate);
 			}
+			status = true;
 		}catch (Exception e) {
 			// TODO: handle exception
 			status = false;
@@ -212,11 +226,9 @@ public class ProcessTimeTableCase {
 					"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
 					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
 					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
-					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
-					"	SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
-					")\r\n" + 
-					"GROUP BY  STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
-					",MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE\r\n"+
+					"AND TD.ORDER_ITEM_CODE NOT IN (SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"')\r\n" + 
+					"AND MSC.ACTIVE='1' AND MP.ACTIVE='1'\r\n" + 
+					"GROUP BY  STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE,MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE\r\n"+
 					"UNION ALL\r\n" + 
 					"SELECT START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
 					",MAX_CASE,AMOUNT,AMOUNT_PER_CASE, COUNT(*) COUNT_OVER_CASE FROM (\r\n" + 
@@ -226,19 +238,16 @@ public class ProcessTimeTableCase {
 					"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
 					"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
 					"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
-					"WHERE TD.HOSPITAL_CODE='MCH2'\r\n" + 
-					"AND STTC.YYYY+STTC.MM='201909'\r\n" + 
+					"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
+					"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
 					"AND TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
 					"AND MSC.CAL_TYPE='OVER'\r\n" + 
 					"AND MSC.CASE_TYPE='EPISODE'\r\n" + 
 					"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
 					"AND TD.VERIFY_TIME BETWEEN STTC.START_TIME AND STTC.END_TIME\r\n" + 
-					"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
-					"SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='MCH2'\r\n" + 
-					")\r\n" + 
-					") T\r\n" + 
-					"GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
-					",MAX_CASE,AMOUNT,AMOUNT_PER_CASE";
+					"AND TD.ORDER_ITEM_CODE NOT IN (SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"')\r\n" + 
+					"AND MSC.ACTIVE='1' AND MP.ACTIVE='1'\r\n" + 
+					") T GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE,MAX_CASE,AMOUNT,AMOUNT_PER_CASE";
 			
 			ResultSet rs = conn.executeQuery(sqlSelect);
 			ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
@@ -260,6 +269,7 @@ public class ProcessTimeTableCase {
 						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
 				conn.executeUpdate(sqlUpdate);
 			}
+			status = true;
 		}catch (Exception e) {
 			// TODO: handle exception
 			status = false;
@@ -292,7 +302,6 @@ public class ProcessTimeTableCase {
 		        		"LEFT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE=STTC.HOSPITAL_CODE AND TD.DOCTOR_CODE=STTC.DOCTOR_CODE\r\n" + 
 		        		"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
 		        		"LEFT JOIN STP_MAPPING_CASE SMC ON MSC.HOSPITAL_CODE=SMC.HOSPITAL_CODE AND MSC.CASE_MAPPING_CODE=SMC.CASE_MAPPING_CODE\r\n" + 
-		        		"LEFT JOIN MST_PACKAGE MP ON STTC.HOSPITAL_CODE=MP.HOSPITAL_CODE AND STTC.PACKAGE_CODE=MP.PACKAGE_CODE\r\n" + 
 		        		"LEFT JOIN ORDER_ITEM OI ON TD.HOSPITAL_CODE=OI.HOSPITAL_CODE AND TD.ORDER_ITEM_CODE=OI.CODE\r\n" + 
 		        		"WHERE TD.HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
 		        		"AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
@@ -301,15 +310,12 @@ public class ProcessTimeTableCase {
 //		        		"AND MSC.CASE_TYPE='TRANSACTION'\r\n" + 
 		        		"AND TD.VERIFY_DATE BETWEEN STTC.START_DATE AND STTC.END_DATE\r\n" + 
 		        		"AND TD.VERIFY_TIME NOT BETWEEN STTC.END_TIME AND STTC.START_TIME\r\n" + 
-		        		"AND TD.ORDER_ITEM_CODE NOT IN (\r\n" + 
-		        		"	SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"'\r\n" + 
-		        		")\r\n" + 
+		        		"AND TD.ORDER_ITEM_CODE NOT IN (SELECT DISTINCT ORDER_ITEM_CODE FROM STP_PACKAGE_ITEM_MAPPING WHERE HOSPITAL_CODE='"+this.hospitalCode+"')\r\n" + 
 		        		"AND TD.ORDER_ITEM_CODE=SMC.ORDER_ITEM_CODE\r\n" + 
 		        		"--AND TD.PAYOR_OFFICE_CATEGORY_CODE=SMC.PAYOR_OFFICE_CATEGORY_CODE\r\n" + 
 		        		"AND TD.ADMISSION_TYPE_CODE=SMC.ADMISSION_TYPE_CODE\r\n" + 
-		        		") T\r\n" + 
-		        		"GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE\r\n" + 
-		        		",CAL_TYPE,CASE_TYPE,AMOUNT,AMOUNT_PER_CASE\r\n";
+		        		"AND MSC.ACTIVE='1' AND SMC.ACTIVE='1' AND OI.ACTIVE='1'\r\n" + 
+		        		") T GROUP BY START_DATE,DOCTOR_CODE,CASE_CODE,PACKAGE_CODE,CAL_TYPE,CASE_TYPE,AMOUNT,AMOUNT_PER_CASE\r\n";
 				
 			 	ResultSet rs = conn.executeQuery(sqlSelect);
 		        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
@@ -346,6 +352,7 @@ public class ProcessTimeTableCase {
 							"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
 					conn.executeUpdate(sqlUpdate);
 		        }
+		        status = true;
 		}catch (Exception e) {
 			// TODO: handle exception
 			status = false;
@@ -365,15 +372,13 @@ public class ProcessTimeTableCase {
 		try {
 			conn.connectToLocal();
 			sqlSelect = "SELECT STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
-	        		",MSC.START_TIME MST_START_TIME,MSC.END_TIME MST_END_TIME\r\n" + 
-	        		",STTC.START_TIME,STTC.END_TIME\r\n" + 
-	        		",MSC.AMOUNT,MSC.MAX_CASE,AMOUNT_PER_CASE\r\n" + 
-	        		",NUM_CASE,NUM_PACKAGE_CASE\r\n" + 
-	        		", CASE WHEN STTC.NUM_CASE IS NULL THEN 0 ELSE STTC.NUM_CASE END + CASE WHEN STTC.NUM_PACKAGE_CASE IS NULL THEN 0 ELSE STTC.NUM_PACKAGE_CASE END  AS ALL_CASE \r\n" + 
+	        		",MSC.START_TIME MST_START_TIME,MSC.END_TIME MST_END_TIME,STTC.START_TIME,STTC.END_TIME\r\n" + 
+	        		",MSC.AMOUNT,MSC.MAX_CASE,AMOUNT_PER_CASE,NUM_CASE,NUM_PACKAGE_CASE\r\n" + 
+	        		",STTC.NUM_CASE + STTC.NUM_PACKAGE_CASE  AS ALL_CASE \r\n" + 
 	        		"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
 	        		"LEFT JOIN MST_SHIFT_CASE MSC ON STTC.HOSPITAL_CODE=MSC.HOSPITAL_CODE AND STTC.CASE_CODE=MSC.CASE_CODE\r\n" + 
 	        		"WHERE STTC.HOSPITAL_CODE='"+this.hospitalCode+"' AND STTC.YYYY+STTC.MM='"+yyyy+mm+"'\r\n" + 
-	        		"AND MSC.CAL_TYPE='OVER'";
+	        		"AND MSC.CAL_TYPE='OVER'  AND MSC.ACTIVE='1'";
 			ResultSet rs = conn.executeQuery(sqlSelect);
 	        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
 	        while(rs.next()) {
@@ -437,6 +442,7 @@ public class ProcessTimeTableCase {
 						"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND START_DATE='"+mapList.get(i).get("START_DATE")+"' AND DOCTOR_CODE='"+mapList.get(i).get("DOCTOR_CODE")+"' AND CASE_CODE='"+mapList.get(i).get("CASE_CODE")+"' AND PACKAGE_CODE='"+mapList.get(i).get("PACKAGE_CODE")+"'";
 				conn.executeUpdate(sqlUpdate);
 	        }
+	        status = true;
 		}catch (Exception e) {
 			// TODO: handle exception
 			status = false;

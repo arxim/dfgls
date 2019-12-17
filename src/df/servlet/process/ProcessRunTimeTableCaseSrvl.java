@@ -59,7 +59,7 @@ public class ProcessRunTimeTableCaseSrvl extends HttpServlet {
 		                if(processTimeTableCase.runTimeTableCase(yyyy,mm)){
 		                    out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");
 		                }else{
-		                    out.print("<RESULT><SUCCESS>false</SUCCESS></RESULT>");
+		                    out.print("<RESULT><SUCCESS>FALSE</SUCCESS></RESULT>");
 		                }
 		            }
 		            catch (Exception  e) {
