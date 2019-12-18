@@ -121,5 +121,76 @@ public class ProcessTax402 extends Process{
 
         return true;
     }
+    public boolean CalculateTax402New(String hospitalCode, String yyyy) {
+        SummaryTax402 st = new SummaryTax402(this.getDBConnection());
+        ResultSet rs = null;
+        
+        try {
+        	this.getDBConnection().executeUpdate("DELETE SUMMARY_TAX_402 WHERE HOSPITAL_CODE='" + hospitalCode 
+        						+ "' AND YYYY = '" + yyyy + "' AND MM = '13'");
+        	
+            String sql = "SELECT HOSPITAL_CODE, TAX_TERM, DOCTOR_CODE, SUM(SUM_NORMAL_TAX_AMT) as S1," +
+               				" SUM(NET_TAX_MONTH) as S2, RIGHT('0000'+ CONVERT(VARCHAR,ROW_NUMBER() OVER(ORDER BY TAX_TERM)),4) AS LINE_NO" +
+               				" FROM SUMMARY_TAX_402 " + 
+               				" WHERE HOSPITAL_CODE = '" + hospitalCode + "'" +
+               				" AND TAX_TERM = '" + yyyy + "'" + //nop update 05/01/2010
+               				//" AND YYYY = '" + yyyy + "'" +
+               				" AND ACTIVE = '1' " +
+               				" GROUP BY HOSPITAL_CODE, TAX_TERM, DOCTOR_CODE";
+
+                if (this.getStatement() == null) { this.setStatement(this.getDBConnection().getConnection().createStatement()); }
+                rs = this.getStatement().executeQuery(sql);
+                
+                while (rs.next()) {
+                	// values.clear();
+                    // call for compute summary monthly
+                    
+                    // insert into SUMMARY_MONTHLY table
+                    st.setHospitalCode(rs.getString("HOSPITAL_CODE"));
+                    st.setDoctorCode(rs.getString("DOCTOR_CODE"));
+                    st.setYyyy(rs.getString("TAX_TERM"));
+                    st.setMm("13");
+//                    st.setPositionAmt(0d);
+//                    st.setTurnInAmt(0d);
+//                    st.setTurnOutAmt(0d);
+//                    st.setGuaranteeAmt(0d);
+//                    st.setOtherAmt(0d);
+                    st.setSumNormalTaxAmt(rs.getDouble("S1"));
+//                    st.setSumTurnTaxAmt(0d);
+//                    st.setNormalTaxMonth(0d);
+                    st.setAccuNormalTaxMonth(rs.getDouble("S1"));
+//                    st.setHospitalTaxMonth(0d);
+//                    st.setAccuHospitalTaxMonth(0d);
+                    st.setNetTaxMonth(rs.getDouble("S2"));
+                    st.setTextNetTaxMonth(Utils.toThaiMoney(rs.getDouble("S2")));
+                    st.setLineNumber(rs.getString("LINE_NO"));
+                    st.setUpdateDate(JDate.getDate());
+                    st.setUpdateTime(JDate.getTime());
+                    st.setUserID(this.getDBConnection().getUserID());
+                    //st.setUserID(Variables.getUserID());
+                    st.setActive("1");
+
+                    if (!st.insertNew()) { st = null;   return false;  }
+
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TRN_Error.writeErrorLog(this.getDBConnection().getConnection(), 
+                    TRN_Error.PROCESS_DAILY, "Calculate tax 40(2) is error.", e.getMessage());
+            return false;
+        } finally {
+               //Clean up resources, close the connection.
+            st = null;
+                try {
+                    if(rs != null) {
+                        rs.close();
+                        rs = null;
+                    }
+                } catch (Exception ignored) { ignored.printStackTrace();   }
+            }
+
+        return true;
+    }
+
 
 }

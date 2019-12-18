@@ -300,6 +300,38 @@ public class SummaryTax402 extends ABSTable {
 
         return ret;
     }
+    public boolean insertNew() {
+        boolean ret = false;
+        // Prepare a statement to update a record
+        String sql = "INSERT INTO SUMMARY_TAX_402 (YYYY,MM,DOCTOR_CODE,HOSPITAL_CODE," +
+        				"SUM_NORMAL_TAX_AMT,ACCU_NORMAL_TAX_AMT,ACCU_NET_TAX_MONTH,NET_TAX_MONTH,TEXT_NET_TAX_MONTH,BATCH_NO,UPDATE_DATE,"+
+        				"UPDATE_TIME,USER_ID,STATUS_MODIFY,ACTIVE,TAX_TERM,LINE_NO ) " +
+        	 " VALUES (" +
+        	 "'" + this.getYyyy() + "'" +
+        	 ",'" + this.getMm() + "'" +
+        	 ",'" + this.getDoctorCode() + "'" +
+        	 ",'" + this.getHospitalCode() + "'" + 
+        	 "," + this.getSumNormalTaxAmt() +
+        	 "," + this.getAccuNormalTaxMonth() +
+        	 "," + this.getNetTaxMonth() +
+        	 "," + this.getNetTaxMonth() +
+        	 ",'" + this.getTextNetTaxMonth() + "'" +
+        	 ",''" +
+        	 ",'" + this.getUpdateDate() + "'" +
+        	 ",'" + this.getUpdateTime() + "'" +
+        	 ",'" + this.getUserID() + "'" +
+        	 ",''" +
+        	 ",'" + this.getActive() + "'" +
+        	 ",'" + this.getYyyy() + "'" +
+        	 ",'" + this.getLineNumber() + "')";
+                                    
+        // Execute the insert statement
+        int updateCount = this.getDBConnection().executeUpdate(sql);        
+        if (updateCount > -1) { ret=true; }
+
+        return ret;
+    }
+    
     
     
     
