@@ -224,7 +224,7 @@
                     trnDailyRec.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
                     trnDailyRec.addField("INVOICE_NO", Types.VARCHAR, request.getParameter("INVOICE_NO"), true);
                     trnDailyRec.addField("INVOICE_DATE", Types.VARCHAR, JDate.saveDate(request.getParameter("INVOICE_DATE")), true);
-                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"));
+                    trnDailyRec.addField("INVOICE_TYPE",Types.VARCHAR, request.getParameter("INVOICE_TYPE"), true);
                 	
                     if (MODE != MODE_UPDATE_DETAIL_SUBMIT) {
                     	
@@ -1425,7 +1425,7 @@
             "CASE WHEN a.RECEIPT_DATE = '' THEN '' ELSE SUBSTRING(a.RECEIPT_DATE,7,2)+'/'+SUBSTRING(a.RECEIPT_DATE,5,2)+'/'+SUBSTRING(a.RECEIPT_DATE,1,4) END as DATE_RECEIPT "+
             "FROM TRN_DAILY as a "+
             "LEFT JOIN DOCTOR as b on b.CODE=a.DOCTOR_CODE AND b.HOSPITAL_CODE = a.HOSPITAL_CODE WHERE a.HOSPITAL_CODE = '"
-            + session.getAttribute("HOSPITAL_CODE").toString() + "' AND a.INVOICE_NO = '" + Util.formatHTMLString(request.getParameter("INVOICE_NO"), false) + "' ORDER BY a.LINE_NO, a.ACTIVE DESC, A.RECEIPT_DATE ASC ";
+            + session.getAttribute("HOSPITAL_CODE").toString() + "' AND a.INVOICE_NO = '" + Util.formatHTMLString(request.getParameter("INVOICE_NO"), false) + "' ORDER BY a.LINE_NO, a.ACTIVE DESC, a.RECEIPT_DATE ASC ";
             rs = con.executeQuery(query);
             int i = 0;
             String activeIcon, linkEdit;
