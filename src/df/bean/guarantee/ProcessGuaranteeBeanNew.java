@@ -2719,13 +2719,14 @@ public class ProcessGuaranteeBeanNew {
     	HashMap<String,String> hm = new HashMap<String,String>();
         ArrayList<HashMap<String,String>> al = new ArrayList<HashMap<String,String>>();
         ArrayList<HashMap<String,String>> up = new ArrayList<HashMap<String,String>>();
+        double amtAftDis = 0;
         /*
         HP_PREMIUM = backup for AMOUNT_AFT_DISCOUNT rollback
         */
     	try { d.setStatement(); } catch (SQLException e) {}
     	
 		up = d.getMultiData(
-				"SELECT STP_GUARANTEE.GUARANTEE_ALLOCATE_PCT, "+
+				"SELECT STP_GUARANTEE.GUARANTEE_ALLOCATE_PCT, STP_GUARANTEE.GUARANTEE_SOURCE, "+
 				"STP_GUARANTEE.OVER_ALLOCATE_PCT, "+
 				"HOSPITAL.GUARANTEE_ALL_ALLOC, TRN_DAILY.* "+
 				"FROM TRN_DAILY "+
@@ -2757,12 +2758,18 @@ public class ProcessGuaranteeBeanNew {
 				double percenAft = 0;
 				if( Double.parseDouble(al.get(i).get("OLD_DR_AMT")) < Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) ){
 					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100) / Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
 				}else{
 					percenAft = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(al.get(i).get("OLD_DR_AMT"));
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
+				}
+				if( up.get(i).get("GUARANTEE_SOURCE").equals("BF") && Double.parseDouble( up.get(i).get("GUARANTEE_ALLOCATE_PCT") ) == 100 ){
+					amtAftDis = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT"));
 				}
 				if( up.get(i).get("GUARANTEE_ALL_ALLOC").equals("A") ){
 					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(up.get(i).get("GUARANTEE_ALLOCATE_PCT")))
 							    * 100 / Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"));
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
 				}
 				al.get(i).put("LINE_NO", al.get(i).get("LINE_NO")+"ADV");
 				al.get(i).put("RECEIPT_NO", al.get(i).get("INVOICE_NO"));
@@ -2772,14 +2779,16 @@ public class ProcessGuaranteeBeanNew {
 				al.get(i).put("YYYY", this.year);
 				al.get(i).put("MM", this.month);
 				al.get(i).put("PAY_BY_CASH_AR", "Y");
-				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
+				//al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
+				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+amtAftDis);
 				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
 				if( al.get(i).get("TAX_TYPE_CODE").equals("402") ){
 					if( al.get(i).get("TAX_FROM_ALLOCATE").equals("Y")){
 						al.get(i).put("DR_TAX_402", al.get(i).get("GUARANTEE_PAID_AMT"));					
 						al.get(i).put("DR_TAX_406", "0");					
 					}else{
-						al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						//al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_402", ""+amtAftDis);					
 						al.get(i).put("DR_TAX_406", "0");					
 					}
 				}else if( al.get(i).get("TAX_TYPE_CODE").equals("406") ){
@@ -2787,7 +2796,8 @@ public class ProcessGuaranteeBeanNew {
 						al.get(i).put("DR_TAX_406", al.get(i).get("GUARANTEE_PAID_AMT"));			
 						al.get(i).put("DR_TAX_402", "0");			
 					}else{
-						al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_406", ""+amtAftDis);					
 						al.get(i).put("DR_TAX_402", "0");			
 					}
 				}
