@@ -369,7 +369,6 @@
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_FAIL));
                         }
                     }else {
-                    	System.out.println("eiei");
                         if ( DBMgr.updateRecord(trnDailyRec) ) {
                             session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", String.format("input/invoice.jsp?INVOICE_NO=%1$s", trnDailyRec.getField("INVOICE_NO").getValue())));
                         }else {
@@ -1244,7 +1243,7 @@
                 <tr>
                     <td class="label"><label for="LINE_NO"><span class="style1">${labelMap.LINE_NO} *</span></label></td>
                     <td class="input">
-                        <input type="text" id="LINE_NO" name="LINE_NO" class="medium" maxlength="50" value="<%= MODE == MODE_INSERT_DETAIL ? session.getAttribute("HOSPITAL_CODE").toString()+JDate.getTimeInMillis() : DBMgr.getRecordValue(trnDailyRec, "LINE_NO")%>"<%= MODE == MODE_UPDATE_DETAIL ? "readonly=\"readonly\"" : ""%> />
+                        <input type="text" id="LINE_NO" name="LINE_NO" class="medium" maxlength="50" value="<%= (MODE == MODE_INSERT_DETAIL || MODE == MODE_INSERT_MASTER_DETAIL) ? session.getAttribute("HOSPITAL_CODE").toString()+JDate.getTimeInMillis() : DBMgr.getRecordValue(trnDailyRec, "LINE_NO")%>"<%= MODE == MODE_UPDATE_DETAIL ? "readonly=\"readonly\"" : ""%> />
                     </td>
                     <td class="label"><label for="INVOICE_TYPE"><span class="style1">${labelMap.INVOICE_TYPE} *</span></label></td>
                     <td class="input">
