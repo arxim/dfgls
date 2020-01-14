@@ -562,6 +562,11 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 		        	if(conn.executeUpdate(doMoveOnward())>0){
 			        	conn.executeUpdate(doDeleteOnward());	        		        		
 		        	}
+		        	
+		        	errorMessage = "Do process move DF order";
+		        	if(conn.executeUpdate(doMoveDFOrder())>0){
+			        	conn.executeUpdate(doDeleteDFOrder());	        		        		
+		        	}
 
 	        		errorMessage = "Do process commit batch close";
 	                conn.commitTrans();
@@ -1254,5 +1259,26 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
 		return
 		"DELETE FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' AND NOTE = 'XM'"+
 		"";
+	}
+	private String doMoveDFOrder(){
+		return "INSERT INTO LOG_TRN_DAILY "+
+			   "SELECT *,'','ORDER','"+this.year+this.month+"00' FROM TRN_DAILY WHERE "+
+			   "HOSPITAL_CODE = '"+this.hospitalCode+"' "+
+			   "AND LINE_NO IN ( "+
+			   "SELECT LINE_NO FROM TRN_DAILY WHERE "+
+			   "HOSPITAL_CODE = '"+this.hospitalCode+"' "+
+			   "AND INVOICE_TYPE IN ('RESULT','EXECUTE') "+
+			   ") "+
+			   "AND INVOICE_TYPE = 'ORDER'";
+	}
+	private String doDeleteDFOrder(){
+		return "DELETE FROM TRN_DAILY WHERE "+
+			   "HOSPITAL_CODE = '"+this.hospitalCode+"' "+
+			   "AND LINE_NO IN ( "+
+			   "SELECT LINE_NO FROM TRN_DAILY WHERE "+
+			   "HOSPITAL_CODE = '"+this.hospitalCode+"' "+
+			   "AND INVOICE_TYPE IN ('RESULT','EXECUTE') "+
+			   ") "+
+			   "AND INVOICE_TYPE = 'ORDER'";
 	}
 }
