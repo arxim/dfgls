@@ -207,6 +207,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 						" THEN AMOUNT_AFT_DISCOUNT" + //IF Partial allocate > amount for payment then use that amount
 						" ELSE " +
@@ -217,6 +218,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
 						//----AMOUNT_AFT_DISCOUNT
 						" AMOUNT_BEF_WRITE_OFF," +
@@ -239,6 +241,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 						" THEN DR_AMT" + //IF Partial allocate > amount for payment then use that amount
 						" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
@@ -248,6 +251,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END, "+
 						//----DR_AMT
 						" OLD_DR_AMT," +
@@ -262,6 +266,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
 						" THEN DR_TAX_406" + //IF Partial allocate > amount for payment then use that amount
 						" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.TAX_AMT)/100)" +
@@ -271,6 +276,7 @@ public class ProcessPartialPayment {
 						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
 						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END,"+ 
 						//----DR_TAX_406
 						" TAX_TYPE_CODE," +
@@ -329,10 +335,11 @@ public class ProcessPartialPayment {
 						" WHERE T.INVOICE_NO = I.BILL_NO "+
 						" AND T.HOSPITAL_CODE = I.HOSPITAL_CODE "+
 						" AND T.INVOICE_NO = '"+hashData.get("INVOICE_NO")+"'" +
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"'"+
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 						" AND LINE_NO = '"+hashData.get("LINE_NO")+"' AND IS_PARTIAL = 'N'"+ 
 						" AND INVOICE_TYPE ='"+hashData.get("INVOICE_TYPE")+"'" +
-						" AND BATCH_NO = ''"+
+						" AND BATCH_NO = '' AND T.YYYY = '' "+
 						//" AND DR_AMT > 0" +
 						" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"' AND T.ACTIVE = '1'";
 						//System.out.println("sql = " + this.sql);
