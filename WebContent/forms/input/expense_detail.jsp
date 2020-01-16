@@ -3,10 +3,12 @@
 <%@page import="java.sql.Types"%>
 <%@page import="df.bean.db.DataRecord"%>
 <%@page import="df.bean.obj.util.JDate"%>
+<%@page import="org.apache.log4j.Logger"%>
 
 <%    if (session.getAttribute("LANG_CODE") == null)
         session.setAttribute("LANG_CODE", LabelMap.LANG_EN);
-
+	
+	final Logger logger = Logger.getLogger("expense_detail.jsp");
     DataRecord trnDailyRec = null;
     String pkTBL = JDate.getYear() + "" + JDate.getMonth() + "" + JDate.getDay() + "" + JDate.getTime();
 
@@ -134,7 +136,7 @@
         
         //query = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString() +"' AND YYYY='"+ YYYY +"' AND MM='"+ MM +"' GROUP BY MM ";
         summaryMounthlyRec = DBMgr.getRecord(query);
-        System.out.println(query);
+        logger.info(query);
     
     } else if (request.getParameter("DOCTOR_CODE") != null && request.getParameter("MM") != null && request.getParameter("YYYY") != null) {
         // New
@@ -512,7 +514,7 @@
                     <th colspan="4" class="buttonBar">
                         <input type="button" id="SAVE" name="SAVE"
 					class="button" value="${labelMap.SAVE}"
-					<%=!DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") || !DBMgr.getRecordValue(summaryMounthlyRec, "MM").equals("")  ? " disabled=\"disabled\"" : ""%>
+					<%=!DBMgr.getRecordValue(stpExpenseRec, "HOSPITAL_CODE").equals("00001") && (!DBMgr.getRecordValue(stpExpenseRec, "BATCH_NO").equals("") || !DBMgr.getRecordValue(summaryMounthlyRec, "MM").equals(""))  ? " disabled=\"disabled\"" : ""%>
 					onclick="validateData();" /> <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location.href='expense_main.jsp?EXPENSE_DR_CODE=<%=request.getParameter("DOCTOR_CODE")%>&MM=<%=MM%>&YYYY=<%=YYYY%>'" />                    
                     </th>

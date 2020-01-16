@@ -150,21 +150,23 @@
         }
             
         function changeDropDownList(){
-        	
+        	var tax402 = document.getElementById('tax402');
+        	var tax406 = document.getElementById('tax406');
         	if(document.mainForm.TAX_TYPE.value=='Tax406'){
         		//alert(document.mainForm.PRINT_DATE.value)
-        		document.getElementById('tax402').style.display = 'none';
-        		document.getElementById('tax406').style.display = 'block'; 
-        		document.getElementById('printDate').style.display = 'block';
+        		tax402.style.display = 'none';
+        		tax406.style.display = ''; 
+        		document.getElementById('printDate').style.display = '';
         	}
         	else if(document.mainForm.TAX_TYPE.value=='Tax402'){
-        		document.getElementById('tax402').style.display = 'block';
-				document.getElementById('printDate').style.display = 'block';
-        		document.getElementById('tax406').style.display = 'none';
+        		tax402.style.display = '';
+				document.getElementById('printDate').style.display = '';
+				tax406.style.display = 'none';
         	}
         	else{
-        		document.getElementById('tax402').style.display = 'none';
-        		document.getElementById('tax406').style.display = 'none';
+        		tax402.style.display = 'none';
+        		tax406.style.display = 'none';
+        		document.getElementById('printDate').style.display = 'none';
         		document.getElementById("divWait").style.display = "none";
         	}
         }
