@@ -52,8 +52,10 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         	tax_month = month;
         }
         System.out.println(month);
-        
-        if(type.equals("01")){
+        if(type.equals("00")) {
+        	cond = "AND D.TAX_402_METHOD LIKE (CASE WHEN S.HOSPITAL_CODE = '00019' THEN '%' ELSE 'STP' END) ";
+        }
+        else if(type.equals("01")){
         	cond = "AND S.TAX_402_METHOD IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY <> 'Y' ";
         }
         else if(type.equals("03")) {
