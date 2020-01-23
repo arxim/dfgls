@@ -24,9 +24,9 @@
 		labelMap.add("FROM_DATE", "From Date", "ตั้งแต่วันที่");
 	    labelMap.add("TO_DATE", "To Date", "ถึงวันที่");
 	    labelMap.add("SELECT_DATE","File Interface Date","วันที่นำเข้าไฟล์");
-		labelMap.add("INTERFACE_TRANSACTION", "Interface DF Transaction (Daily)", "นำเข้ารายการค่าแพทย์ (รายวัน)");
-		labelMap.add("INTERFACE_TRANSACTION_RESULT", "Interface DF Result (Daily)", "นำเข้ารายการแพทย์อ่านผล (รายวัน)");
-		labelMap.add("INTERFACE_AR_TRANSACTION", "Interface AR Transaction (Monthly)", "นำเข้ารายการรับชำระหนี้ (รายเดือน)");
+		labelMap.add("INTERFACE_TRANSACTION", "Interface DF Transaction", "นำเข้ารายการค่าแพทย์");
+		labelMap.add("INTERFACE_TRANSACTION_RESULT", "Interface DF Result", "นำเข้ารายการแพทย์อ่านผล");
+		labelMap.add("INTERFACE_AR_TRANSACTION", "Interface AR Transaction", "นำเข้ารายการรับชำระหนี้");
 		labelMap.add("INTERFACE_ONWARD", "Interface Onward (Monthly)", "นำเข้ารายการค่าแพทย์ Onward (รายเดือน)");
 		labelMap.add("INTERFACE_GUARANTEE", "Interface Guarantee", "นำเข้ารายการรับชำระหนี้");
 		labelMap.add("INTERFACE_CO", "Interface C/O", "นำเข้ารายการค่าใช้จ่าย");
@@ -58,12 +58,12 @@
         <script type="text/javascript" src="../../javascript/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="../../javascript/jquery-ui-1.8.16.custom.min.js"></script>
 		<script type="text/javascript">
-                function Interface_Save() {
-                var selectTypeDF = document.mainForm.INTERFACE_PROCESS;
-                var selectFileType = document.mainForm.selectFileType;
-                var file = document.mainForm.FILE_INTERFACE;
-                var date = document.mainForm.INTERFACE_DATE;
-                var get_type = '';
+	        function Interface_Save() {
+	        var selectTypeDF = document.mainForm.INTERFACE_PROCESS;
+	        var selectFileType = document.mainForm.selectFileType;
+	        var file = document.mainForm.FILE_INTERFACE;
+	        var date = document.mainForm.INTERFACE_DATE;
+	        var get_type = '';
                 
                 for(i=0; i < selectFileType.length ; i++ ){
                     if(selectFileType[i].checked){
@@ -193,6 +193,7 @@
   				margin: auto;
   				padding: 0px;
   				border: 1px solid #888;
+  				font-size: 14px;
   				width: 30%;
 			}
 
@@ -251,9 +252,9 @@
 		          <td colspan="3" class="input"><select class="mediumMax" id="INTERFACE_PROCESS" name="INTERFACE_PROCESS" onchange="changeDropDownList();">
                     <option value="">-- Select --</option>
                     <option value="ImportTransaction">${labelMap.INTERFACE_TRANSACTION}</option>
+                    <option value="ImportVerifyTransaction">${labelMap.INTERFACE_TRANSACTION_RESULT}</option>
                     <option value="ImportARTransaction">${labelMap.INTERFACE_AR_TRANSACTION}</option>
                     <!-- 
-                    <option value="ImportVerifyTransaction">${labelMap.INTERFACE_TRANSACTION_RESULT}</option>
                     <option value="ImportOnWard">${labelMap.INTERFACE_ONWARD}</option>
                     <option value="ImportOPDCheckup">${labelMap.INTERFACE_OPD_CHECKUP}</option>
                     <option value="ImportExpense">${labelMap.INTERFACE_CO}</option>
