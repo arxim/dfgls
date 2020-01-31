@@ -4,7 +4,7 @@
     <head>
 	<script language="javascript">
 	    function load(){
-	 	   location.href = "http://103.82.248.103:8082/tax/main/<%=session.getAttribute("HOSPITAL_CODE").toString() %>";
+	 	   location.href = "http://localhost:8082/tax/main/<%=session.getAttribute("HOSPITAL_CODE").toString() %>";
 	    }
 	</script>        
     </head><!--onload="JsOnLoad();"-->
