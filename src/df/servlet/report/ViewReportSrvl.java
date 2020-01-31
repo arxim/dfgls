@@ -230,7 +230,8 @@ public class ViewReportSrvl extends HttpServlet {
         String month = request.getParameter("MM");
         String file_save = request.getParameter("SAVE_FILE");
         String file_type = request.getParameter("FILE_TYPE");
-        String path = request.getRealPath("/") + "reports\\";
+        String path = request.getRealPath("/") + "reports\\"; //windows
+    	//String path = request.getRealPath("/") + "reports/"; //linux
         String path_show = getServletConfig().getServletContext().getRealPath("")+"\\reports\\";
         String pay_date = request.getParameter("PAY_DATE");
         String doctor_code_to = request.getParameter("DOCTOR_CODE_TO");
@@ -263,8 +264,17 @@ public class ViewReportSrvl extends HttpServlet {
         	hm.put("yyyy", term_year);
         	hm.put("print_date", JDate.saveDate(print_date));
             hm.put("signature", path);
+        }else if("rd406_period".equalsIgnoreCase(reportfilename)){
+        	hm.put("term", term);
+        	hm.put("doctor_code", doctor_code); 
+        	hm.put("yyyy", term_year);
+        	hm.put("print_date", JDate.saveDate(print_date));
+            hm.put("signature", path);
+            reportfilename = reportfilename+hospital_code;
         }else if("ReportSummaryFrontPage01".equalsIgnoreCase(reportfilename)||"Tax402SummaryYearlyFrontPage".equalsIgnoreCase(reportfilename)){
-        	hm.put("yyyy", Integer.parseInt(year));
+        	hm.put("yyyy", Integer.parseInt(year));        	
+        }else if("rd1_monthly_cover".equalsIgnoreCase(reportfilename)){
+        	hm.put("yyyy", Integer.parseInt(year));        	
         }else if("Tax402SummaryYearly".equalsIgnoreCase(reportfilename)){
         	hm.put("doctor", doctor_code_to);
         	hm.put("year", year);
