@@ -35,7 +35,7 @@
             Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), c);
             c.Close();
             LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
-            labelMap.add("TITLE_MAIN", "Enable Tax Report For Doctor", "แสดงรายงานภาษีสำหรับแพทย์");
+            labelMap.add("TITLE_MAIN", "Send e-mail", "แสดงรายงานภาษีสำหรับแพทย์");
             labelMap.add("TAX_TYPE", "Tax Type", "ประเภทภาษี");
             labelMap.add("PRINT_DATE", "Issued On", "ลงวันที่");
             /* labelMap.add("END_DATE", "Payment Term To", "สิ้นสุดงวดเดือน"); */
@@ -99,14 +99,13 @@
 	<script type="text/javascript">
         <%-- [ AJAX --%>
         function AJAX_Send_Request() {
-			if(document.getElementById('TAX_TYPE').value=='Tax402'){
+			if(document.mainForm.TAX_TYPE.value.includes('Tax402')){
 				document.getElementById('YYYY').value = document.getElementById('YYYY402').value;
 			}
-			if(document.getElementById('TAX_TYPE').value=='Tax406'){
+			if(document.mainForm.TAX_TYPE.value.includes('TaxLetter406')){
 				document.getElementById('YYYY').value = document.getElementById('YYYY406').value;
 			}
-			//alert(document.getElementById('YYYY').value);
-			
+//			alert(document.getElementById('YYYY').value);
             var target = "../../ProcessSendMailSrvl?"
                 + "&HOSPITAL_CODE=<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
 				+ "&MM=" + document.mainForm.MM.value
@@ -128,9 +127,9 @@
                 }
 				
                 if (xmlDoc.getElementsByTagName("SUCCESS")[0].firstChild.nodeValue == "SUCCESS") {
-                    alert('ENABLE REPORT COMPLETE');
+                    alert('Send e-mail COMPLETE');
                 }else {
-                    alert('ENABLE REPORT FAIL PLEASE CHECK YOUR DATA!!');
+                    alert('Send e-mail FAIL PLEASE CHECK YOUR DATA!!');
                 }
                 //document.getElementById("PROGRESS").innerHTML = (currentRowID - 1) + " / " + numRow;
                 //currentRowID++;
@@ -148,16 +147,16 @@
         }
             
         function changeDropDownList(){
-        	
-        	if(document.mainForm.TAX_TYPE.value=='Tax406'){
+//        	alert(document.mainForm.TAX_TYPE.value);
+        	if(document.mainForm.TAX_TYPE.value.includes('TaxLetter406')){
         		//alert(document.mainForm.PRINT_DATE.value)
         		document.getElementById('tax402').style.display = 'none';
-        		document.getElementById('tax406').style.display = 'block'; 
-        		document.getElementById('printDate').style.display = 'block';
+        		document.getElementById('tax406').style.display = ""; 
+//        		document.getElementById('printDate').style.display = "";
         	}
-        	else if(document.mainForm.TAX_TYPE.value=='Tax402'){
-        		document.getElementById('tax402').style.display = 'block';
-				document.getElementById('printDate').style.display = 'block';
+        	else if(document.mainForm.TAX_TYPE.value=='Tax402SummaryYearlyForDoctor'){
+        		document.getElementById('tax402').style.display = "";
+//				document.getElementById('printDate').style.display = "";
         		document.getElementById('tax406').style.display = 'none';
         	}
         	else{
@@ -182,10 +181,10 @@
 						<option value="None">
 							--Select Tax Type --
 						</option>
-						<option value="Tax402">
+						<option value="Tax402SummaryYearlyForDoctor">
 							${labelMap.TAX_402}
 						</option>
-						<option value="Tax406">
+						<option value="<%=session.getAttribute("HOSPITAL_CODE").equals("050") ? "TaxLetter406ForDoctor050":"TaxLetter406ForDoctor"%>">
 							${labelMap.TAX_406}
 						</option>
 						

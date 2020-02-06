@@ -78,7 +78,7 @@ body{
 								<a href="javascript:parent.toggleFrame();"  title="Hide/Show Menu"  style="color:white;"><img src='images/menu_show.png' width='20' height='20' /></a>
 							</td>
 							<td style="padding-left: 10px;" align="center">
-							<h1 style="color:white;">iDoctor V4.5</h1> 
+							<h1 style="color:white;">iDoctor V4.5.5</h1> 
 							</td>
 						</tr>
 					</table>	

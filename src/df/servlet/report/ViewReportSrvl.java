@@ -258,7 +258,8 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("path_show", path_show);
         hm.put("filling_date", filling_date);
         
-        if("TaxLetter406".equalsIgnoreCase(reportfilename)){
+        if(reportfilename.contains("TaxLetter406")){
+        //if("TaxLetter406".equalsIgnoreCase(reportfilename)){
         	hm.put("term", term);
         	hm.put("doctor_code", doctor_code); 
         	hm.put("yyyy", term_year);
@@ -282,6 +283,7 @@ public class ViewReportSrvl extends HttpServlet {
            	//hm.put("year", year);
            	hm.put("print_date", JDate.saveDate(printing_date));
         }else{
+        	hm.put("year", year);
         	hm.put("yyyy", year);
         	hm.put("pay_date", pay_date);
         }

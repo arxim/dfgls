@@ -36,7 +36,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>
-		<%=arrHos[0][0]+" :: Doctor Fee Version 4.5 ::"%>
+		<%=arrHos[0][0]+" :: Doctor Fee Version 4.5.5 ::"%>
 	</title>
     <link rel="stylesheet" type="text/css" href="template/css/reset.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="template/css/text.css" media="screen" />

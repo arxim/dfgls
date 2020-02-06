@@ -121,7 +121,7 @@
 				var term = document.getElementById('term');
 				var year = document.getElementById('Tax402Year');
 				var d = document.getElementById('Tax402');
-                if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406'){
+                if(document.mainForm.REPORT_FILE_NAME.value.includes('TaxLetter406')){
                     e.style.display = "";
                 	d.style.display = 'none';
                 	term.style.display = 'none';
@@ -289,7 +289,7 @@
                     <td colspan="3" class="input">
 					<select class="mediumMax" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" onchange="changeDropDownList();">
                         <option value="None">-- Select Tax Report --</option>
-						<option value="TaxLetter406">${labelMap.REPORT_406}</option>
+						<option value="<%=session.getAttribute("HOSPITAL_CODE").equals("050") ? "TaxLetter406_050":"TaxLetter406"%>">${labelMap.REPORT_406}</option>
 						<option value="tax402_monthly">${labelMap.REPORT_402}</option>
                         <option value="ReportSummaryFrontPage01">${labelMap.REPORT_402_FRONT}</option>
                         <option value="Tax402SummaryYearlyFrontPage">${labelMap.REPORT_402_YEARLY_FRONT}</option>

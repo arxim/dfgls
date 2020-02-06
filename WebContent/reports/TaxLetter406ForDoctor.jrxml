@@ -30,16 +30,16 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2018"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="signature" isForPrompting="false" class="java.lang.String">
+	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["058"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["050"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20150109"]]></defaultValueExpression>
@@ -59,8 +59,9 @@ LEFT OUTER JOIN DOCTOR_PROFILE DP on DR.DOCTOR_PROFILE_CODE = DP.CODE
 AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
 where ST.DOCTOR_CODE like $P{doctor_code}
-AND ST.HOSPITAL_CODE = $P{hospital_code}
-AND MM LIKE $P{term} AND YYYY = $P{year}
+AND ST.HOSPITAL_CODE = $P{hospital_code} 
+AND YYYY = $P{year}
+AND PRINT_DATE <> ''
 AND SUM_TAX_DR_AMT > 0
 order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 
@@ -175,7 +176,7 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 						key="image-1"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -275,7 +276,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -864,7 +865,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
 				</image>
 				<image  vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -877,7 +878,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
 				</image>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1385,7 +1386,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
 				</image>
 				<image  vAlign="Bottom" hAlign="Right" onErrorType="Icon" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -1398,7 +1399,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
 				</image>
 			</band>
 		</pageFooter>

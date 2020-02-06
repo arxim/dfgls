@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  *
  * @author USER
@@ -26,6 +28,7 @@ public class ProcessSendMailSrvl extends HttpServlet {
     /**
 	 * 
 	 */
+	final static Logger logger = Logger.getLogger(ProcessSendMailSrvl.class);
 	private static final long serialVersionUID = 1L;
 	
 	DBConnection conn = null;
@@ -56,18 +59,16 @@ public class ProcessSendMailSrvl extends HttpServlet {
         	conn = new DBConnection();
         	conn.connectToLocal();
         	ProcessSendMail mail = new ProcessSendMail(conn);
-        	if(taxType.equals("Tax402")) {
+        	if(taxType.contains("Tax402")) {
         		term = "13";
-        		reportName = "Tax402SummaryYearlyForDoctor";
+//        		reportName = "Tax402SummaryYearlyForDoctor";
         	}
-        	else if(taxType.equals("Tax406")) {
-        		reportName = "TaxLetter406ForDoctor";
-        	}
-        	
-        	System.out.println(year+reportFilePath);
+        	reportName = taxType;
+//        	System.out.println(year+reportFilePath);
+        	logger.info(year+reportFilePath);
         	//print_date = print_date.substring(6, 10)+print_date.substring(3, 5)+print_date.substring(0, 2);
             if(mail.SendMail(hos, year, term, reportFilePath, reportName)){
-//            	System.out.println("Test "+hos+" Pay Date : "+print_date+"<>"+year+term);
+//            	logger.info("Test "+hos+" Pay Date : "+print_date+"<>"+year+term);
             	out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");            
             }
             else {
