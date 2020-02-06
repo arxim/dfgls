@@ -3,10 +3,16 @@ package df.bean.db.dao;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConn;
 import df.bean.obj.util.JDate;
+import df.bean.process.ProcessUpdateBillNotPrint;
 
 public class TrnDailyDAO {
+	final static Logger logger = Logger.getLogger(TrnDailyDAO.class);
+
 	DBConn conn = null;
 	String seq = "";
 	String taxType = "";
@@ -129,7 +135,7 @@ public class TrnDailyDAO {
 				     "COMPUTE_DAILY_TIME = ?, NOR_ALLOCATE_PCT = ?, COMPUTE_DAILY_USER_ID = ?, NOR_ALLOCATE_AMT = ? "+ //12-15
 				     "WHERE HOSPITAL_CODE = ? AND DOCTOR_CODE = ? AND INVOICE_NO = ? AND INVOICE_DATE = ? "+ //15-18
 				     "AND TRANSACTION_DATE = ? AND LINE_NO = ? AND VERIFY_DATE = ? AND VERIFY_TIME = ?"; //19-22
-		//System.out.println(sql);
+		//logger.info(sql);
 		conn = new DBConn(b);
 		conn.setPrepareStatement(sql);
 	}
@@ -145,7 +151,7 @@ public class TrnDailyDAO {
 			 conn.setStatement();
 			 return conn.queryList(sql);
 		 } catch (Exception e) {
-			 System.out.println("Error : "+e);
+			 logger.error("Error : "+e);
 			 return null;
 		 }
 	}
@@ -193,7 +199,7 @@ public class TrnDailyDAO {
 			conn.getPrepareStatement().setString(4, JDate.saveDate(endDate));
 			conn.getPrepareStatement().setString(5, lineNo);
 		} catch (SQLException e) {
-			System.out.println("Get transaction for basic allocate each line no error : "+e);
+			logger.error("Get transaction for basic allocate each line no error : "+e);
 		}
 		return conn.queryPsList();
 	}
@@ -244,7 +250,7 @@ public class TrnDailyDAO {
 			conn.getPrepareStatement().executeUpdate();			
 			conn.commitDB();
 		}catch (Exception e){
-			System.out.println("Update Step Allocate = "+e+" by line No "+m.get("LINE_NO").toString());
+			logger.error("Update Step Allocate = "+e+" by line No "+m.get("LINE_NO").toString());
 		}
 	}	
 	public List<Map<String,Object>> getTrnDailyForUpdateBillNotPrint(String hospitalCode, String startDate, String endDate){
@@ -272,11 +278,11 @@ public class TrnDailyDAO {
 				"AND T.INVOICE_DATE != '' AND (T.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') "+
 				"AND T.ACTIVE != '' AND T.LINE_NO NOT LIKE 'ADD%'";
 		 try {
-			 System.out.println(sql);
+			 logger.info(sql);
 			 conn.setStatement();
 			 return conn.queryList(sql);
 		 } catch (Exception e) {
-			 System.out.println("Error : "+e);
+			 logger.error("Error : "+e);
 			 return null;
 		 }
 	}
@@ -303,17 +309,17 @@ public class TrnDailyDAO {
 		 		+ "AND AMOUNT_AFT_DISCOUNT > 0 AND INVOICE_TYPE != 'ORDER' "
 		 		+ "ORDER BY VERIFY_DATE, VERIFY_TIME ";
 	
-		 System.out.println("sql step sharing allocate="+sql);
+		 logger.info("sql step sharing allocate="+sql);
 		 try {
 			 return conn.queryList(sql);
 		 } catch (Exception e) {
-			 System.out.println("Error : "+e);
+			 logger.error("Error : "+e);
 			 return null;
 		 }
 
 	}
 	public void updateBillNotPrint(Map<String, Object> m){
-		//System.out.println(m);
+		//logger.info(m);
 		try{
 			conn.getPrepareStatement().setString(1, m.get("BILL_NO").toString());
 			conn.getPrepareStatement().setString(2, m.get("RECEIPT_NO").toString());
@@ -331,7 +337,7 @@ public class TrnDailyDAO {
 			conn.getPrepareStatement().executeUpdate();			
 			conn.commitDB();
 		}catch (Exception e){
-			System.out.println("Update Bill Not Print = "+e+" by line No "+m.get("LINE_NO").toString());
+			logger.error("Update Bill Not Print = "+e+" by line No "+m.get("LINE_NO").toString());
 		}
 	}
 	public boolean updateInactiveBillNotPrint(String hospitalCode, String startDate, String endDate){
@@ -359,18 +365,18 @@ public class TrnDailyDAO {
 			conn.insert(sqlOnward);
 			conn.commitDB();
 			status = true;
-			System.out.println("Update Inactive Bill Not Print complete "+JDate.getTime());
+			logger.info("Update Inactive Bill Not Print complete "+JDate.getTime());
 		}catch(Exception e){
 			status = false;
-			System.out.println("Update Bill Not Print error = "+e);
+			logger.error("Update Bill Not Print error = "+e);
 		}
 		return status;
 	}			
 	public void updatePrepareStepCalculate(Map<String, Object> m){
-		//System.out.println(m);
+		//logger.info(m);
 		String taxAmount = this.getTaxSource().equals("BF") ? m.get("AMOUNT_AFT_DISCOUNT").toString() : m.get("DR_AMT").toString();
 		try{
-			//System.out.println(sql);
+			//logger.info(sql);
 			conn.getPrepareStatement().setDouble(1, this.getDrAmt());
 			conn.getPrepareStatement().setDouble(2, this.getHpAmt());
 			conn.getPrepareStatement().setString(3, this.getSeq());
@@ -397,7 +403,7 @@ public class TrnDailyDAO {
 			conn.getPrepareStatement().executeUpdate();
 			conn.commitDB();
 		}catch (Exception e){
-			System.out.println(e);
+			logger.error(e);
 		}
 	}
 	public void prepareUpdateBillNotPrint(){
@@ -421,9 +427,9 @@ public class TrnDailyDAO {
 			conn.getPrepareStatement().setString(3, this.year+this.month+"31");
 			conn.getPrepareStatement().executeUpdate();
 			conn.commitDB();
-			System.out.println("rollback step calculate complete ");
+			logger.info("rollback step calculate complete ");
 		}catch(Exception e){
-			System.out.println("rollback step calculate = "+e);
+			logger.error("rollback step calculate = "+e);
 		}
 		return true;
 	}
@@ -436,9 +442,9 @@ public class TrnDailyDAO {
 			conn = new DBConn(true);
 			conn.setStatement();
 			conn.insert(sql);
-			System.out.println("rollback basic calculate complete ");
+			logger.info("rollback basic calculate complete ");
 		}catch(Exception e){
-			System.out.println("rollback basic calculate error = "+e);
+			logger.error("rollback basic calculate error = "+e);
 		}
 		return true;
 	}

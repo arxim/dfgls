@@ -1,11 +1,17 @@
 package df.bean.db.table;
 
 import java.sql.SQLException;
+
 import df.bean.db.conn.DBConnection;
+import df.bean.process.ProcessRollBack;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class PayorOffice extends ABSTable {
+	final static Logger logger = Logger.getLogger(PayorOffice.class);
 
     private String code;
     private String nameThai;
@@ -210,6 +216,8 @@ public class PayorOffice extends ABSTable {
                     + " AND HOSPITAL_CODE='" + hospitalCode + "'" 
                     + " AND(TRANSACTION_DATE BETWEEN '" + YYYY + MM + "00' AND '" + YYYY + MM + "31')";
         //System.out.println(sql1);
+		logger.info("Rollback Payor : "+sql1);
+		logger.info("Receipt by Payor Rollback Process");
         sqlCommand.add( sql1 );
         sqlCommand.add( sql2 );
         ret = super.rollBack(sqlCommand);

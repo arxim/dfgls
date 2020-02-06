@@ -3,11 +3,13 @@ package df.bean.process;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import org.apache.log4j.Logger;
 import df.bean.db.conn.DBConn;
 import df.bean.obj.util.JDate;
 
 public class ProcessPartialPayment {
+	final static Logger logger = Logger.getLogger(ProcessPartialPayment.class);
+
 	private DBConn dbConn;
 	private String sql;
 	private String hospitalCode;
@@ -29,17 +31,17 @@ public class ProcessPartialPayment {
 			this.dbConn.getStatement().close();
 			this.dbConn.closeDB("Close DB from "+this.getClass());
 		} catch (SQLException e) {
-			System.out.println("Cannot get is partial condition from hospital : "+e);
+			logger.error("Cannot get is partial condition from hospital : "+e);
 		}
 		
 		if(isPartial.equals("Y")){
-			System.out.println("\nPartial Payment Processing");
+			logger.info("\nPartial Payment Processing");
 			if(this.backUpData(yyyy,mm)){
-				System.out.println("Start Partial Process : "+JDate.getTime());
-				System.out.println(this.arrData);
+				logger.info("Start Partial Process : "+JDate.getTime());
+				logger.info(this.arrData);
 				result = this.culculate(this.arrData,mm,yyyy); //New Version (TRN_PARTIAL)
 				//result = this.culculatePartial(this.arrData,mm,yyyy); //Old Version No (TRN_PARTIAL)
-				System.out.println("Finish Partial Process : "+JDate.getTime());
+				logger.info("Finish Partial Process : "+JDate.getTime());
 			}else{
 				result = false;
 			}
@@ -342,15 +344,15 @@ public class ProcessPartialPayment {
 						" AND BATCH_NO = '' AND T.YYYY = '' "+
 						//" AND DR_AMT > 0" +
 						" AND T.HOSPITAL_CODE = '"+this.hospitalCode+"' AND T.ACTIVE = '1'";
-						//System.out.println("sql = " + this.sql);
+						//logger.info("sql = " + this.sql);
 		
 				try {
 					dbConnNew.insert(this.sql);
 					dbConnNew.commitDB();
 				} catch (SQLException e) {
-					System.out.println("error partial on statement : "+this.sql);
+					logger.error("error partial on statement : "+this.sql);
 					result = false;
-					System.out.println("SQLException in method \"culculatePratial\" By LineNo =\""+hashData.get("LINE_NO")+"\" Error => "+e.getMessage());
+					logger.error("SQLException in method \"culculatePratial\" By LineNo =\""+hashData.get("LINE_NO")+"\" Error => "+e.getMessage());
 				}
 				if(result){
 					this.sql = "UPDATE TRN_DAILY SET "
@@ -379,14 +381,14 @@ public class ProcessPartialPayment {
 					//add invoice type
 					+ "AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"' "
 					+ "AND T.LINE_NO = '"+hashData.get("LINE_NO")+"'";
-					//System.out.println("Test : "+this.sql);
-					//System.out.println("UPDATE NONE PARTIAL = " + this.sql);
+					//logger.info("Test : "+this.sql);
+					//logger.info("UPDATE NONE PARTIAL = " + this.sql);
 					try {
 						dbConnNew.insert(this.sql);
 						dbConnNew.commitDB();
 					} catch (SQLException e) {
 						result = false;
-						System.out.println("Error Update Partial \"TRN_DAILY\" => " + e.getMessage());
+						logger.error("Error Update Partial \"TRN_DAILY\" => " + e.getMessage());
 					}
 				}
 			}//end loop for
@@ -396,13 +398,13 @@ public class ProcessPartialPayment {
 			+ "WHERE HOSPITAL_CODE = '"+this.hospitalCode+"' "
 			+ "AND INVOICE_DATE LIKE '"+yyyy+mm+"%' "
 			+ "AND IS_PARTIAL = 'Y' ";
-			//System.out.println("UPDATE NONE PARTIAL = " + this.sql);
+			//logger.info("UPDATE NONE PARTIAL = " + this.sql);
 			try {
 				dbConnNew.insert(this.sql);
 				dbConnNew.commitDB();
 			} catch (SQLException e) {
 				result = false;
-				System.out.println("Error Update Partial in Month \"TRN_DAILY\" => " + e.getMessage());
+				logger.error("Error Update Partial in Month \"TRN_DAILY\" => " + e.getMessage());
 			}
 
 			this.sql = "UPDATE INT_ERP_AR_RECEIPT SET "
@@ -410,11 +412,11 @@ public class ProcessPartialPayment {
 			+ "WHERE TRANSACTION_DATE LIKE '"+yyyy+mm+"%' AND HOSPITAL_CODE = '"
 			+ this.hospitalCode+"' AND IS_LAST_RECEIPT = 'N'";
 			try {
-				//System.out.println("Update : "+this.sql);
+				//logger.info("Update : "+this.sql);
 				dbConnNew.insert(this.sql);
 				dbConnNew.commitDB();
 			} catch (SQLException e) {
-				System.out.println("Error Update \"INT_ERP_AR_RECEIPT\" => " + e.getMessage());
+				logger.error("Error Update \"INT_ERP_AR_RECEIPT\" => " + e.getMessage());
 				result = false;
 			}
 			dbConnNew.closeDB("");
@@ -439,11 +441,11 @@ public class ProcessPartialPayment {
 					+ "ORDER BY T.INVOICE_NO, T.LINE_NO";
 					try {
 						this.dbConn.setStatement();
-						System.out.println(this.sql);
+						logger.info(this.sql);
 						arrData = this.dbConn.getMultiData(this.sql);
 						this.dbConn.closeDB("");
 					} catch (SQLException e) {
-						System.out.println("Partial Payment Process Error on statement : "+this.sql);
+						logger.error("Partial Payment Process Error on statement : "+this.sql);
 					}
 		}else{}
 		return arrData;
@@ -536,7 +538,7 @@ public class ProcessPartialPayment {
 		} catch (Exception e1) { 
 			dbConn.rollDB(); 
 			result = false; 
-			System.out.println("SQLException in stetment : "+qMessage); 
+			logger.error("SQLException in stetment : "+qMessage); 
 		}	
 		//dbConn.closeDB("Close Connection from Partial Process"); 
 		return result; 
@@ -580,7 +582,7 @@ public class ProcessPartialPayment {
 				   "AND TRANSACTION_DATE BETWEEN '"+this.startDate+"' AND '"+this.endDate+"' "+
 				   ") "+
 				   "AND INVOICE_NO+LINE_NO NOT IN (SELECT INVOICE_NO+LINE_NO FROM TRN_PARTIAL WHERE HOSPITAL_CODE = '"+this.hospitalCode+"')";
-		//System.out.println("TRN_PARTIAL : "+qn );
+		//logger.info("TRN_PARTIAL : "+qn );
 		return qn;
 	}
 	private String clearTransactionMaster(){
@@ -588,7 +590,7 @@ public class ProcessPartialPayment {
 	}
 	private boolean backUpData(String YYYY, String MM){
 		//Backup Transaction in TRN_DAILY only match with transaction partial in INT_ERP_AR_RECEIPT
-		System.out.println("Start Backup Data for Partial Process : "+JDate.getTime());
+		logger.info("Start Backup Data for Partial Process : "+JDate.getTime());
 		boolean result =true;
 		this.dbConn = new DBConn(false);
 		this.sql = "UPDATE TRN_DAILY SET "
@@ -602,23 +604,23 @@ public class ProcessPartialPayment {
 		+ "AND TRANSACTION_DATE LIKE '"+YYYY+MM+"%' "
 		+ "AND DOC_TYPE= 'R' AND IS_LAST_RECEIPT ='N') "
 		+ "AND IS_PARTIAL = 'N' AND BATCH_NO = ''";
-		System.out.println(this.sql);
+		logger.info(this.sql);
 		try {
 			this.dbConn.setStatement();
-			System.out.println("Update TrnDaily");
+			logger.info("Update TrnDaily");
 			this.dbConn.insert(this.sql);
-			System.out.println("Clean TrnPartial");
+			logger.info("Clean TrnPartial");
 			this.dbConn.insert(this.clearTransactionMaster());
-			System.out.println("BackupInMonth TrnPartial : "+this.backupTransactionMaster());
+			logger.info("BackupInMonth TrnPartial : "+this.backupTransactionMaster());
 			this.dbConn.insert(this.backupTransactionMaster());
 			this.dbConn.commitDB();
 		} catch (SQLException e) {
 			this.dbConn.rollDB();
-			System.out.println("SQLException in method \"backUpData\" "+e.getMessage());
+			logger.error("SQLException in method \"backUpData\" "+e.getMessage());
 			result = false;
 		}
 		this.dbConn.closeDB("");
-		System.out.println("Finish Backup Data for Partial Process : "+JDate.getTime());
+		logger.info("Finish Backup Data for Partial Process : "+JDate.getTime());
 		return result;
 	}
 
@@ -662,7 +664,7 @@ public class ProcessPartialPayment {
 		try { 
 			this.dbConn.setStatement(); 
 			if(this.dbConn.getSingleData("SELECT IS_PARTIAL FROM HOSPITAL WHERE CODE = '"+hospitalCode+"'").equals("Y")){ 
-				System.out.println("Rollback Partial"); 
+				logger.info("Rollback Partial"); 
 				qMessage = updateTrn; 
 				dbConn.insert(updateTrn); 
 				qMessage = updateIntErp; 
@@ -671,12 +673,12 @@ public class ProcessPartialPayment {
 				dbConn.insert(deleteTrn); 
 				dbConn.commitDB();	
 			}else{ 
-				System.out.println("No Partial Condition"); 
+				logger.info("No Partial Condition"); 
 			} 
 		} catch (Exception e1) { 
 			dbConn.rollDB(); 
 			result = false; 
-			System.out.println("SQLException in stetment : "+qMessage); 
+			logger.error("SQLException in stetment : "+qMessage); 
 		}	
 		dbConn.closeDB("Close Connection from Partial Process"); 
 		return result; 
@@ -713,7 +715,7 @@ public class ProcessPartialPayment {
 		try {
 			this.dbConn.setStatement();
 			if(this.dbConn.getSingleData("SELECT IS_PARTIAL FROM HOSPITAL WHERE CODE = '"+hospitalCode+"'").equals("Y")){
-				System.out.println("Rollback Partial");
+				logger.info("Rollback Partial");
 				qMessage = updateTrn;
 				dbConn.insert(updateTrn);
 				qMessage = updateIntErp;
@@ -722,12 +724,12 @@ public class ProcessPartialPayment {
 				dbConn.insert(deleteTrn);
 				dbConn.commitDB();				
 			}else{
-				System.out.println("No Partial Condition");
+				logger.error("No Partial Condition");
 			}
 		} catch (Exception e1) {
 			dbConn.rollDB();
 			result = false;
-			System.out.println("SQLException in stetment : "+qMessage);
+			logger.error("SQLException in stetment : "+qMessage);
 		}		
 		dbConn.closeDB("Close Connection from Partial Process");
 		return result;

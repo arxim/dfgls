@@ -1,5 +1,7 @@
 package df.bean.process;
 
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.Batch;
 import df.bean.process.ProcessMaster;
@@ -10,6 +12,8 @@ import df.bean.process.ProcessMaster;
  * @Module Discharge Basic
  */
 public class ProcessDischargeBasis implements ProcessMaster {
+	final static Logger logger = Logger.getLogger(ProcessDischargeBasis.class);
+
 	private DBConnection db;
 	private String hospitalCode;
 	private Batch batch;
@@ -28,22 +32,22 @@ public class ProcessDischargeBasis implements ProcessMaster {
 	public boolean doProcess() {
 		boolean action = false;
 		try{
-			 System.out.println("Out : "+this.queryProcess());
+			logger.info("Out : "+this.queryProcess());
 			 if(this.isProcessDischarge.equals("Y")){
-				 System.out.println("Discharge Basis");				 
+				 logger.info("Discharge Basis");				 
 				 if(this.db.executeUpdate(this.queryProcess()) > 0){ 
-					 System.out.println("In : "+this.queryProcess());
+					 logger.info("In : "+this.queryProcess());
 					 action = true;
 				 } else {
 					 action = false;
 				 }				 
 			 }else{
 				 action = true;
-				 System.out.println("No Discharge Basis");
+				 logger.info("No Discharge Basis");
 			 }
 		}catch(Exception e){
 			e.printStackTrace();
-			System.out.println(e.getMessage().toString());
+			logger.error(e.getMessage().toString());
 		}
 		return action;
 	}
@@ -59,7 +63,7 @@ public class ProcessDischargeBasis implements ProcessMaster {
 			
 		} catch(Exception ex){
 			ex.printStackTrace();
-			System.out.println(ex.getMessage().toString());
+			logger.error(ex.getMessage().toString());
 		}
 		
 		return action;

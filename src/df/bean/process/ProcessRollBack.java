@@ -1,7 +1,8 @@
 package df.bean.process;
 
-import df.bean.process.ProcessDischargeSummary;
+import org.apache.log4j.Logger;
 
+import df.bean.process.ProcessDischargeSummary;
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.BankTMBMediaClearing;
 import df.bean.db.table.Doctor;
@@ -12,11 +13,11 @@ import df.bean.db.table.PayorOffice;
 import df.bean.db.table.SummaryTax406;
 import df.bean.db.table.TrnDaily;
 import df.bean.obj.receipt.Receipt;
-import df.bean.obj.util.DialogBox;
 
 public class ProcessRollBack {
+	final static Logger logger = Logger.getLogger(ProcessRollBack.class);
+
     private DBConnection conn = null;
-    
     
     public ProcessRollBack(DBConnection conn) {
         this.conn = conn;
@@ -32,8 +33,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = td.rollBackUpdate(hospitalCode, startDate, endDate);  }
         } catch (Exception ex) {
-        	System.out.println("Daily : "+ex);
-            DialogBox.ShowError("Error : " + ex.getMessage());
+        	logger.error("Daily : "+ex);
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -62,7 +62,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = tmb.rollBackDelete(hospitalCode,YYYY, MM, serviceType);  }          
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -83,7 +83,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = st406.rollBackDelete(hospitalCode, YYYY, MM);  }          
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -117,7 +117,7 @@ public class ProcessRollBack {
 //            if (result) { result = er.rollBackUpdate(hospitalCode,YYYY, MM, "SUMMARY_DAILY");  }
 //            if (result) { result = dt.rollBackUpdate(hospitalCode,YYYY, MM, "SUMMARY_DAILY");  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -142,15 +142,15 @@ public class ProcessRollBack {
         try {
             conn.beginTrans();
             result = pt.rollBack(YYYY, MM, hospitalCode);
-            System.out.println("Rollback Receipt : "+result);
+            logger.info("Rollback Receipt : "+result);
             if (result){ 
             	result = er.rollBackUpdate(hospitalCode,YYYY, MM, "TRN_DAILY");
             }else{
             	result = false;
             }            
-            System.out.println("Rollback Receipt Finished");
+            logger.info("Rollback Receipt Finished");
         } catch (Exception ex) {
-            System.out.println("Rollback Receipt By AR Error : " + ex.getMessage());
+            logger.error("Rollback Receipt By AR Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -171,15 +171,15 @@ public class ProcessRollBack {
     	try { 
 	    	conn.beginTrans(); 
 	    	result = pt.rollBack(startDate, endDate, hospitalCode); 
-	    	System.out.println("Rollback Receipt : "+result); 
+	    	logger.info("Rollback Receipt : "+result); 
 	    	if (result){ 
 		    	result = er.rollBackUpdate(hospitalCode,startDate, endDate, "TRN_DAILY"); 
 	    	}else{ 
 		    	result = false; 
 	    	} 
-	    	System.out.println("Rollback Receipt Finished"); 
+	    	logger.info("Rollback Receipt Finished"); 
     	} catch (Exception ex) { 
-	    	System.out.println("Rollback Receipt By AR Error : " + ex.getMessage()); 
+	    	logger.error("Rollback Receipt By AR Error : " + ex.getMessage()); 
     	} finally { 
 	    	if (result) { conn.commitTrans(); } 
 	    	if (!result) { conn.rollBackTrans(); } 
@@ -201,7 +201,7 @@ public class ProcessRollBack {
             if (result) { result = st.rollBackUpdate(YYYY, MM,hospitalCode,"TRN_DAILY");  }
             
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -224,7 +224,7 @@ public class ProcessRollBack {
             if (result) { result = dt.rollBackUpdate(YYYY, MM, hospitalCode, "TRN_DAILY");  }
             
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -252,7 +252,7 @@ public class ProcessRollBack {
             	result = td.rollBackImportBillUpdate(hospitalCode, startDate, endDate);
             }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -273,7 +273,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = td.rollBackImportVerifyDelete(hospitalCode,startDate, endDate);  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -295,7 +295,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = ihb.rollBackDelete(hospitalCode,startDate, endDate);  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -316,7 +316,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = ihv.rollBackDelete(hospitalCode,startDate, endDate);  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -337,7 +337,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = ar.rollBackDelete(hospitalCode,startDate, endDate);  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -358,7 +358,7 @@ public class ProcessRollBack {
             conn.beginTrans();
             if (result) { result = ar.rollBackWriteOffDelete(hospitalCode, startDate, endDate);  }
         } catch (Exception ex) {
-            DialogBox.ShowError("Error : " + ex.getMessage());
+            logger.error("Error : " + ex.getMessage());
         } finally {
             if (result) { conn.commitTrans(); }
             if (!result) { conn.rollBackTrans(); }
@@ -389,7 +389,7 @@ public class ProcessRollBack {
             	result = true;
             } 
          } catch (Exception ex) {
-             DialogBox.ShowError("Error : " + ex.getMessage());
+             logger.error("Error : " + ex.getMessage());
          } finally {
              if (result) { conn.commitTrans(); }
              if (!result) { conn.rollBackTrans(); }

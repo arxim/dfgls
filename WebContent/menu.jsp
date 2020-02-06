@@ -6,7 +6,7 @@
 <%@page import="df.bean.db.conn.DBConnection"%>
 <%@page import="java.sql.*"%>
 <%@page import="df.bean.obj.util.Variables"%>
-
+<%@page import="org.apache.log4j.Logger"%>
 <%
 	//
 	// Verify permission
@@ -93,7 +93,7 @@
 			<div class="block" id="section-menu">
 				<div class="arrowlistmenu">
 					<%
-					
+					Logger logger = Logger.getLogger("menu.jsp");
 						String menusql = "SELECT a.* FROM STP_MENU as a WHERE CODE IN (SELECT MENU_CODE FROM STP_MENU_MATCH AS b WHERE b.MENU_CODE = a.CODE AND b.USER_GROUP_CODE='"
 								+ session.getAttribute("USER_GROUP_CODE").toString()
 								+ "' AND b.HOSPITAL_CODE = '"
@@ -105,7 +105,7 @@
 								+ " ORDER BY convert(int,CODE);";
 						DBConnection con = new DBConnection();
 						con.connectToLocal();
-						System.out.println(menusql);
+						logger.info(menusql);
 						ResultSet rs = con.executeQuery(menusql);
 						int i = 0;
 						while (rs.next()) {

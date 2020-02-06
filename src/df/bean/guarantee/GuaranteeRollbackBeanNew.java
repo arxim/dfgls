@@ -7,16 +7,17 @@ package df.bean.guarantee;
 
 import df.bean.db.conn.DBConn;
 import df.bean.obj.util.JDate;
-
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
+
 
 /**
  *
  * @author nopphadon
  */
 public class GuaranteeRollbackBeanNew {
+	final static Logger logger = Logger.getLogger(GuaranteeRollbackBeanNew.class);
+
     DBConn c;
     String err_mesg;
     public GuaranteeRollbackBeanNew(){
@@ -25,7 +26,7 @@ public class GuaranteeRollbackBeanNew {
         	c = new DBConn();
             c.setStatement();
         }catch(Exception e){
-            System.out.println("Exception Set Statement from GuaranteeRollbackBean Class");
+        	logger.error("Exception Set Statement from GuaranteeRollbackBean Class");
         }
     }
     public String getErrorMessage(){
@@ -69,22 +70,22 @@ public class GuaranteeRollbackBeanNew {
         if(c.countRow(q_check)>0){
         //if(true){
             try {
-            	System.out.println("Start Rollback Setup Guarantee time : "+JDate.getTime());
+            	logger.info("Start Rollback Setup Guarantee time : "+JDate.getTime());
             	c.insert(this.getRollbackSummary(hospital_code, year, month));
             	c.insert(this.getRollbackExpenseDetail(hospital_code, year, month));
                 c.insert(sq);
                 c.insert("UPDATE STP_GUARANTEE SET DF_ABSORB_AMOUNT = OLD_ABSORB_AMOUNT"+
                 " WHERE HOSPITAL_CODE = '"+hospital_code+"' AND DF_ABSORB_AMOUNT != OLD_ABSORB_AMOUNT");
                 c.commitDB();
-                System.out.println("Rollback Setup Finish time : "+JDate.getTime());
-                System.out.println("Rollback Guarantee Process Finished");
+                logger.info("Rollback Setup Finish time : "+JDate.getTime());
+                logger.info("Rollback Guarantee Process Finished");
             } catch (SQLException ex) {
-                System.out.println("Error Mes From rollBackSetup : "+ex);
+                logger.error("Error Mes From rollBackSetup : "+ex);
                 err_mesg = ""+ex;
                 st = false;
             }
         }else{
-        	System.out.println("Can't Rollback Guarantee Setup : Guarantee is no process");
+        	logger.info("Can't Rollback Guarantee Setup : Guarantee is no process");
         }
         return st;
     }
@@ -135,23 +136,23 @@ public class GuaranteeRollbackBeanNew {
 	        try {
 	            mess = sq4;
 	            c.insert(sq4);
-	            System.out.println("Rollback Transaction Step 2 Discharge & Advance Complete");
+	            logger.info("Rollback Transaction Step 2 Discharge & Advance Complete");
 	            mess = sq1;
 	            c.insert(sq1);
-	            System.out.println("Rollback Transaction Step 3 Guarantee&Tax Complete");
+	            logger.info("Rollback Transaction Step 3 Guarantee&Tax Complete");
 	            mess = sq3;
 	            c.insert(sq3);
-	            System.out.println("Rollback Transaction Step 4 Delete Advance Complete");
+	            logger.info("Rollback Transaction Step 4 Delete Advance Complete");
 	            c.commitDB();
-	            System.out.println("Rollback All Transaction Guarantee Complete");
+	            logger.info("Rollback All Transaction Guarantee Complete");
 	        } catch (SQLException ex) {
-	            System.out.println("Error Mes From rollBackTransaction : "+ex);
-	            System.out.println(mess);
+	            logger.error("Error Mes From rollBackTransaction : "+ex);
+	            logger.error(mess);
 	            err_mesg = ""+ex;
 	            st = false;
 	        }
         }else{
-        	System.out.println("Can't Rollback Guarantee Transaction : Guarantee is no process");
+        	logger.info("Can't Rollback Guarantee Transaction : Guarantee is no process");
         }
         return st;
     }

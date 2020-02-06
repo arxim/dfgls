@@ -1,12 +1,17 @@
 package df.bean.process;
 
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConnection;
+import df.bean.db.dao.TrnDailyDAO;
 import df.bean.db.table.Batch;
 import df.bean.db.table.TRN_Error;
 import df.bean.db.table.TrnDaily;
 import df.bean.obj.util.JDate;
 
 public class ProcessImportBillNotAllowZeroAndLess {
+	final static Logger logger = Logger.getLogger(ProcessImportBillNotAllowZeroAndLess.class);
+
     private DBConnection conn = null;
     private String user_id = "";
     
@@ -141,12 +146,12 @@ public class ProcessImportBillNotAllowZeroAndLess {
              " AND HOSPITAL_CODE = '" + hospitalCode + "'" +
              " AND AMOUNT_BEF_DISCOUNT <= 0";
            
-         System.out.println("Import data : "+sql);
+         logger.info("Import data : "+sql);
         try {
 //          conn.beginTrans();
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("Import Bill : " + sql);
+            logger.error("Import Bill : " + sql);
             TRN_Error.setUser_name(this.conn.getUserID());
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import data error", ex.getMessage(), sql);
@@ -281,7 +286,7 @@ public class ProcessImportBillNotAllowZeroAndLess {
         try {
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("Import Bill : " + sql);
+            logger.error("Import Bill : " + sql);
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import data error", ex.getMessage(), sql);
         } finally {
@@ -487,7 +492,7 @@ public class ProcessImportBillNotAllowZeroAndLess {
         try {
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("importVerifyInMonth" + ex.getMessage());
+            logger.error("importVerifyInMonth" + ex.getMessage());
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import verify data is fails", ex.getMessage(), sql);
         } finally {
@@ -695,7 +700,7 @@ public class ProcessImportBillNotAllowZeroAndLess {
         try {
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("importVerifyRecOverMonth" + ex.getMessage());
+            logger.error("importVerifyRecOverMonth" + ex.getMessage());
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import verify data is fails", ex.getMessage(), sql);
         } finally {
@@ -899,7 +904,7 @@ public class ProcessImportBillNotAllowZeroAndLess {
         try {
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("importVerifyNotRec" + ex.getMessage());
+            logger.error("importVerifyNotRec" + ex.getMessage());
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import verify data is fail.", ex.getMessage(), sql);
         } finally {
@@ -1101,7 +1106,7 @@ public class ProcessImportBillNotAllowZeroAndLess {
         try {
             if (conn.executeUpdate(sql) >= 0) { result = true; } else { result = false; }
         } catch (Exception ex) {
-            System.out.println("importVerifyNotRec" + ex.getMessage());
+            logger.error("importVerifyNotRec" + ex.getMessage());
             TRN_Error.writeErrorLog(this.conn.getConnection(), TRN_Error.PROCESS_IMPORT_BILL, 
                     "Import verify data is fail.", ex.getMessage(), sql);
         } finally {

@@ -148,8 +148,8 @@ public class ViewReportSrvl extends HttpServlet {
             if( file_save.equals("") || file_save.equals(null) ){file_save = "temp";}
         }catch(Exception e){}
 
-         logger.info("to_doctor="+to_doctor);
-         logger.info("from_doctor="+from_doctor);
+        logger.info("to_doctor="+to_doctor);
+        logger.info("from_doctor="+from_doctor);
         hm.put("hospital_code", hospital_code);
         hm.put("hospital_name", this.getHp_name());
         hm.put("from_doctor", from_doctor);

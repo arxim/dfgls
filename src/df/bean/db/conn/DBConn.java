@@ -19,11 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import df.bean.db.table.PayorOffice;
 import df.bean.obj.util.JDate;
 import df.bean.obj.util.Variables;
 
 
 public class DBConn {
+	final static Logger logger = Logger.getLogger(DBConn.class);
+	
     private Connection conn;
     private String conn_class;
     private String conn_url;
@@ -51,10 +56,12 @@ public class DBConn {
             conn.setAutoCommit(false);
             //System.out.println("Connection Complete");
         } catch (ClassNotFoundException e) {
-            System.out.println(e);
+    		logger.error("DBConn() : Connect DB class error : "+e);
         } catch (SQLException e) {
-            System.out.println(e);
-        } catch (Exception e) { e.printStackTrace(); }
+    		logger.error("DBConn() : Connect DB sql error : "+e);
+        } catch (Exception e) { 
+    		logger.error("DBConn() : Connect DB others error : "+e);
+        }
     }
 
     public DBConn(boolean con) {
@@ -70,19 +77,20 @@ public class DBConn {
             conn = DriverManager.getConnection(conn_url,conn_user,conn_password);
             conn.setAutoCommit(con);
         } catch (ClassNotFoundException e) {
-            System.out.println(e);
+    		logger.error("DBConn(param) : Connect DB class error : "+e);
         } catch (SQLException e) {
-            System.out.println(e);
-        } catch (Exception e) { e.printStackTrace(); }
+    		logger.error("DBConn(param) : Connect DB sql error : "+e);
+        } catch (Exception e) { 
+    		logger.error("DBConn(param) : Connect DB others error : "+e);
+        }
     }
 
     public DBConn(Connection dbcp) {
         try {
             this.conn = dbcp;
             this.conn.setAutoCommit(false);
-            System.out.print( Variables.IS_TEST ? "Connect to DB Complete\n" : "" );
         } catch (Exception e) {
-            System.out.println(e);
+    		logger.error("DBConn(param) : Connect DB others error : "+e);
         }
     }
     
@@ -130,7 +138,6 @@ public class DBConn {
 		            rs.moveToInsertRow();
 		        	if(dataValue.length>1){
 		        		messageInfo = "Table "+tableName+" Field Name : "+dataValue[0].trim()+" VALUES : "+dataValue[1].trim();
-			    		//System.out.println(messageInfo);
 			            rs.updateString(dataValue[0].trim(), dataValue[1].trim());
 		        	}
 	            }
@@ -140,17 +147,15 @@ public class DBConn {
 	        sttm.close();
 	        rs.close();
 		} catch (Exception e) {
-			System.out.println(e+":"+messageInfo);
+    		logger.error("DBConn : addData method error : "+e);
+    		logger.error("DBConn : addData method info : "+messageInfo);
 		}
     	return true;
     }
     public void setPrepareStatement(String sql){
     	try {
 			pstm = conn.prepareStatement(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (SQLException e) {}
     }
     public PreparedStatement getPrepareStatement(){
     	return pstm;
@@ -172,10 +177,7 @@ public class DBConn {
         if (conn != null) {
             try {
                 conn.close();
-            }
-            catch (Exception e) {
-            }
-            //System.out.println("Connection Close in Method "+met);
+            }catch (Exception e) {}
         }
     }
     
@@ -183,10 +185,7 @@ public class DBConn {
         if (this.stm != null) {
             try {
                 this.stm.close();
-                //System.out.println("Statement Close in Method "+method_name);
-            }
-            catch (Exception e) {
-            }
+            }catch (Exception e) {}
         }
     }
     
@@ -267,15 +266,13 @@ public class DBConn {
 				lsQueryData.add(rtnData);
 			}
 		} catch (Exception e) {
-			System.out.println("Error " + e.getMessage());
+    		logger.error("DBConn : getMultiData method error : "+e);
 		} finally {
 			try {
 				if (rs != null) { 
 					rs.close();
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			} catch (SQLException e) {}
 		}
 		return lsQueryData;
 	}
@@ -320,8 +317,7 @@ public class DBConn {
 				lsQueryData.add(rtnData);
 			}
 		} catch (Exception e) {
-			System.out.println("Error " + e.getMessage());
-			e.printStackTrace();
+    		logger.error("DBConn : listQueryData method error : "+e);
 		} finally {
 			try {
 				if (rs != null) { 
@@ -330,9 +326,7 @@ public class DBConn {
 				if (this.getStatement() != null) {
 					this.closeStatement("");
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			} catch (SQLException e) {}
 		}
 		return lsQueryData;
 	}
@@ -345,7 +339,7 @@ public class DBConn {
     			pstm = conn.prepareStatement(sql);
     		}
 		} catch (SQLException e) {
-			System.out.println(e);
+    		logger.error("DBConn : setDualStatement method error : "+e);
 		}
     }
     
@@ -374,7 +368,8 @@ public class DBConn {
                 lines++;
             }
         } catch (SQLException e) {
-            System.out.println("Error from Query :"+e+"\n"+sqlCommand);
+    		logger.error("DBConn : query method error : "+e);
+    		logger.error("DBConn : sql command : "+sqlCommand);
         } finally {
             try {
                 res.close();
@@ -388,8 +383,6 @@ public class DBConn {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			//System.out.println("sql = " + sql);
-			//System.out.println("columnName = " + columnName);
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
 			lsQueryData.add("");
@@ -399,8 +392,7 @@ public class DBConn {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error " + e.getMessage());
-			e.printStackTrace();
+    		logger.error("DBConn : getSingleDataIsArrayList method error : "+e);
 		} finally {
 			try {
 				if (rs != null) { 
@@ -430,7 +422,7 @@ public class DBConn {
             }
             res.close();
         } catch (SQLException e) {
-            System.out.println("Error from Query :"+e);
+    		logger.error("DBConn : countColumn method error : "+e);
         } 
         return numColumns;
     }
@@ -446,7 +438,7 @@ public class DBConn {
             }
             res_count.close();
         } catch (SQLException e) {
-            System.out.println("Error from Query :"+e);
+    		logger.error("DBConn : countRow method error : "+e);
         } 
         return numLines;
     }
@@ -461,8 +453,7 @@ public class DBConn {
             }
             res_count.close();
         } catch (SQLException e) {
-            System.out.println("Error from getSingleData method :"+e);
-            System.out.println("Command "+sqlCommand);
+    		logger.error("DBConn : countRow method error : "+e);
         } 
         return data;
     }

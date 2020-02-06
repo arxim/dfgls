@@ -3,14 +3,19 @@ package df.bean.guarantee;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConn;
 import df.bean.db.table.TRN_Error;
 import df.bean.obj.util.JDate;
 import df.bean.obj.util.JNumber;
 import df.bean.obj.util.Variables;
+import df.servlet.report.ViewReportSrvl;
 
 public class ProcessGuaranteeBeanNew {
-	
+	final static Logger logger = Logger.getLogger(ProcessGuaranteeBeanNew.class);
+
     DBConn cdb;
     boolean status_guarantee = true;
     String[][] g_setup = null;
@@ -52,7 +57,7 @@ public class ProcessGuaranteeBeanNew {
 
         } catch (SQLException ex) {
             this.result = ""+ex;
-            System.out.println(ex);
+			logger.error(ex.getMessage());
         }
     }
     
@@ -72,10 +77,9 @@ public class ProcessGuaranteeBeanNew {
         String q_check = "SELECT * FROM SUMMARY_GUARANTEE WHERE HOSPITAL_CODE = '"+hospital_code+"' " +
         "AND YYYY = '"+year+"' AND MM = '"+month+"'";
         
-        status = cdb.countRow(q_check) == 0 ? true : false ;
-        
-        System.out.print(Variables.IS_TEST ? "Guarantee Process Type : "+process_type+" Status = "+status+"\n" : "");
-       
+        status = cdb.countRow(q_check) == 0 ? true : false ;    
+		logger.info("Guarantee Process Type : "+process_type+" Status = "+status+"\n");
+
         
         if(status && process_type.equals("Set OrderItem Active")){
         	status = true;
@@ -134,28 +138,27 @@ public class ProcessGuaranteeBeanNew {
         if(status && process_type.equals("Summary Guarantee Monthly")){
         	// Calculate guarantee monthly to yearly.
         	calculateMonthlyToYear();
-        
         	status = sumMonthGuarantee();
         }
         
         if(status && process_type.equals("Export Summary Absorb")){
         	status = insertExpenseGuaranteeHP();
-        	System.out.println("Start Export HP "+status);
+			logger.info("Start Export HP "+status);
         	if(status){
-                status = insertAbsorbSomeGuarantee();        		
-            	System.out.println("Start Export DR "+status);        		
+                status = insertAbsorbSomeGuarantee();
+    			logger.info("Start Export DR "+status);
         	}
         	if(status){
             	status = insertExpenseGuaranteeEX();
-            	System.out.println("Finish Export EX "+status);        		
+            	logger.info("Finish Export EX "+status);        		
         	}
         	if(status){
             	status = insertExpenseGuaranteeFix();
-            	System.out.println("Finish Export Fix "+status);        		
+            	logger.info("Finish Export Fix "+status);        		
         	}
         	if(status){
             	status = insertExpenseGuaranteeInclude();
-            	System.out.println("Finish Export Include "+status);        		
+            	logger.info("Finish Export Include "+status);        		
         	}
         }
         return status;
@@ -189,14 +192,14 @@ public class ProcessGuaranteeBeanNew {
 
         try{
         	if(Variables.IS_TEST){
-        		System.out.println("Update Order Item Active Start TIME "+JDate.getTime());
+        		logger.info("Update Order Item Active Start TIME "+JDate.getTime());
         	}
             
             cdb.insert(sql_statement);
             cdb.commitDB();
             
             if(Variables.IS_TEST){
-        		System.out.println("Update Order Item Active Complete TIME "+JDate.getTime());
+        		logger.info("Update Order Item Active Complete TIME "+JDate.getTime());
         	}
         }catch(Exception e){
         	TRN_Error.setUser_name(this.user_id);
@@ -229,10 +232,10 @@ public class ProcessGuaranteeBeanNew {
         "TRANSACTION_DATE LIKE '"+year+""+month+"%'";
 
         try{
-            System.out.println("Update Order Item is Guarantee Start TIME "+JDate.getTime());
+            logger.info("Update Order Item is Guarantee Start TIME "+JDate.getTime());
             cdb.insert(sql_statement);
             cdb.commitDB();
-            System.out.println("Update Order Item is Guarantee Complete TIME "+JDate.getTime());
+            logger.info("Update Order Item is Guarantee Complete TIME "+JDate.getTime());
         }catch(Exception e){
         	TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
@@ -271,7 +274,7 @@ public class ProcessGuaranteeBeanNew {
 		"AND IS_ALLOC_FULL_TAX = 'Y')";
 
         try{
-            System.out.println("Backup Tax Transaction Start TIME "+JDate.getTime());
+            logger.info("Backup Tax Transaction Start TIME "+JDate.getTime());
             cdb.insert(sql_statement);
             message = "Backup Transaction Tax Error";
             cdb.insert(sql_statement1);
@@ -279,7 +282,7 @@ public class ProcessGuaranteeBeanNew {
             cdb.insert(sql_statement2);
             message = "Set Tax from Amount Error";
             cdb.commitDB();
-            System.out.println("Backup Tax Transaction Complete TIME "+JDate.getTime());
+            logger.info("Backup Tax Transaction Complete TIME "+JDate.getTime());
         }catch(Exception e){
         	TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
@@ -335,13 +338,13 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
                     TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql,"");
-            		System.out.println("Exception Update In Allocate : "+e);
-            		System.out.println("By Query : "+sql);
+            		logger.error("Exception Update In Allocate : "+e);
+            		logger.error("By Query : "+sql);
             	}
             }
-            System.out.println("Update In Percent to Setup guarantee Complete");
+            logger.info("Update In Percent to Setup guarantee Complete");
         }catch(Exception e){
-            System.out.println("Excepiton in transfer allocate from doctor : "+e);
+            logger.error("Excepiton in transfer allocate from doctor : "+e);
         }
         return status1;
     }
@@ -391,13 +394,13 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
                     TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql,"");
-            		System.out.println("Exception Update Over Allocate : "+e);
-            		System.out.println("By Query : "+sql);
+            		logger.error("Exception Update Over Allocate : "+e);
+            		logger.error("By Query : "+sql);
             	}
             }
-            System.out.println("Update Over Percent to Setup guarantee Complete");
+            logger.info("Update Over Percent to Setup guarantee Complete");
         }catch(Exception e){
-            System.out.println("Excepiton in transfer allocate from doctor : "+e);
+            logger.error("Excepiton in transfer allocate from doctor : "+e);
         }
         return status1;
     }
@@ -425,7 +428,7 @@ public class ProcessGuaranteeBeanNew {
                 "AND HOSPITAL_CODE = '"+hospital_code+"' "+
                 "AND ACTIVE = '1'";
             	try{
-            		//if(Variables.IS_TEST){ System.out.println("Guarantee source update : "+sql); }
+            		//if(Variables.IS_TEST){ logger.info("Guarantee source update : "+sql); }
             		cdb.insert(sql);
                     cdb.commitDB();
             	}catch(Exception e){
@@ -433,12 +436,12 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
                     TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql,"");
-            		if(Variables.IS_TEST){ System.out.println("Exception Update Guarantee Source : "+e); }
+            		if(Variables.IS_TEST){ logger.error("Exception Update Guarantee Source : "+e); }
             	}
             }
             if(Variables.IS_TEST){
-                System.out.println("Update Guarantee Source to Setup guarantee Complete");
-                System.out.println("Start Update Guarantee Day to Stp_guarantee Table");            	
+                logger.info("Update Guarantee Source to Setup guarantee Complete");
+                logger.info("Start Update Guarantee Day to Stp_guarantee Table");            	
             }
             sql = "SELECT CASE WHEN GT.GUARANTEE_DAY = '' THEN " +
             	  "CASE WHEN DR.GUARANTEE_DAY = '' THEN HP.GUARANTEE_DAY ELSE DR.GUARANTEE_DAY END " +
@@ -469,12 +472,12 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setHospital_code(hospital_code);
                     TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql,"");
                     if(Variables.IS_TEST){
-                		System.out.println("Exception Update Guarantee Day : "+e);                    	
+                		logger.info("Exception Update Guarantee Day : "+e);                    	
                     }
             	}
             }
         }catch(Exception e){
-            System.out.println("Excepiton in Guarantee Source from doctor : "+e);
+            logger.error("Excepiton in Guarantee Source from doctor : "+e);
         }
         return status1;
     }
@@ -599,7 +602,7 @@ public class ProcessGuaranteeBeanNew {
 					}else{//IN GUARANTEE
 						if(arr_checklist[i][0].equals("NORMAL")){
 						}else{
-							System.out.println(i+":"+arr_checklist[i][0]);
+							logger.info(i+":"+arr_checklist[i][0]);
 						}
 						q_process = "";
 					}
@@ -679,7 +682,7 @@ public class ProcessGuaranteeBeanNew {
     		}else{
     			cdb.rollDB();
     		}
-    		//System.out.println("Process update Guarantee Amount of Guarantee Daily to Monthly Complete "+complete_records+" records from "+all_records+" records.");
+    		//logger.info("Process update Guarantee Amount of Guarantee Daily to Monthly Complete "+complete_records+" records from "+all_records+" records.");
     	}
     	return status;
     }
@@ -714,12 +717,12 @@ public class ProcessGuaranteeBeanNew {
             "SG.HOSPITAL_CODE = '"+hospital_code+"' AND DR.HOSPITAL_CODE = '"+hospital_code+"' "+
             "ORDER BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE";
             g_setup = cdb.query(sql_statement);
-            System.out.println("Set Transaction Step : "+sql_statement);
+            logger.info("Set Transaction Step : "+sql_statement);
             
         	t = g_setup.length;
         	
             for(int i = 0; i<g_setup.length; i++){ //update flag in trn_daily for calculate guarantee
-            	System.out.println("Guarantee Process Step 6 Running to "+i+" Of "+t+" ON TIME "+JDate.getTime());
+            	logger.info("Guarantee Process Step 6 Running to "+i+" Of "+t+" ON TIME "+JDate.getTime());
                 String is_paid = "";
                 if(Double.parseDouble(g_setup[i][17])== 0){//if != fix guarantee
                     is_paid = "Y";
@@ -751,7 +754,7 @@ public class ProcessGuaranteeBeanNew {
                     }
                 }catch(Exception e){
                 	start_time = g_setup[i][8];
-                    System.out.println("Exception guarantee early time : "+e);
+                    logger.error("Exception guarantee early time : "+e);
                 }
                 try{//End Time
                     if(g_setup[i][12].equals("000000") || g_setup[i][12].equals("0")){
@@ -761,7 +764,7 @@ public class ProcessGuaranteeBeanNew {
                     }
                 }catch(Exception e){
                 	end_time = g_setup[i][11];
-                    System.out.println("Exception guarantee late time : "+e);
+                    logger.error("Exception guarantee late time : "+e);
                 }
                 guarantee_include_extra = g_setup[i][19].equals("Y")? "GUARANTEE_TERM_MM LIKE '%' AND " : "GUARANTEE_TERM_MM = '' AND ";
                 day_condition = g_setup[i][20].equals("VER") ? "VER" : "INV";
@@ -812,7 +815,7 @@ public class ProcessGuaranteeBeanNew {
                     "IS_GUARANTEE = 'Y'";
 
                     if(Variables.IS_TEST){
-	                    System.out.println(sql_statement);	                    	
+	                    logger.info(sql_statement);	                    	
                     }
                     
                     cdb.insert(sql_statement); //comment for skip write database process
@@ -824,17 +827,17 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
 		            TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql_statement,"");
-                	System.out.println("Some transaction don't process step 6");
-                	System.out.println("Exception update guarantee step 6 : "+e);
-                	System.out.println("Command : "+sql_statement+"\n");
+                	logger.error("Some transaction don't process step 6");
+                	logger.error("Exception update guarantee step 6 : "+e);
+                	logger.error("Command : "+sql_statement+"\n");
                 }
             }
         } catch (Exception ex) {
-        	System.out.println("Must to Rollback Guarantee Process!!");
-            System.out.println("Exception Guarantee Step : "+ex);
+        	logger.error("Must to Rollback Guarantee Process!!");
+            logger.error("Exception Guarantee Step : "+ex);
             status = false;
         }
-        System.out.println("FINISH GUARANTEE STEP 2 "+JDate.getTime());
+        logger.info("FINISH GUARANTEE STEP 2 "+JDate.getTime());
         return status;
     }
     
@@ -871,10 +874,10 @@ public class ProcessGuaranteeBeanNew {
             "SG.HOSPITAL_CODE = '"+hospital_code+"' AND DR.HOSPITAL_CODE = '"+hospital_code+"' "+
             "ORDER BY SG.GUARANTEE_TYPE_CODE, SG.GUARANTEE_DR_CODE";
             g_setup = cdb.query(sql_statement);
-            //System.out.println(sql_statement);
+            //logger.info(sql_statement);
             
         	t = g_setup.length;
-        	System.out.println("Set Guarantee Transaction Running Start Time "+JDate.getTime());
+        	logger.info("Set Guarantee Transaction Running Start Time "+JDate.getTime());
             for(int i = 0; i<g_setup.length; i++){ //update flag in trn_daily for calculate guarantee
                 String is_paid = "";
 
@@ -897,7 +900,7 @@ public class ProcessGuaranteeBeanNew {
                     }
                 }catch(Exception e){
                 	start_time = g_setup[i][8];
-                    System.out.println("Exception guarantee early time : "+e);
+                    logger.error("Exception guarantee early time : "+e);
                 }
                 
                 try{//End Time
@@ -908,7 +911,7 @@ public class ProcessGuaranteeBeanNew {
                     }
                 }catch(Exception e){
                 	end_time = g_setup[i][11];
-                    System.out.println("Exception guarantee late time : "+e);
+                    logger.error("Exception guarantee late time : "+e);
                 }
 
                 //Guarantee Date from Hospital Setup
@@ -919,7 +922,7 @@ public class ProcessGuaranteeBeanNew {
 	                	day_condition = "INV";
 	                }
                 }catch(Exception e){
-                	System.out.println("Error Guarantee Setup Day Condition from hospital : "+e);
+                	logger.error("Error Guarantee Setup Day Condition from hospital : "+e);
                 }
 
                 //Guarantee Date from Doctor Setup
@@ -930,7 +933,7 @@ public class ProcessGuaranteeBeanNew {
 	                	day_condition = "INV";
 	                }
                 }catch(Exception e){
-                	System.out.println("Error Guarantee Setup Day Condition from doctor : "+e);
+                	logger.error("Error Guarantee Setup Day Condition from doctor : "+e);
                 }
 
                 //Guarantee Date from Time Table
@@ -941,7 +944,7 @@ public class ProcessGuaranteeBeanNew {
 	                	day_condition = "INV";
 	                }
 	            }catch(Exception e){
-	            	System.out.println("Error Guarantee Setup Day Condition from Time Table : "+e);
+	            	logger.error("Error Guarantee Setup Day Condition from Time Table : "+e);
 	            }
 
 	            //Guarantee Include Extra?
@@ -1005,7 +1008,7 @@ public class ProcessGuaranteeBeanNew {
     	            	}            			
             		}
 	            }catch(Exception e){
-	            	System.out.println("Discharge Con error : "+e);
+	            	logger.error("Discharge Con error : "+e);
 	            }
             	
             	try{
@@ -1050,7 +1053,7 @@ public class ProcessGuaranteeBeanNew {
                     "IS_GUARANTEE = 'Y'";
 
                     if(Variables.IS_TEST){
-	                    System.out.println(sql_statement);	                    	
+	                    logger.info(sql_statement);	                    	
                     }
                     cdb.insert(sql_statement); //comment for skip write database process
                     cdb.commitDB(); //comment for skip write database process
@@ -1060,20 +1063,20 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
 		            TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, e.toString(), sql_statement,"");
-                	System.out.println("Some transaction don't process step 6");
-                	System.out.println("Exception update guarantee step 6 : "+e);
-                	System.out.println("Command : "+sql_statement+"\n");
+                	logger.error("Some transaction don't process step 6");
+                	logger.error("Exception update guarantee step 6 : "+e);
+                	logger.error("Command : "+sql_statement+"\n");
                 }
             }
             
-        	System.out.println("Set Guarantee Transaction Running End Time "+JDate.getTime());
+        	logger.info("Set Guarantee Transaction Running End Time "+JDate.getTime());
         } catch (Exception ex) {
-        	System.out.println("Must to Rollback Guarantee Process!!");
-            System.out.println("Exception Step 6 : "+ex);
+        	logger.error("Must to Rollback Guarantee Process!!");
+            logger.error("Exception Step 6 : "+ex);
             status = false;
         }
         
-        System.out.println("FINISH GUARANTEE STEP 2 "+JDate.getTime());
+        logger.info("FINISH GUARANTEE STEP 2 "+JDate.getTime());
         return status;
         
     }
@@ -1104,9 +1107,9 @@ public class ProcessGuaranteeBeanNew {
         	TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
             TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_tmp,"");
-			System.out.println("Error Update Setup Guarantee Hp Absorb");
-			System.out.println("Cause Command Error : "+sql_tmp);
-			System.out.println("");
+			logger.error("Error Update Setup Guarantee Hp Absorb");
+			logger.error("Cause Command Error : "+sql_tmp);
+			logger.error("");
 			status = false;
 		}
 		return status;
@@ -1326,7 +1329,7 @@ public class ProcessGuaranteeBeanNew {
             	if(this.guarantee_paid+this.dr_amt <= this.guarantee_amt){
             		double balance_diff = 0;
             		double balance_temp = this.sum_trn_guarantee_balance - this.trn_guarantee_amt+(this.trn_guarantee_amt * (this.percent_in_allocate/100))+this.guarantee_paid;
-            		//System.out.println(this.guarantee_paid+"<>"+this.dr_amt+"<>"+this.guarantee_balance+"<>"+this.trn_guarantee_amt);
+            		//logger.info(this.guarantee_paid+"<>"+this.dr_amt+"<>"+this.guarantee_balance+"<>"+this.trn_guarantee_amt);
             		if(balance_temp < this.guarantee_amt){
             			balance_diff = this.guarantee_amt - balance_temp;
             			this.dr_amt = this.trn_guarantee_amt * (this.percent_in_allocate/100)+balance_diff;
@@ -1424,7 +1427,7 @@ public class ProcessGuaranteeBeanNew {
         for(int i = 0; i<guarantee_table.length; i++){
             String stemp = "";
             try{
-        	System.out.println("Guarantee Calculate Running Doctor Code "+guarantee_table[i][1]+" by "+guarantee_table[i][2]+" No. "+i+" From "+t+" Start Time "+JDate.getTime()+" ");
+        	logger.info("Guarantee Calculate Running Doctor Code "+guarantee_table[i][1]+" by "+guarantee_table[i][2]+" No. "+i+" From "+t+" Start Time "+JDate.getTime()+" ");
         	if(guarantee_table[i][17].equals("VER")){
             	//Guarantee Day? Verify Date = "VER", Invoice Date = "INV"
             	order_by = "ORDER BY YYYY DESC, IS_ONWARD ASC, VERIFY_DATE, VERIFY_TIME, INVOICE_NO, LINE_NO";
@@ -1509,10 +1512,10 @@ public class ProcessGuaranteeBeanNew {
                 	this.sum_amount_aft_discount = this.sum_amount_aft_discount+Double.parseDouble(transaction_table[ix][22]);
                 }
             	this.guarantee_balance_paid = 0.00;
-            	//System.out.println("Sum Trn Guarantee : "+this.sum_trn_guarantee_amt+" and Sum Amount 100% : "+this.sum_amount_aft_discount+" >"+guarantee_table[i][1]+">"+guarantee_table[i][2]);
+            	//logger.info("Sum Trn Guarantee : "+this.sum_trn_guarantee_amt+" and Sum Amount 100% : "+this.sum_amount_aft_discount+" >"+guarantee_table[i][1]+">"+guarantee_table[i][2]);
             	for(int x = 0; x<transaction_table.length; x++){
                 	message = "Invoice No/Line No = "+transaction_table[x][0]+" / "+transaction_table[x][3];
-                	//System.out.println("Start Guarantee Process of "+message);
+                	//logger.info("Start Guarantee Process of "+message);
                     transaction_table[x][12] = "";//Clear guarantee note
                     this.trn_guarantee_amt = Double.parseDouble(transaction_table[x][6]);
                 	
@@ -1557,9 +1560,9 @@ public class ProcessGuaranteeBeanNew {
                                 		"IN GUARANTEE "+transaction_table[x][16]+" to "+guarantee_table[i][13];
                                 guarantee_table[i][7] = ""+this.guarantee_balance;
                                 transaction_table[x][16] = ""+this.percent_in_allocate; //normal_alloc_pct
-                    		}else{System.out.println("in Guarantee not implement");/*no implementation by nop*/}
+                    		}else{logger.info("in Guarantee not implement");/*no implementation by nop*/}
                     	}
-                    	//System.out.println(" | dr amt | "+this.dr_amt+" | "+this.guarantee_note);
+                    	//logger.info(" | dr amt | "+this.dr_amt+" | "+this.guarantee_note);
                         guarantee_table[i][7] = ""+this.guarantee_balance;
                         transaction_table[x][11] = ""+this.trn_guarantee_paid_amt; //guarantee_paid_amt
                         transaction_table[x][12] = this.guarantee_note;
@@ -1684,8 +1687,8 @@ public class ProcessGuaranteeBeanNew {
                     	TRN_Error.setUser_name(this.user_id);
                     	TRN_Error.setHospital_code(hospital_code);
                         TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), ss,"");
-                        System.out.println("Guarantee Prepare Update Transaction : "+ex);
-                        System.out.println("By Statement : "+ss);
+                        logger.error("Guarantee Prepare Update Transaction : "+ex);
+                        logger.error("By Statement : "+ss);
                         status = false;
                     }
                 }//END FOR OF GUARANTEE MONTHLY/DAILY AND GUARANTEE TURN
@@ -1731,22 +1734,26 @@ public class ProcessGuaranteeBeanNew {
                 	TRN_Error.setUser_name(this.user_id);
                 	TRN_Error.setHospital_code(hospital_code);
                     TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_temp,"");
-                    System.out.println("Guarantee Prepare Update Guarantee Table : "+ex);
-                    System.out.println("Cause Error : "+message);
-                    System.out.println("");
+                    logger.error("Guarantee Prepare Update Guarantee Table : "+ex);
+                    logger.error("Cause Error : "+message);
+                    logger.error("");
                     status = false;
                 }
             }//END ELSE OF GUARANTEE MONTHLY/DAILY AND GUARANTEE TURN
         } catch (Exception xx){
-        	System.out.println("Guarantee Process Error : "+xx);
-        	System.out.println(stemp);
+        	logger.error("Guarantee Process Error : "+xx);
+        	logger.error(stemp);
         }
         }
-        System.out.println("\nGuarantee Calculate Finish Ending Time "+JDate.getTime());
+        logger.info("\nGuarantee Calculate Finish Ending Time "+JDate.getTime());
         return status;
     }
     private String calculateExtraPreviousGuarantee(){ 
-    	String sql = "UPDATE TRN_DAILY SET GUARANTEE_NOTE = 'OLD EXTRA' " 
+    	String sql = "UPDATE TRN_DAILY SET GUARANTEE_NOTE = 'OLD EXTRA' "
+    	//add script for allocate old extra
+    	//+",DR_AMT = CASE WHEN G.GUARANTEE_ALLOCATE_PCT = G.OVER_ALLOCATE_PCT AND G.GUARANTEE_ALLOCATE_PCT < 100 "
+    	//+"THEN T.AMOUNT_AFT_DISCOUNT * G.GUARANTEE_ALLOCATE_PCT/100 ELSE T.DR_AMT END "
+    	//end script for allocate old extra
     	+ "FROM TRN_DAILY T " 
     	+ "LEFT OUTER JOIN ( " 
     	+ "SELECT * FROM STP_GUARANTEE " 
@@ -1783,7 +1790,7 @@ public class ProcessGuaranteeBeanNew {
         "ORDER BY YYYY DESC, VERIFY_DATE+VERIFY_TIME ASC";
         
         try {
-        	System.out.println("Select Previous Guarantee : "+JDate.getTime());
+        	logger.info("Select Previous Guarantee : "+JDate.getTime());
         	cdb.insert(calculateExtraPreviousGuarantee());
         	cdb.insert(t);
 			transaction_table = cdb.query(sql_trn);
@@ -1791,14 +1798,14 @@ public class ProcessGuaranteeBeanNew {
         	TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
             TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_trn,"");
-            System.out.println("Select Previous Guarantee Error : "+ex);
+            logger.error("Select Previous Guarantee Error : "+ex);
             status = false;
         }
         
         count_line = transaction_table.length;
 
         //---------------------
-    	System.out.println("Process Guarantee Previous Daily Running Start Time "+JDate.getTime());
+    	logger.info("Process Guarantee Previous Daily Running Start Time "+JDate.getTime());
         
     	//DAILY GUARANTEE
         for(int i = 0; i<transaction_table.length; i++){
@@ -1928,9 +1935,9 @@ public class ProcessGuaranteeBeanNew {
 		                	TRN_Error.setUser_name(this.user_id);
 		                	TRN_Error.setHospital_code(hospital_code);
 		                    TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_trn,"");
-		                    System.out.println("Previous Guarantee Error : "+ex);
-		        			System.out.println("On Statement : "+updateGuarantee);
-		        			System.out.println("or Statement"+ss);
+		                    logger.error("Previous Guarantee Error : "+ex);
+		        			logger.error("On Statement : "+updateGuarantee);
+		        			logger.error("or Statement"+ss);
 		                    status = false;
 		                }
         			}
@@ -1938,7 +1945,7 @@ public class ProcessGuaranteeBeanNew {
         	}
         }
         
-        System.out.println("Process Guarantee Previous Daily to Monthly Running Start Time "+JDate.getTime());
+        logger.info("Process Guarantee Previous Daily to Monthly Running Start Time "+JDate.getTime());
         // DAILY TO MONTHLY GUARANTEE
         // CEO FREEALIFE
         for(int i = 0; i<transaction_table.length; i++){
@@ -2065,9 +2072,9 @@ public class ProcessGuaranteeBeanNew {
 		                	TRN_Error.setUser_name(this.user_id);
 		                	TRN_Error.setHospital_code(hospital_code);
 		                    TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_trn,"");
-		                    System.out.println("Previous Guarantee Error : "+ex);
-		        			System.out.println("On Statement : "+updateGuarantee);
-		        			System.out.println("or Statement"+ss);
+		                    logger.error("Previous Guarantee Error : "+ex);
+		        			logger.error("On Statement : "+updateGuarantee);
+		        			logger.error("or Statement"+ss);
 		                    status = false;
 		                }
         			}
@@ -2076,7 +2083,7 @@ public class ProcessGuaranteeBeanNew {
         }
 
         
-        System.out.println("Process Guarantee Previous Monthly Running Start Time "+JDate.getTime());
+        logger.info("Process Guarantee Previous Monthly Running Start Time "+JDate.getTime());
     	
         // MONTHLY GUARANTEE
         for(int i = 0; i<transaction_table.length; i++){
@@ -2202,16 +2209,16 @@ public class ProcessGuaranteeBeanNew {
 		                	TRN_Error.setUser_name(this.user_id);
 		                	TRN_Error.setHospital_code(hospital_code);
 		                    TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  message, ex.toString(), sql_trn,"");
-		                    System.out.println("Previous Guarantee Error : "+ex);
-		        			System.out.println("On Statement : "+updateGuarantee);
-		        			System.out.println("or Statement"+ss);
+		                    logger.error("Previous Guarantee Error : "+ex);
+		        			logger.error("On Statement : "+updateGuarantee);
+		        			logger.error("or Statement"+ss);
 		                    status = false;
 		                }
         			}
 	        	}
         	}
         }
-        System.out.println("Finish Process Previous Absorb Guarantee");
+        logger.info("Finish Process Previous Absorb Guarantee");
         return status;
     }
     
@@ -2233,7 +2240,7 @@ public class ProcessGuaranteeBeanNew {
     										  "AND ACTIVE = '1'";
  
     	try {
-    		System.out.println("Set Absorb Remain : " + UpdateBeforAbsorbGuarantee);    		
+    		logger.info("Set Absorb Remain : " + UpdateBeforAbsorbGuarantee);    		
 			cdb.insert(UpdateBeforAbsorbGuarantee);
 			action  = true;			
 		} catch (Exception ex) {
@@ -2241,8 +2248,8 @@ public class ProcessGuaranteeBeanNew {
     		TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
             TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  "", ex.toString(), "","");
-            System.out.println("Insert Absorb Monthly to year Error : "+ex);
-			System.out.println("On Statement : " + UpdateBeforAbsorbGuarantee);
+            logger.error("Insert Absorb Monthly to year Error : "+ex);
+			logger.error("On Statement : " + UpdateBeforAbsorbGuarantee);
 		}
     	
     	// TRN_DAILY record over guarantee
@@ -2268,7 +2275,7 @@ public class ProcessGuaranteeBeanNew {
     						 " HAVING SUM(TD.DR_AMT)> 0 "+
     						 " ORDER BY TD.GUARANTEE_DR_CODE ";
     	try {
-    		System.out.println("SQL DEFINE OVER GUARANTEE AMOUNT : " + sqlCommand);
+    		logger.info("SQL DEFINE OVER GUARANTEE AMOUNT : " + sqlCommand);
     		drOverGuarantee = cdb.query(sqlCommand);
 
     		if(drOverGuarantee.length > 0){        		
@@ -2286,8 +2293,8 @@ public class ProcessGuaranteeBeanNew {
         			try{
         				sumAbsorbRemain = Double.parseDouble( cdb.getSingleData(ql) );
         			}catch(Exception e){
-        				System.out.println("Cast Deduct Absorb MMY Error : "+e);
-            			System.out.println(ql);
+        				logger.error("Cast Deduct Absorb MMY Error : "+e);
+            			logger.error(ql);
         				sumAbsorbRemain = 0;
         			}
         			if(Double.parseDouble(drOverGuarantee[i][3]) > sumAbsorbRemain){
@@ -2311,15 +2318,15 @@ public class ProcessGuaranteeBeanNew {
         			try {
 						cdb.insert(sqlUpdateOverGuarantee);
 						cdb.commitDB();
-						//System.out.println("UPDATE : OVER_GUARANTEE_AMOUNT : " + sqlUpdateOverGuarantee);
+						//logger.info("UPDATE : OVER_GUARANTEE_AMOUNT : " + sqlUpdateOverGuarantee);
 						action  = true;
 					} catch (Exception ex) {
 						action  = false;
 			    		TRN_Error.setUser_name(this.user_id);
 			        	TRN_Error.setHospital_code(hospital_code);
 			            TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  "", ex.toString(), "","");
-			            System.out.println("Update OVER_GUARANTEE_AMOUNT Error : "+ex);
-						System.out.println("On Statement : " + sqlUpdateOverGuarantee);
+			            logger.error("Update OVER_GUARANTEE_AMOUNT Error : "+ex);
+						logger.error("On Statement : " + sqlUpdateOverGuarantee);
 					}
         		}
         	}
@@ -2344,15 +2351,15 @@ public class ProcessGuaranteeBeanNew {
 			try {
 				cdb.insert(SQLExpense);
 				cdb.commitDB();
-				System.out.println("UPDATE : INSERT EXPENSE DEDUCT MONTHLY TO YEAR : " + SQLExpense);
+				logger.info("UPDATE : INSERT EXPENSE DEDUCT MONTHLY TO YEAR : " + SQLExpense);
 				action  = true;
 			} catch (Exception ex) {
 				action  = false;
 	    		TRN_Error.setUser_name(this.user_id);
 	        	TRN_Error.setHospital_code(hospital_code);
 	            TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  "", ex.toString(), "","");
-	            System.out.println("Insert Expense Deduct Monthly to year Error : "+ex);
-				System.out.println("On Statement : " + SQLExpense);
+	            logger.error("Insert Expense Deduct Monthly to year Error : "+ex);
+				logger.error("On Statement : " + SQLExpense);
 			}
 		    
     	}catch (Exception ex){ 
@@ -2360,8 +2367,8 @@ public class ProcessGuaranteeBeanNew {
     		TRN_Error.setUser_name(this.user_id);
         	TRN_Error.setHospital_code(hospital_code);
             TRN_Error.writeErrorLog(this.cdb.getConnection(), "GuaranteeProcess",  "", ex.toString(), "","");
-            System.out.println("Amount over guarantee  Error : "+ex);
-			System.out.println("On Statement : " + sqlCommand);
+            logger.error("Amount over guarantee  Error : "+ex);
+			logger.error("On Statement : " + sqlCommand);
 		}
     	
     	return action;
@@ -2384,7 +2391,7 @@ public class ProcessGuaranteeBeanNew {
         t = guarantee_table.length;
         if(guarantee_table.length > 0){
 	        for(int i = 0; i<guarantee_table.length; i++){
-	        	System.out.println("Step Guarantee Process Step 4 Running to "+i+" Of "+t+" ON TIME "+JDate.getTime());
+	        	logger.info("Step Guarantee Process Step 4 Running to "+i+" Of "+t+" ON TIME "+JDate.getTime());
 	            admission_type = guarantee_table[i][3].equals("U") ? "%" : guarantee_table[i][3].toString();
 	            String s = "SELECT INVOICE_NO, INVOICE_DATE, ORDER_ITEM_CODE, LINE_NO, " + //0-3
 	            "TRANSACTION_MODULE, YYYY, GUARANTEE_AMT, GUARANTEE_DR_CODE, " +           //4-7
@@ -2434,7 +2441,7 @@ public class ProcessGuaranteeBeanNew {
                                 }
 	                        }else{
 	                        	//Over Guarantee
-                                System.out.println("STEP OVER : "+guarantee_table[i][10]);
+                                logger.info("STEP OVER : "+guarantee_table[i][10]);
 	                            if(Integer.parseInt(guarantee_table[i][10])>0){
 	                                transaction_table[x][12] = "STEP OVER";
 	                                double in_allocate_pct = Double.parseDouble(guarantee_table[i][13]);
@@ -2445,7 +2452,7 @@ public class ProcessGuaranteeBeanNew {
 	                                double over_guarantee_amount = 0;
 	                                double dr_amt = 0;
 	                                double hp_amt = 0;
-	                                System.out.println("STEP OVER : "+guarantee_amount);
+	                                logger.info("STEP OVER : "+guarantee_amount);
 
 	                                if(guarantee_amount > 0){
 	                                    trn_in_guarantee_amount = guarantee_amount * (in_allocate_pct /100);
@@ -2484,7 +2491,7 @@ public class ProcessGuaranteeBeanNew {
                                 double over_guarantee_amount = 0;
                                 double dr_amt = 0;
                                 double hp_amt = 0;
-                                System.out.println("STEP OVER : "+guarantee_amount);
+                                logger.info("STEP OVER : "+guarantee_amount);
 
                                 if(guarantee_amount > 0){
                                     trn_in_guarantee_amount = guarantee_amount * (in_allocate_pct /100);
@@ -2539,18 +2546,18 @@ public class ProcessGuaranteeBeanNew {
 	                    try {
 	                        cdb.insert(ss);
 	                        cdb.commitDB();
-	                        //System.out.println(ss);
+	                        //logger.info(ss);
 	                    } catch (SQLException ex) {
-	                        System.out.println("Guarantee Step Error : "+ex);
+	                        logger.error("Guarantee Step Error : "+ex);
 	                        status = false;
 	                    }
 	                }//END FOR OF GUARANTEE MONTHLY/DAILY AND GUARANTEE TURN
 	            }//END ELSE OF GUARANTEE MONTHLY/DAILY AND GUARANTEE TURN
 	        }        
         }else{
-        	System.out.println("Guarantee Step not exist.");
+        	logger.info("Guarantee Step not exist.");
         }
-        System.out.println("FINISH STEP CALCULATE");
+        logger.info("FINISH STEP CALCULATE");
         return status;
     }
     private boolean sumAmountGuarantee(){
@@ -2643,14 +2650,14 @@ public class ProcessGuaranteeBeanNew {
     private boolean sumMonthGuarantee(){
         boolean status = true;
         try {
-        	System.out.println(getSumScript());
+        	logger.info(getSumScript());
         	cdb.insert(getSumScript());
             cdb.commitDB();
         } catch (SQLException ex) {
             cdb.rollDB();
             status = false;
-            System.out.println("Update Summary Month Guarantee : "+ex);
-            System.out.println("On Script : "+getSumScript());
+            logger.error("Update Summary Month Guarantee : "+ex);
+            logger.error("On Script : "+getSumScript());
         }
         return status;
     }
@@ -2803,10 +2810,10 @@ public class ProcessGuaranteeBeanNew {
 				}
 				//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
 			}
-			System.out.println(d.addData(al, "TRN_DAILY"));
+			logger.info(d.addData(al, "TRN_DAILY"));
 			d.closeDB("Close Db Select Absorb Some Guarantee");
 		}else{
-			System.out.println("Advance Some : "+al.size());
+			logger.info("Advance Some : "+al.size());
 		}
     	try {
     		//Old Credit Transaction for Absorb Some
@@ -2832,11 +2839,11 @@ public class ProcessGuaranteeBeanNew {
  				   "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
  				   "IS_PAID = 'Y' AND YYYY+MM = ''";
     		
-    		System.out.println(s);
+    		logger.info(s);
     		de.insert(s);
     		de.commitDB();
     	} catch (SQLException e) {
-    		System.out.println("Update Absorb some Guarantee Error : "+e);
+    		logger.error("Update Absorb some Guarantee Error : "+e);
     	}
 		de.closeDB("Close DB Update Absorb some Guarantee");
     	return status;
@@ -2890,11 +2897,11 @@ public class ProcessGuaranteeBeanNew {
     	try{
     		cdb.insert(s);
     		cdb.commitDB();
-    		System.out.println("Do insertExpenseGuaranteeHP : "+s);
+    		logger.info("Do insertExpenseGuaranteeHP : "+s);
     	}catch (Exception e){
     		status = false;
-    		System.out.println("Error on insertExpenseGuaranteeHP"+e);
-    		System.out.println("By Query : "+s);
+    		logger.error("Error on insertExpenseGuaranteeHP"+e);
+    		logger.error("By Query : "+s);
     		cdb.rollDB();
     	}
     	return status;
@@ -2939,11 +2946,11 @@ public class ProcessGuaranteeBeanNew {
     	try{
     		cdb.insert(s);
     		cdb.commitDB();
-    		System.out.println("Do insertExpenseGuaranteeEX : "+s);
+    		logger.info("Do insertExpenseGuaranteeEX : "+s);
     	}catch (Exception e){
     		status = false;
-    		System.out.println("Error on insertExpenseGuaranteeEX"+e);
-    		System.out.println("By Query : "+s);
+    		logger.error("Error on insertExpenseGuaranteeEX"+e);
+    		logger.error("By Query : "+s);
     		cdb.rollDB();
     	}
     	return status;
@@ -2996,11 +3003,11 @@ public class ProcessGuaranteeBeanNew {
     	try{
     		cdb.insert(s);
     		cdb.commitDB();
-    		System.out.println("Do insertExpenseGuaranteeFix : "+s);
+    		logger.info("Do insertExpenseGuaranteeFix : "+s);
     	}catch (Exception e){
     		status = false;
-    		System.out.println("Error on insertExpenseGuaranteeFix"+e);
-    		System.out.println("By Query : "+s);
+    		logger.error("Error on insertExpenseGuaranteeFix"+e);
+    		logger.error("By Query : "+s);
     		cdb.rollDB();
     	}
     	return status;
@@ -3054,11 +3061,11 @@ public class ProcessGuaranteeBeanNew {
     	try{
     		cdb.insert(s);
     		cdb.commitDB();
-    		System.out.println("Do insertExpenseGuaranteeInclude : "+s);
+    		logger.info("Do insertExpenseGuaranteeInclude : "+s);
     	}catch (Exception e){
     		status = false;
-    		System.out.println("Error on insertExpenseGuaranteeInclude"+e);
-    		System.out.println("By Query : "+s);
+    		logger.error("Error on insertExpenseGuaranteeInclude"+e);
+    		logger.error("By Query : "+s);
     		cdb.rollDB();
     	}
     	return status;
@@ -3099,11 +3106,11 @@ public class ProcessGuaranteeBeanNew {
     	try{
     		cdb.insert(s);
     		cdb.commitDB();
-    		System.out.println("Do insertExpenseGuaranteeDR : "+s);
+    		logger.info("Do insertExpenseGuaranteeDR : "+s);
     	}catch (Exception e){
     		status = false;
-    		System.out.println("Error on insertExpenseGuaranteeDR : "+e);
-    		System.out.println("By Query : "+s);
+    		logger.error("Error on insertExpenseGuaranteeDR : "+e);
+    		logger.error("By Query : "+s);
     		cdb.rollDB();
     	}
     	return status;

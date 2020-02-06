@@ -8,10 +8,10 @@ import df.bean.db.conn.DBConn;
 import df.bean.db.conn.DBConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class ProcessJoinBill {
+	final static Logger logger = Logger.getLogger(ProcessJoinBill.class);
 
     private String startDate = "";
     private String toDate = "";
@@ -51,7 +51,7 @@ public class ProcessJoinBill {
         try{
             rs = con.executeQuery(sql);
         }catch(Exception err){
-            System.out.println(err.getMessage());
+        	logger.error(err.getMessage());
         }
         return rs;
     }
@@ -86,8 +86,8 @@ public class ProcessJoinBill {
             			  this.hospital_code+"' AND (TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"') AND LINE_NO='"+ temp_line +"' AND BILL_NO='"+ temp_bill +"'";            
             con.executeUpdate(sql_insert);
         }catch(Exception err){
-            System.out.println("Error getbillbylineno"+err.getMessage());
-            System.out.println("Statement " + sql_insert);
+            logger.error("Error getbillbylineno"+err.getMessage());
+            logger.error("Statement " + sql_insert);
         }finally{
             try{
                 con.Close();
@@ -111,7 +111,7 @@ public class ProcessJoinBill {
 	            "AND TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+toDate+"'");
         con.Close();
         if(dbconn.getSingleData("SELECT IS_JOIN_BILL FROM HOSPITAL WHERE CODE = '"+hospital_code+"'").equals("Y")){
-        	System.out.println("Join Bill Process");
+        	logger.info("Join Bill Process");
 	        ResultSet rs = this.getLineNO();
 	        int count = 0;
 	        try{
@@ -120,23 +120,15 @@ public class ProcessJoinBill {
 	                count++;
 	            }
 	        }catch(Exception err){
-	            System.out.println("Error main join bill : "+err.getMessage());
+	            logger.error("Error main join bill : "+err.getMessage());
 	            status = false;
 	        }finally{
 	            try { rs.close(); } catch (SQLException ex) {}
 	        }
         }else{
-        	System.out.println("Not Join Bill");
+        	logger.info("Not Join Bill");
         }
         dbconn.closeDB("Close Connection from JoinBill Process");
         return status;
     }
-
-    /* test function
-    public static void main(String[] arg){
-        ProcessJoinBill j = new ProcessJoinBill();
-        j.ProcessJoinBill("00001","20081201", "20090130");
-    }
-    */
-    
 }

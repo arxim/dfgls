@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
+
 import df.bean.obj.util.JDate;
 import df.bean.obj.util.Utils;
 import df.bean.db.conn.DBConn;
@@ -12,6 +14,7 @@ import df.bean.db.conn.DBConnection;
 import df.bean.db.table.Batch;
 
 public class ProcessHolidayCalculate {
+	final static Logger logger = Logger.getLogger(ProcessHolidayCalculate.class);
 
 	private static final ArrayList<TreeMap<Integer, String>>DATA_STP_HOLIDAY = new ArrayList<TreeMap<Integer, String>>();
 	private String msg;
@@ -80,7 +83,7 @@ public class ProcessHolidayCalculate {
 					+"AND TD.ACTIVE='1' "
 					+"AND TD.DR_AMT > 0 "
 					+"AND "+Utils.Join(conditions, " AND ");
-				System.out.println(sqlqu);
+				logger.info(sqlqu);
 				connsb.executeUpdate(sqlqu);
 			}
 			if(INCLUDE.equals("Y")){
@@ -125,7 +128,7 @@ public class ProcessHolidayCalculate {
 							+"TRN_DAILY.DR_AMT > 0  AND "
 							+"HIS_TRN_DAILY.INCLUDE='Y'";
 					messageIn = sqlcommand;
-					System.out.println("LongWeekend Allocate : "+messageIn);
+					logger.info("LongWeekend Allocate : "+messageIn);
 				    connsb.executeUpdate(sqlcommand);
 				}
 				con2.Close();	
@@ -135,8 +138,8 @@ public class ProcessHolidayCalculate {
 			con.Close();
 			msg="1";
 		} catch (SQLException e) {
-			System.out.println("Exception Process LongWeekend : "+e);
-			System.out.println("With Statement : "+messageIn);
+			logger.error("Exception Process LongWeekend : "+e);
+			logger.error("With Statement : "+messageIn);
 			msg="0";
 		}
 	}
@@ -169,16 +172,16 @@ public class ProcessHolidayCalculate {
 		
 		String sqlDeleteHisTrnDaily =
 			"DELETE FROM HIS_TRN_DAILY WHERE TAG='HOLIDAY' AND HOSPITAL_CODE='"+hospitalcode+"' AND TRANSACTION_DATE LIKE '"+yyyy+mm+"%'";
-		System.out.println("\nStart Rollback LongWeekend : ->");
+		logger.info("\nStart Rollback LongWeekend : ->");
 		try{
 			dbconn.insert(sqlRollbackTrnDaily);
 			System.out.print("Transaction LongWeekend Rollback Completed : ->");
 			dbconn.insert(sqlDeleteHisTrnDaily);
 			System.out.print("History LongWeekend Delete Completed\n");
-			System.out.println("LongWeekend Rollback Complete");
+			logger.info("LongWeekend Rollback Complete");
 			dbconn.commitDB();
 		}catch(Exception e){
-			System.out.println("LongWeekend Rollback In Complete : "+e);
+			logger.error("LongWeekend Rollback In Complete : "+e);
 			dbconn.rollDB();
 			status = false;
 		}

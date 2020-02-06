@@ -2,11 +2,16 @@ package df.bean.process;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.Batch;
 import df.bean.obj.util.JDate;
 
 public class ProcessDischargeSummary{
+	final static Logger logger = Logger.getLogger(ProcessDischargeSummary.class);
+
 	String hospitalcode = "";
 	String yyyy = "";
 	String mm = "";
@@ -25,13 +30,13 @@ public class ProcessDischargeSummary{
 		try{
 			if(SetBackupDischange()){
 				SQLCommit();
-				System.out.println("ProcessDischange Complete");			
+				logger.info("ProcessDischange Complete");			
 			}else{
-				System.out.println("ProcessDischarge Is Not Complete");
+				logger.info("ProcessDischarge Is Not Complete");
 				status = false;
 			}
 		}catch(Exception e){
-			System.out.println("ProcessDischarge Is Not Complete : "+e);
+			logger.error("ProcessDischarge Is Not Complete : "+e);
 			status = false;
 		}
 		return status;
@@ -48,11 +53,11 @@ public class ProcessDischargeSummary{
 			+"HOSPITAL_CODE='"+this.hospitalcode+"' AND "
 			+"IS_DISCHARGE_SUMMARY != 'Y' AND "
 			+"ACTIVE = '1' ";
-		System.out.println(sqlqu);
+		logger.info(sqlqu);
 		connsb.connectToLocal(); 	
 		status = connsb.executeUpdate(sqlqu)<0 ? false : true;
 		connsb.Close();		
-		System.out.println("Process Backup is Success ? "+status);
+		logger.info("Process Backup is Success ? "+status);
 		return status;
 	}
 	public void SQLCommit() throws SQLException {
@@ -68,7 +73,7 @@ public class ProcessDischargeSummary{
 		String sql="SELECT * FROM INT_HIS_DISCHARGE WHERE HOSPITAL_CODE='"+this.hospitalcode+"' AND YYYY='"+batch.getYyyy()+"' AND MM='"+batch.getMm()+"'";
 		ResultSet rsforind=connihd.executeQuery(sql);
 		while(rsforind.next()){
-			//System.out.println(rsforind.getString("PAYMENT_STATUS"));
+			//logger.info(rsforind.getString("PAYMENT_STATUS"));
 			if(rsforind.getString("PAYMENT_STATUS").equals("N")){
                 String SQLCOMMAND = 
                 	"UPDATE TRN_DAILY SET " +
@@ -81,7 +86,7 @@ public class ProcessDischargeSummary{
                 	"TRN_DAILY.TRANSACTION_DATE LIKE '"+batch.getYyyy()+batch.getMm()+"%' AND "+
               		"(TRN_DAILY.IS_DISCHARGE_SUMMARY='' OR TRN_DAILY.IS_DISCHARGE_SUMMARY='D') AND " +
               		"TRN_DAILY.BATCH_NO = ''";
-                //System.out.println("Discharge Hold : "+SQLCOMMAND);
+                //logger.info("Discharge Hold : "+SQLCOMMAND);
                 connsb.executeUpdate(SQLCOMMAND);
 			}else{
                 String SQLCOMMAND = "UPDATE TRN_DAILY SET " +
@@ -95,7 +100,7 @@ public class ProcessDischargeSummary{
             	"HOSPITAL_CODE='"+this.hospitalcode+"' AND "+
             	//"INVOICE_NO = '"+rsforind.getString("INVOICE_NO")+"' AND "+
           		"IS_DISCHARGE_SUMMARY='N'";
-                //System.out.println("Discharge Payment : "+SQLCOMMAND);
+                //logger.info("Discharge Payment : "+SQLCOMMAND);
                 connsb.executeUpdate(SQLCOMMAND);
 			}
 		}
@@ -114,7 +119,7 @@ public class ProcessDischargeSummary{
                 String SQLCOMMAND = "DELETE FROM INT_HIS_DISCHARGE WHERE MM = '" + mm +"' AND YYYY = '" + yyyy + "' AND HOSPITAL_CODE = '" + hospitalCode + "'";
                 resuftAction = connsb.executeUpdate(SQLCOMMAND);
             } catch (Exception e) {
-                e.printStackTrace();
+            	logger.error(e);
             }
         }
         return resuftAction;
@@ -139,10 +144,10 @@ public class ProcessDischargeSummary{
 				" AND TRN_DAILY.HOSPITAL_CODE='"+this.hospitalcode+"' " +
 				" AND HIS_TRN_DAILY.TAG='DISCHARGE'"+
 				" AND HIS_TRN_DAILY.TRANSACTION_DATE LIKE '"+yyyy+mm+"%'";
-     	System.out.println("Rollback Discharge Transaction : "+sql);
+     	logger.info("Rollback Discharge Transaction : "+sql);
 		con2.executeUpdate(sql);
 		sql="DELETE FROM HIS_TRN_DAILY WHERE TAG='DISCHARGE' AND HOSPITAL_CODE='"+this.hospitalcode+"' AND TRANSACTION_DATE LIKE '"+yyyy+mm+"%'";
-		System.out.println("Rollback Discharge Transaction Completed");
+		logger.info("Rollback Discharge Transaction Completed");
 		con2.executeUpdate(sql);
 		con2.commitTrans();
 		con2.Close();
