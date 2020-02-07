@@ -253,7 +253,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 		
 		try {
 			if (doctor_code_to.equals("") || doctor_code_to.equals(null)) {
-				doctor_code_to = "Z";
+				doctor_code_to = "ZZZZZZZZZ";
 			}
 		} catch (Exception e) {}
 		
@@ -376,11 +376,11 @@ public class ViewDFReportSrvl extends HttpServlet {
 		} else if (reportfilename.equals("GuaranteeSetup") || reportfilename.equals("SummaryRevenueByDetail")
 				|| reportfilename.equals("PaymentVoucher" + hospital_code) || reportfilename.equals("ExpenseDetail")
 				|| reportfilename.equals("SummaryRevenueByDoctor")
-				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH") || reportfilename.equals("SummaryRevenueByDetailForDoctorVCH")) {
+				|| reportfilename.equals("SummaryRevenueByDetailInMonthVCH") || reportfilename.equals("SummaryRevenueByDetailForDoctorVCH") || reportfilename.equals("SummaryDFUnpaidByDetail"+hospital_code) || reportfilename.equals("DFUnpaidSum"+hospital_code)) {
 
 			if (doctor_code.equals("") || doctor_code.equals(null) || doctor_code.equals("%")) {
 				from_doctor = "0";
-				to_doctor = "Z";
+				to_doctor = "ZZZZZZZZZ";
 			} else {
 				from_doctor = doctor_code;
 				to_doctor = doctor_code;
@@ -527,7 +527,32 @@ public class ViewDFReportSrvl extends HttpServlet {
 					this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
 				}
 
-			}
+			}else if (reportfilename.equals("SummaryDFUnpaidByDetail"+hospital_code) || reportfilename.equals("DFUnpaidSum"+hospital_code)) {
+				System.out.println("DFUnpaidByDetail");
+
+				
+				hm.put("form_date","00000000" );
+				hm.put("to_date",year+month+"31" );
+				hm.put("year",year);
+				hm.put("month",month);
+
+				hm.put("hospital_logo", logo_path);
+
+				if (request.getParameter("REPORT_DISPLAY").equals("view")) {
+					this.reportGenerateView(hm, reportfilename, response);
+				} else {
+					System.out.println(reportfilename);
+					if (file_type.equals("txt")) {
+						System.out.println(file_type + "<>" + path);
+						System.out.println(rq.getReport(reportfilename));
+						this.reportGenerateFile(null, save_file, null, response, request, "" + ers.exportData(path,
+								reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
+						cdb.closeDB("");
+					} else {
+						this.reportGenerateFile(hm, save_file, reportfilename, response, request, file_type);
+					}
+				}
+			}else {}
 		}
 
 	}
