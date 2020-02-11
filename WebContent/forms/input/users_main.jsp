@@ -74,7 +74,8 @@
             String userGroup = "";
             byte MODE = DBMgr.MODE_INSERT;
             
-            if("1".equalsIgnoreCase(session.getAttribute("USER_GROUP_CODE").toString())){
+            if("1".equalsIgnoreCase(session.getAttribute("USER_GROUP_CODE").toString()) ||
+               "3".equalsIgnoreCase(session.getAttribute("USER_GROUP_CODE").toString()) ){
                 //readonlyManager = "readonly=\"readonly\"";
                 LOGIN_NAME = "";
             }else{
