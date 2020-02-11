@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="rd1_monthly"
+		 name="rd1a_yearly"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Landscape"
@@ -17,9 +17,6 @@
 		 whenNoDataType="NoPages"
 		 isTitleNewPage="false"
 		 isSummaryNewPage="false">
-	<property name="ireport.zoom" value="1.0" />
-	<property name="ireport.x" value="148" />
-	<property name="ireport.y" value="0" />
 	<property name="ireport.scriptlethandling" value="0" />
 	<property name="ireport.encoding" value="UTF-8" />
 	<import value="java.util.*" />
@@ -27,36 +24,38 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="yyyy" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["12"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["CHC00"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["036"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="pay_date" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["09/10/2017"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["10/07/2009"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="signature" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\dfs\\reports\\"]]></defaultValueExpression>
+	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["D:\\DFReport\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="filling_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["09/10/2017"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT ROW_NUMBER()OVER (ORDER BY ST.SUM_NORMAL_TAX_AMT DESC) AS SEQ, ST.DOCTOR_CODE, DR.NAME_THAI,
-CASE WHEN LEN(DR.TAX_ID)>10 THEN DR.TAX_ID ELSE '' END AS NATION_ID,
+	<queryString><![CDATA[SELECT ST.YYYY,ROW_NUMBER()OVER (ORDER BY ST.LINE_NO) AS SEQ, ST.DOCTOR_CODE, 
+CASE WHEN ST.HOSPITAL_CODE = '054' THEN DR.BANK_ACCOUNT_NAME ELSE DR.NAME_THAI END AS NAME_THAI,
+CASE WHEN LEN(DR.TAX_ID)>10 THEN DR.TAX_ID ELSE '' END AS NATION_ID, 
 CASE WHEN LEN(DR.TAX_ID)<11 THEN DR.TAX_ID ELSE '' END AS TAX_ID,
-ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, H.TAXNO, H.COMPANY_NAME,
+ST.SUM_NORMAL_TAX_AMT, ST.NET_TAX_MONTH AS NET_TAX_MONTH, ST.YYYY, ST.MM, 
+H.TAXNO,(DR.ADDRESS1+DR.ADDRESS2+DR.ADDRESS3) as ADDRESS, 
 H.AUTHORITY_NAME, H.AUTHORITY_POSITION 
 FROM SUMMARY_TAX_402 ST LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL H ON ST.HOSPITAL_CODE = H.CODE
-WHERE ST.YYYY = $P{yyyy} AND ST.MM = $P{mm} AND ST.HOSPITAL_CODE = $P{hospital_code}
+WHERE ST.YYYY = $P{yyyy} AND ST.MM = '13' AND ST.HOSPITAL_CODE = $P{hospital_code}
 AND ST.ACTIVE = '1'
-AND SUM_NORMAL_TAX_AMT > 0
 AND DR.TAX_402_METHOD IN('STP', 'SUM')
 ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 
+	<field name="YYYY" class="java.lang.String"/>
 	<field name="SEQ" class="java.lang.Long"/>
 	<field name="DOCTOR_CODE" class="java.lang.String"/>
 	<field name="NAME_THAI" class="java.lang.String"/>
@@ -64,10 +63,9 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 	<field name="TAX_ID" class="java.lang.String"/>
 	<field name="SUM_NORMAL_TAX_AMT" class="java.math.BigDecimal"/>
 	<field name="NET_TAX_MONTH" class="java.math.BigDecimal"/>
-	<field name="YYYY" class="java.lang.String"/>
 	<field name="MM" class="java.lang.String"/>
 	<field name="TAXNO" class="java.lang.String"/>
-	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="ADDRESS" class="java.lang.String"/>
 	<field name="AUTHORITY_NAME" class="java.lang.String"/>
 	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
 
@@ -113,18 +111,197 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="45"
 						y="1"
-						width="100"
+						width="124"
 						height="37"
 						key="staticText-2"/>
 					<box></box>
 					<textElement verticalAlignment="Bottom">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="28" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[ภ.ง.ด.1]]></text>
+				<text><![CDATA[ภ.ง.ด.1ก]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="528"
+						x="170"
+						y="16"
+						width="95"
+						height="16"
+						key="staticText-3"/>
+					<box></box>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เลขประจำตัวประชาชน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="170"
+						y="32"
+						width="95"
+						height="10"
+						key="staticText-4"/>
+					<box></box>
+					<textElement verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="6" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[(ของผู้มีหน้าที่หักภาษี ณ ที่จ่าย)]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="265"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="275"
+						y="22"
+						width="5"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="280"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-14"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="290"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-15"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="300"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-16"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="310"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-17"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="321"
+						y="22"
+						width="5"
+						height="0"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="326"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-18"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="336"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-19"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="346"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-20"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="356"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-21"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="366"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-22"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="377"
+						y="22"
+						width="5"
+						height="0"
+						key="line-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="382"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-23"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="392"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-24"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="403"
+						y="22"
+						width="5"
+						height="0"
+						key="line-7"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="408"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-25"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="533"
 						y="15"
 						width="95"
 						height="16"
@@ -137,9 +314,9 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="528"
+						x="533"
 						y="31"
-						width="253"
+						width="249"
 						height="10"
 						key="staticText-6"/>
 					<box></box>
@@ -272,7 +449,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						x="0"
 						y="102"
 						width="782"
-						height="1"
+						height="0"
 						key="line-13"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
@@ -364,49 +541,72 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="660"
-						y="61"
-						width="122"
-						height="14"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{MM}+"/"+$F{YYYY}]]></textFieldExpression>
-				</textField>
 				<rectangle>
 					<reportElement
-						x="628"
+						x="629"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-76"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="639"
+						y="22"
+						width="5"
+						height="0"
+						key="line-73"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<rectangle>
+					<reportElement
+						x="644"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-77"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="654"
+						y="15"
+						width="10"
+						height="15"
+						key="rectangle-78"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="664"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-79"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
-				<line direction="TopDown">
-					<reportElement
-						x="638"
-						y="22"
-						width="5"
-						height="1"
-						key="line-56"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
 				<rectangle>
 					<reportElement
-						x="643"
+						x="674"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-80"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="685"
+						y="22"
+						width="5"
+						height="0"
+						key="line-74"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 				<rectangle>
 					<reportElement
-						x="653"
+						x="690"
 						y="15"
 						width="10"
 						height="15"
@@ -415,7 +615,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="663"
+						x="700"
 						y="15"
 						width="10"
 						height="15"
@@ -424,25 +624,16 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="673"
+						x="710"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-83"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
-				<line direction="TopDown">
-					<reportElement
-						x="684"
-						y="22"
-						width="5"
-						height="1"
-						key="line-57"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
 				<rectangle>
 					<reportElement
-						x="689"
+						x="720"
 						y="15"
 						width="10"
 						height="15"
@@ -451,16 +642,25 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="699"
+						x="730"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-85"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="741"
+						y="22"
+						width="5"
+						height="0"
+						key="line-75"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 				<rectangle>
 					<reportElement
-						x="709"
+						x="746"
 						y="15"
 						width="10"
 						height="15"
@@ -469,113 +669,38 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</rectangle>
 				<rectangle>
 					<reportElement
-						x="719"
+						x="756"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-87"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						x="767"
+						y="22"
+						width="5"
+						height="0"
+						key="line-76"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 				<rectangle>
 					<reportElement
-						x="729"
+						x="772"
 						y="15"
 						width="10"
 						height="15"
 						key="rectangle-88"/>
 					<graphicElement stretchType="NoStretch"/>
 				</rectangle>
-				<line direction="TopDown">
-					<reportElement
-						x="740"
-						y="22"
-						width="5"
-						height="1"
-						key="line-58"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<rectangle>
-					<reportElement
-						x="745"
-						y="15"
-						width="10"
-						height="15"
-						key="rectangle-89"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="755"
-						y="15"
-						width="10"
-						height="15"
-						key="rectangle-90"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<line direction="TopDown">
-					<reportElement
-						x="766"
-						y="22"
-						width="5"
-						height="1"
-						key="line-59"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<rectangle>
-					<reportElement
-						x="771"
-						y="15"
-						width="10"
-						height="15"
-						key="rectangle-91"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="770"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-14"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(12,13)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="754"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-13"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(11,12)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="745"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-12"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(10,11)]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="628"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-2"/>
+						key="textField-16"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -584,11 +709,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="642"
+						x="644"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-3"/>
+						key="textField-17"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -597,11 +722,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="652"
+						x="654"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-4"/>
+						key="textField-18"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -610,11 +735,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="672"
+						x="675"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-6"/>
+						key="textField-19"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -623,11 +748,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="662"
+						x="664"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-5"/>
+						key="textField-20"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -636,50 +761,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="698"
+						x="720"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-8"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(6,7)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="688"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-7"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(5,6)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="707"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-9"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(7,8)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="718"
-						y="14"
-						width="11"
-						height="18"
-						key="textField-10"/>
+						key="textField-21"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -688,39 +774,102 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="728"
+						x="710"
 						y="14"
 						width="11"
 						height="18"
-						key="textField-11"/>
+						key="textField-22"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(7,8)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="730"
+						y="14"
+						width="11"
+						height="18"
+						key="textField-23"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(9,10)]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="176"
-						y="16"
-						width="249"
-						height="16"
-						key="textField-15"/>
+						x="771"
+						y="14"
+						width="11"
+						height="18"
+						key="textField-24"/>
 					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Bottom">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(12,13)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="748"
-						y="41"
+						x="746"
+						y="14"
 						width="11"
 						height="18"
-						key="textField-16">
-							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
-						</reportElement>
+						key="textField-25"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(10,11)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="756"
+						y="14"
+						width="11"
+						height="18"
+						key="textField-26"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(11,12)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="700"
+						y="14"
+						width="11"
+						height="18"
+						key="textField-27"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(6,7)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="690"
+						y="14"
+						width="11"
+						height="18"
+						key="textField-28"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["".equalsIgnoreCase( $F{TAXNO} ) ? "" : $F{TAXNO}.substring(5,6)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="739"
+						y="42"
+						width="11"
+						height="18"
+						key="textField-33"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -729,13 +878,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="739"
-						y="41"
+						x="749"
+						y="42"
 						width="11"
 						height="18"
-						key="textField-17">
-							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
-						</reportElement>
+						key="textField-34"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -745,12 +892,10 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="759"
-						y="41"
+						y="42"
 						width="11"
 						height="18"
-						key="textField-18">
-							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
-						</reportElement>
+						key="textField-35"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -760,12 +905,10 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="769"
-						y="41"
+						y="42"
 						width="11"
 						height="18"
-						key="textField-19">
-							<printWhenExpression><![CDATA[new Boolean($P{hospital_code}.equals("045"))]]></printWhenExpression>
-						</reportElement>
+						key="textField-36"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -774,11 +917,11 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<staticText>
 					<reportElement
-						x="318"
+						x="319"
 						y="69"
 						width="10"
 						height="15"
-						key="staticText-51"/>
+						key="staticText-57"/>
 					<box></box>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -806,7 +949,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="0"
 						y="0"
-						width="1"
+						width="0"
 						height="40"
 						key="line-12"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -815,16 +958,16 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="34"
 						y="0"
-						width="1"
+						width="0"
 						height="40"
 						key="line-14"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="450"
-						y="0"
-						width="1"
+						x="553"
+						y="-1"
+						width="0"
 						height="40"
 						key="line-15"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -832,26 +975,26 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="34"
-						y="19"
-						width="626"
+						y="17"
+						width="519"
 						height="1"
 						key="line-16"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="249"
+						x="233"
 						y="0"
-						width="1"
-						height="19"
+						width="0"
+						height="40"
 						key="line-17"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<staticText>
 					<reportElement
-						x="35"
-						y="2"
-						width="213"
+						x="54"
+						y="1"
+						width="152"
 						height="15"
 						key="staticText-12"/>
 					<box></box>
@@ -862,49 +1005,23 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</staticText>
 				<staticText>
 					<reportElement
-						x="250"
-						y="0"
-						width="201"
-						height="10"
-						key="staticText-13"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[เลขประจำตัวผู้เสียภาษีอากร]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="250"
-						y="10"
-						width="201"
-						height="10"
-						key="staticText-14"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="6" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[(ของผู้มีเงินได้ที่เป็นผู้ไม่มีเลขประจำตัวประชาชน)]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="35"
+						x="281"
 						y="22"
-						width="415"
+						width="258"
 						height="15"
 						key="staticText-15"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[ชื่อผู้มีเงินได้ (ให้ระบุให้ชัดเจนว่าเป็น นาย นาง นางสาว หรือยศ)]]></text>
+				<text><![CDATA[ที่อยู่ผู้มีเงินได้ (ให้ระบุเลขที่ ตรอก/ซอย ถนน ตำบล/แขวง  อำเภอ/เขต จังหวัด)]]></text>
 				</staticText>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
 						y="39"
 						width="782"
-						height="1"
+						height="0"
 						key="line-18"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
@@ -912,7 +1029,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="781"
 						y="0"
-						width="1"
+						width="0"
 						height="40"
 						key="line-19"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -921,14 +1038,14 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="763"
 						y="0"
-						width="1"
+						width="0"
 						height="40"
 						key="line-20"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<staticText>
 					<reportElement
-						x="763"
+						x="764"
 						y="0"
 						width="17"
 						height="40"
@@ -943,7 +1060,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="660"
 						y="0"
-						width="1"
+						width="0"
 						height="40"
 						key="line-21"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -953,62 +1070,53 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						x="660"
 						y="6"
 						width="102"
-						height="26"
+						height="22"
 						key="staticText-17"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<text><![CDATA[จำนวนเงินภาษีที่หัก
-และนำส่งในครั้งนี้]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="451"
-						y="4"
-						width="208"
-						height="10"
-						key="staticText-20"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[รายละเอียดเกี่ยวกับการจ่ายเงิน]]></text>
+และนำส่งทั้งปี]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						x="555"
-						y="25"
+						y="6"
 						width="105"
-						height="10"
+						height="22"
 						key="staticText-21"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[จำนวนเงินได้ที่จ่ายในครั้งนี้]]></text>
+				<text><![CDATA[จำนวนเงินได้ที่จ่ายทั้งปี]]></text>
 				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="555"
-						y="19"
-						width="1"
-						height="20"
-						key="line-32"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
 				<staticText>
 					<reportElement
-						x="450"
-						y="25"
-						width="105"
-						height="10"
-						key="staticText-22"/>
+						x="54"
+						y="21"
+						width="152"
+						height="15"
+						key="staticText-46"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[วัน  เดือน  ปี  ที่จ่าย]]></text>
+				<text><![CDATA[เลขประจำตัวผู้เสียภาษีอากร (ของผู้มีเงินได้)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="282"
+						y="0"
+						width="258"
+						height="15"
+						key="staticText-47"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ที่อยู่ผู้มีเงินได้ (ให้ระบุให้ชัดเจนว่าเป็น นาย นาง นางสาว หรือ ยศ)]]></text>
 				</staticText>
 			</band>
 		</columnHeader>
@@ -1018,7 +1126,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="34"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-29"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -1027,15 +1135,15 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="0"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-30"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<staticText>
 					<reportElement
-						x="40"
-						y="28"
+						x="238"
+						y="5"
 						width="45"
 						height="15"
 						key="staticText-19"/>
@@ -1050,24 +1158,15 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						x="0"
 						y="44"
 						width="782"
-						height="1"
+						height="0"
 						key="line-31"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="450"
+						x="553"
 						y="0"
-						width="1"
-						height="45"
-						key="line-33"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="555"
-						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-34"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -1076,7 +1175,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="660"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-35"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -1085,7 +1184,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="781"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-36"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -1094,7 +1193,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="763"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-37"/>
 					<graphicElement stretchType="NoStretch"/>
@@ -1103,7 +1202,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="641"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-38"/>
 					<graphicElement stretchType="NoStretch">
@@ -1114,7 +1213,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					<reportElement
 						x="744"
 						y="0"
-						width="1"
+						width="0"
 						height="45"
 						key="line-40"/>
 					<graphicElement stretchType="NoStretch">
@@ -1123,10 +1222,10 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</line>
 				<line direction="TopDown">
 					<reportElement
-						x="87"
+						x="34"
 						y="39"
-						width="695"
-						height="1"
+						width="748"
+						height="0"
 						key="line-41"/>
 					<graphicElement stretchType="NoStretch">
 					<pen lineWidth="0.5" lineStyle="Dotted"/>
@@ -1147,9 +1246,9 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="87"
-						y="23"
-						width="343"
+						x="285"
+						y="6"
+						width="268"
 						height="14"
 						key="textField"/>
 					<box></box>
@@ -1160,8 +1259,8 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="79"
-						y="2"
+						x="49"
+						y="3"
 						width="169"
 						height="16"
 						key="textField"/>
@@ -1171,32 +1270,19 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NATION_ID}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="304"
-						y="2"
-						width="108"
-						height="16"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Left">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TAX_ID}]]></textFieldExpression>
-				</textField>
 				<line direction="TopDown">
 					<reportElement
-						x="249"
+						x="233"
 						y="0"
-						width="1"
-						height="19"
+						width="0"
+						height="45"
 						key="line-54"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="576"
-						y="18"
+						y="19"
 						width="79"
 						height="20"
 						key="textField"/>
@@ -1219,30 +1305,71 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{NET_TAX_MONTH}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="49"
+						y="23"
+						width="108"
+						height="16"
+						key="textField-12"/>
+					<box></box>
+					<textElement textAlignment="Left">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TAX_ID}]]></textFieldExpression>
+				</textField>
 				<line direction="TopDown">
 					<reportElement
-						x="34"
+						x="35"
 						y="19"
-						width="416"
-						height="1"
+						width="519"
+						height="2"
 						key="line-55"/>
 					<graphicElement stretchType="NoStretch">
 					<pen lineWidth="0.5" lineStyle="Dotted"/>
 </graphicElement>
 				</line>
+				<staticText>
+					<reportElement
+						x="238"
+						y="24"
+						width="45"
+						height="15"
+						key="staticText-48"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ที่อยู่]]></text>
+				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="454"
-						y="18"
-						width="97"
-						height="19"
-						key="textField-1"/>
+						x="286"
+						y="25"
+						width="267"
+						height="14"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("00009"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="765"
+						y="25"
+						width="15"
+						height="17"
+						key="staticText-56"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="10"/>
+						<font fontName="Tahoma"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{pay_date}]]></textFieldExpression>
-				</textField>
+				<text><![CDATA[1]]></text>
+				</staticText>
 			</band>
 		</detail>
 		<columnFooter>
@@ -1250,308 +1377,72 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="20"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+			<band height="96"  isSplitAllowed="false" >
+				<ellipse>
 					<reportElement
-						x="575"
-						y="0"
-						width="80"
-						height="20"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_SUM_NORMAL_TAX_AMT_2}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+						x="476"
+						y="37"
+						width="42"
+						height="42"
+						key="ellipse-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</ellipse>
+				<line direction="TopDown">
 					<reportElement
-						x="677"
-						y="0"
-						width="80"
-						height="20"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_NET_TAX_MONTH_2}]]></textFieldExpression>
-				</textField>
-				<staticText>
+						x="553"
+						y="2"
+						width="0"
+						height="19"
+						key="line-56"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
 					<reportElement
-						x="153"
-						y="4"
-						width="416"
-						height="15"
-						key="staticText-45"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[ยอดรวม/หน้า]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="false" pattern="##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="3"
-						y="1"
-						width="100"
-						height="18"
-						key="textField"/>
-					<box></box>
-					<textElement verticalAlignment="Middle">
-						<font/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_NET_TAX_MONTH_3}]]></textFieldExpression>
-				</textField>
-			</band>
-		</pageFooter>
-		<summary>
-			<band height="90"  isSplitAllowed="true" >
+						x="554"
+						y="21"
+						width="210"
+						height="0"
+						key="line-57"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="24"
+						y="21"
 						width="764"
-						height="1"
-						key="line-42"/>
+						height="0"
+						key="line-58"/>
 					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="0"
-						y="0"
-						width="1"
-						height="18"
-						key="line-43"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="555"
-						y="0"
-						width="1"
-						height="24"
-						key="line-44"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="641"
-						y="0"
-						width="1"
-						height="24"
-						key="line-45"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.5" lineStyle="Dotted"/>
-</graphicElement>
 				</line>
 				<line direction="TopDown">
 					<reportElement
 						x="660"
-						y="0"
-						width="1"
-						height="24"
-						key="line-46"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="744"
-						y="0"
-						width="1"
-						height="24"
-						key="line-47"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.5" lineStyle="Dotted"/>
-</graphicElement>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="763"
-						y="0"
-						width="1"
-						height="24"
-						key="line-48"/>
+						y="2"
+						width="0"
+						height="19"
+						key="line-59"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
 				<staticText>
 					<reportElement
-						x="34"
-						y="4"
+						x="33"
+						y="0"
 						width="515"
 						height="16"
-						key="staticText-23"/>
+						key="staticText-49"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[รวมยอดเงินได้และภาษีที่นำส่ง (นำไปรวมกับใบแนบ ภ.ง.ด.1 แผ่นอื่น (ถ้ามี)]]></text>
+				<text><![CDATA[รวมยอดเงินได้และภาษีที่นำส่ง (นำไปรวมกับใบแนบ ภ.ง.ด.1ก แผ่นอื่น (ถ้ามี)]]></text>
 				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="781"
-						y="0"
-						width="1"
-						height="90"
-						key="line-49"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="0"
-						y="89"
-						width="782"
-						height="1"
-						key="line-50"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<line direction="TopDown">
-					<reportElement
-						x="0"
-						y="0"
-						width="1"
-						height="90"
-						key="line-51"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<staticText>
-					<reportElement
-						x="5"
-						y="26"
-						width="267"
-						height="13"
-						key="staticText-24"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[ให้กรอกลำดับที่ต่อเนื่องกันไปทุกแผ่นตามเงินได้แต่ละประเภท]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="5"
-						y="43"
-						width="50"
-						height="13"
-						key="staticText-25"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[หมายเหตุ]]></text>
-				</staticText>
-				<staticText>
-					<reportElement
-						x="57"
-						y="43"
-						width="145"
-						height="46"
-						key="staticText-26"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[* เงื่อนไขการหักภาษี ให้กรอกดังนี้
-      หัก ณ ที่ จ่าย
-      ออกให้ตลอดไป
-      ออกให้ครั้งเดียว]]></text>
-				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="450"
-						y="25"
-						width="1"
-						height="65"
-						key="line-52"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
-				<staticText>
-					<reportElement
-						x="202"
-						y="43"
-						width="120"
-						height="46"
-						key="staticText-27"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[
-กรอก 1
-กรอก 2
-กรอก 3]]></text>
-				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="555"
-						y="20"
-						width="208"
-						height="1"
-						key="line-53"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.5" lineStyle="Dotted"/>
-</graphicElement>
-				</line>
-				<ellipse>
-					<reportElement
-						x="476"
-						y="41"
-						width="42"
-						height="42"
-						key="ellipse-1"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.25" lineStyle="Solid"/>
-</graphicElement>
-				</ellipse>
-				<staticText>
-					<reportElement
-						x="476"
-						y="50"
-						width="41"
-						height="33"
-						key="staticText-29"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<text><![CDATA[ประทับตรา
-นิติบุคคล
-(ถ้ามี)]]></text>
-				</staticText>
-				<rectangle>
-					<reportElement
-						x="65"
-						y="57"
-						width="6"
-						height="6"
-						key="rectangle-69"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="65"
-						y="67"
-						width="6"
-						height="6"
-						key="rectangle-70"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle>
-					<reportElement
-						x="65"
-						y="78"
-						width="6"
-						height="6"
-						key="rectangle-71"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="580"
 						y="2"
 						width="75"
 						height="15"
-						key="textField"/>
+						key="textField-13"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Tahoma"/>
@@ -1564,20 +1455,135 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						y="3"
 						width="71"
 						height="15"
-						key="textField"/>
+						key="textField-14"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Bottom">
 						<font fontName="Tahoma"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_NET_TAX_MONTH_1}]]></textFieldExpression>
 				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="763"
+						y="2"
+						width="0"
+						height="19"
+						key="line-63"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="553"
+						y="17"
+						width="210"
+						height="0"
+						key="line-64"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="641"
+						y="0"
+						width="0"
+						height="22"
+						key="line-65"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="744"
+						y="-1"
+						width="0"
+						height="22"
+						key="line-66"/>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="5"
+						y="22"
+						width="267"
+						height="13"
+						key="staticText-50"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ให้กรอกลำดับที่ต่อเนื่องกันไปทุกแผ่นตามเงินได้แต่ละประเภท]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="39"
+						width="50"
+						height="13"
+						key="staticText-51"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[หมายเหตุ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="57"
+						y="39"
+						width="145"
+						height="46"
+						key="staticText-52"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[* เงื่อนไขการหักภาษี ให้กรอกดังนี้
+      หัก ณ ที่ จ่าย
+      ออกให้ตลอดไป
+      ออกให้ครั้งเดียว]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="202"
+						y="39"
+						width="120"
+						height="46"
+						key="staticText-53"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="9" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[
+กรอก 1
+กรอก 2
+กรอก 3]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="476"
+						y="46"
+						width="41"
+						height="33"
+						key="staticText-54"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="7" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ประทับตรา
+นิติบุคคล
+(ถ้ามี)]]></text>
+				</staticText>
 				<staticText>
 					<reportElement
 						x="550"
-						y="41"
+						y="37"
 						width="220"
 						height="42"
-						key="staticText-48"/>
+						key="staticText-55"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Top">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -1587,13 +1593,161 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 ตำแหน่ง...............................................................
 ยื่นวันที่.......เดือน...................................พ.ศ.............]]></text>
 				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="781"
+						y="0"
+						width="0"
+						height="86"
+						key="line-67"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="2"
+						width="0"
+						height="84"
+						key="line-68"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="86"
+						width="782"
+						height="0"
+						key="line-69"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="456"
+						y="22"
+						width="0"
+						height="65"
+						key="line-70"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="1"
+						width="782"
+						height="0"
+						key="line-71"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="719"
+						y="62"
+						width="40"
+						height="13"
+						key="textField-15">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("00005") && !$P{hospital_code}.equals("00009"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : ""+new Integer(Integer.parseInt($P{filling_date}.substring(6,10))+543)]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="676"
+						y="40"
+						width="0"
+						height="0"
+						key="line-72"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="43"
+						width="140"
+						height="13"
+						key="textField-29"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? $F{AUTHORITY_NAME} : 
+$P{hospital_code}.equals("00002") ? "นางพงษ์แก้ว  ทิพนาค" : 
+$P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051")? "นางสาวขวัญตา รักษ์ธรรมกิจ" : 
+$P{hospital_code}.equals("007") ? "กุลชญา  เมธาธีรกูล" : 
+$P{hospital_code}.equals("00009") ? "นางสาวพจนา   รัตนประชา"  : 
+$P{hospital_code}.equals("011") || $P{hospital_code}.equals("012")? "สุภัคนิต ลิ่มวงค์สวัสดิ์" :
+$P{hospital_code}.equals("015")||$P{hospital_code}.equals("039") ? "นางอัฑฒนันท์ เณรทอง": 
+$P{hospital_code}.equals("00018") ? "นางสาวสายทิพย์  สาเรือง" : 
+$P{hospital_code}.equals("00019") ? "วิปภา บุญนาถพิทักษ์" : 
+$P{hospital_code}.equals("00029") ? "ณัฐพัชร์  เชยโอนะนันทน์" : 
+$P{hospital_code}.equals("036") ? "คุณวลัยลักษณ์ ปิยะนาวิน" : 
+$P{hospital_code}.equals("048") ? "นายสิทธิศักดิ์ ตรากลาง" : 
+$P{hospital_code}.equals("045") ? "นายอรรถพันธ์ บุญตา" : 
+$P{hospital_code}.equals("050") ? "นางสาวมณีรัตน์ ศรีบุศกร" : 
+$P{hospital_code}.equals("054") ? "นางสาวนลินี ก่อคุณากร" : 
+$P{hospital_code}.equals("058") ? " น.ส.ธนานิษฐ์ กิตติธนาวิโรจน" : 
+$P{hospital_code}.equals("063") ? "นายสุธี โพธิ์พันธ์" : 
+$P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : "นางปราณี  เจือเพ็ชร์"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="590"
+						y="53"
+						width="150"
+						height="13"
+						key="textField-30"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? $F{AUTHORITY_POSITION} : 
+$P{hospital_code}.equals("00002") ? "ผู้จัดการฝ่ายบริหารการเงิน" : 
+$P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051") || $P{hospital_code}.equals("007") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
+$P{hospital_code}.equals("00009") ? "หัวหน้าแผนกบัญชี " : $P{hospital_code}.equals("011") || $P{hospital_code}.equals("012") ? " ผู้จัดการฝ่ายบัญชี " : 
+$P{hospital_code}.equals("015") || $P{hospital_code}.equals("039") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
+$P{hospital_code}.equals("00018") ? "หัวหน้าแผนกบัญชี" : 
+$P{hospital_code}.equals("00019") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
+$P{hospital_code}.equals("00029") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
+$P{hospital_code}.equals("036") ? "ผู้จัดการแผนกบัญชีและการเงิน" : 
+$P{hospital_code}.equals("045") || $P{hospital_code}.equals("048") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
+$P{hospital_code}.equals("050") ? "หัวหน้าแผนกบัญชีและงบประมาณ" : 
+$P{hospital_code}.equals("054") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" :
+$P{hospital_code}.equals("058") ? "เจ้าหน้าที่แผนกบัญชี" : 
+$P{hospital_code}.equals("063") ? "พนักงานบัญชีค่าธรรมเนียมแพทย์ " :  
+$P{hospital_code}.equals("063") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : "ผู้จัดการแผนกบัญชี"]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="633"
+						y="60"
+						width="0"
+						height="0"
+						key="line-77"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="589"
+						y="64"
+						width="21"
+						height="13"
+						key="textField-31"/>
+					<box></box>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : $P{filling_date}.substring(0,2)]]></textFieldExpression>
+				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="626"
-						y="67"
+						y="63"
 						width="80"
 						height="13"
-						key="textField-20"/>
+						key="textField-32"/>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
@@ -1612,60 +1766,21 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="718"
-						y="66"
-						width="40"
-						height="13"
-						key="textField-21">
-							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("00005") && !$P{hospital_code}.equals("00009"))]]></printWhenExpression>
-						</reportElement>
+						x="84"
+						y="29"
+						width="70"
+						height="10"
+						key="textField"/>
 					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					<textElement>
+						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : ""+new Integer(Integer.parseInt($P{filling_date}.substring(6,10))+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{yyyy}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="588"
-						y="68"
-						width="21"
-						height="13"
-						key="textField-22"/>
-					<box></box>
-					<textElement textAlignment="Center">
-						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}.equals("") ? "" : $P{filling_date}.substring(0,2)]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="604"
-						y="47"
-						width="109"
-						height="13"
-						key="textField-23"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("")? $F{AUTHORITY_NAME} : 
-$P{hospital_code}.equals("045") ? "นายอรรถพันธุ์ บุญตา" : $P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : ""]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="610"
-						y="56"
-						width="150"
-						height="13"
-						key="textField-24"/>
-					<box></box>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("")? $F{AUTHORITY_POSITION} : 
-$P{hospital_code}.equals("045") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : $P{hospital_code}.equals("067") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : ""]]></textFieldExpression>
-				</textField>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</summary>
 </jasperReport>
