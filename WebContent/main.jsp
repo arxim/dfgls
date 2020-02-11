@@ -125,6 +125,8 @@
             		//for non gls
             		//f.src = "./forms/report/df_report_doctor.jsp";
             		f.src = "./<%=arrHos[0][1]%>";
+        		}else if(id== '3'){
+        			f.src = "./AppMain.jsp"
         		}
         	}
             
