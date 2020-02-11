@@ -535,6 +535,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 				hm.put("to_date",year+month+"31" );
 				hm.put("year",year);
 				hm.put("month",month);
+				hm.put("doctor", doctor_code);
 
 				hm.put("hospital_logo", logo_path);
 
