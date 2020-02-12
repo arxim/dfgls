@@ -360,7 +360,7 @@
                                 !DBMgr.getRecordValue(usersRec, "LOGIN_NAME").equalsIgnoreCase(session.getAttribute("USER_ID").toString()) ? "disabled=\"disabled\"" : "" %>/>
                         <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="SAVE_Click();" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="return RESET_Click()" />
-                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick=<%= session.getAttribute("USER_GROUP_CODE").toString().equals("3") ? "window.location='../../AppMain.jsp'" : "window.location='../process/ProcessFlow.jsp'" %> />
+                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick=<%= session.getAttribute("USER_GROUP_CODE").toString().equals("3") || session.getAttribute("USER_GROUP_CODE").toString().equals("5") ? "window.location='../../AppMain.jsp'" : "window.location='../process/ProcessFlow.jsp'" %> />
                     </th>
                 </tr>
             </table>

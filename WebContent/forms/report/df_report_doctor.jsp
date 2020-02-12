@@ -120,7 +120,7 @@
     </head>
     <body leftmargin="0">
 
-        <form id="mainForm" name="mainForm" method="get" action="../../ViewReportSrvl">
+        <form id="mainForm" name="mainForm" method="post" action="../../ViewReportSrvl">
             <center>
 		<table width="800" border="0">
 		<tr><td align="left">

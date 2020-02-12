@@ -637,7 +637,7 @@
 </script>
 </head>
 <body leftmargin="0"  onload='changeDropDownList()'>
-	<form id="mainForm" name="mainForm" method="get" action="../../ViewDFReportSrvl">
+	<form id="mainForm" name="mainForm" method="post" action="../../ViewDFReportSrvl">
 		<center>
 			<table width="800" border="0">
 				<tr>
