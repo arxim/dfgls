@@ -142,7 +142,7 @@
                     document.getElementById('FILLING_DATE').disabled = "";
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover' || mainForm.REPORT_FILE_NAME.value=='rd_wht_monthly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover' ){
                 	d.style.display = "";
                     term.style.display = "";
                 	e.style.display = 'none';
@@ -152,7 +152,7 @@
                     document.getElementById('YYYY').disabled = "";
                     document.getElementById('LABEL_PAYDATE').style.display = "none";
 					document.getElementById('INPUT_PAYDATE').style.display = "none";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd_summary_yearly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd_summary_yearly' || mainForm.REPORT_FILE_NAME.value=='rd_wht_monthly'){
                     year.style.display = "";
                 	e.style.display = 'none';
                 	d.style.display = 'none';
@@ -342,6 +342,7 @@
 	                        <input type="image" class="image_button" src="../../images/calendar_button.png" alt="" onclick="displayDatePicker('FILLING_DATE'); return false;" />
                         </td>
                 	</tr>
+                	
                 </tbody>
                 <tbody id='Tax402Year'>
                 	<!-- 
