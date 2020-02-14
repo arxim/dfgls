@@ -50,11 +50,11 @@
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["13"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
+	<parameter name="printing_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20170215"]]></defaultValueExpression>
 	</parameter>
 	<queryString><![CDATA[SELECT * ,
-CASE WHEN TAX_402_METHOD = 'STP' THEN 'WH01-'+SUBSTRING(YYYY,3,2)+mm+'-'+
+CASE WHEN TAX_402_METHOD <> 'STP' THEN 'WH01-'+SUBSTRING(YYYY,3,2)+mm+'-'+
 RIGHT('000'+CAST(ROW_NUMBER() OVER(PARTITION BY REPORT_TYPE ORDER BY doctor_code, TAX_402_METHOD) AS NVARCHAR(3)),3) 
 WHEN (TAX_402_METHOD = '3' AND DOCTOR_PROFILE_CODE = doctor_code) OR TAX_402_METHOD = '5' THEN 'WH03-'+SUBSTRING(YYYY,3,2)+mm+'-'+
 RIGHT('000'+CAST(ROW_NUMBER() OVER(PARTITION BY REPORT_TYPE ORDER BY doctor_code, TAX_402_METHOD) AS NVARCHAR(3)),3) 
@@ -77,7 +77,6 @@ from HOSPITAL LEFT OUTER JOIN SUMMARY_TAX_402 TAX ON HOSPITAL.CODE = TAX.HOSPITA
 LEFT OUTER JOIN DOCTOR ON TAX.DOCTOR_CODE = DOCTOR.CODE AND TAX.HOSPITAL_CODE = DOCTOR.HOSPITAL_CODE
 where TAX.SUM_NORMAL_TAX_AMT > 0
 AND TAX.TAX_402_METHOD <> 'STP'
-AND TAX.DOCTOR_CODE like $P{doctor}
 AND TAX.MM = $P{mm}
 AND DOCTOR.PAYMENT_MODE_CODE != 'U'
 AND TAX.YYYY = $P{year}
@@ -2056,7 +2055,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2300,12 +2299,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") && $F{HOSPITAL_CODE}.equals("00009") ? $P{year} :
-!$P{print_date}.equals("") && !$F{HOSPITAL_CODE}.equals("00009") ? (Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543)): 
-$F{HOSPITAL_CODE}.equals("015")|| $F{HOSPITAL_CODE}.equals("039")|| $F{HOSPITAL_CODE}.equals("063") ? Integer.toString($F{PRINT_YEAR}.intValue()+542) : 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("yyyy").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("00009") ? $P{year} :
-Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(Integer.toString(Integer.parseInt($P{printing_date}.substring( 0, 4 ))+543))]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -2343,7 +2337,7 @@ Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
 					<textElement>
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[ประกอบโรคศิลป์]]></text>
+				<text><![CDATA[วิชาชีพอิสระตามมาตรา 40(6)]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2358,7 +2352,7 @@ Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2430,7 +2424,7 @@ Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2500,9 +2494,7 @@ Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") ? $P{print_date}.substring(6,8): 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("dd").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("063") ? "31" : "30"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{printing_date}.substring(6,8)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -2515,9 +2507,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "31" : "30"]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") ? $P{print_date}.substring(4,6): 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("MM").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{printing_date}.substring(4,6)]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupHeader>
@@ -2617,19 +2607,6 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					</textElement>
 				<text><![CDATA[คำเตือน]]></text>
 				</staticText>
-				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="200"
-						y="706"
-						width="112"
-						height="26"
-						key="image-3">
-							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("00009"))]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo} +$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
-				</image>
 				<rectangle radius="5" >
 					<reportElement
 						mode="Transparent"
@@ -4716,7 +4693,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4729,7 +4706,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("036") || $F{HOSPITAL_CODE}.equals("00005") ? "" : "Doctor Profile : "+$F{DOCTOR_PROFILE_CODE}+" / Doctor Code : "+$F{doctor_code}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["Doctor Code : "+$F{doctor_code}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4810,7 +4787,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement>
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="7" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<text><![CDATA[ประกอบโรคศิลป์]]></text>
+				<text><![CDATA[วิชาชีพอิสระตามมาตรา 40(6)]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4825,7 +4802,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4897,7 +4874,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00009") ? $P{year} : Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4969,12 +4946,8 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") && $F{HOSPITAL_CODE}.equals("00009") ? $P{year} :
-!$P{print_date}.equals("") && !$F{HOSPITAL_CODE}.equals("00009") ? (Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543)): 
-$F{HOSPITAL_CODE}.equals("015")|| $F{HOSPITAL_CODE}.equals("039")|| $F{HOSPITAL_CODE}.equals("063") ? Integer.toString($F{PRINT_YEAR}.intValue()+542) : 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("yyyy").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("00009") ? $P{year} :
-Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{printing_date}.equals("") && $F{HOSPITAL_CODE}.equals("00009") ? $P{year} :
+(Integer.toString(Integer.parseInt($P{printing_date}.substring( 0, 4 ))+543))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4987,9 +4960,7 @@ Integer.toString($F{PRINT_YEAR}.intValue()+543)]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") ? $P{print_date}.substring(4,6) : 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("MM").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{printing_date}.substring(4,6)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -5002,9 +4973,7 @@ $F{HOSPITAL_CODE}.equals("063") ? "12" : "06"]]></textFieldExpression>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$P{print_date}.equals("") ? $P{print_date}.substring(6,8) : 
-$F{HOSPITAL_CODE}.equals("050") ? new SimpleDateFormat("dd").format(new Date()) : 
-$F{HOSPITAL_CODE}.equals("063") ? "31" : "30"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{printing_date}.substring(6,8)]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupFooter>
