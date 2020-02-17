@@ -27,7 +27,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="memo1" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย"]]></defaultValueExpression>
@@ -39,7 +39,7 @@
 		<defaultValueExpression ><![CDATA["CHC00"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["D:\\DFReport\\logo\\"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["E:\\Scap\\Project\\Workspaces\\dfgls\\WebContent\\reports\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="memo3" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["เก็บไว้เป็นหลักฐาน)"]]></defaultValueExpression>
@@ -48,7 +48,7 @@
 		<defaultValueExpression ><![CDATA["ฉบับที่ 2 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["13"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="printing_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20170215"]]></defaultValueExpression>
@@ -66,7 +66,7 @@ select TAX.YYYY AS YYYY, TAX.MM AS mm, TAX.DOCTOR_CODE AS doctor_code, DOCTOR.NA
 TAX.SUM_NORMAL_TAX_AMT AS revenue ,TAX.NET_TAX_MONTH AS net_tax_month, 
 TAX.TEXT_NET_TAX_MONTH AS text,
 DOCTOR.ADDRESS1+' '+DOCTOR.ADDRESS2+' '+DOCTOR.ADDRESS3 AS address2,
-DOCTOR.TAX_ID, TAX.LINE_NO, DOCTOR.DOCTOR_PROFILE_CODE, DOCTOR.TAX_402_METHOD,
+DOCTOR.TAX_ID, CAST(ROW_NUMBER() OVER(PARTITION BY TAX.TAX_402_METHOD ORDER BY TAX.doctor_code, TAX.TAX_402_METHOD)AS NVARCHAR(3)) AS LINE_NO , DOCTOR.DOCTOR_PROFILE_CODE, DOCTOR.TAX_402_METHOD,
 HOSPITAL.COMPANY_NAME AS hopital_name, HOSPITAL.TAXNO, HOSPITAL.CODE AS HOSPITAL_CODE,
 HOSPITAL.ADDRESS1+' '+HOSPITAL.ADDRESS2+' '+HOSPITAL.ADDRESS3 AS hospital_address,
 CONVERT(INT,TAX.YYYY)+1 AS PRINT_YEAR, 
@@ -1827,23 +1827,6 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 						key="line-62"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="450"
-						y="55"
-						width="79"
-						height="13"
-						key="textField-11"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("067") ? $F{LINE} : $F{LINE_NO}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="128"
@@ -2341,18 +2324,27 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				</staticText>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="276"
+						x="268"
 						y="521"
-						width="53"
+						width="71"
 						height="15"
 						key="textField-44">
 							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("015") || $F{HOSPITAL_CODE}.equals("039") || $F{TAX_402_METHOD}.equals("3"))]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{mm}.equals("") ? "" : $P{mm}.equals("01") ? "ม.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543):
+$P{mm}.equals("02") ? "ก.ม."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("03") ? "มี.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("04") ? "เม.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("05") ? "พ.คง"+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("06") ? "มิ.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("07") ? "ก.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("09") ? "ก.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("10") ? "ต.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("11") ? "พ.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) : "ธ.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -4491,23 +4483,6 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 						key="line-93"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="450"
-						y="55"
-						width="79"
-						height="13"
-						key="textField-27"/>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("067") ? $F{LINE} : $F{LINE_NO}]]></textFieldExpression>
-				</textField>
 				<staticText>
 					<reportElement
 						x="128"
@@ -4789,21 +4764,6 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					</textElement>
 				<text><![CDATA[วิชาชีพอิสระตามมาตรา 40(6)]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="276"
-						y="521"
-						width="53"
-						height="15"
-						key="textField-47">
-							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("015") || $F{HOSPITAL_CODE}.equals("039") || $F{TAX_402_METHOD}.equals("3"))]]></printWhenExpression>
-						</reportElement>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
@@ -4974,6 +4934,30 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 						<font fontName="Tahoma" size="7"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$P{printing_date}.substring(6,8)]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="268"
+						y="521"
+						width="71"
+						height="15"
+						key="textField-68">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("015") || $F{HOSPITAL_CODE}.equals("039") || $F{TAX_402_METHOD}.equals("3"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{mm}.equals("") ? "" : $P{mm}.equals("01") ? "ม.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543):
+$P{mm}.equals("02") ? "ก.ม."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("03") ? "มี.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("04") ? "เม.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("05") ? "พ.คง"+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("06") ? "มิ.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("07") ? "ก.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("09") ? "ก.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("10") ? "ต.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543) :
+$P{mm}.equals("11") ? "พ.ย."+" "+Integer.toString(Integer.parseInt($P{year})+543) : "ธ.ค."+" "+Integer.toString(Integer.parseInt($P{year})+543)]]></textFieldExpression>
 				</textField>
 			</band>
 			</groupFooter>
