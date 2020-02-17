@@ -38,6 +38,7 @@
 	labelMap.add("CITI", "Citi Bank", "ธนาคารซิตี้แบงก์");
 	labelMap.add("SCB_DIRECT", "SCB Bank Direct", "ธนาคารไทยพาณิชย์ (Direct)");
 	labelMap.add("SCB_SMART", "SCB Bank Smart", "ธนาคารไทยพาณิชย์ (Smart)");
+	labelMap.add("SCB_COSMECEUTICAL", "SCB Bank Cosmeceutical", "ธนาคารไทยพาณิชย์ (Cosmeceutical)");
 	labelMap.add("SMART", "BAY Smart", "BAY Smart");
 	labelMap.add("OTHER", "TMB Bank to Non TMB", "ธนาคารอื่นๆ โอนผ่านทหารไทย");
 	labelMap.add("VIEW", "View", "แสดงผล");
@@ -85,8 +86,9 @@
             	}else{
                     document.mainForm.target = "_blank";
         			
-        			if(document.mainForm.PROCESS_NAME.value == "ExportBank" && document.mainForm.BANK_TYPE.value == "014_SMART"){
+        			if(document.mainForm.PROCESS_NAME.value == "ExportBank" && ( document.mainForm.BANK_TYPE.value == "014_SMART" || document.mainForm.BANK_TYPE.value == "014_COSMECEUTICAL")){
         				document.mainForm.method = "POST"
+        				//document.mainForm.action = "http://103.82.248.103:8883/exportFileDF";
         				document.mainForm.action = "http://localhost:8883/exportFileDF";
         				document.mainForm.submit();
         			}else{
@@ -138,7 +140,7 @@
         <center>
 			<table width="800" border="0">
 				<tr><td align="left">
-				<b><font color='#003399'><%=Utils.getInfoPage("interface_export.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
+				<b><font color='#003399'><%=Utils.getInfoPage("interface_export_new.jsp", labelMap.getFieldLangSuffix(), new DBConnection(""+session.getAttribute("HOSPITAL_CODE")))%></font></b>
 				</td></tr>
 			</table>
         </center>
@@ -218,6 +220,7 @@
                             <option value="0025">${labelMap.SMART}</option>
                             <option value="014">${labelMap.SCB_DIRECT}</option>
                             <option value="014_SMART">${labelMap.SCB_SMART}</option>
+                            <option value="014_COSMECEUTICAL">${labelMap.SCB_COSMECEUTICAL}</option>
                             <option value="017">${labelMap.CITI}</option>
                             <option value="062006">${labelMap.TBANK_DIRECT}</option>
                             <option value="980067">${labelMap.TBANK_SMART}</option>
