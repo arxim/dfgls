@@ -5,11 +5,14 @@
 
 package df.bean.report;
 
+import org.apache.log4j.Logger;
+
 /**
  *
  * @author
  */
 public class ReportQuery {
+	final static Logger logger = Logger.getLogger(ReportQuery.class);
 
     String hospital_code;
     String from_date;
@@ -234,7 +237,8 @@ public class ReportQuery {
         "ORDER BY S.ADMISSION_TYPE_CODE, S.INVOICE_NO, S.LINE_NO";
     }
     private String BNHAccruDetail(){
-        return "SELECT DP.CODE AS PROFILE_CODE, DP.NAME_THAI AS PROFILE_NAME, "+
+    	String q = 
+    	"SELECT DP.CODE AS PROFILE_CODE, DP.NAME_THAI AS PROFILE_NAME, "+
         "SD.DOCTOR_CODE AS 'DOCTOR_CODE', DR.NAME_THAI AS 'NAME_THAI', "+
         "SD.INVOICE_DATE AS 'INVOICE_DATE', SD.INVOICE_NO AS 'INVOICE_NO', "+
         "SD.HN_NO AS 'HN_NO', SD.PATIENT_NAME AS 'PATIENT_NAME', "+
@@ -255,6 +259,7 @@ public class ReportQuery {
         "SD.INVOICE_TYPE <> 'ORDER' AND SD.IS_PAID <> 'N' AND "+
         "SD.HOSPITAL_CODE LIKE '"+this.hospital_code+"' "+
         "ORDER BY PROFILE_CODE, DOCTOR_CODE, INVOICE_DATE";
+		return q;
     }
     private String dailyGuarantee(){
     	return ""+

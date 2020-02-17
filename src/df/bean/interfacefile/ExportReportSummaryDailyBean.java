@@ -5,14 +5,18 @@
 
 package df.bean.interfacefile;
 
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConn;
 import df.bean.db.conn.DBConnection;
+import df.bean.db.table.PayorOffice;
 
 /**
  *
  * @author nopphadon
  */
 public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
+	final static Logger logger = Logger.getLogger(ExportReportSummaryDailyBean.class);
 
     @Override
     public boolean insertData(String fn, DBConnection d) {
@@ -30,24 +34,20 @@ public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
         boolean status = false;
         try {
             setFileName(fn);//set filename read
-            //System.out.println("file name: "+fn);
-            //System.out.println("type: "+type);
+            logger.info("type: "+type);
             if(hp_code.equals("Accrue") || hp_code.equals("GL")) {
             	int size = d.query(type).length;
             	int start = 1, end = 50000;
             	boolean newFile = true;
-            	//System.out.println("size: "+size+", round: "+Math.ceil(size/50000.0));
             	for(int j = 0; j < Math.ceil(size/50000.0); j++) {
             		if(j == 0) {
             			type += "WHERE Q.ROWNUMBERS BETWEEN "+start+" AND "+end;
-            		}
-            		else {
+            		}else {
             			newFile = false;
             			start += 50000;
             			end += 50000;
             			type = type.replaceFirst("WHERE Q.ROWNUMBERS BETWEEN(.*)", "WHERE Q.ROWNUMBERS BETWEEN "+start+" AND "+end);
             		}
-            		//System.out.println("type in j"+j+": "+type);
             		temp_data = d.query(type);
     	            d.countColumn(type);
     	            title_data = d.getTitleName();
@@ -55,7 +55,6 @@ public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
     	            for(int i = 0; i<sub_data.length; i++){
     	                if(i == 0){
     	                	if(j == 0) {
-	    	                	System.out.println("Get Title j="+ j);
 	    	                    sub_data[i] = "";
 	    	                    for(int x = 0; x<title_data.length; x++){
 	    	                        sub_data[i] = sub_data[i]+title_data[x]+"|";
@@ -70,8 +69,7 @@ public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
     	            }
     	            status = writeFileNewACGL(sub_data, newFile);
             	}
-            }
-            else {
+            }else{
             	temp_data = d.query(type);
 	            d.countColumn(type);
 	            title_data = d.getTitleName();
@@ -92,11 +90,8 @@ public class ExportReportSummaryDailyBean extends InterfaceTextFileBean{
 	            status = writeFileNew(sub_data);
             }
         }catch(Exception e){
-            System.out.println("Export Data : "+e);
+            logger.error("Export Data : "+e);
         }
-        System.out.println(sub_data.length);
-        //writeFile(sub_data);
-        //return writeFileNew(sub_data);
         return status;
     }
 

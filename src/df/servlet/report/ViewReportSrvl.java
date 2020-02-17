@@ -1009,7 +1009,7 @@ public class ViewReportSrvl extends HttpServlet {
 
     private void reportMonthlyBehindPayment(HttpServletRequest request, HttpServletResponse response){
         ReportQuery rq = new ReportQuery();
-    	//logger.info("Update 2010/03/31");
+    	logger.info("Report MonthlyBehindPayment");
         HashMap hm = new HashMap();
         DBConn cdb = new DBConn();
         try {
@@ -1064,7 +1064,7 @@ public class ViewReportSrvl extends HttpServlet {
             	batch_no = as_of_date.substring(0, 6);
             }
         }catch(Exception e){}
-        logger.error("Report file : "+reportfilename);
+        logger.info("Report file : "+reportfilename);
         try{
             if( department_code.equals("") || department_code.equals(null) ){department_code = "%";}
         }catch(Exception e){}
@@ -1092,7 +1092,7 @@ public class ViewReportSrvl extends HttpServlet {
             this.reportGenerateView(hm, reportfilename, response);
         }else{
             if(file_type.equals("txt")){
-                this.reportGenerateFile(null, file_save, null, response, request, ""+ers.exportData(path, null, rq.getReport(reportfilename), null, null, cdb, null));
+                this.reportGenerateFile(null, file_save, null, response, request, ""+ers.exportData(path, reportfilename, rq.getReport(reportfilename), null, null, cdb, null));
                 cdb.closeDB("");
             }else{
                 this.reportGenerateFile(hm, file_save, reportfilename, response, request, file_type);
@@ -1176,6 +1176,7 @@ public class ViewReportSrvl extends HttpServlet {
         String upload_path=getServletConfig().getServletContext().getRealPath("")+"\\reports\\output\\";
         String URLpath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+""+request.getContextPath()+"/reports/"+report_source_file+".jasper";   // /mywebapp
         DBConn cdb = new DBConn();
+        logger.info("Report source file : "+report_source_file);
         try {
             cdb.setStatement();
         } catch (Exception ex) {
