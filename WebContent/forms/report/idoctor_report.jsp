@@ -42,7 +42,7 @@
 	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
-	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Report", "Summary Revenue");
+	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Report", "รายงานสรุปรายได้แพทย์");
 	labelMap.add("REPORT_BEHIND_PAYMENT_SUMMARY","Behind in Payment Summary","รายงานสรุปค่าแพทย์ค้างจ่าย");
 	labelMap.add("REPORT_BEHIND_PAYMENT_DETAIL","Behind in Payment Detail","รายงานรายการค่าแพทย์ค้างจ่าย");
 
@@ -143,7 +143,7 @@
 							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
 			            	|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
 							|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"
+							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
 							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
 							|| document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
 							document.mainForm.REPORT_DISPLAY.value = "save";
@@ -201,7 +201,7 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"){
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	document.getElementById('block_doctor_code').style.display = '';
@@ -226,7 +226,7 @@
                  	document.getElementById('block_expense_code').style.display = 'none';
                  	document.getElementById('block_payment_term').style.display = 'none';
                  	document.getElementById('block_doctor_type').style.display = '';
-                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"){
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"){
                  		document.getElementById('block_doctor_type').style.display = '';
                  	}else{
                  		document.getElementById('block_doctor_type').style.display = 'none';
@@ -677,7 +677,7 @@
 						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
-						<option value="SummaryRevenueByDoctor">${labelMap.REPORT_SUMMARY_REVENUE}</option>
+						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
 						<option value="SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
                      	<option value="DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_SUMMARY}</option>	
 				</select></td>
