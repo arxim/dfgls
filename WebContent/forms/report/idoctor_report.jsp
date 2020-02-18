@@ -42,7 +42,7 @@
 	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
-	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Report", "รายงานสรุปรายได้แพทย์");
+	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Payment", "รายงานสรุปรายได้แพทย์ทำจ่าย");
 	labelMap.add("REPORT_BEHIND_PAYMENT_SUMMARY","Behind in Payment Summary","รายงานสรุปค่าแพทย์ค้างจ่าย");
 	labelMap.add("REPORT_BEHIND_PAYMENT_DETAIL","Behind in Payment Detail","รายงานรายการค่าแพทย์ค้างจ่าย");
 
@@ -109,7 +109,7 @@
                     document.mainForm.REPORT_FILE_NAME.focus();
                 }else{
 					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "")){
-						if (document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" 
+						if (document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction" 
 							//|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" 
 							|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction") {
 							alert("Please Select From Date/To Date");							
@@ -159,7 +159,7 @@
             }
             
 			function changeDropDownType(){
-				if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.REPORT_FILE_NAME.value == "SummaryDailyOrderCate" || document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction"){
+				if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.REPORT_FILE_NAME.value == "SummaryDailyOrderCate" || document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction"){
                 }else{
                 	if(document.mainForm.FILE_TYPE.value == "txt"){
 						alert("Report doesn't Support Text File");
@@ -169,8 +169,9 @@
 			
             function changeDropDownList(){
                 
-                if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"
-                		|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction" ){
+                if(document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction" 
+                    || document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction"
+                    || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
                     document.getElementById('block_from_to_date').style.display = '';
                 	document.getElementById('block_payor_office_code').style.display = 'none';
                 	document.getElementById('block_doctor_code').style.display = '';
@@ -180,8 +181,11 @@
                 	document.getElementById('block_doctor_category_code').style.display = 'none';
                 	document.getElementById('block_order_item_code').style.display = 'none';
                 	document.getElementById('block_invoice_no').style.display = 'none';
-                	document.getElementById('block_module').style.display = '';
-                	document.getElementById('block_transaction_type').style.display = 'none';
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
+                    	document.getElementById('block_module').style.display = 'none';
+                 	}else{
+                    	document.getElementById('block_module').style.display = 'none';
+                 	}
                 	document.getElementById('block_adminssion_type').style.display = '';
                 	document.getElementById('block_document_type').style.display = 'none';
                 	document.getElementById('block_month_year').style.display = 'none';
@@ -196,7 +200,7 @@
                 	document.getElementById('block_payment_term').style.display = 'none';
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = '';
+                 	document.getElementById('block_save_file').style.display = 'none';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
@@ -212,7 +216,6 @@
                  	document.getElementById('block_order_item_code').style.display = 'none';
                  	document.getElementById('block_invoice_no').style.display = 'none';
                  	document.getElementById('block_module').style.display = 'none';
-                 	document.getElementById('block_transaction_type').style.display = 'none';
                  	document.getElementById('block_adminssion_type').style.display = 'none';
                  	document.getElementById('block_document_type').style.display = 'none';
                  	document.getElementById('block_month_year').style.display = '';
@@ -232,7 +235,7 @@
                  		document.getElementById('block_doctor_type').style.display = 'none';
                  	}
                  	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = '';
+                 	document.getElementById('block_save_file').style.display = 'none';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
@@ -245,7 +248,6 @@
                  	document.getElementById('block_order_item_code').style.display = 'none';
                  	document.getElementById('block_invoice_no').style.display = 'none';
                  	document.getElementById('block_module').style.display = 'none';
-                 	document.getElementById('block_transaction_type').style.display = 'none';
                  	document.getElementById('block_adminssion_type').style.display = 'none';
                  	document.getElementById('block_document_type').style.display = 'none';
                  	document.getElementById('block_month_year').style.display = '';
@@ -260,7 +262,7 @@
                  	document.getElementById('block_payment_term').style.display = 'none';
                  	document.getElementById('block_doctor_type').style.display = 'none';
                  	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = '';
+                 	document.getElementById('block_save_file').style.display = 'none';
                 } else {
                 	document.getElementById('block_from_to_date').style.display = 'none';
                 	document.getElementById('block_payor_office_code').style.display = 'none';
@@ -272,7 +274,6 @@
                 	document.getElementById('block_order_item_code').style.display = 'none';
                 	document.getElementById('block_invoice_no').style.display = 'none';
                 	document.getElementById('block_module').style.display = 'none';
-                	document.getElementById('block_transaction_type').style.display = 'none';
                 	document.getElementById('block_adminssion_type').style.display = 'none';
                 	document.getElementById('block_document_type').style.display = 'none';
                 	document.getElementById('block_month_year').style.display = 'none';
@@ -668,16 +669,20 @@
 				</td>
 				<td colspan="3" class="input">
 				<select class="mediumMax" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" onchange="changeDropDownList()">
-						<option value="None">-- Select Report --</option>
-						<option value="ImportTransaction">${labelMap.REPORT_TRANSACTION}</option>
-						<option value="ImportChecklist">${labelMap.REPORT_IMPORT_CHECKLIST}</option>
+						<option value="None"> Select Report </option>
+						<option value="None">--------- Daily Checklist ---------</option>
+						<option value="InterfaceTransaction">${labelMap.REPORT_TRANSACTION}</option>
 						<option value="ImportVerifyTransaction">${labelMap.REPORT_TRANSACTION_RESULT}</option>
+						<option value="ImportChecklist">${labelMap.REPORT_IMPORT_CHECKLIST}</option>
+						<option value="None">--------- Monthly Checklist ---------</option>
 						<option value="GuaranteeSetup">${labelMap.REPORT_GUARANTEE_TRANSACTION}</option>
 						<option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
-						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
-						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
-						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
+						<option value="None">--------- Monthly Payment ---------</option>
 						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
+						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
+						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
+						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
+						<option value="None">--------- DF Unpaid ---------</option>
 						<option value="SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
                      	<option value="DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_SUMMARY}</option>	
 				</select></td>
@@ -758,7 +763,7 @@
                <td class="label">
                     <label for="DOCTOR_TYPE_CODE"><span class="style1">Doctor type</span></label>                    </td>
                     <td class="input" colspan="3">
-                        <%=DBMgr.generateDropDownList("DOCTOR_TYPE_CODE", "long", "inActive", "SELECT CODE, DESCRIPTION, ACTIVE FROM DOCTOR_TYPE WHERE HOSPITAL_CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' ORDER BY DESCRIPTION", "DESCRIPTION", "CODE","")%>                   
+                        <%=DBMgr.generateDropDownList("DOCTOR_TYPE_CODE", "medium", "inActive", "SELECT CODE, DESCRIPTION, ACTIVE FROM DOCTOR_TYPE WHERE HOSPITAL_CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' ORDER BY DESCRIPTION", "DESCRIPTION", "CODE","")%>                   
                </td>
 			</tr>
 			
@@ -813,60 +818,40 @@
 					<input id="SEARCH_INVOICE_NO" name="SEARCH_INVOICE_NO" type="image" class="image_button" src="../../images/search_button.png" alt="Search"
 					onclick="openSearchForm('../search_invoice.jsp?TABLE=TRN_DAILY&RETURN_FIELD=INVOICE_NO&DISPLAY_FIELD=INVOICE_DATE&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=INVOICE_NO&HANDLE=AJAX_Refresh_INVOICE'); return false;" />
 				</td>
-				
 			</tr>
 			
-			
 			<tr id="block_module">
-                  <td class="label">
-                   	<label for="aText">${labelMap.TRANSACTION_TYPE}</label>                    
-                   </td>
-                   <td class="input">
-                       <select class="short" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
-                           <option value="%">-- Select --</option>
-                           <option value="%">ALL</option>
-                           <option value="INV">Credit</option>
-                           <option value="REV">Cash</option>
-                   </select>                    
-                   </td>
-                   
-                   
                    <td class="label"><label for="aText">${labelMap.TRANSACTION_MODULE}</label></td>
-                   <td class="input">
-                       <select class="medium" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
+                   <td class="input" colspan="3">
+                       <select class="short" id="TRANSACTION_MODULE" name="TRANSACTION_MODULE">
                            <option value="%">ALL</option>
-						<option value="TR">DF TRANSACTION</option>
-						<option value="AR">ACCOUNT RECEIPT</option>
+						<option value="TR">DF</option>
+						<option value="AR">AR</option>
 						<!-- <option value="PT">PARTIAL RECEIPT</option>
 						<option value="OW">ONWARD TRANSACTION</option>
 						<option value="DY">DISCHARGE PAYMENT</option>
 						<option value="DH">DISCHARGE HOLD</option> -->
                    	</select>
 				</td>
-
             </tr>                
-
-			
-			<tr id="block_transaction_type">
-				<td class="label"><label for="aText">${labelMap.TRANSACTION_TYPE}</label>
-				</td>
-				<td class="input" colspan="3"><select class="mediumMax" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
-						<option value="%">-- Select --</option>
-						<option value="%">ALL</option>
-						<option value="INV">Credit</option>
-						<option value="REV">Cash</option>
-				</select></td>
-				
-			</tr>
 			
 			<tr id="block_adminssion_type">
 				<td class="label"><label for="ADMISSION_TYPE_CODE">${labelMap.ADMISSION_TYPE_CODE}</label></td>
-					<td class="input" colspan="3"><select class="mediumMax" id="ADMISSION_TYPE_CODE" name="ADMISSION_TYPE_CODE">
+					<td class="input"><select class="short" id="ADMISSION_TYPE_CODE" name="ADMISSION_TYPE_CODE">
 							<option value="%">-- Select --</option>
 							<option value="%">ALL</option>
 							<option value="I">IPD</option>
 							<option value="O">OPD</option>
 					</select></td>
+				<td class="label"><label for="aText">${labelMap.TRANSACTION_TYPE}</label></td>
+                   <td class="input">
+                       <select class="short" id="TRANSACTION_TYPE" name="TRANSACTION_TYPE">
+                           <option value="%">-- Select --</option>
+                           <option value="%">ALL</option>
+                           <option value="INV">Credit</option>
+                           <option value="REV">Cash</option>
+                   		</select>                    
+                   </td>
 			</tr>
 			
 			<tr id="block_document_type">
@@ -888,7 +873,6 @@
 				<td class="label"><label>${labelMap.YYYY}</label></td>
 				<td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
 			</tr>
-			
 			<tr id="block_doctor_code_from">
 				<td class="label"><label for="DOCTOR_CODE_FROM">${labelMap.DOCTOR_CODE_FROM}</label></td>
 				<td colspan="3" class="input"><input type="text"
@@ -933,7 +917,6 @@
 					name="GUARANTEE_DEPARTMENT_DESCRIPTION" class="mediumMax"
 					readonly="readonly" value="" /></td>
 			</tr>
-
 			<tr id="block_gl_type">
 				<td class="label"><label for="GL_TYPE">${labelMap.GL_TYPE}</label></td>
 				<td class="input" colspan="3"><select id="GL_TYPE"
@@ -942,7 +925,6 @@
 						<option value="AC">ACCU</option>
 				</select></td>
 			</tr>
-			
 			<tr id="block_expense_sign">
                 <td class="label"><label for="EXPENSE_SIGN">${labelMap.EXPENSE_SIGN}</label></td>
                	<td colspan="3" class="input">
@@ -969,7 +951,6 @@
 					<input type="text" id="EXPENSE_CODE_DESCRIPTION" name="EXPENSE_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />                    
                  </td>
             </tr>                
-                
             <tr id="block_payment_term">
             	<td class="label">
             		<label>${labelMap.PAYMENT_TERM}</label>
@@ -981,51 +962,33 @@
                	 	</select>
             	</td>
             </tr>
-            <%-- <tr id="block_doctor_type">
+            <tr id="block_payment_mode">
                 <td class="label">
-                    <label for="DOCTOR_TYPE_CODE"><span class="style1">${labelMap.DOCTOR_TYPE_CODE}</span></label></td>
+                    <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>
                 <td class="input" colspan="3">
-					<select id="DOCTOR_TYPE_CODE" name="DOCTOR_TYPE_CODE" class="mediumMax">
-						<option value="%">--SELECT ALL--</option>
-						<option value="GDM">การันตีรายวันคิดเป็นเดือน(DLY_MLY)</option>
-						<option value="GM">การันตีรายเดือน(MLY)</option>
-						<option value="GMT">การันตีรายเดือนและมีค่าเวร</option>
-						<option value="GD">การันตีวัน/ช.ม. (DLY)</option>
-						<option value="SS">ขั้นบันได(STP)</option>
-						<option value="CS">ทั่วไป(CS)</option>
-						<option value="IT">แพทย์เวร</option>
-						<option value="G%">แพทย์การันตี</option>
-					</select>
+				<select id="PAYMENT_MODE_CODE" name="PAYMENT_MODE_CODE" class="mediumMax">
+					<option value="%">--SELECT ALL--</option>
+					<option value="B">Bank Transfer</option>
+					<option value="C">Cash</option>
+					<option value="CQ">Cheque</option>
+					<option value="PR">Payroll</option>
+					<option value="U">Unpaid</option>
+				</select>
                 </td>
-            </tr> --%>
-             <tr id="block_payment_mode">
-                 <td class="label">
-                     <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>
-                 <td class="input" colspan="3">
-					<select id="PAYMENT_MODE_CODE" name="PAYMENT_MODE_CODE" class="mediumMax">
-						<option value="%">--SELECT ALL--</option>
-						<option value="B">Bank Transfer</option>
-						<option value="C">Cash</option>
-						<option value="CQ">Cheque</option>
-						<option value="PR">Payroll</option>
-						<option value="U">Unpaid</option>
-					</select>
-                 </td>
-             </tr>                
-               
-               
+            </tr>                
 			<tr id="block_save_file">
 				<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
 				<td class="input" colspan="3"><input type="text" class="mediumMax"
 					id="SAVE_FILE" name="SAVE_FILE" /> <select id="FILE_TYPE"
 					name="FILE_TYPE" onChange="changeDropDownType();">
+						<!--
 						<option value="">Select</option>
 						<option value="pdf">pdf</option>
-						<option value="txt">text</option>
 						<option value="xls">xls</option>
+						 -->
+						<option value="txt">text</option>
 				</select></td>
 			</tr>
-               
 			<tr>
 				<th colspan="4" class="buttonBar">
 					<input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="Report_Save();" /> 
