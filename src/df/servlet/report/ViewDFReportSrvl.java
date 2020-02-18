@@ -228,6 +228,13 @@ public class ViewDFReportSrvl extends HttpServlet {
 		} catch (Exception e) {}
 		
 		try {
+			if (doctor_type_code.equals("") || doctor_type_code.equals(null)) {
+				doctor_type_code = "%";
+			}
+		} catch (Exception e) {}
+		
+		
+		try {
 			if (admission_type_code.equals("") || admission_type_code.equals(null)) {
 				admission_type_code = "%";
 			}

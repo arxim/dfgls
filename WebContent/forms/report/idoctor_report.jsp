@@ -6,6 +6,7 @@
 <%@page import="df.bean.db.table.Batch"%>
 <%@page import="df.bean.process.ProcessUtil"%>
 <%@page import="df.bean.obj.util.JDate"%>
+<%@page import="df.bean.db.DBMgr"%>
 <%@ include file="../../_global.jsp"%>
 
 <%
@@ -224,13 +225,19 @@
                  	document.getElementById('block_expense_account_code').style.display = 'none';
                  	document.getElementById('block_expense_code').style.display = 'none';
                  	document.getElementById('block_payment_term').style.display = 'none';
-                 	document.getElementById('block_doctor_type').style.display = 'none';
+                 	document.getElementById('block_doctor_type').style.display = '';
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDoctor"){
+                 		document.getElementById('block_doctor_type').style.display = '';
+                 	}else{
+                 		document.getElementById('block_doctor_type').style.display = 'none';
+                 	}
                  	document.getElementById('block_payment_mode').style.display = 'none';
                  	document.getElementById('block_save_file').style.display = '';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	document.getElementById('block_doctor_code').style.display = '';
+                 	document.getElementById('block_doctor_type').style.display = '';
                  	document.getElementById('block_doctor_profile_code').style.display = 'none';
                  	document.getElementById('block_doctor_department').style.display = 'none';
                  	document.getElementById('block_order_category_code').style.display = 'none';
@@ -281,6 +288,7 @@
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 	document.getElementById('block_payment_mode').style.display = 'none';
                 	document.getElementById('block_save_file').style.display = 'none';
+                	document.getElementById('block_doctor_type').style.display = 'none';
                 }
             }
                         
@@ -745,6 +753,15 @@
 					class="mediumMax" id="DOCTOR_DEPARTMENT_DESCRIPTION"
 					readonly="readonly" value="" /></td>
 			</tr>
+			
+			<tr id="block_doctor_type">
+               <td class="label">
+                    <label for="DOCTOR_TYPE_CODE"><span class="style1">Doctor type</span></label>                    </td>
+                    <td class="input" colspan="3">
+                        <%=DBMgr.generateDropDownList("DOCTOR_TYPE_CODE", "long", "inActive", "SELECT CODE, DESCRIPTION, ACTIVE FROM DOCTOR_TYPE WHERE HOSPITAL_CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' ORDER BY DESCRIPTION", "DESCRIPTION", "CODE","")%>                   
+               </td>
+			</tr>
+			
 			<tr id="block_order_category_code">
 				<td class="label"><label for="ORDER_CATEGORY_CODE">${labelMap.ORDER_CATEGORY_CODE}</label></td>
 				<td colspan="3" class="input"><input name="ORDER_CATEGORY_CODE"
@@ -964,7 +981,7 @@
                	 	</select>
             	</td>
             </tr>
-            <tr id="block_doctor_type">
+            <%-- <tr id="block_doctor_type">
                 <td class="label">
                     <label for="DOCTOR_TYPE_CODE"><span class="style1">${labelMap.DOCTOR_TYPE_CODE}</span></label></td>
                 <td class="input" colspan="3">
@@ -980,7 +997,7 @@
 						<option value="G%">แพทย์การันตี</option>
 					</select>
                 </td>
-            </tr>
+            </tr> --%>
              <tr id="block_payment_mode">
                  <td class="label">
                      <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>

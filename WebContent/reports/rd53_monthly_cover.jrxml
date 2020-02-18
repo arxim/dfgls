@@ -24,11 +24,11 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["E:\\Scap\\Project\\Workspaces\\dfgls\\WebContent\\reports\\"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="yyyy" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="yyyy" isForPrompting="false" class="java.lang.Integer"/>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["12"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["CHC00"]]></defaultValueExpression>
@@ -49,24 +49,24 @@
 	(SELECT 
 		SUM(ST.SUM_NORMAL_TAX_AMT)
 	FROM SUMMARY_TAX_402 ST 
-	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP'
+	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP' AND IS_LEGAL_ENTITY='Y'
 		AND ST.HOSPITAL_CODE = $P{hospital_code} AND ST.ACTIVE = '1') AS 'SUM_WITHOUT_TAX',
 	(SELECT 
 		SUM(ST.NET_TAX_MONTH)
 	FROM SUMMARY_TAX_402 ST 
-	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP'
+	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP' AND IS_LEGAL_ENTITY='Y'
 		AND ST.HOSPITAL_CODE = $P{hospital_code} AND ST.ACTIVE = '1') AS 'NET_TAX',
 	(SELECT 
 		COUNT(DOCTOR_CODE)
 	FROM SUMMARY_TAX_402 ST 
-	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD = 'STP'
+	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD = 'STP' AND IS_LEGAL_ENTITY='Y'
 		AND ST.SUM_NORMAL_TAX_AMT > 0
 		AND ST.HOSPITAL_CODE = $P{hospital_code} AND ST.ACTIVE = '1') AS 'TOTAL_ROWS',
 	(SELECT CASE WHEN (COUNT(DOCTOR_CODE)%8=0 OR COUNT(DOCTOR_CODE)%8=7) THEN
 		CAST(CEILING(COUNT(DOCTOR_CODE)/8.0)+1 AS INT)
 		ELSE CAST(CEILING(COUNT(DOCTOR_CODE)/8.0) AS INT) END
 	FROM SUMMARY_TAX_402 ST 
-	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP'
+	WHERE YYYY = $P{yyyy} AND MM = $P{mm} AND TAX_402_METHOD <> 'STP' AND IS_LEGAL_ENTITY='Y'
 		AND SUM_NORMAL_TAX_AMT > 0
 		AND ST.HOSPITAL_CODE = $P{hospital_code} AND ST.ACTIVE = '1') AS 'TOTAL_PAGES'
 FROM         
@@ -2003,7 +2003,7 @@ WHERE CODE=$P{hospital_code}]]></queryString>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_WITHOUT_TAX}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{NET_TAX}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -2248,19 +2248,6 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{AUTHORITY_POSITION}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="196"
-						y="779"
-						width="190"
-						height="13"
-						key="textField-48"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}]]></textFieldExpression>
-				</textField>
 				<line direction="TopDown">
 					<reportElement
 						x="317"
@@ -2398,7 +2385,7 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8"/>
 					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_WITHOUT_TAX}]]></textFieldExpression>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{NET_TAX}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
