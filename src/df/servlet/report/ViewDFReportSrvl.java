@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperRunManager;
-
 import df.bean.db.conn.DBConn;
+import df.bean.db.table.PayorOffice;
 import df.bean.interfacefile.ExportReportSummaryDailyBean;
 import df.bean.obj.util.JDate;
 import df.bean.obj.util.Variables;
@@ -24,7 +26,6 @@ import df.bean.report.GenerateReportBean;
 import df.bean.report.ReportQuery;
 
 public class ViewDFReportSrvl extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -84,12 +85,12 @@ public class ViewDFReportSrvl extends HttpServlet {
 		String expense_sign = request.getParameter("EXPENSE_SIGN");
 		String expense_account_code = request.getParameter("EXPENSE_ACCOUNT_CODE");
 		String expense_code = request.getParameter("EXPENSE_CODE");
-		String term = request.getParameter("term");
+		String term = request.getParameter("TERM");
 		String doctor_type_code = request.getParameter("DOCTOR_TYPE_CODE");
 		String payment_mode_code = request.getParameter("PAYMENT_MODE_CODE");
 		String save_file = request.getParameter("SAVE_FILE");
 		String file_type = request.getParameter("FILE_TYPE");
-		String paymentDate = JDate.saveDate(request.getParameter("date"));
+		String paymentDate = JDate.saveDate(request.getParameter("PAYMENT_DATE"));
 		
 		String is_onward = "%";
 		String is_partial = "%";
@@ -252,11 +253,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 		
 		try {
 			if (paymentDate.equals("") || paymentDate.equals(null)) {
-				if( (year.equals("") && month.equals("")) || (year.equals(null) && month.equals(null))){
-					paymentDate = "%";					
-				}else{
-					paymentDate = year+month+"%";
-				}
+				paymentDate = "%";					
 			}
 		} catch (Exception e) {}
 		
@@ -344,12 +341,12 @@ public class ViewDFReportSrvl extends HttpServlet {
 		hm.put("payment_mode_code", payment_mode_code);
 		hm.put("doctor", doctor_code);
 
+		System.out.println("Param Report : "+hm.toString());
 		if (request.getParameter("REPORT_DISPLAY").equals("view")) {
 			this.reportGenerateView(hm, reportfilename, response);
 		} else {
 			//this.reportGenerateFile(null, save_file, null, response, request,"" + ers.exportData(path, "", rq.getReport(reportfilename), null, null, cdb, null));
 		}
-
 	}
 
 	private void reportGenerateView(HashMap hashM, String report_source_file, HttpServletResponse response) {
