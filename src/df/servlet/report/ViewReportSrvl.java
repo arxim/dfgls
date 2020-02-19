@@ -257,6 +257,8 @@ public class ViewReportSrvl extends HttpServlet {
         hm.put("mm", month);
         hm.put("path_show", path_show);
         hm.put("filling_date", filling_date);
+        hm.put("printing_date", JDate.saveDate(printing_date));
+        
         
         if(reportfilename.contains("TaxLetter406")){
         //if("TaxLetter406".equalsIgnoreCase(reportfilename)){
