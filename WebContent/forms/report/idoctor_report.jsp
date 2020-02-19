@@ -208,7 +208,11 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
-                 	document.getElementById('block_doctor_code').style.display = '';
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"){
+                     	document.getElementById('block_doctor_code').style.display = 'none';
+                 	}else{
+                     	document.getElementById('block_doctor_code').style.display = '';
+                 	}
                  	document.getElementById('block_doctor_profile_code').style.display = 'none';
                  	document.getElementById('block_doctor_department').style.display = 'none';
                  	document.getElementById('block_order_category_code').style.display = 'none';
