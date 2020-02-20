@@ -24,10 +24,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["066014291"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="term" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
@@ -39,7 +39,7 @@
 		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00019"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["066"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20150109"]]></defaultValueExpression>
@@ -64,6 +64,7 @@ LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
 where ST.DOCTOR_CODE = CASE WHEN $P{from_doctor} NOT IN('','%') THEN $P{from_doctor} ELSE $P{doctor_code} END
 AND ST.HOSPITAL_CODE = $P{hospital_code} 
 AND YYYY = $P{year}
+AND MM LIKE CASE WHEN $P{term} NOT IN('01', '06', '12') THEN '%' ELSE $P{term} END
 AND PRINT_DATE <> ''
 AND SUM_TAX_DR_AMT > 0
 order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
@@ -192,7 +193,7 @@ order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $P{print_date}.length() != 8 ? ( $F{PRINT_DATE}.length() != 8 ? "Date?" : $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543))) : ( $P{print_date}.length() != 8 ? "Date?" : $P{print_date}.substring( 6, 8 )+"/"+$P{print_date}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543))))]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $F{PRINT_DATE}.length() != 8 ? "Date?" : $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543)))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -275,7 +276,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						width="120"
 						height="94"
 						key="image-5">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("006") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") )]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("006") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") || $F{HOSPITAL_CODE}.equals("066") )]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
@@ -877,7 +878,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						width="590"
 						height="76"
 						key="image-4">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") ||$F{HOSPITAL_CODE}.equals("00019") || $F{HOSPITAL_CODE}.equals("046") || $F{HOSPITAL_CODE}.equals("036")|| $F{HOSPITAL_CODE}.equals("006"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") ||$F{HOSPITAL_CODE}.equals("00019") || $F{HOSPITAL_CODE}.equals("046") || $F{HOSPITAL_CODE}.equals("036")|| $F{HOSPITAL_CODE}.equals("066"))]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
