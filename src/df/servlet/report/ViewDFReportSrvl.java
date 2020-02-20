@@ -117,7 +117,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 				if( (year.equals("") && month.equals("")) || (year.equals(null) && month.equals(null))){
 					to_date = "99999999";
 				}else{
-					to_date = year+month+"%";
+					to_date = year+month+"31";
 				}
 			}
 		} catch (Exception e) {}
