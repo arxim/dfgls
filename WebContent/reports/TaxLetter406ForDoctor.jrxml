@@ -30,7 +30,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -39,10 +39,13 @@
 		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["050"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["00019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["20150109"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<queryString><![CDATA[SELECT ST.YYYY, ST.MM, ST.DOCTOR_CODE, ST.HOSPITAL_CODE, DR.NAME_THAI, ST.SUM_TAX_DR_AMT, ST.SUM_DR_AMT,
 HOS.DESCRIPTION_THAI, ST.SUM_TAX_DR_AMT, ST.TEXT_SUM_TAX_DR_AMT,
@@ -58,7 +61,7 @@ AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
 LEFT OUTER JOIN DOCTOR_PROFILE DP on DR.DOCTOR_PROFILE_CODE = DP.CODE
 AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE
 LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
-where ST.DOCTOR_CODE like $P{doctor_code}
+where ST.DOCTOR_CODE = CASE WHEN $P{from_doctor} NOT IN('','%') THEN $P{from_doctor} ELSE $P{doctor_code} END
 AND ST.HOSPITAL_CODE = $P{hospital_code} 
 AND YYYY = $P{year}
 AND PRINT_DATE <> ''

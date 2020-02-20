@@ -679,7 +679,7 @@ public class ViewReportSrvl extends HttpServlet {
         logger.info("Test : "+year+month+term+"Hospital_code"+hospital_code);
         VerifyAllowViewReportBean v = new VerifyAllowViewReportBean();
         boolean status = false;
-        if(reportfilename.equals("TaxLetter406ForDoctor") || reportfilename.equals("Tax402SummaryYearlyForDoctor")) {
+        if(reportfilename.contains("TaxLetter406ForDoctor") || reportfilename.contains("Tax402SummaryYearlyForDoctor")) {
         	status = true;
         }
         else {
