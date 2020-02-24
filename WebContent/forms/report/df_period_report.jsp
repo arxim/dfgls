@@ -53,6 +53,7 @@
 			labelMap.add("REPORT_EXPENSE","Expense Report","รายงานรายได้ค่าใช้จ่ายแพทย์");
 			labelMap.add("REPORT_DF_HOLD","DF Hold Report","รายงานรายการระงับจ่ายค่าแพทย์");
 			labelMap.add("REPORT_DF_PERIOD","Summary Revenue Period","รายงานรายได้แพทย์(ช่วงเวลา)");
+			labelMap.add("REPORT_EXPENSE_PERIOD","Adjust Revenue Period","รายงานรายได้ค่าใช้จ่ายแพทย์(ช่วงเวลา)");
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
             labelMap.add("DOCUMENT_TYPE", "Document Type", "ประเภทเอกสาร");
             labelMap.add("VIEW", "View", "แสดงผล");
@@ -69,6 +70,12 @@
 			labelMap.add("OCT","October","ตุลาคม");
 			labelMap.add("NOV","November","พฤศจิกายน");
 			labelMap.add("DEC","December","ธันวาคม");
+			labelMap.add("EXPENSE_SIGN","Expense sign","Expense sign");
+			labelMap.add("EXPENSE_ACCOUNT_CODE","Expense account code","Expense account code");
+			labelMap.add("EXPENSE_CODE","Expense code","Expense code");
+			labelMap.add("EXPENSE_SING_LABEL_ALL","ALL","ทั้งหมด");
+			labelMap.add("EXPENSE_SING_LABEL_REVENUE","Revenue","รายได้");
+			labelMap.add("EXPENSE_SING_LABEL_EXPENSE","Expense","ค่าใช้จ่าย");
             String report = "";
             request.setAttribute("labelMap", labelMap.getHashMap());
 %>
@@ -429,7 +436,86 @@
 /********************************************************************************************************************
  * Retreive order item information : End
  */        
- 
+ /********************************************************************************************************************
+  * Retreive EXPENSE_ACCOUNT_CODE information : Begin
+  */
+ 		 function EXPENSE_ACCOUNT_CODE_KeyPress(e) {
+ 		     var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+ 		
+ 		     if (key == 13) {
+ 		         document.mainForm.EXPENSE_ACCOUNT_CODE.blur();
+ 		         return false;
+ 		     }
+ 		     else {
+ 		         return true;
+ 		     }
+ 		 }
+ 		
+ 		 function AJAX_Refresh_EXPENSE_ACCOUNT_CODE() {
+ 		     var target = "../../RetrieveData?TABLE=ACCOUNT&COND=CODE='" + document.mainForm.EXPENSE_ACCOUNT_CODE.value + "'";
+ 		     AJAX_Request(target, AJAX_Handle_Refresh_EXPENSE_ACCOUNT_CODE);
+ 		 }
+ 		
+ 		 function AJAX_Handle_Refresh_EXPENSE_ACCOUNT_CODE() {
+ 		     if (AJAX_IsComplete()) {
+ 		
+ 		         var xmlDoc = AJAX.responseXML;
+ 		
+ 		         // Data not found
+ 		         if (!isXMLNodeExist(xmlDoc, "DESCRIPTION")) {			         
+ 		             //document.mainForm.ORDER_ITEM_CODE.value = "";
+ 		             document.mainForm.EXPENSE_ACCOUNT_CODE_DESCRIPTION.value = "";
+ 		             return;
+ 		         }
+
+ 		         // Data found
+ 		         document.mainForm.EXPENSE_ACCOUNT_CODE_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+ 		     }
+ 		 }
+  
+ /********************************************************************************************************************
+  * Retreive EXPENSE_ACCOUNT_CODE information : End
+  */  
+  /********************************************************************************************************************
+   * Retreive EXPENSE_CODE information : Begin
+   */
+  		 function EXPENSE_CODE_KeyPress(e) {
+  		     var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+  		
+  		     if (key == 13) {
+  		         document.mainForm.EXPENSE_CODE.blur();
+  		         return false;
+  		     }
+  		     else {
+  		         return true;
+  		     }
+  		 }
+  		
+  		 function AJAX_Refresh_EXPENSE_CODE() {
+  		     var target = "../../RetrieveData?TABLE=EXPENSE&COND=CODE='" + document.mainForm.EXPENSE_CODE.value + "'";
+  		     AJAX_Request(target, AJAX_Handle_Refresh_EXPENSE_CODE);
+  		 }
+  		
+  		 function AJAX_Handle_Refresh_EXPENSE_CODE() {
+  		     if (AJAX_IsComplete()) {
+  		
+  		         var xmlDoc = AJAX.responseXML;
+  		
+  		         // Data not found
+  		         if (!isXMLNodeExist(xmlDoc, "DESCRIPTION")) {			         
+  		             //document.mainForm.ORDER_ITEM_CODE.value = "";
+  		             document.mainForm.EXPENSE_CODE_DESCRIPTION.value = "";
+  		             return;
+  		         }
+
+  		         // Data found
+  		         document.mainForm.EXPENSE_CODE_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+  		     }
+  		 }
+   
+  /********************************************************************************************************************
+   * Retreive EXPENSE_CODE information : End
+   */  
 
         </script>
     </head>
@@ -455,6 +541,7 @@
 					<select class="mediumMax" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" onchange="changeDropDownList();">
                       <option value="None">-- Select Monthly Report --</option>                     
                       <option value="SummaryRevenueByDetailPeriod">${labelMap.REPORT_DF_PERIOD}</option>
+                      <option value="ExpenseDetailPeriod">${labelMap.REPORT_EXPENSE_PERIOD}</option>
                     </select>
 					</td>
                 </tr>
@@ -490,6 +577,40 @@
                         <input id="SEARCH_DOCTOR_CODE_FROM" name="SEARCH_DOCTOR_CODE_FROM" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR_PROFILE&DISPLAY_FIELD=NAME_<%= labelMap.getFieldLangSuffix() %>&TARGET=DOCTOR_CODE_FROM&BEINSIDEHOSPITAL=1&BEACTIVE=1&HANDLE=AJAX_Refresh_DOCTOR_FROM'); return false;" />
                         <input type="text" id="DOCTOR_NAME_FROM" name="DOCTOR_NAME_FROM" class="mediumMax" readonly="readonly" value="" />                    </td>
                 </tr>
+                <tr>
+                    <td class="label"><label for="DOCTOR_DEPARTMENT_CODE">${labelMap.DOCTOR_DEPARTMENT_CODE}</label></td>
+                    <td class="input" colspan="3">
+                        <input name="DOCTOR_DEPARTMENT_CODE" type="text" class="short" id="DOCTOR_DEPARTMENT_CODE" maxlength="20" value="" onkeypress="return DOCTOR_DEPARTMENT_CODE_KeyPress(event);" onblur="AJAX_Refresh_DOCTOR_DEPARTMENT();" />
+                        <input id="SEARCH_DOCTOR_DEPARTMENT_CODE" name="SEARCH_DOCTOR_DEPARTMENT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DEPARTMENT&DISPLAY_FIELD=DESCRIPTION&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=DOCTOR_DEPARTMENT_CODE&HANDLE=AJAX_Refresh_DOCTOR_DEPARTMENT'); return false;" />
+                        <input name="DOCTOR_DEPARTMENT_DESCRIPTION" type="text" class="mediumMax" id="DOCTOR_DEPARTMENT_DESCRIPTION" readonly="readonly" value="" />                    
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="EXPENSE_SIGN">${labelMap.EXPENSE_SIGN}</label></td>
+                    <td colspan="3" class="input">
+                    	<select name="EXPENSE_SIGN" class="medium">
+                    		<option value="">${labelMap.EXPENSE_SING_LABEL_ALL}</option>
+                    		<option value="1">${labelMap.EXPENSE_SING_LABEL_REVENUE}</option>
+                    		<option value="-1">${labelMap.EXPENSE_SING_LABEL_EXPENSE}</option>
+                    	</select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><label for="EXPENSE_ACCOUNT_CODE">${labelMap.EXPENSE_ACCOUNT_CODE}</label></td>
+                    <td colspan="3" class="input">
+						<input type="text" id="EXPENSE_ACCOUNT_CODE" name="EXPENSE_ACCOUNT_CODE" class="short" value="" onkeypress="return EXPENSE_ACCOUNT_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_ACCOUNT_CODE();" />
+                        <input id="SEARCH_EXPENSE_ACCOUNT_CODE" name="SEARCH_EXPENSE_ACCOUNT_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=ACCOUNT&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_ACCOUNT_CODE&COND=AND CODE IN (SELECT ACCOUNT_CODE FROM EXPENSE)&HANDLE=AJAX_Refresh_EXPENSE_ACCOUNT_CODE'); return false;" />
+                        <input type="text" id="EXPENSE_ACCOUNT_CODE_DESCRIPTION" name="EXPENSE_ACCOUNT_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />
+                    </td>
+                </tr>
+				<tr>
+                    <td class="label"><label for="EXPENSE_CODE">${labelMap.EXPENSE_CODE}</label></td>
+                    <td colspan="3" class="input">
+						<input type="text" id="EXPENSE_CODE" name="EXPENSE_CODE" class="short" value="" onkeypress="return EXPENSE_CODE_KeyPress(event);" onblur="AJAX_Refresh_EXPENSE_CODE();" />
+                        <input id="SEARCH_EXPENSE_CODE" name="SEARCH_EXPENSE_CODE" type="image" class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=EXPENSE&DISPLAY_FIELD=DESCRIPTION&TARGET=EXPENSE_CODE&HANDLE=AJAX_Refresh_EXPENSE_CODE'); return false;" />
+                        <input type="text" id="EXPENSE_CODE_DESCRIPTION" name="EXPENSE_CODE_DESCRIPTION" class="mediumMax" readonly="readonly" value="" />                    
+                    </td>
+                </tr> 
                 <tr>
                     <td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
                     <td class="input" colspan="3"><input type="text" class="short" id="SAVE_FILE" name="SAVE_FILE"/>
