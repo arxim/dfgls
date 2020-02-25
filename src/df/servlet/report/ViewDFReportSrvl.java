@@ -105,7 +105,6 @@ public class ViewDFReportSrvl extends HttpServlet {
 		String logo_path = Variables.IS_WINDOWS ? windows_logo_path : linux_logo_path;
 		String path = Variables.IS_WINDOWS ? windows_path : linux_path;
 		
-		System.out.println("Report Name : "+reportfilename+" : "+doctor_type_code);
 		//set default param block
 		try {
 			if (from_date.equals("") || from_date.equals(null)) {
@@ -287,6 +286,7 @@ public class ViewDFReportSrvl extends HttpServlet {
 			}
 		} catch (Exception e) {}
 
+		
 		//set param to genfile and viewreport
 		HashMap hm = new HashMap();
 		ReportQuery rq = new ReportQuery();

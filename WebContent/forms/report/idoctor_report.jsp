@@ -39,9 +39,9 @@
 	labelMap.add("REPORT_IMPORT_CHECKLIST", "Import DF Transaction", "นำเข้ารายการค่าแพทย์เข้าระบบ");
 	labelMap.add("REPORT_TRANSACTION_RESULT", "Interface Result Transaction", "นำเข้ารายการแพทย์อ่านผลชั่วคราว");
 	labelMap.add("REPORT_GUARANTEE_TRANSACTION", "Guarantee Setup", "รายการกำหนดการันตีแพทย์");
-	labelMap.add("REPORT_DETAIL_DF", "Detail Payment by Execute Date", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
+	labelMap.add("REPORT_DETAIL_DF", "Detail Payment (sort by date)", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
 	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
-	labelMap.add("REPORT_DETAIL_BY_ADMISSION", "Detail Payment By Admission", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย I/O");
+	labelMap.add("REPORT_DETAIL_BY_ADMISSION", "Detail Payment (sort by I/O)", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย I/O");
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
 	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Payment", "รายงานสรุปรายได้แพทย์ทำจ่าย");
@@ -234,7 +234,6 @@
                  	document.getElementById('block_expense_account_code').style.display = 'none';
                  	document.getElementById('block_expense_code').style.display = 'none';
                  	document.getElementById('block_payment_term').style.display = '';
-                 	document.getElementById('block_doctor_type').style.display = '';
                  	document.getElementById('block_payment_mode').style.display = 'none';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
