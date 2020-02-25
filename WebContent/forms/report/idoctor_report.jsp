@@ -16,6 +16,7 @@
 	ProcessUtil proUtil = new ProcessUtil();
 	DBConnection c = new DBConnection();
 	c.connectToLocal();
+	String hospitalCode = session.getAttribute("HOSPITAL_CODE").toString();
 	Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), c);
 	c.Close();
 	LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
@@ -38,8 +39,9 @@
 	labelMap.add("REPORT_IMPORT_CHECKLIST", "Import DF Transaction", "นำเข้ารายการค่าแพทย์เข้าระบบ");
 	labelMap.add("REPORT_TRANSACTION_RESULT", "Interface Result Transaction", "นำเข้ารายการแพทย์อ่านผลชั่วคราว");
 	labelMap.add("REPORT_GUARANTEE_TRANSACTION", "Guarantee Setup", "รายการกำหนดการันตีแพทย์");
-	labelMap.add("REPORT_DETAIL_DF", "Revenue Detail Payment", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
+	labelMap.add("REPORT_DETAIL_DF", "Detail Payment by Execute Date", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย");
 	labelMap.add("REPORT_DETAIL_IN_MONTH", "Revenue Detail In Month", "รายงานรายละเอียดรายได้แพทย์ในเดือน");
+	labelMap.add("REPORT_DETAIL_BY_ADMISSION", "Detail Payment By Admission", "รายงานรายละเอียดรายได้แพทย์ทำจ่าย I/O");
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
 	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Payment", "รายงานสรุปรายได้แพทย์ทำจ่าย");
@@ -109,24 +111,26 @@
                     document.mainForm.REPORT_FILE_NAME.focus();
                 }else{
 					if((document.mainForm.FROM_DATE.value == "" || document.mainForm.TO_DATE.value == "")){
-						if (document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction" 
-							//|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist" 
+						if (document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction"
+							//|| document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"
 							|| document.mainForm.REPORT_FILE_NAME.value == "ImportVerifyTransaction") {
-							alert("Please Select From Date/To Date");							
+							alert("Please Select From Date/To Date");
 						} else {
 							document.mainForm.REPORT_DISPLAY.value = "view";
 	                    	document.mainForm.target = "_blank";
+	                    	document.mainForm.action ="../../ViewDFReportSrvl"
 	                    	document.mainForm.submit();
 						}
 					}else{
 						document.mainForm.REPORT_DISPLAY.value = "view";
                     	document.mainForm.target = "_blank";
-                    	document.mainForm.submit();		
+                    	document.mainForm.action ="../../ViewDFReportSrvl"
+                    	document.mainForm.submit();
 					}
                 }
             }
             function Report_Save() {
-                if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.SAVE_FILE.value == ""){
+                if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.target_file.value == ""){
                     if(document.mainForm.REPORT_FILE_NAME.value == "None"){
 						alert("Please Select Report");
                         document.mainForm.REPORT_FILE_NAME.focus();
@@ -135,28 +139,11 @@
                         document.mainForm.SAVE_FILE.focus();
                     }					
                 }else{
-                	if(document.mainForm.MM.value == "" || document.mainForm.YYYY.value == ""){
-						alert("Please Select From Date/To Date");
-					}else{
-						if(document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" 
-							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
-							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-			            	|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-							|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
-							|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
-							|| document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
-							document.mainForm.REPORT_DISPLAY.value = "save";
-	                    	document.mainForm.target = "_blank";
-	                    	document.mainForm.submit();
-						}else{
-							document.mainForm.REPORT_DISPLAY.value = "save";
-	                    	document.mainForm.target = "_blank";
-	                    	document.mainForm.submit();				
-						}
-					}
-                }
-            }
+       				document.mainForm.method = "POST"
+       				document.mainForm.action = "http://192.168.2.111:8883/exportFileDF"
+       				document.mainForm.submit();
+				}
+			}
             
 			function changeDropDownType(){
 				if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.REPORT_FILE_NAME.value == "SummaryDailyOrderCate" || document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction"){
@@ -181,10 +168,14 @@
                 	document.getElementById('block_doctor_category_code').style.display = 'none';
                 	document.getElementById('block_order_item_code').style.display = 'none';
                 	document.getElementById('block_invoice_no').style.display = 'none';
-                 	if(document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
-                    	document.getElementById('block_module').style.display = 'none';
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "InterfaceTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportChecklist"){
+                    	document.getElementById('block_module').style.display = '';
+                    	document.getElementById('block_save_file').style.display = '';
+                    	document.mainForm.SAVE.disabled = false;
                  	}else{
                     	document.getElementById('block_module').style.display = 'none';
+                    	document.getElementById('block_save_file').style.display = 'none';
+                    	document.mainForm.SAVE.disabled = true;
                  	}
                 	document.getElementById('block_adminssion_type').style.display = '';
                 	document.getElementById('block_document_type').style.display = 'none';
@@ -200,18 +191,29 @@
                 	document.getElementById('block_payment_term').style.display = 'none';
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = 'none';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"){
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment" 
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"){
                      	document.getElementById('block_doctor_code').style.display = 'none';
+                 		document.getElementById('block_doctor_type').style.display = '';
                  	}else{
                      	document.getElementById('block_doctor_code').style.display = '';
+                 		document.getElementById('block_doctor_type').style.display = 'none';
+                 	}
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
+                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"){
+                    	document.getElementById('block_save_file').style.display = '';
+                    	document.mainForm.SAVE.disabled = false;
+                 	}else{
+                    	document.getElementById('block_save_file').style.display = 'none';
+                    	document.mainForm.SAVE.disabled = true;
                  	}
                  	document.getElementById('block_doctor_profile_code').style.display = 'none';
                  	document.getElementById('block_doctor_department').style.display = 'none';
@@ -231,15 +233,9 @@
                  	document.getElementById('block_expense_sign').style.display = 'none';
                  	document.getElementById('block_expense_account_code').style.display = 'none';
                  	document.getElementById('block_expense_code').style.display = 'none';
-                 	document.getElementById('block_payment_term').style.display = 'none';
+                 	document.getElementById('block_payment_term').style.display = '';
                  	document.getElementById('block_doctor_type').style.display = '';
-                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"){
-                 		document.getElementById('block_doctor_type').style.display = '';
-                 	}else{
-                 		document.getElementById('block_doctor_type').style.display = 'none';
-                 	}
                  	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = 'none';
                 } else if (document.mainForm.REPORT_FILE_NAME.value == "ExpenseDetail"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
@@ -267,6 +263,7 @@
                  	document.getElementById('block_doctor_type').style.display = 'none';
                  	document.getElementById('block_payment_mode').style.display = 'none';
                  	document.getElementById('block_save_file').style.display = 'none';
+                	document.mainForm.SAVE.disabled = true;
                 } else {
                 	document.getElementById('block_from_to_date').style.display = 'none';
                 	document.getElementById('block_payor_office_code').style.display = 'none';
@@ -293,6 +290,7 @@
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 	document.getElementById('block_payment_mode').style.display = 'none';
                 	document.getElementById('block_save_file').style.display = 'none';
+                	document.mainForm.SAVE.disabled = true;
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 }
             }
@@ -663,6 +661,8 @@
 		<table class="form">
 			<input type="hidden" id="REPORT_DISPLAY" name="REPORT_DISPLAY" />
 			<input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="iDoctor" />
+			<input type="hidden" id="PROCESS_NAME" name="PROCESS_NAME" value="report" />
+			<input type="hidden" id="HOSPITAL_CODE" name="HOSPITAL_CODE" value=<%=hospitalCode %> />
 			<tr>
 				<th colspan="4">
 					<div style="float: left;">${labelMap.TITLE_MAIN}</div>
@@ -685,6 +685,7 @@
 						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
+						<option value="SummaryRevenueByDetailForDoctorVCH">${labelMap.REPORT_DETAIL_BY_ADMISSION}</option>
 						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
 						<option value="None">--------- DF Unpaid ---------</option>
 						<option value="SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
@@ -859,7 +860,7 @@
 			</tr>
 			
 			<tr id="block_document_type">
-				<td class="label"><label for="DOCUMENT_TYPE">${labelMap.DOCUMENT_TYPE}</label><br />
+				<td class="label"><label for="DOCUMENT_TYPE">${labelMap.DOCUMENT_TYPE}</label><br/>
 				</td>
 				<td class="input"><select class="short" id="DOCUMENT_TYPE"
 					name="DOCUMENT_TYPE">
@@ -960,7 +961,7 @@
             		<label>${labelMap.PAYMENT_TERM}</label>
             	</td>
             	<td class="input" colspan="3">
-            		<select id="term" name="term" class="short">
+            		<select id="TERM" name="TERM" class="short">
                	 		 <option value="1">Half Month</option>
                	 		 <option value="2" selected="selected">Month End</option>
                	 	</select>
@@ -968,7 +969,7 @@
             </tr>
             <tr id="block_payment_mode">
                 <td class="label">
-                    <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label>                    </td>
+                    <label for="PAYMENT_MODE_CODE"><span class="style1">${labelMap.PAYMENT_MODE_CODE}</span></label></td>
                 <td class="input" colspan="3">
 				<select id="PAYMENT_MODE_CODE" name="PAYMENT_MODE_CODE" class="mediumMax">
 					<option value="%">--SELECT ALL--</option>
@@ -983,13 +984,13 @@
 			<tr id="block_save_file">
 				<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
 				<td class="input" colspan="3"><input type="text" class="mediumMax"
-					id="SAVE_FILE" name="SAVE_FILE" /> <select id="FILE_TYPE"
+					id="target_file" name="target_file" /> <select id="FILE_TYPE"
 					name="FILE_TYPE" onChange="changeDropDownType();">
-						<!--
+					<!-- 
 						<option value="">Select</option>
 						<option value="pdf">pdf</option>
 						<option value="xls">xls</option>
-						 -->
+					-->
 						<option value="txt">text</option>
 				</select></td>
 			</tr>

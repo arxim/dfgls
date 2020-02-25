@@ -29,7 +29,7 @@
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["07"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
+	<parameter name="doctor" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["CM257"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
@@ -111,22 +111,15 @@
 	LEFT OUTER JOIN STP_GUARANTEE STP ON SD.GUARANTEE_CODE = STP.GUARANTEE_CODE  AND  SD.GUARANTEE_DR_CODE  =   STP.GUARANTEE_DR_CODE 
 	AND SD.GUARANTEE_TERM_MM = STP.MM AND SD.GUARANTEE_TERM_YYYY = STP.YYYY AND SD.HOSPITAL_CODE = STP.HOSPITAL_CODE
 	AND SD.GUARANTEE_DATE_TIME = STP.START_DATE+START_TIME AND STP.ACTIVE = '1'
-	WHERE (DP.CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
+	WHERE DR.CODE LIKE $P{doctor}
 	AND SD.DOCTOR_CODE IN (SELECT DOCTOR_CODE FROM SUMMARY_PAYMENT WHERE YYYY = $P{year} AND MM = $P{month})
 	AND ((SD.YYYY LIKE $P{year} AND SD.MM LIKE $P{month})
 	OR (SD.GUARANTEE_TERM_YYYY LIKE $P{year} AND SD.GUARANTEE_TERM_MM LIKE $P{month} AND (SD.GUARANTEE_NOTE LIKE '%SOME%' OR SD.GUARANTEE_NOTE = 'ABSORB GUARANTEE')))
 	AND SD.YYYY LIKE $P{year} AND SD.MM LIKE $P{month}
 	AND SD.HOSPITAL_CODE LIKE $P{hospital_code}
-	AND DR.DOCTOR_CATEGORY_CODE LIKE $P{doctor_category}
-	AND DR.DEPARTMENT_CODE LIKE $P{doctor_department}
 	AND SD.ACTIVE = '1' AND SD.ORDER_ITEM_ACTIVE = '1'
 	AND OI.IS_COMPUTE = 'Y'
-	AND SD.ORDER_ITEM_CODE LIKE $P{order_item}
-	AND OI.ORDER_ITEM_CATEGORY_CODE LIKE $P{order_item_category}
 	AND SD.COMPUTE_DAILY_DATE is not null AND SD.COMPUTE_DAILY_DATE != ''
-	AND SD.PAYMENT_DATE LIKE $P{payment_date}
-	AND SD.PAYMENT_TERM LIKE $P{term}
-	AND SD.IS_PAID LIKE (CASE WHEN SD.HOSPITAL_CODE = '004' OR SD.HOSPITAL_CODE = '011' OR SD.HOSPITAL_CODE = '012' OR SD.HOSPITAL_CODE = '036' THEN 'Y' ELSE	'%' END)
 	)
 ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD,ADMISSION_TYPE_CODE ,INVOICE_DATE, VERIFY_DATE]]></queryString>
 
