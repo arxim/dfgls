@@ -24,19 +24,19 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2017"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["09"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["05DEN23"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["APAKI"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["05DEN63"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["APAKI"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["00005"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["CHC00"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor_category" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
@@ -319,7 +319,7 @@ UNION ALL
 	AND STP.HOSPITAL_CODE LIKE $P{hospital_code}
 	AND DR.DOCTOR_CATEGORY_CODE LIKE $P{doctor_category}
 	AND DR.DEPARTMENT_CODE LIKE $P{doctor_department})
-ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_TIME, VERIFY_DATE, INVOICE_DATE, HN_NO, INVOICE_NO, LINE_NO, SHORT_TRANSACTION]]></queryString>
+ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_TIME, VERIFY_DATE, INVOICE_DATE, START_TIME, HN_NO, INVOICE_NO, LINE_NO, SHORT_TRANSACTION]]></queryString>
 
 	<field name="PROFILE_CODE" class="java.lang.String"/>
 	<field name="PROFILE_NAME" class="java.lang.String"/>
@@ -784,20 +784,20 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_T
 					<reportElement
 						x="0"
 						y="1"
-						width="89"
+						width="163"
 						height="14"
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GUARANTEE_TYPE_CODE}.equals("MLY") || $F{GUARANTEE_TYPE_CODE}.equals("MLD") ? "Monthly Guarantee" :  $F{GUARANTEE_TYPE_CODE}.equals("DLY") ? "Daily Guarantee" : $F{GUARANTEE_TYPE_CODE}.equals("EXT") ? "Special Consult" : $F{GUARANTEE_TYPE_CODE}.equals("STP") ? "Step Sharing" : "ค่าแพทย์นอกเวลา"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{GUARANTEE_TYPE_CODE}.equals("MLY") || $F{GUARANTEE_TYPE_CODE}.equals("MLD") ? "Monthly Guarantee" :  $F{GUARANTEE_TYPE_CODE}.equals("DLY") ? "Daily Guarantee" : $F{GUARANTEE_TYPE_CODE}.equals("EXT") ? "Special Consult" : $F{GUARANTEE_TYPE_CODE}.equals("STP") ? "Step Sharing" : $F{PAY_METHOD}.equals("C") ? "ค่าแพทย์ในเดือน" : "ค่าแพทย์ค้างจ่ายที่ได้รับชำระในเดือน"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="89"
+						x="164"
 						y="0"
-						width="713"
+						width="638"
 						height="14"
 						key="textField"/>
 					<box></box>
