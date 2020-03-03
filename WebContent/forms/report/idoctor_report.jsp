@@ -683,7 +683,7 @@
 						<option value="None">--------- Monthly Payment ---------</option>
 						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
-						<option value="SummaryRevenueByDetail">${labelMap.REPORT_DETAIL_DF}</option>
+						<option value="SummaryRevenueByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_DETAIL_DF}</option>
 						<option value="SummaryRevenueByDetailForDoctorVCH">${labelMap.REPORT_DETAIL_BY_ADMISSION}</option>
 						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
 						<option value="None">--------- DF Unpaid ---------</option>
