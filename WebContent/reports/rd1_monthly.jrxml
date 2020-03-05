@@ -27,10 +27,10 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="yyyy" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="mm" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["12"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["01"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["CHC00"]]></defaultValueExpression>
@@ -1305,7 +1305,7 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 				</textField>
 			</band>
 		</pageFooter>
-		<summary>
+		<lastPageFooter>
 			<band height="90"  isSplitAllowed="true" >
 				<line direction="TopDown">
 					<reportElement
@@ -1666,6 +1666,19 @@ $P{hospital_code}.equals("045") ? "นายอรรถพันธุ์ บ�
 				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("")? $F{AUTHORITY_POSITION} : 
 $P{hospital_code}.equals("045") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : $P{hospital_code}.equals("067") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : ""]]></textFieldExpression>
 				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="782"
+						height="1"
+						key="line-60"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</lastPageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</summary>
 </jasperReport>
