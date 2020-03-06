@@ -191,7 +191,8 @@
                 	document.getElementById('block_payment_term').style.display = 'none';
                 	document.getElementById('block_doctor_type').style.display = 'none';
                 	document.getElementById('block_payment_mode').style.display = 'none';
-                } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" || document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail" 
+                } else if (document.mainForm.REPORT_FILE_NAME.value == "GuaranteeSetup" 
+                	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
