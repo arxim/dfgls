@@ -52,6 +52,7 @@
             labelMap.add("DEPARTMENT_CODE", "Department Code", "รหัสแผนก");
             labelMap.add("PAYMENT_MODE_CODE", "Payment Mode", "ประเภทการจ่าย");
             labelMap.add("INCLUDE_REVENUE_CODE", "Include 40(6) Revenue to Code", "รวมรายได้ภาษีไว้ที่รหัส");
+            labelMap.add("INCLUDE_TAX_402_CODE", "Include 40(2) Revenue to Code", "รวมรายได้ภาษี 40(2) ไว้ที่รหัส");
             labelMap.add("PAY_TAX_402_BY", "Pay Tax by", "จ่ายภาษีโดย");
             labelMap.add("GUARANTEE_PROFILE", "Guarantee In Profile", "การันตีภายใต้แพทย์เจ้าของ");
             labelMap.add("GUARANTEE_DR_CODE", "Include Revenue To DR.", "การันตีรายได้รวมที่แพทย์");
@@ -177,6 +178,7 @@
                 doctorRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 doctorRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
                 doctorRec.addField("DOCTOR_TAX_CODE", Types.VARCHAR, request.getParameter("INCLUDE_REVENUE_CODE"));
+                doctorRec.addField("DOCTOR_TAX_402_CODE", Types.VARCHAR, request.getParameter("INCLUDE_TAX_402_CODE"));
                 doctorRec.addField("GUARANTEE_PER_HOUR", Types.NUMERIC, request.getParameter("GUARANTEE_PER_HOUR"));
                 doctorRec.addField("EXTRA_PER_HOUR", Types.NUMERIC, request.getParameter("EXTRA_PER_HOUR"));
                 doctorRec.addField("DOCTOR_GROUP_CODE", Types.VARCHAR, request.getParameter("DOCTOR_GROUP_CODE"));
@@ -225,6 +227,7 @@
                 doctorRecLog.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
                 doctorRecLog.addField("EMAIL", Types.VARCHAR, request.getParameter("EMAIL"));
                 doctorRecLog.addField("DOCTOR_TAX_CODE", Types.VARCHAR, request.getParameter("INCLUDE_REVENUE_CODE"));
+                doctorRecLog.addField("DOCTOR_TAX_402_CODE", Types.VARCHAR, request.getParameter("INCLUDE_TAX_402_CODE"));
                 doctorRecLog.addField("TAX_402_METHOD", Types.VARCHAR, request.getParameter("TAX_402_METHOD"));
                 doctorRecLog.addField("TAX_406_METHOD", Types.VARCHAR, request.getParameter("TAX_406_METHOD"));
                 doctorRecLog.addField("SPECIAL_TYPE_CODE", Types.VARCHAR, request.getParameter("SPECIAL_TYPE"));
@@ -262,7 +265,7 @@
                		DataRecord doctor = DBMgr.getRecord("SELECT HOSPITAL_CODE, DOCTOR_PROFILE_CODE, CODE, NAME_THAI, NAME_ENG, TAX_ID, LICENSE_ID, FROM_DATE, TO_DATE, ADDRESS1, ADDRESS2, ADDRESS3, ZIP, "+
                				"DOCTOR_TYPE_CODE, DOCTOR_CATEGORY_CODE, HOSPITAL_UNIT_CODE, DEPARTMENT_CODE, PAYMENT_MODE_CODE, GUARANTEE_DAY, GUARANTEE_DR_CODE, GUARANTEE_SOURCE, "+
                				"IS_GUARANTEE_PROFILE, OVER_GUARANTEE_PCT, IN_GUARANTEE_PCT, PAYMENT_TIME, IS_ADVANCE_PAYMENT, DOCTOR_PAYMENT_CODE, IS_LEGAL_ENTITY, BANK_ACCOUNT_NO, BANK_ACCOUNT_NAME, BANK_COUNTRY_CODE, BANK_CODE, BANK_BRANCH_CODE, "+
-               				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
+               				"NOTE, EMAIL, GUARANTEE_START_DATE, GUARANTEE_EXPIRE_DATE, PAY_TAX_402_BY, UPDATE_DATE, UPDATE_TIME, USER_ID, DOCTOR_TAX_CODE, DOCTOR_TAX_402_CODE, GUARANTEE_PER_HOUR, EXTRA_PER_HOUR, "+
                				"DOCTOR_GROUP_CODE, TAX_402_METHOD, TAX_406_METHOD, SPECIAL_TYPE_CODE, SALARY, ACTIVE FROM DOCTOR WHERE CODE = '" + request.getParameter("CODE") + "' AND DOCTOR_PROFILE_CODE = '" + request.getParameter("DOCTOR_PROFILE_CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
                		System.out.println(doctor.getSize());
                		System.out.println(doctorRec.getSize());
@@ -824,6 +827,20 @@
 			       	}
 			      	
 			      }
+			
+			      function AJAX_Refresh_INCLUDE_TAX_402_CODE() {
+			      	var doctor_code_profile =  $("#DOCTOR_PROFILE_CODE").val();
+			       	var action  =  $("input[name=INCLUDE_TAX_402_PROFILE]").val();
+			       	var target =  "";
+			       	
+			       	if(action == "Y"){
+			      		target = "../../RetrieveData?TABLE=DOCTOR&COND=CODE='" + document.mainForm.INCLUDE_TAX_402_CODE.value + "'";
+			      		alert(target);
+			       	} else {
+			      		target = "../../RetrieveData?TABLE=DOCTOR&COND=CODE='" + document.mainForm.INCLUDE_TAX_402_CODE.value + "'";
+			       	}
+			      	
+			      }
 			       
 			//------------------------------END TAX  INPROFILE -----------------------------------
          
@@ -1144,6 +1161,16 @@
                     	<input id="INCLUDE_REVENUE_CODE" name="INCLUDE_REVENUE_CODE" type="text" class="short" id="INCLUDE_REVENUE_CODE" value="<%= DBMgr.getRecordValue(doctorRec, "DOCTOR_TAX_CODE")%>" maxlength="50"  <%=readonlyManager%>/>
                         <!-- input type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_ENG&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=INCLUDE_REVENUE_CODE&HANDLE=dummyFunction'); return false;"/-->
                     	<input id="SEARCH_INCLUDE_REVENUE_CODE" name="SEARCH_INCLUDE_REVENUE_CODE"  type="image" <%=dfuserLoginDisabled%> <%=disabledManagerV2 %> class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&BEACTIVE=1&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&TARGET=INCLUDE_REVENUE_CODE&HANDLE=AJAX_Refresh_INCLUDE_REVENUE_CODE'); return false;" />
+                    </td>
+                </tr>    
+                <tr>
+                    <td class="label">
+                        <label for="INCLUDE_TAX_402_CODE"><span class="">${labelMap.INCLUDE_TAX_402_CODE}</span></label>
+                    </td>
+                    <td class="input" colspan="">    
+                    	<input id="INCLUDE_TAX_402_CODE" name="INCLUDE_TAX_402_CODE" type="text" class="short" id="INCLUDE_TAX_402_CODE" value="<%= DBMgr.getRecordValue(doctorRec, "DOCTOR_TAX_402_CODE")%>" maxlength="50"  <%=readonlyManager%>/>
+                        <!-- input type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&DISPLAY_FIELD=NAME_ENG&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=INCLUDE_TAX_402_CODE&HANDLE=dummyFunction'); return false;"/-->
+                    	<input id="SEARCH_INCLUDE_TAX_402_CODE" name="SEARCH_INCLUDE_TAX_402_CODE"  type="image" <%=dfuserLoginDisabled%> <%=disabledManagerV2 %> class="image_button" src="../../images/search_button.png" alt="Search" onclick="openSearchForm('../search.jsp?TABLE=DOCTOR&BEACTIVE=1&DISPLAY_FIELD=NAME_<%=labelMap.getFieldLangSuffix()%>&TARGET=INCLUDE_TAX_402_CODE&HANDLE=AJAX_Refresh_INCLUDE_TAX_402_CODE'); return false;" />
                     </td>
                 </tr>                
                 <tr>

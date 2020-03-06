@@ -71,13 +71,15 @@ public class ProcessTax402Bean {
         }
 	    String stm =	"INSERT INTO SUMMARY_TAX_402(HOSPITAL_CODE, DOCTOR_CODE, TURN_OUT_AMT, OTHER_AMT, GUARANTEE_AMT, POSITION_AMT, " +
 	                    "YYYY, MM, TAX_TERM, BATCH_NO,UPDATE_DATE,UPDATE_TIME,USER_ID, TAX_402_METHOD, IS_LEGAL_ENTITY) "+
-	                    "SELECT HOSPITAL_CODE, DOCTOR_CODE, "+
+	                    "SELECT HOSPITAL_CODE, DOCTOR_TAX_402_CODE AS DOCTOR_CODE, "+
 	                    "SUM((SUM_TAX_402+EXDR_402)-EXCR_402) AS SUM_TAX_402, 0, 0, 0, "+
 	                    "'"+this.year+"' AS YEAR, '"+this.month+"' AS MONTH, '"+term_tax+"' AS TERM, "+
 	                    "'' AS BATCH_NO ,'"+JDate.getDate()+"' AS UPDATE_DATE, '"+JDate.getTime()+"' AS UPDATE_TIME, '"+this.userId+"'AS USER_ID, "+
 	                    "TAX_402_METHOD, IS_LEGAL_ENTITY "+
 	                    "FROM "+
-	                    "( SELECT TRN_DAILY.HOSPITAL_CODE, TRN_DAILY.DOCTOR_CODE, DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY, "+
+	                    "( SELECT TRN_DAILY.HOSPITAL_CODE, CASE WHEN DOCTOR.DOCTOR_TAX_402_CODE <> '' THEN DOCTOR.DOCTOR_TAX_402_CODE ELSE DOCTOR.CODE END AS DOCTOR_TAX_402_CODE, "+
+//	                    "TRN_DAILY.DOCTOR_CODE, "+
+	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY, "+
 	                    "SUM(CASE WHEN TRN_DAILY.TAX_TYPE_CODE = '402' THEN DR_TAX_402 ELSE 0 END) AS SUM_TAX_402, "+
 	                    "0 AS EXDR_402, "+
 	                    "0 AS EXCR_402 "+
@@ -92,9 +94,13 @@ public class ProcessTax402Bean {
 	                    "AND (TRN_DAILY.BATCH_NO = '' OR TRN_DAILY.BATCH_NO = '"+this.year+this.month+"') "+
 	                    "AND TRN_DAILY.IS_PAID = 'Y' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
 	                    "AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND TRN_DAILY.ACTIVE = '1' "+
-	                    "GROUP BY TRN_DAILY.HOSPITAL_CODE, TRN_DAILY.DOCTOR_CODE, DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
+	                    "GROUP BY TRN_DAILY.HOSPITAL_CODE, CASE WHEN DOCTOR.DOCTOR_TAX_402_CODE <> '' THEN DOCTOR.DOCTOR_TAX_402_CODE ELSE DOCTOR.CODE END, "+
+//	                    "TRN_DAILY.DOCTOR_CODE, "+
+	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
 	                    "UNION "+
-	                    "SELECT AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY, "+
+	                    "SELECT AJ.HOSPITAL_CODE, CASE WHEN DOCTOR.DOCTOR_TAX_402_CODE <> '' THEN DOCTOR.DOCTOR_TAX_402_CODE ELSE DOCTOR.CODE END AS DOCTOR_TAX_402_CODE, "+
+//	                    "AJ.DOCTOR_CODE, "+
+	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY, "+
 	                    "0 AS SUM_TAX_402, "+
 	                    "SUM(CASE WHEN AJ.EXPENSE_SIGN = '1' AND AJ.TAX_TYPE_CODE = '402' THEN AJ.TAX_AMOUNT ELSE 0 END) AS EXDR_402, "+
 	                    "SUM(CASE WHEN AJ.EXPENSE_SIGN = '-1' AND AJ.TAX_TYPE_CODE = '402' THEN AJ.TAX_AMOUNT ELSE 0 END) AS EXCR_402 "+
@@ -106,10 +112,12 @@ public class ProcessTax402Bean {
 	                    "WHERE DOCTOR.HOSPITAL_CODE = '"+this.hospital+"' "+
 	                    "AND DOCTOR.PAYMENT_MODE_CODE NOT IN ('U','') AND DOCTOR.ACTIVE = '1' "+
 	                    "AND AJ.YYYY = '"+this.year+"' AND AJ.MM = '"+this.month+"' AND (AJ.BATCH_NO IS NULL OR AJ.BATCH_NO = '' OR AJ.BATCH_NO = '"+this.year+this.month+"') "+
-	                    "GROUP BY AJ.HOSPITAL_CODE, AJ.DOCTOR_CODE, DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
+	                    "GROUP BY AJ.HOSPITAL_CODE, CASE WHEN DOCTOR.DOCTOR_TAX_402_CODE <> '' THEN DOCTOR.DOCTOR_TAX_402_CODE ELSE DOCTOR.CODE END, "+
+//	                    "AJ.DOCTOR_CODE, "+
+	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
 	                    ") Q "+
 	                    //"WHERE SUM_TAX_402+EXDR_402-EXCR_402 > 0 "+
-	                    "GROUP BY HOSPITAL_CODE, DOCTOR_CODE, TAX_402_METHOD, IS_LEGAL_ENTITY "+
+	                    "GROUP BY HOSPITAL_CODE, DOCTOR_TAX_402_CODE, TAX_402_METHOD, IS_LEGAL_ENTITY "+
 	                    "HAVING SUM((SUM_TAX_402+EXDR_402)-EXCR_402) > 0 ";	                    
         try {
         	if(Variables.IS_TEST){
