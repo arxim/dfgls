@@ -4,6 +4,7 @@
 <%@page import="df.bean.db.DBMgr"%>
 <%@page import="df.bean.db.DataRecord"%>
 <%@page import="df.bean.obj.util.JDate"%>
+<%@page import="df.bean.obj.util.ReadProperties"%>
 <%@page import="df.bean.db.conn.DBConnection"%>
 <%@page import="df.bean.obj.util.Utils "%>
 <%@page import="java.sql.Types"%>
@@ -38,7 +39,7 @@
 		labelMap.add("SAVE", "Import", "นำเข้า");
 		
     	request.setAttribute("labelMap", labelMap.getHashMap());
-    
+    	ReadProperties rp = new ReadProperties();
 	    DBConnection conn = new DBConnection();
 	    conn.connectToLocal();
 		String report = ""; 
@@ -111,12 +112,7 @@
                 	  }
                 } */
                 
-                if(hosp=="CHC00"){
-                	 var target = "http://192.168.1.24:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
-                }else{
-                	 var target = "http://localhost:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
-                }
-               
+                var target = "http://"+<% rp.getPropertiesData("","",""); %>+":8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
                 AJAX_Request(target, AJAX_Result_Message);
                 
                 //document.mainForm.submit();
