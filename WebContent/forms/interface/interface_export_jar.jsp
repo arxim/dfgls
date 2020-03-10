@@ -75,9 +75,7 @@
 			function Report_Save() {
             	if(document.mainForm.PROCESS_NAME.value == ""){
 					alert("Please Select Process");
-            	}else if((document.mainForm.PROCESS_NAME.value == "ExportBank" || 
-                    	document.mainForm.PROCESS_NAME.value == "ExportRD") && 
-                    	document.mainForm.PAY_TYPE.value == "%"){
+            	}else if((document.mainForm.PROCESS_NAME.value == "ExportBank" || document.mainForm.PROCESS_NAME.value == "ExportRD") && document.mainForm.PAY_TYPE.value == "%"){
 					alert("Please Select Revenue Type");
             	}else if(document.mainForm.target_file.value == ""){
             		alert("Please Enter Filename");
@@ -85,15 +83,33 @@
                 	alert("Revenue Type is Mismatch");
             	}else{
                     document.mainForm.target = "_blank";
-        			
+                    var hosp = document.mainForm.HOSPITAL_CODE.value;
+                    console.log("Hello world!  "+hosp);
+                    
         			if(document.mainForm.PROCESS_NAME.value == "ExportBank" && ( document.mainForm.BANK_TYPE.value == "014_SMART" || document.mainForm.BANK_TYPE.value == "014_COSMECEUTICAL")){
         				document.mainForm.method = "POST"
-        				//document.mainForm.action = "http://103.82.248.103:8883/exportFileDF";
-        				document.mainForm.action = "http://localhost:8883/exportFileDF";
+        					if(hosp=="CHC00"){
+            					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+            				}else{
+            					document.mainForm.action = "http://localhost:8883/exportFileDF";
+            				}
         				document.mainForm.submit();
+        			}else if(document.mainForm.PROCESS_NAME.value == "ExportGL"){
+        				document.mainForm.method = "POST"
+        				if(hosp=="CHC00"){
+        					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+        				}else{
+        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        				}
+        				document.mainForm.submit();
+        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
         				document.mainForm.method = "POST"
-        				document.mainForm.action = "http://localhost:8883/exportFileDF"
+        					if(hosp=="CHC00"){
+            					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+            				}else{
+            					document.mainForm.action = "http://localhost:8883/exportFileDF";
+            				}
         				document.mainForm.submit();
         			}else{
         				document.mainForm.submit();
@@ -165,8 +181,8 @@
                             <option value="ExportBank">${labelMap.EXPORT_BANK}</option>
                             <option value="Unpaid">Export DF Unpaid Detail</option>
                             <!-- <option value="ExportPayroll">${labelMap.EXPORT_PAYROLL}</option> -->
-                            <%-- <option value="ExportGL">${labelMap.EXPORT_GL}</option>
-                            <option value="ExportAC">${labelMap.EXPORT_AC}</option>
+                            <option value="ExportGL">${labelMap.EXPORT_GL}</option>
+                             <%-- <option value="ExportAC">${labelMap.EXPORT_AC}</option>
                             <option value="ExportGLSAP">${labelMap.EXPORT_GLSAP}</option>
                             <option value="ExportGLSAPR2C">${labelMap.EXPORT_GLSAPR2C}</option>
                             <option value="ExportACSAP">${labelMap.EXPORT_ACSAP}</option> --%>
