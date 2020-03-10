@@ -117,8 +117,8 @@ public class ProcessTax402Bean {
 	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
 	                    ") Q "+
 	                    //"WHERE SUM_TAX_402+EXDR_402-EXCR_402 > 0 "+
-	                    "GROUP BY HOSPITAL_CODE, DOCTOR_TAX_402_CODE, TAX_402_METHOD, IS_LEGAL_ENTITY "+
-	                    "HAVING SUM((SUM_TAX_402+EXDR_402)-EXCR_402) > 0 ";	                    
+	                    "GROUP BY HOSPITAL_CODE, DOCTOR_TAX_402_CODE, TAX_402_METHOD, IS_LEGAL_ENTITY ";
+	                    //"HAVING SUM((SUM_TAX_402+EXDR_402)-EXCR_402) > 0 ";	                    
         try {
         	if(Variables.IS_TEST){
             	System.out.println(stm);        		
@@ -213,7 +213,7 @@ public class ProcessTax402Bean {
             //"ACCU_NORMAL_TAX_MONTH = '"+new BigDecimal(JNumber.setFormat(taxNormalAccu, "0.00"))+"' "+   //ACCRU REVENUE
             ",SUM_NORMAL_TAX_AMT = '"+JNumber.setFormat(incomeNormalTotal, "0.00")+"' "+ //REVENUE OF THIS MONTH
             ",NORMAL_TAX_MONTH = '"+JNumber.setFormat(firstTaxNormal, "0.00") +"' "+ 	  //TAX FROM REVENUE IN MONTH
-            ",TEXT_NET_TAX_MONTH = '"+Utils.toThaiMoney(taxNormal)+"' "+
+            ",TEXT_NET_TAX_MONTH = '"+Utils.toThaiMoney(JNumber.setFormat(taxNormal,"0.00"))+"' "+
             ",NET_TAX_MONTH = '"+JNumber.setFormat(taxNormal, "0.00") +"' "+
             "WHERE DOCTOR_CODE = '"+doctor+"' " +
             "AND HOSPITAL_CODE = '"+this.hospital+"' "+
@@ -298,7 +298,7 @@ public class ProcessTax402Bean {
         }
         String sqNormal = "SELECT SUM("+incomeType+") FROM SUMMARY_TAX_402 " +
         "WHERE HOSPITAL_CODE= '"+ this.hospital +"' AND TAX_TERM = '"+term_tax+"' " +
-        "AND DOCTOR_CODE = '"+doctor+"' AND ACTIVE = '1'";
+        "AND DOCTOR_CODE = '"+doctor+"' AND ACTIVE = '1' AND MM <> '13' ";
         try{
             temp = cdb.query(sqNormal);
             if(temp.length != 0){
