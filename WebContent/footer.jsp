@@ -20,7 +20,7 @@
 	<div class="clear"></div>
     <div id="site_info">
         <p>
-            Copyright <a href="http://www.scapsolutions.com" target="_bank">SCAP SOLUTIONS COMPANY LIMITED</a>. All Rights Reserved. --- Version update 06/03/2020 time 13:31
+            Copyright <a href="http://www.scapsolutions.com" target="_bank">SCAP SOLUTIONS COMPANY LIMITED</a>. All Rights Reserved. --- Version update 16/03/2020 time 11:47
         </p>
     </div>
 </body>
