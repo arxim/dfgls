@@ -2,7 +2,7 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="Tax402SummaryYearlyForDoctor"
+		 name="Tax402SummaryYearlyForDoctor00029"
 		 columnCount="1"
 		 printOrder="Vertical"
 		 orientation="Portrait"
@@ -27,7 +27,7 @@
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2017"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2019"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="memo1" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย"]]></defaultValueExpression>
@@ -36,10 +36,10 @@
 		<defaultValueExpression ><![CDATA["ใช้แนบพร้อมกับแบบแสดงรายการภาษี"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["067"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["00029"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_logo" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["D:\\DFReport\\logo\\"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="memo3" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["เก็บไว้เป็นหลักฐาน)"]]></defaultValueExpression>
@@ -115,7 +115,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="328"
+						y="334"
 						width="535"
 						height="258"
 						key="rectangle-26"
@@ -126,7 +126,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Opaque"
 						x="110"
-						y="565"
+						y="571"
 						width="405"
 						height="20"
 						forecolor="#666666"
@@ -138,7 +138,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="173"
+						y="179"
 						width="535"
 						height="155"
 						key="rectangle-28"/>
@@ -148,7 +148,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="29"
+						y="35"
 						width="535"
 						height="144"
 						key="rectangle-29"/>
@@ -157,7 +157,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="362"
+						y="368"
 						width="88"
 						height="15"
 						key="textField-7">
@@ -176,7 +176,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="362"
+						y="368"
 						width="94"
 						height="15"
 						key="textField-8">
@@ -195,7 +195,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="115"
-						y="568"
+						y="574"
 						width="397"
 						height="15"
 						key="textField-9"/>
@@ -212,7 +212,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="30"
-						y="200"
+						y="206"
 						width="500"
 						height="15"
 						key="textField-10"/>
@@ -230,7 +230,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="586"
+						y="592"
 						width="535"
 						height="99"
 						key="rectangle-31"
@@ -241,7 +241,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="35"
+						y="41"
 						width="410"
 						height="20"
 						key="staticText-92"/>
@@ -258,7 +258,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="430"
-						y="60"
+						y="66"
 						width="21"
 						height="15"
 						key="staticText-93"/>
@@ -275,7 +275,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="430"
-						y="40"
+						y="46"
 						width="21"
 						height="15"
 						key="staticText-94"/>
@@ -292,7 +292,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="65"
+						y="71"
 						width="110"
 						height="15"
 						key="staticText-95"/>
@@ -309,7 +309,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="62"
-						y="50"
+						y="56"
 						width="0"
 						height="0"
 						key="staticText-96"/>
@@ -326,7 +326,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="265"
-						y="75"
+						y="81"
 						width="115"
 						height="15"
 						key="staticText-97"/>
@@ -343,7 +343,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="390"
-						y="75"
+						y="81"
 						width="140"
 						height="15"
 						key="rectangle-32"/>
@@ -352,7 +352,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="90"
+						y="96"
 						width="19"
 						height="20"
 						key="staticText-98"/>
@@ -369,7 +369,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="106"
+						y="112"
 						width="500"
 						height="10"
 						key="staticText-99"/>
@@ -386,7 +386,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="136"
+						y="142"
 						width="500"
 						height="10"
 						key="staticText-100"/>
@@ -403,7 +403,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="125"
+						y="131"
 						width="19"
 						height="20"
 						key="staticText-101"/>
@@ -420,7 +420,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="180"
+						y="186"
 						width="110"
 						height="15"
 						key="staticText-102"/>
@@ -437,7 +437,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="62"
-						y="185"
+						y="191"
 						width="0"
 						height="0"
 						key="staticText-103"/>
@@ -454,7 +454,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="29"
-						y="239"
+						y="245"
 						width="0"
 						height="4"
 						key="staticText-104"/>
@@ -471,7 +471,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="205"
+						y="211"
 						width="19"
 						height="20"
 						key="staticText-105"/>
@@ -488,7 +488,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="216"
+						y="222"
 						width="500"
 						height="10"
 						key="staticText-106"/>
@@ -505,7 +505,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="246"
+						y="252"
 						width="500"
 						height="10"
 						key="staticText-107"/>
@@ -522,7 +522,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="235"
+						y="241"
 						width="19"
 						height="20"
 						key="staticText-108"/>
@@ -539,7 +539,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="390"
-						y="181"
+						y="187"
 						width="140"
 						height="15"
 						key="rectangle-33"/>
@@ -548,7 +548,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="355"
+						y="361"
 						width="250"
 						height="10"
 						key="staticText-109"/>
@@ -565,7 +565,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="157"
-						y="472"
+						y="478"
 						width="0"
 						height="0"
 						key="staticText-110"/>
@@ -582,7 +582,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="286"
+						y="292"
 						width="23"
 						height="20"
 						key="staticText-111"/>
@@ -599,7 +599,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="441"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-112"/>
@@ -616,7 +616,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="141"
-						y="307"
+						y="313"
 						width="80"
 						height="18"
 						key="staticText-113"/>
@@ -633,7 +633,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="330"
+						y="336"
 						width="264"
 						height="20"
 						key="staticText-114"/>
@@ -650,7 +650,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="276"
-						y="328"
+						y="334"
 						width="53"
 						height="23"
 						key="staticText-115"/>
@@ -668,7 +668,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="331"
-						y="330"
+						y="336"
 						width="97"
 						height="18"
 						key="staticText-116"/>
@@ -685,7 +685,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="442"
-						y="331"
+						y="337"
 						width="82"
 						height="18"
 						key="staticText-117"/>
@@ -702,7 +702,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="200"
-						y="545"
+						y="551"
 						width="129"
 						height="20"
 						key="staticText-118"/>
@@ -719,7 +719,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="565"
+						y="571"
 						width="66"
 						height="20"
 						key="staticText-119"/>
@@ -736,7 +736,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="77"
-						y="565"
+						y="571"
 						width="33"
 						height="20"
 						key="staticText-120"/>
@@ -753,7 +753,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="590"
+						y="596"
 						width="164"
 						height="20"
 						key="staticText-121"/>
@@ -770,7 +770,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="615"
+						y="621"
 						width="140"
 						height="20"
 						key="staticText-122"/>
@@ -787,7 +787,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="640"
+						y="646"
 						width="61"
 						height="20"
 						key="staticText-123"/>
@@ -804,7 +804,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="665"
+						y="671"
 						width="40"
 						height="18"
 						key="staticText-124"/>
@@ -821,7 +821,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="35"
-						y="756"
+						y="762"
 						width="375"
 						height="15"
 						key="staticText-127"/>
@@ -838,7 +838,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="35"
-						y="771"
+						y="777"
 						width="375"
 						height="10"
 						key="staticText-128"/>
@@ -855,7 +855,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="0"
-						y="756"
+						y="762"
 						width="35"
 						height="15"
 						key="staticText-129"/>
@@ -872,7 +872,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="360"
-						y="275"
+						y="281"
 						width="0"
 						height="0"
 						key="rectangle-34"/>
@@ -881,7 +881,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="341"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-130"/>
@@ -898,7 +898,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="241"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-131"/>
@@ -915,7 +915,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="141"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-132"/>
@@ -932,7 +932,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="34"
-						y="298"
+						y="304"
 						width="55"
 						height="1"
 						key="line-32"/>
@@ -941,7 +941,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="127"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-35"/>
@@ -950,7 +950,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="227"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-36"/>
@@ -959,7 +959,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="450"
-						y="50"
+						y="56"
 						width="80"
 						height="1"
 						key="line-33"/>
@@ -968,7 +968,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="450"
-						y="70"
+						y="76"
 						width="80"
 						height="1"
 						key="line-34"/>
@@ -977,7 +977,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="10"
-						y="595"
+						y="601"
 						width="10"
 						height="10"
 						key="rectangle-37"/>
@@ -986,7 +986,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="370"
-						y="590"
+						y="596"
 						width="33"
 						height="20"
 						key="staticText-138"/>
@@ -1003,7 +1003,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="195"
-						y="603"
+						y="609"
 						width="175"
 						height="1"
 						key="line-39"/>
@@ -1012,7 +1012,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="514"
-						y="590"
+						y="596"
 						width="16"
 						height="20"
 						key="staticText-139"/>
@@ -1029,7 +1029,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="405"
-						y="603"
+						y="609"
 						width="107"
 						height="1"
 						key="line-40"/>
@@ -1038,7 +1038,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="240"
-						y="640"
+						y="646"
 						width="142"
 						height="20"
 						key="staticText-140"/>
@@ -1055,7 +1055,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="170"
-						y="628"
+						y="634"
 						width="342"
 						height="1"
 						key="line-41"/>
@@ -1064,7 +1064,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="514"
-						y="615"
+						y="621"
 						width="16"
 						height="20"
 						key="staticText-141"/>
@@ -1081,7 +1081,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="71"
-						y="665"
+						y="671"
 						width="87"
 						height="18"
 						key="staticText-142"/>
@@ -1098,7 +1098,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="171"
-						y="665"
+						y="671"
 						width="87"
 						height="18"
 						key="staticText-143"/>
@@ -1115,7 +1115,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="271"
-						y="665"
+						y="671"
 						width="88"
 						height="18"
 						key="staticText-144"/>
@@ -1132,7 +1132,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="371"
-						y="665"
+						y="671"
 						width="46"
 						height="18"
 						key="staticText-145"/>
@@ -1149,7 +1149,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="60"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-38"/>
@@ -1158,7 +1158,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="160"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-39"/>
@@ -1167,7 +1167,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="260"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-40"/>
@@ -1176,7 +1176,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="360"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-41"/>
@@ -1185,7 +1185,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="419"
-						y="678"
+						y="684"
 						width="111"
 						height="1"
 						key="line-42"/>
@@ -1194,7 +1194,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="380"
-						y="653"
+						y="659"
 						width="150"
 						height="1"
 						key="line-43"/>
@@ -1203,7 +1203,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="65"
-						y="653"
+						y="659"
 						width="175"
 						height="1"
 						key="line-44"/>
@@ -1212,7 +1212,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="105"
+						y="111"
 						width="500"
 						height="1"
 						key="line-45"/>
@@ -1221,7 +1221,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="135"
+						y="141"
 						width="500"
 						height="1"
 						key="line-46"/>
@@ -1230,7 +1230,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="165"
+						y="171"
 						width="500"
 						height="1"
 						key="line-47"/>
@@ -1239,7 +1239,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="265"
-						y="181"
+						y="187"
 						width="115"
 						height="15"
 						key="staticText-146"/>
@@ -1256,7 +1256,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="90"
-						y="286"
+						y="292"
 						width="30"
 						height="20"
 						key="staticText-147"/>
@@ -1273,7 +1273,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="215"
+						y="221"
 						width="500"
 						height="1"
 						key="line-48"/>
@@ -1282,7 +1282,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="245"
+						y="251"
 						width="500"
 						height="1"
 						key="line-49"/>
@@ -1291,7 +1291,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="275"
+						y="281"
 						width="500"
 						height="1"
 						key="line-50"/>
@@ -1300,7 +1300,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="285"
+						y="291"
 						width="535"
 						height="1"
 						key="line-51"/>
@@ -1309,7 +1309,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="327"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-42"/>
@@ -1318,7 +1318,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="427"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-43"/>
@@ -1327,7 +1327,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="127"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-44"/>
@@ -1336,7 +1336,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="227"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-45"/>
@@ -1345,7 +1345,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="241"
-						y="306"
+						y="312"
 						width="80"
 						height="18"
 						key="staticText-148"/>
@@ -1362,7 +1362,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="341"
-						y="306"
+						y="312"
 						width="80"
 						height="18"
 						key="staticText-149"/>
@@ -1379,7 +1379,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="327"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-46"/>
@@ -1388,7 +1388,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="350"
+						y="356"
 						width="535"
 						height="1"
 						key="line-52"/>
@@ -1397,7 +1397,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="274"
-						y="329"
+						y="335"
 						width="1"
 						height="216"
 						key="line-53"/>
@@ -1406,7 +1406,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="328"
+						y="334"
 						width="1"
 						height="236"
 						key="line-54"/>
@@ -1415,7 +1415,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="430"
-						y="328"
+						y="334"
 						width="1"
 						height="235"
 						key="line-55"/>
@@ -1424,7 +1424,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="410"
-						y="350"
+						y="356"
 						width="1"
 						height="214"
 						key="line-56"/>
@@ -1433,7 +1433,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="515"
-						y="350"
+						y="356"
 						width="1"
 						height="213"
 						key="line-57"/>
@@ -1442,7 +1442,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="365"
+						y="371"
 						width="250"
 						height="10"
 						key="staticText-150"/>
@@ -1459,7 +1459,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="375"
+						y="381"
 						width="250"
 						height="10"
 						key="staticText-151"/>
@@ -1476,7 +1476,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="385"
+						y="391"
 						width="250"
 						height="10"
 						key="staticText-152"/>
@@ -1493,7 +1493,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="20"
-						y="395"
+						y="401"
 						width="240"
 						height="10"
 						key="staticText-153"/>
@@ -1510,7 +1510,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="405"
+						y="411"
 						width="230"
 						height="10"
 						key="staticText-154"/>
@@ -1527,7 +1527,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="415"
+						y="421"
 						width="220"
 						height="10"
 						key="staticText-155"/>
@@ -1544,7 +1544,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="425"
+						y="431"
 						width="220"
 						height="10"
 						key="staticText-156"/>
@@ -1561,7 +1561,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="435"
+						y="441"
 						width="220"
 						height="10"
 						key="staticText-157"/>
@@ -1578,7 +1578,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="445"
+						y="451"
 						width="69"
 						height="10"
 						key="staticText-158"/>
@@ -1596,7 +1596,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="159"
-						y="445"
+						y="451"
 						width="101"
 						height="10"
 						key="staticText-159"/>
@@ -1614,7 +1614,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="415"
+						y="421"
 						width="10"
 						height="10"
 						key="rectangle-47"/>
@@ -1623,7 +1623,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="425"
+						y="431"
 						width="10"
 						height="10"
 						key="rectangle-48"/>
@@ -1632,7 +1632,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="435"
+						y="441"
 						width="10"
 						height="10"
 						key="rectangle-49"/>
@@ -1641,7 +1641,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="445"
+						y="451"
 						width="10"
 						height="10"
 						key="rectangle-50"/>
@@ -1650,7 +1650,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="455"
+						y="461"
 						width="230"
 						height="10"
 						key="staticText-160"/>
@@ -1667,7 +1667,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="465"
+						y="471"
 						width="243"
 						height="10"
 						key="staticText-161"/>
@@ -1684,7 +1684,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="475"
+						y="481"
 						width="230"
 						height="10"
 						key="staticText-162"/>
@@ -1702,7 +1702,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="485"
+						y="491"
 						width="239"
 						height="10"
 						key="staticText-163"/>
@@ -1719,7 +1719,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="495"
+						y="501"
 						width="261"
 						height="10"
 						key="staticText-164"/>
@@ -1736,7 +1736,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="505"
+						y="511"
 						width="263"
 						height="10"
 						key="staticText-165"/>
@@ -1753,7 +1753,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="515"
+						y="521"
 						width="250"
 						height="10"
 						key="staticText-166"/>
@@ -1770,7 +1770,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="525"
+						y="531"
 						width="69"
 						height="10"
 						key="staticText-167"/>
@@ -1787,7 +1787,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="50"
-						y="532"
+						y="538"
 						width="205"
 						height="1"
 						key="line-58"/>
@@ -1796,7 +1796,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="20"
-						y="543"
+						y="549"
 						width="235"
 						height="1"
 						key="line-59"/>
@@ -1805,7 +1805,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="545"
+						y="551"
 						width="535"
 						height="1"
 						key="line-60"/>
@@ -1814,7 +1814,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="563"
+						y="569"
 						width="205"
 						height="1"
 						key="line-61"/>
@@ -1823,7 +1823,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="562"
+						y="568"
 						width="205"
 						height="1"
 						key="line-62"/>
@@ -1832,7 +1832,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="450"
-						y="55"
+						y="61"
 						width="79"
 						height="13"
 						key="textField-11"/>
@@ -1849,7 +1849,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="128"
-						y="290"
+						y="296"
 						width="11"
 						height="13"
 						key="staticText-168">
@@ -1868,7 +1868,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="546"
+						y="552"
 						width="88"
 						height="15"
 						key="textField-12"/>
@@ -1885,7 +1885,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="546"
+						y="552"
 						width="94"
 						height="15"
 						key="textField-13"/>
@@ -1902,7 +1902,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="56"
-						y="669"
+						y="675"
 						width="17"
 						height="13"
 						key="staticText-169"/>
@@ -1919,7 +1919,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="410"
-						y="756"
+						y="762"
 						width="125"
 						height="15"
 						key="textField-14"/>
@@ -1936,7 +1936,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="410"
-						y="771"
+						y="777"
 						width="125"
 						height="10"
 						key="textField-15"/>
@@ -1953,7 +1953,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="0"
-						y="771"
+						y="777"
 						width="35"
 						height="10"
 						key="staticText-170"/>
@@ -1970,7 +1970,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="30"
-						y="230"
+						y="236"
 						width="500"
 						height="15"
 						key="textField-16"/>
@@ -1987,7 +1987,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="31"
-						y="90"
+						y="96"
 						width="500"
 						height="15"
 						key="textField-17"/>
@@ -2004,7 +2004,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="31"
-						y="120"
+						y="126"
 						width="500"
 						height="15"
 						key="textField-18"/>
@@ -2021,7 +2021,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="394"
-						y="74"
+						y="80"
 						width="132"
 						height="16"
 						key="textField-19"/>
@@ -2034,7 +2034,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="393"
-						y="180"
+						y="186"
 						width="134"
 						height="16"
 						key="textField-20"/>
@@ -2047,7 +2047,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="276"
-						y="362"
+						y="368"
 						width="53"
 						height="15"
 						key="textField-21">
@@ -2062,7 +2062,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="781"
+						y="787"
 						width="532"
 						height="15"
 						key="textField"/>
@@ -2075,7 +2075,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="40"
-						y="287"
+						y="293"
 						width="40"
 						height="13"
 						key="textField-22"/>
@@ -2093,7 +2093,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="685"
+						y="691"
 						width="535"
 						height="70"
 						key="rectangle-77"
@@ -2103,7 +2103,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="200"
-						y="706"
+						y="712"
 						width="112"
 						height="26"
 						key="image-4">
@@ -2116,7 +2116,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="330"
-						y="733"
+						y="739"
 						width="127"
 						height="20"
 						key="staticText-255"/>
@@ -2133,7 +2133,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="687"
+						y="693"
 						width="447"
 						height="18"
 						key="staticText-256"/>
@@ -2150,7 +2150,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="280"
-						y="751"
+						y="757"
 						width="50"
 						height="1"
 						key="line-94"/>
@@ -2159,7 +2159,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="710"
+						y="716"
 						width="160"
 						height="20"
 						key="staticText-257"/>
@@ -2176,7 +2176,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="170"
-						y="733"
+						y="739"
 						width="55"
 						height="20"
 						key="staticText-258"/>
@@ -2193,7 +2193,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="340"
-						y="710"
+						y="716"
 						width="117"
 						height="20"
 						key="staticText-259"/>
@@ -2210,7 +2210,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="226"
-						y="751"
+						y="757"
 						width="52"
 						height="1"
 						key="line-95"/>
@@ -2219,7 +2219,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="173"
-						y="751"
+						y="757"
 						width="50"
 						height="1"
 						key="line-96"/>
@@ -2228,7 +2228,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="171"
-						y="728"
+						y="734"
 						width="170"
 						height="1"
 						key="line-97"/>
@@ -2237,7 +2237,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="225"
-						y="733"
+						y="739"
 						width="55"
 						height="20"
 						key="staticText-260"/>
@@ -2254,7 +2254,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<ellipse>
 					<reportElement
 						x="460"
-						y="695"
+						y="701"
 						width="50"
 						height="50"
 						key="ellipse-7"/>
@@ -2263,7 +2263,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<ellipse>
 					<reportElement
 						x="475"
-						y="722"
+						y="728"
 						width="0"
 						height="0"
 						key="ellipse-8"/>
@@ -2272,10 +2272,12 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="460"
-						y="700"
+						y="706"
 						width="50"
 						height="40"
-						key="staticText-261"/>
+						key="staticText-261">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("066") && !$P{hospital_code}.equals("081") )]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
@@ -2291,7 +2293,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="286"
-						y="733"
+						y="739"
 						width="34"
 						height="19"
 						key="textField-43">
@@ -2306,7 +2308,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="428"
-						y="290"
+						y="296"
 						width="11"
 						height="13"
 						key="staticText-264">
@@ -2325,7 +2327,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="65"
-						y="524"
+						y="530"
 						width="156"
 						height="10"
 						key="staticText-265">
@@ -2344,7 +2346,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="276"
-						y="521"
+						y="527"
 						width="53"
 						height="15"
 						key="textField-44">
@@ -2359,7 +2361,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="521"
+						y="527"
 						width="88"
 						height="15"
 						key="textField-45">
@@ -2378,7 +2380,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="521"
+						y="527"
 						width="94"
 						height="15"
 						key="textField-46">
@@ -2397,7 +2399,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="250"
-						y="485"
+						y="491"
 						width="24"
 						height="10"
 						key="staticText-270">
@@ -2416,7 +2418,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="277"
-						y="482"
+						y="488"
 						width="53"
 						height="15"
 						key="textField-59">
@@ -2431,7 +2433,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="334"
-						y="482"
+						y="488"
 						width="88"
 						height="15"
 						key="textField-60">
@@ -2450,7 +2452,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="433"
-						y="482"
+						y="488"
 						width="94"
 						height="15"
 						key="textField-61">
@@ -2469,7 +2471,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="328"
-						y="310"
+						y="316"
 						width="11"
 						height="13"
 						key="staticText-272">
@@ -2488,7 +2490,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="193"
-						y="733"
+						y="739"
 						width="20"
 						height="18"
 						key="textField-62"/>
@@ -2501,7 +2503,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="240"
-						y="733"
+						y="739"
 						width="20"
 						height="18"
 						key="textField-63"/>
@@ -2511,91 +2513,10 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PRINT_DATE}.substring(4,6)]]></textFieldExpression>
 				</textField>
-			</band>
-			</groupHeader>
-			<groupFooter>
-			<band height="802"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="360"
-						y="8"
-						width="20"
-						height="18"
-						key="textField-50">
-							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[new SimpleDateFormat("dd").format(new Date())]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="408"
-						y="8"
-						width="20"
-						height="18"
-						key="textField-51">
-							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[new SimpleDateFormat("MM").format(new Date())]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="454"
-						y="8"
-						width="35"
-						height="18"
-						key="textField-52">
-							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
-						</reportElement>
-					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="8"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[new SimpleDateFormat("yyyy").format(new Date())]]></textFieldExpression>
-				</textField>
-				<rectangle>
-					<reportElement
-						x="390"
-						y="181"
-						width="140"
-						height="15"
-						key="rectangle-59"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
-				<rectangle radius="5" >
-					<reportElement
-						mode="Transparent"
-						x="0"
-						y="685"
-						width="535"
-						height="70"
-						key="rectangle-56"
-						positionType="FixRelativeToBottom"/>
-					<graphicElement stretchType="NoStretch"/>
-				</rectangle>
 				<staticText>
 					<reportElement
 						x="-90"
-						y="-103"
+						y="705"
 						width="35"
 						height="15"
 						key="staticText-37"/>
@@ -2609,10 +2530,63 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					</textElement>
 				<text><![CDATA[คำเตือน]]></text>
 				</staticText>
+				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="454"
+						y="693"
+						width="75"
+						height="65"
+						key="image-5">
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("006") || 
+$F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") || 
+$P{hospital_code}.equals("00029")|| $P{hospital_code}.equals("066") || 
+$P{hospital_code}.equals("081"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00001") ? $P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp2.png" : $P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+				</image>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="-2"
+						width="130"
+						height="35"
+						key="image-7">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("00029"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo} +$F{HOSPITAL_CODE}+"logo.gif"]]></imageExpression>
+				</image>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="802"  isSplitAllowed="true" >
+				<rectangle>
+					<reportElement
+						x="390"
+						y="187"
+						width="140"
+						height="15"
+						key="rectangle-59"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<rectangle radius="5" >
+					<reportElement
+						mode="Transparent"
+						x="0"
+						y="691"
+						width="535"
+						height="70"
+						key="rectangle-56"
+						positionType="FixRelativeToBottom"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
 				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="200"
-						y="706"
+						y="712"
 						width="112"
 						height="26"
 						key="image-3">
@@ -2626,7 +2600,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="328"
+						y="334"
 						width="535"
 						height="258"
 						key="rectangle-52"
@@ -2637,7 +2611,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Opaque"
 						x="110"
-						y="565"
+						y="571"
 						width="405"
 						height="20"
 						forecolor="#666666"
@@ -2649,7 +2623,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="173"
+						y="179"
 						width="535"
 						height="155"
 						key="rectangle-54"/>
@@ -2659,7 +2633,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="29"
+						y="35"
 						width="535"
 						height="144"
 						key="rectangle-55"/>
@@ -2668,7 +2642,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="362"
+						y="368"
 						width="88"
 						height="15"
 						key="textField-23">
@@ -2687,7 +2661,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="362"
+						y="368"
 						width="94"
 						height="15"
 						key="textField-24">
@@ -2706,7 +2680,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="115"
-						y="568"
+						y="574"
 						width="397"
 						height="15"
 						key="textField-25"/>
@@ -2723,7 +2697,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="30"
-						y="200"
+						y="206"
 						width="500"
 						height="15"
 						key="textField-26"/>
@@ -2741,7 +2715,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					<reportElement
 						mode="Transparent"
 						x="0"
-						y="586"
+						y="592"
 						width="535"
 						height="99"
 						key="rectangle-57"
@@ -2752,7 +2726,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="35"
+						y="41"
 						width="410"
 						height="20"
 						key="staticText-174"/>
@@ -2769,7 +2743,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="430"
-						y="60"
+						y="66"
 						width="21"
 						height="15"
 						key="staticText-175"/>
@@ -2786,7 +2760,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="430"
-						y="40"
+						y="46"
 						width="21"
 						height="15"
 						key="staticText-176"/>
@@ -2803,7 +2777,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="65"
+						y="71"
 						width="110"
 						height="15"
 						key="staticText-177"/>
@@ -2820,7 +2794,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="62"
-						y="50"
+						y="56"
 						width="0"
 						height="0"
 						key="staticText-178"/>
@@ -2837,7 +2811,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="265"
-						y="75"
+						y="81"
 						width="115"
 						height="15"
 						key="staticText-179"/>
@@ -2854,7 +2828,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="390"
-						y="75"
+						y="81"
 						width="140"
 						height="15"
 						key="rectangle-58"/>
@@ -2863,7 +2837,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="90"
+						y="96"
 						width="19"
 						height="20"
 						key="staticText-180"/>
@@ -2880,7 +2854,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="106"
+						y="112"
 						width="500"
 						height="10"
 						key="staticText-181"/>
@@ -2897,7 +2871,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="136"
+						y="142"
 						width="500"
 						height="10"
 						key="staticText-182"/>
@@ -2914,7 +2888,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="125"
+						y="131"
 						width="19"
 						height="20"
 						key="staticText-183"/>
@@ -2931,7 +2905,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="180"
+						y="186"
 						width="110"
 						height="15"
 						key="staticText-184"/>
@@ -2948,7 +2922,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="62"
-						y="185"
+						y="191"
 						width="0"
 						height="0"
 						key="staticText-185"/>
@@ -2965,7 +2939,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="29"
-						y="239"
+						y="245"
 						width="0"
 						height="4"
 						key="staticText-186"/>
@@ -2982,7 +2956,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="205"
+						y="211"
 						width="19"
 						height="20"
 						key="staticText-187"/>
@@ -2999,7 +2973,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="216"
+						y="222"
 						width="500"
 						height="10"
 						key="staticText-188"/>
@@ -3016,7 +2990,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="246"
+						y="252"
 						width="500"
 						height="10"
 						key="staticText-189"/>
@@ -3033,7 +3007,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="235"
+						y="241"
 						width="19"
 						height="20"
 						key="staticText-190"/>
@@ -3050,7 +3024,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="355"
+						y="361"
 						width="250"
 						height="10"
 						key="staticText-191"/>
@@ -3067,7 +3041,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="157"
-						y="472"
+						y="478"
 						width="0"
 						height="0"
 						key="staticText-192"/>
@@ -3084,7 +3058,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="286"
+						y="292"
 						width="23"
 						height="20"
 						key="staticText-193"/>
@@ -3101,7 +3075,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="441"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-194"/>
@@ -3118,7 +3092,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="141"
-						y="307"
+						y="313"
 						width="80"
 						height="18"
 						key="staticText-195"/>
@@ -3135,7 +3109,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="330"
+						y="336"
 						width="264"
 						height="20"
 						key="staticText-196"/>
@@ -3152,7 +3126,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="276"
-						y="328"
+						y="334"
 						width="53"
 						height="23"
 						key="staticText-197"/>
@@ -3170,7 +3144,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="331"
-						y="330"
+						y="336"
 						width="97"
 						height="18"
 						key="staticText-198"/>
@@ -3187,7 +3161,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="442"
-						y="331"
+						y="337"
 						width="82"
 						height="18"
 						key="staticText-199"/>
@@ -3204,7 +3178,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="200"
-						y="545"
+						y="551"
 						width="129"
 						height="20"
 						key="staticText-200"/>
@@ -3221,7 +3195,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="565"
+						y="571"
 						width="66"
 						height="20"
 						key="staticText-201"/>
@@ -3238,7 +3212,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="77"
-						y="565"
+						y="571"
 						width="33"
 						height="20"
 						key="staticText-202"/>
@@ -3255,7 +3229,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="590"
+						y="596"
 						width="164"
 						height="20"
 						key="staticText-203"/>
@@ -3272,7 +3246,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="615"
+						y="621"
 						width="140"
 						height="20"
 						key="staticText-204"/>
@@ -3289,7 +3263,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="640"
+						y="646"
 						width="61"
 						height="20"
 						key="staticText-205"/>
@@ -3306,7 +3280,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="665"
+						y="671"
 						width="40"
 						height="18"
 						key="staticText-206"/>
@@ -3323,7 +3297,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="330"
-						y="733"
+						y="739"
 						width="127"
 						height="20"
 						key="staticText-207"/>
@@ -3340,7 +3314,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="687"
+						y="693"
 						width="447"
 						height="18"
 						key="staticText-208"/>
@@ -3357,7 +3331,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="35"
-						y="756"
+						y="762"
 						width="375"
 						height="15"
 						key="staticText-209"/>
@@ -3374,7 +3348,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="35"
-						y="771"
+						y="777"
 						width="375"
 						height="10"
 						key="staticText-210"/>
@@ -3391,7 +3365,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="0"
-						y="756"
+						y="762"
 						width="35"
 						height="15"
 						key="staticText-211"/>
@@ -3408,7 +3382,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="360"
-						y="275"
+						y="281"
 						width="0"
 						height="0"
 						key="rectangle-60"/>
@@ -3417,7 +3391,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="341"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-212"/>
@@ -3434,7 +3408,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="241"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-213"/>
@@ -3451,7 +3425,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="141"
-						y="286"
+						y="292"
 						width="80"
 						height="18"
 						key="staticText-214"/>
@@ -3468,7 +3442,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="34"
-						y="298"
+						y="304"
 						width="55"
 						height="1"
 						key="line-63"/>
@@ -3477,7 +3451,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="127"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-61"/>
@@ -3486,7 +3460,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="227"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-62"/>
@@ -3495,7 +3469,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="450"
-						y="50"
+						y="56"
 						width="80"
 						height="1"
 						key="line-64"/>
@@ -3504,7 +3478,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="450"
-						y="70"
+						y="76"
 						width="80"
 						height="1"
 						key="line-65"/>
@@ -3513,7 +3487,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="280"
-						y="751"
+						y="757"
 						width="50"
 						height="1"
 						key="line-66"/>
@@ -3522,7 +3496,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="710"
+						y="716"
 						width="160"
 						height="20"
 						key="staticText-215"/>
@@ -3539,7 +3513,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="170"
-						y="733"
+						y="739"
 						width="55"
 						height="20"
 						key="staticText-216"/>
@@ -3556,7 +3530,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="340"
-						y="710"
+						y="716"
 						width="117"
 						height="20"
 						key="staticText-217"/>
@@ -3573,7 +3547,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="226"
-						y="751"
+						y="757"
 						width="52"
 						height="1"
 						key="line-67"/>
@@ -3582,7 +3556,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="173"
-						y="751"
+						y="757"
 						width="50"
 						height="1"
 						key="line-68"/>
@@ -3591,7 +3565,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="171"
-						y="728"
+						y="734"
 						width="170"
 						height="1"
 						key="line-69"/>
@@ -3600,7 +3574,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="225"
-						y="733"
+						y="739"
 						width="55"
 						height="20"
 						key="staticText-218"/>
@@ -3617,7 +3591,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<ellipse>
 					<reportElement
 						x="460"
-						y="695"
+						y="701"
 						width="50"
 						height="50"
 						key="ellipse-5"/>
@@ -3626,7 +3600,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<ellipse>
 					<reportElement
 						x="475"
-						y="722"
+						y="728"
 						width="0"
 						height="0"
 						key="ellipse-6"/>
@@ -3635,10 +3609,12 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="460"
-						y="700"
+						y="706"
 						width="50"
 						height="40"
-						key="staticText-219"/>
+						key="staticText-219">
+							<printWhenExpression><![CDATA[new Boolean(!$P{hospital_code}.equals("066") && !$P{hospital_code}.equals("081") )]]></printWhenExpression>
+						</reportElement>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.0" lineColor="#000000"/>
@@ -3654,7 +3630,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="10"
-						y="595"
+						y="601"
 						width="10"
 						height="10"
 						key="rectangle-63"/>
@@ -3663,7 +3639,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="370"
-						y="590"
+						y="596"
 						width="33"
 						height="20"
 						key="staticText-220"/>
@@ -3680,7 +3656,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="195"
-						y="603"
+						y="609"
 						width="175"
 						height="1"
 						key="line-70"/>
@@ -3689,7 +3665,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="514"
-						y="590"
+						y="596"
 						width="16"
 						height="20"
 						key="staticText-221"/>
@@ -3706,7 +3682,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="405"
-						y="603"
+						y="609"
 						width="107"
 						height="1"
 						key="line-71"/>
@@ -3715,7 +3691,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="240"
-						y="640"
+						y="646"
 						width="142"
 						height="20"
 						key="staticText-222"/>
@@ -3732,7 +3708,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="170"
-						y="628"
+						y="634"
 						width="342"
 						height="1"
 						key="line-72"/>
@@ -3741,7 +3717,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="514"
-						y="615"
+						y="621"
 						width="16"
 						height="20"
 						key="staticText-223"/>
@@ -3758,7 +3734,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="71"
-						y="665"
+						y="671"
 						width="87"
 						height="18"
 						key="staticText-224"/>
@@ -3775,7 +3751,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="171"
-						y="665"
+						y="671"
 						width="87"
 						height="18"
 						key="staticText-225"/>
@@ -3792,7 +3768,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="271"
-						y="665"
+						y="671"
 						width="88"
 						height="18"
 						key="staticText-226"/>
@@ -3809,7 +3785,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="371"
-						y="665"
+						y="671"
 						width="46"
 						height="18"
 						key="staticText-227"/>
@@ -3826,7 +3802,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="60"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-64"/>
@@ -3835,7 +3811,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="160"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-65"/>
@@ -3844,7 +3820,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="260"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-66"/>
@@ -3853,7 +3829,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="360"
-						y="670"
+						y="676"
 						width="10"
 						height="10"
 						key="rectangle-67"/>
@@ -3862,7 +3838,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="419"
-						y="678"
+						y="684"
 						width="111"
 						height="1"
 						key="line-73"/>
@@ -3871,7 +3847,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="380"
-						y="653"
+						y="659"
 						width="150"
 						height="1"
 						key="line-74"/>
@@ -3880,7 +3856,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="65"
-						y="653"
+						y="659"
 						width="175"
 						height="1"
 						key="line-75"/>
@@ -3889,7 +3865,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="105"
+						y="111"
 						width="500"
 						height="1"
 						key="line-76"/>
@@ -3898,7 +3874,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="135"
+						y="141"
 						width="500"
 						height="1"
 						key="line-77"/>
@@ -3907,7 +3883,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="165"
+						y="171"
 						width="500"
 						height="1"
 						key="line-78"/>
@@ -3916,7 +3892,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="265"
-						y="181"
+						y="187"
 						width="115"
 						height="15"
 						key="staticText-228"/>
@@ -3933,7 +3909,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="90"
-						y="286"
+						y="292"
 						width="30"
 						height="20"
 						key="staticText-229"/>
@@ -3950,7 +3926,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="215"
+						y="221"
 						width="500"
 						height="1"
 						key="line-79"/>
@@ -3959,7 +3935,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="245"
+						y="251"
 						width="500"
 						height="1"
 						key="line-80"/>
@@ -3968,7 +3944,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="30"
-						y="275"
+						y="281"
 						width="500"
 						height="1"
 						key="line-81"/>
@@ -3977,7 +3953,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="285"
+						y="291"
 						width="535"
 						height="1"
 						key="line-82"/>
@@ -3986,7 +3962,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="327"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-68"/>
@@ -3995,7 +3971,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="427"
-						y="289"
+						y="295"
 						width="13"
 						height="13"
 						key="rectangle-69"/>
@@ -4004,7 +3980,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="127"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-70"/>
@@ -4013,7 +3989,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="227"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-71"/>
@@ -4022,7 +3998,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="241"
-						y="306"
+						y="312"
 						width="80"
 						height="18"
 						key="staticText-230"/>
@@ -4039,7 +4015,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="341"
-						y="306"
+						y="312"
 						width="80"
 						height="18"
 						key="staticText-231"/>
@@ -4056,7 +4032,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="327"
-						y="309"
+						y="315"
 						width="13"
 						height="13"
 						key="rectangle-72"/>
@@ -4065,7 +4041,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="350"
+						y="356"
 						width="535"
 						height="1"
 						key="line-83"/>
@@ -4074,7 +4050,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="274"
-						y="329"
+						y="335"
 						width="1"
 						height="216"
 						key="line-84"/>
@@ -4083,7 +4059,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="328"
+						y="334"
 						width="1"
 						height="236"
 						key="line-85"/>
@@ -4092,7 +4068,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="430"
-						y="328"
+						y="334"
 						width="1"
 						height="235"
 						key="line-86"/>
@@ -4101,7 +4077,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="410"
-						y="350"
+						y="356"
 						width="1"
 						height="214"
 						key="line-87"/>
@@ -4110,7 +4086,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="515"
-						y="350"
+						y="356"
 						width="1"
 						height="213"
 						key="line-88"/>
@@ -4119,7 +4095,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="365"
+						y="371"
 						width="250"
 						height="10"
 						key="staticText-232"/>
@@ -4136,7 +4112,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="375"
+						y="381"
 						width="250"
 						height="10"
 						key="staticText-233"/>
@@ -4153,7 +4129,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="385"
+						y="391"
 						width="250"
 						height="10"
 						key="staticText-234"/>
@@ -4170,7 +4146,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="20"
-						y="395"
+						y="401"
 						width="240"
 						height="10"
 						key="staticText-235"/>
@@ -4187,7 +4163,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="405"
+						y="411"
 						width="230"
 						height="10"
 						key="staticText-236"/>
@@ -4204,7 +4180,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="415"
+						y="421"
 						width="220"
 						height="10"
 						key="staticText-237"/>
@@ -4221,7 +4197,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="425"
+						y="431"
 						width="220"
 						height="10"
 						key="staticText-238"/>
@@ -4238,7 +4214,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="435"
+						y="441"
 						width="220"
 						height="10"
 						key="staticText-239"/>
@@ -4255,7 +4231,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="40"
-						y="445"
+						y="451"
 						width="69"
 						height="10"
 						key="staticText-240"/>
@@ -4273,7 +4249,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="159"
-						y="445"
+						y="451"
 						width="101"
 						height="10"
 						key="staticText-241"/>
@@ -4291,7 +4267,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="415"
+						y="421"
 						width="10"
 						height="10"
 						key="rectangle-73"/>
@@ -4300,7 +4276,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="425"
+						y="431"
 						width="10"
 						height="10"
 						key="rectangle-74"/>
@@ -4309,7 +4285,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="435"
+						y="441"
 						width="10"
 						height="10"
 						key="rectangle-75"/>
@@ -4318,7 +4294,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<rectangle>
 					<reportElement
 						x="30"
-						y="445"
+						y="451"
 						width="10"
 						height="10"
 						key="rectangle-76"/>
@@ -4327,7 +4303,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="455"
+						y="461"
 						width="230"
 						height="10"
 						key="staticText-242"/>
@@ -4344,7 +4320,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="465"
+						y="471"
 						width="243"
 						height="10"
 						key="staticText-243"/>
@@ -4361,7 +4337,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="30"
-						y="475"
+						y="481"
 						width="230"
 						height="10"
 						key="staticText-244"/>
@@ -4379,7 +4355,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="485"
+						y="491"
 						width="239"
 						height="10"
 						key="staticText-245"/>
@@ -4396,7 +4372,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="495"
+						y="501"
 						width="261"
 						height="10"
 						key="staticText-246"/>
@@ -4413,7 +4389,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="505"
+						y="511"
 						width="263"
 						height="10"
 						key="staticText-247"/>
@@ -4430,7 +4406,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="515"
+						y="521"
 						width="250"
 						height="10"
 						key="staticText-248"/>
@@ -4447,7 +4423,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="10"
-						y="525"
+						y="531"
 						width="69"
 						height="10"
 						key="staticText-249"/>
@@ -4464,7 +4440,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="50"
-						y="532"
+						y="538"
 						width="205"
 						height="1"
 						key="line-89"/>
@@ -4473,7 +4449,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="20"
-						y="543"
+						y="549"
 						width="235"
 						height="1"
 						key="line-90"/>
@@ -4482,7 +4458,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="0"
-						y="545"
+						y="551"
 						width="535"
 						height="1"
 						key="line-91"/>
@@ -4491,7 +4467,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="563"
+						y="569"
 						width="205"
 						height="1"
 						key="line-92"/>
@@ -4500,7 +4476,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<line direction="TopDown">
 					<reportElement
 						x="330"
-						y="562"
+						y="568"
 						width="205"
 						height="1"
 						key="line-93"/>
@@ -4509,7 +4485,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="450"
-						y="55"
+						y="61"
 						width="79"
 						height="13"
 						key="textField-27"/>
@@ -4526,7 +4502,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="128"
-						y="290"
+						y="296"
 						width="11"
 						height="13"
 						key="staticText-250">
@@ -4545,7 +4521,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="546"
+						y="552"
 						width="88"
 						height="15"
 						key="textField-28"/>
@@ -4562,7 +4538,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="546"
+						y="552"
 						width="94"
 						height="15"
 						key="textField-29"/>
@@ -4579,7 +4555,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="56"
-						y="669"
+						y="675"
 						width="17"
 						height="13"
 						key="staticText-251"/>
@@ -4596,7 +4572,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="410"
-						y="756"
+						y="762"
 						width="125"
 						height="15"
 						key="textField-30"/>
@@ -4613,7 +4589,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="410"
-						y="771"
+						y="777"
 						width="125"
 						height="10"
 						key="textField-31"/>
@@ -4630,7 +4606,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="0"
-						y="771"
+						y="777"
 						width="35"
 						height="10"
 						key="staticText-252"/>
@@ -4647,7 +4623,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="30"
-						y="230"
+						y="236"
 						width="500"
 						height="15"
 						key="textField-32"/>
@@ -4664,7 +4640,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="31"
-						y="90"
+						y="96"
 						width="500"
 						height="15"
 						key="textField-33"/>
@@ -4681,7 +4657,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="31"
-						y="120"
+						y="126"
 						width="500"
 						height="15"
 						key="textField-34"/>
@@ -4698,7 +4674,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="276"
-						y="362"
+						y="368"
 						width="53"
 						height="15"
 						key="textField-37">
@@ -4713,7 +4689,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="0"
-						y="781"
+						y="787"
 						width="532"
 						height="15"
 						key="textField-38"/>
@@ -4726,7 +4702,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="40"
-						y="287"
+						y="293"
 						width="40"
 						height="13"
 						key="textField-39"/>
@@ -4743,7 +4719,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="394"
-						y="74"
+						y="80"
 						width="132"
 						height="16"
 						key="textField-40"/>
@@ -4756,7 +4732,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="394"
-						y="180"
+						y="186"
 						width="132"
 						height="16"
 						key="textField-42"/>
@@ -4769,7 +4745,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="428"
-						y="290"
+						y="296"
 						width="11"
 						height="13"
 						key="staticText-267">
@@ -4788,7 +4764,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="65"
-						y="524"
+						y="530"
 						width="156"
 						height="10"
 						key="staticText-268">
@@ -4807,7 +4783,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="276"
-						y="521"
+						y="527"
 						width="53"
 						height="15"
 						key="textField-47">
@@ -4822,7 +4798,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="333"
-						y="521"
+						y="527"
 						width="88"
 						height="15"
 						key="textField-48">
@@ -4841,7 +4817,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="432"
-						y="521"
+						y="527"
 						width="94"
 						height="15"
 						key="textField-49">
@@ -4860,7 +4836,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="250"
-						y="485"
+						y="491"
 						width="24"
 						height="10"
 						key="staticText-269">
@@ -4879,7 +4855,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="277"
-						y="482"
+						y="488"
 						width="53"
 						height="15"
 						key="textField-56">
@@ -4894,7 +4870,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="334"
-						y="482"
+						y="488"
 						width="88"
 						height="15"
 						key="textField-57">
@@ -4913,7 +4889,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="433"
-						y="482"
+						y="488"
 						width="94"
 						height="15"
 						key="textField-58">
@@ -4932,7 +4908,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<staticText>
 					<reportElement
 						x="328"
-						y="310"
+						y="316"
 						width="11"
 						height="13"
 						key="staticText-271">
@@ -4951,7 +4927,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="286"
-						y="733"
+						y="739"
 						width="34"
 						height="18"
 						key="textField-64">
@@ -4966,7 +4942,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="240"
-						y="733"
+						y="739"
 						width="20"
 						height="18"
 						key="textField-65"/>
@@ -4979,7 +4955,7 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="193"
-						y="733"
+						y="739"
 						width="20"
 						height="18"
 						key="textField-66"/>
@@ -4989,6 +4965,35 @@ order by REPORT_TYPE, DOCTOR_PROFILE_CODE,  doctor_code]]></queryString>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PRINT_DATE}.substring(6,8)]]></textFieldExpression>
 				</textField>
+				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="454"
+						y="693"
+						width="75"
+						height="65"
+						key="image-6">
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00001") || $F{HOSPITAL_CODE}.equals("006") || 
+$F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") || 
+$P{hospital_code}.equals("00029")|| $P{hospital_code}.equals("066") || 
+$P{hospital_code}.equals("081"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals("00001") ? $P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp2.png" : $P{hospital_logo}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+				</image>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="-2"
+						width="130"
+						height="35"
+						key="image-8">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("00029"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo} +$F{HOSPITAL_CODE}+"logo.gif"]]></imageExpression>
+				</image>
 			</band>
 			</groupFooter>
 		</group>

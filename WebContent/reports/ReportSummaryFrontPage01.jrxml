@@ -42,7 +42,7 @@
 	<queryString><![CDATA[SELECT     
 	DESCRIPTION_THAI, COMPANY_NAME, OF_ADDRESSNO, OF_MOO, OF_BUILDER, OF_BUILDER_NUMBER, 
 	OF_BUILDER_FLOOR, OF_VILLAGE, OF_SOI, OF_ROAD, OF_SUBDISTRICT,
-	OF_DISTRICT, OF_PROVINCE, ZIP, TEL, FAX, TAXNO, ACCOUNT_NO, AUTHORITY_NAME, AUTHORITY_POSITION,
+	OF_DISTRICT, OF_PROVINCE, ZIP, TEL, FAX, REPLACE(TAXNO,'-','') AS TAXNO, ACCOUNT_NO, AUTHORITY_NAME, AUTHORITY_POSITION,
 	(SELECT 
 		SUM(ST.SUM_NORMAL_TAX_AMT)
 	FROM SUMMARY_TAX_402 ST 
@@ -2839,19 +2839,6 @@ $P{filling_date}.substring(3,5).equals("11") ? "พฤศจิกายน" : "
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{AUTHORITY_POSITION}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="196"
-						y="779"
-						width="190"
-						height="13"
-						key="textField-48"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filling_date}]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

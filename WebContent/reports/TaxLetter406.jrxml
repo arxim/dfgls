@@ -231,19 +231,8 @@ $F{HOSPITAL_CODE}.equals("063") ? "( นายสุธี โพธิ์พั
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? "( "+ $F{AUTHORITY_POSITION} +" )" :
-$F{HOSPITAL_CODE}.equals("00002") ? "( ผู้จัดการฝ่ายบริหารการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("004") ? "( หัวหน้าแผนกบัญชี )" : 
-$F{HOSPITAL_CODE}.equals("00005") || $F{HOSPITAL_CODE}.equals("051") ? "( ผู้จัดการแผนกบัญชีและการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("006")||$F{HOSPITAL_CODE}.equals("007") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("00009") ? "( ผู้อำนวยการฝ่ายการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") ? " ผู้จัดการฝ่ายบัญชี " : 
-$F{HOSPITAL_CODE}.equals("015") || $F{HOSPITAL_CODE}.equals("039") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("00018") ? " เจ้าหน้าที่แผนกบัญชี " : 
-$F{HOSPITAL_CODE}.equals("00019")||$F{HOSPITAL_CODE}.equals("00029")||$F{HOSPITAL_CODE}.equals("036")||$F{HOSPITAL_CODE}.equals("048")||$F{HOSPITAL_CODE}.equals("045") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" : 
-$F{HOSPITAL_CODE}.equals("050") ? "( หัวหน้าแผนกบัญชีและงบประมาณ )" : 
-$F{HOSPITAL_CODE}.equals("058") ? " เจ้าหน้าที่แผนกบัญชี " : 
-$F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่าธรรมเนียมแพทย์ " : "( ผู้จัดการแผนกบัญชี )"]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{AUTHORITY_POSITION}
+]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement
@@ -270,9 +259,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						y="521"
 						width="120"
 						height="94"
-						key="image-5">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("006") || $F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") )]]></printWhenExpression>
-						</reportElement>
+						key="image-5"/>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
 					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
@@ -873,7 +860,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						width="590"
 						height="76"
 						key="image-4">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012") ||$F{HOSPITAL_CODE}.equals("00019") || $F{HOSPITAL_CODE}.equals("046") || $F{HOSPITAL_CODE}.equals("036")|| $F{HOSPITAL_CODE}.equals("006"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf(!$F{HOSPITAL_CODE}.equals("045"))]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>
@@ -1394,7 +1381,7 @@ $F{HOSPITAL_CODE}.equals("063") ? " พนักงานบัญชีค่�
 						width="213"
 						height="165"
 						key="image-6">
-							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00019")|| $F{HOSPITAL_CODE}.equals("058"))]]></printWhenExpression>
+							<printWhenExpression><![CDATA[Boolean.valueOf(!$F{HOSPITAL_CODE}.equals("045"))]]></printWhenExpression>
 						</reportElement>
 					<box></box>
 					<graphicElement stretchType="NoStretch"/>

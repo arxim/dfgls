@@ -66,6 +66,10 @@
 			labelMap.add("NOV","November","พฤศจิกายน");
 			labelMap.add("DEC","December","ธันวาคม");
 			labelMap.add("REPORT_BEHIND_PAYMENT_DETAIL","Unpaid Doctor Fee Details","รายงานรายการค้างจ่ายแพทย์");
+			labelMap.add("TERM", "Tax Term", "ช่วง");
+			labelMap.add("TERM_FIRST","First Term","ครึ่งปีแรก");
+            labelMap.add("TERM_SECOND","Second Term","ครึ่งปีหลัง");
+            labelMap.add("TERM_END","Yearly","ทั้งปี");
             String report = "";
             request.setAttribute("labelMap", labelMap.getHashMap());
             
@@ -94,7 +98,15 @@
         <script type="text/javascript">
             function Report_View() {
             	window.location.replace("df_report.jsp?payTerm="+document.mainForm.term.value+"&MM="+document.mainForm.MM.value+"&YYYY="+document.mainForm.YYYY.value);
-		        
+            	if(document.mainForm.REPORT_FILE_NAME.value.includes('TaxLetter406')){
+//            		console.log(document.getElementById('YEAR').value);
+            		document.getElementById('YYYY').value = document.getElementById('YEAR').value;
+                }
+            	if(document.mainForm.REPORT_FILE_NAME.value.includes('TaxLetter406')){
+//            		console.log("TERM "+document.getElementById('TERM').value);
+            		document.getElementById('MM').value = document.getElementById('TERM').value;
+                }
+            	
                 if(document.mainForm.REPORT_FILE_NAME.value == "None"){
                     alert("Please Select Report");
                     document.mainForm.REPORT_FILE_NAME.focus();
@@ -113,9 +125,24 @@
 					}
 				}
             }
+            function changeDropDownList(){
+				var e = document.getElementById('Tax406');
+				var d = document.getElementById('Others');
+                if(document.mainForm.REPORT_FILE_NAME.value.includes('TaxLetter406')){
+                    e.style.display = "";
+                	d.style.display = 'none';
+                }else if(document.mainForm.REPORT_FILE_NAME.value != "None" && !document.mainForm.REPORT_FILE_NAME.value.includes('TaxLetter406')){
+                	d.style.display = "";
+                	e.style.display = "none";
+                }
+                else{
+                	e.style.display = 'none';
+                	d.style.display = 'none';
+                }
+            }
         </script>
     </head>
-    <body leftmargin="0">
+    <body leftmargin="0" onload='changeDropDownList()'>
 
         <form id="mainForm" name="mainForm" method="get" action="../../ViewReportSrvl">
             <center>
@@ -137,13 +164,13 @@
                 <tr>
                     <td class="label"><label for="REPORT_NAME">${labelMap.REPORT_NAME}</label></td>
                     <td class="input">
-						<select class="medium" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME">
+						<select class="medium" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME"  onchange="changeDropDownList();">
 	                      <option value="None">-- Select Monthly Report --</option>                     
 	                      <option value="<%=report_payment%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 	                      <option value="<%=session.getAttribute("HOSPITAL_CODE").equals("00029") ? "SummaryRevenueByDetailForDoctor00029":"SummaryRevenueByDetailForDoctor"%>">${labelMap.REPORT_DETAIL_DF}</option>
 	                      <option value="ExpenseDetailForDoctor">${labelMap.REPORT_EXPENSE}</option>
 			      		  <option value="SummaryDFUnpaidByDetailForDoctor">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
-	                      <option value="<%=session.getAttribute("HOSPITAL_CODE").equals("050") ? "TaxLetter406ForDoctor050" : "TaxLetter406ForDoctor"%>">${labelMap.REPORT_TAX_406}</option>
+	                      <option value="<%=session.getAttribute("HOSPITAL_CODE").equals("00001")||session.getAttribute("HOSPITAL_CODE").equals("00029") || session.getAttribute("HOSPITAL_CODE").equals("050")||session.getAttribute("HOSPITAL_CODE").equals("081") ? "TaxLetter406ForDoctor"+session.getAttribute("HOSPITAL_CODE") : "TaxLetter406ForDoctor"%>">${labelMap.REPORT_TAX_406}</option>
 	                      <option value="Tax402SummaryYearlyForDoctor">${labelMap.REPORT_TAX_402}</option>
 	                    </select>
 					</td>
@@ -155,15 +182,31 @@
                    	 	</select>
                     </td>
                 </tr>
-				<tr>
-                    <td class="label">
-                        <label>${labelMap.MM}</label>					</td>
-                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM",b.getMm())%></td>
-                    <td class="label">
-                         <label>${labelMap.YYYY}</label>
-					</td>
-                    <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
-                </tr>
+                <tbody id='Tax406'>
+                	<tr>
+                		<td class="label"><label for="TERM">${labelMap.TERM}</label></td>
+                		<td class="input" >
+                			<select name='TERM' class='medium' id='TERM'>
+                				<option value='01'>${labelMap.TERM_FIRST}</option>
+                				<option value='06'>${labelMap.TERM_SECOND}</option>
+                				<option value='12'>${labelMap.TERM_END}</option>
+                			</select>
+                		</td>
+                		<td class="label"><label>${labelMap.YYYY}</label></td>
+                    	<td class="input"><%=proUtil.selectYY("YEAR", b.getYyyy())%></td>
+                	</tr>
+                </tbody>
+                <tbody id='Others'>
+					<tr>
+	                    <td class="label">
+	                        <label>${labelMap.MM}</label>					</td>
+	                    <td class="input"><%=proUtil.selectMM(session.getAttribute("LANG_CODE").toString(), "MM",b.getMm())%></td>
+	                    <td class="label">
+	                         <label>${labelMap.YYYY}</label>
+						</td>
+	                    <td class="input"><%=proUtil.selectYY("YYYY", b.getYyyy())%></td>
+	                </tr>
+	            </tbody>
                 <tr>
                     <th colspan="4" class="buttonBar">
                         <input type="button" id="VIEW" name="VIEW" class="button" value="${labelMap.VIEW}" onclick="Report_View();" />
@@ -171,6 +214,7 @@
                         <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='df_report.jsp'" />
 					</th>
                 </tr>
+
             </table>
             <input type="hidden" id="DOCTOR_CODE_FROM" name="DOCTOR_CODE_FROM" class="short" value="<%=request.getSession().getAttribute("USER_ID").toString()%>"/>
             <input type="hidden" id="DOCTOR_CODE_TO" name="DOCTOR_CODE_TO" class="short" value="<%=request.getSession().getAttribute("USER_ID").toString()%>"/>

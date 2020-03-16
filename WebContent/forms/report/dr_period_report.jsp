@@ -53,6 +53,7 @@
 			labelMap.add("REPORT_EXPENSE","Expense Report","รายงานรายได้ค่าใช้จ่ายแพทย์");
 			labelMap.add("REPORT_DF_HOLD","DF Hold Report","รายงานรายการระงับจ่ายค่าแพทย์");
 			labelMap.add("REPORT_DF_PERIOD","Summary Revenue Period","รายงานรายได้แพทย์(ช่วงเวลา)");
+			labelMap.add("REPORT_TAX_PERIOD","Summary Tax Period","รายงานภาษีแพทย์(ช่วงเวลา)");
             labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
             labelMap.add("DOCUMENT_TYPE", "Document Type", "ประเภทเอกสาร");
             labelMap.add("VIEW", "View", "แสดงผล");
@@ -91,6 +92,7 @@
                     alert("Please Select Report");
                     document.mainForm.REPORT_FILE_NAME.focus();
                 }else{
+                	console.log(document.mainForm.REPORT_FILE_NAME.value);
 					document.mainForm.REPORT_DISPLAY.value = "view";
                    	document.mainForm.target = "_blank";
                    	document.mainForm.submit();
@@ -127,10 +129,20 @@
                 <input type="hidden" id="REPORT_DISPLAY" name="REPORT_DISPLAY"/>
                 <input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="df_monthly"/>
                 <input type="hidden" id="DOCTOR_CODE_FROM" name="DOCTOR_CODE_FROM" value="<%=request.getSession().getAttribute("USER_ID").toString()%>"/>
-                <input type="hidden" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" value="<%=request.getSession().getAttribute("USER_GROUP_CODE").toString().equals("5")? "SummaryRevenueByDetailPeriodForDoctor":"SummaryRevenueByDetailPeriod" %>"/>
+                <!-- input type="hidden" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME" value="<%=request.getSession().getAttribute("USER_GROUP_CODE").toString().equals("5")? "SummaryRevenueByDetailPeriodForDoctor":"SummaryRevenueByDetailPeriod" %>"/-->
                 <tr>
                     <th colspan="4">
                         <div style="float: left;">${labelMap.TITLE_MAIN}</div>                    </th>
+                </tr>
+                <tr>
+                    <td class="label"><label for="REPORT_NAME">${labelMap.REPORT_NAME}</label>                    </td>
+                    <td colspan="3" class="input">
+					<select class="mediumMax" id="REPORT_FILE_NAME" name="REPORT_FILE_NAME">
+                      <option value="None">-- Select Monthly Report --</option>                     
+                      <option value="SummaryRevenueByDetailPeriodForDoctor">${labelMap.REPORT_DF_PERIOD}</option>
+                      <option value="SummaryTaxPeriodForDoctor">${labelMap.REPORT_TAX_PERIOD}</option>
+                    </select>
+					</td>
                 </tr>
 				<tr>
                     <td class="label">
