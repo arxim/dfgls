@@ -17,13 +17,13 @@ public class ReadProperties {
 	
 	public static void main(String[] args){
 		ReadProperties rp = new ReadProperties();
-		String propertiesName = "db.properties";
+		String propertiesName = "config.properties";
 		//ArrayList<String> al = new ArrayList<String>();
 		//al.add("driverClassName");
 		//al.add("url");
 		//al.add("user");
-		//System.out.println(al);
-		rp.getPropertiesData(propertiesName, "db.","driverClassName");
+		//System.out.println(al); log4j.appender.FILE
+		System.out.println(rp.getPropertiesData("config.properties", "interface.","ip"));
 	}
 	
     public HashMap<String,String> getPropertiesData(String propFile, String prefix, ArrayList<String> keyData) {
@@ -35,7 +35,7 @@ public class ReadProperties {
             for(int i = 0; i<keyData.size(); i++){
             	propData.put(keyData.get(i), dbProps.getProperty(prefix+keyData.get(i)));            	
             }
-            System.out.println(propData);
+            System.out.println("Props data : "+propData);
         } catch (Exception e) { System.out.println(e); }
         return propData;
     }

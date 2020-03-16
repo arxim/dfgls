@@ -93,11 +93,11 @@
                 
                 document.mainForm.SOURCE_FILE.value = document.mainForm.FILE_INTERFACE.value;
                 if(hosp=="CHC00"){
-                	document.mainForm.action = "http://192.168.1.24:8883/interfaceFileDF";
+                	//document.mainForm.action = "http://192.168.1.24:8883/interfaceFileDF";
                 }else{
-                	document.mainForm.action = "http://localhost:8883/interfaceFileDF";
+                	//document.mainForm.action = "http://103.82.248.103:8883/interfaceFileDF";
                 }
-                
+                document.mainForm.action = "http://"+<%= rp.getPropertiesData("config.properties", "interface.","ip") %>+":8883/interfaceFileDF";
                 
                 document.getElementById("messageModal").style.display = "block";
                 document.getElementById('msgBody').textContent = "Please Wait..";
@@ -111,11 +111,7 @@
                 	    modal.style.display = "none";
                 	  }
                 } */
-                
-                var target = "http://"+<% rp.getPropertiesData("","",""); %>+":8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
-                AJAX_Request(target, AJAX_Result_Message);
-                
-                //document.mainForm.submit();
+                document.mainForm.submit();
                 return true;
 			}
             
