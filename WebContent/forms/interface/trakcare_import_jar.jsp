@@ -92,12 +92,8 @@
                 var hosp = document.mainForm.businessCode.value;
                 
                 document.mainForm.SOURCE_FILE.value = document.mainForm.FILE_INTERFACE.value;
-                if(hosp=="CHC00"){
-                	//document.mainForm.action = "http://192.168.1.24:8883/interfaceFileDF";
-                }else{
-                	//document.mainForm.action = "http://103.82.248.103:8883/interfaceFileDF";
-                }
-                document.mainForm.action = "http://"+<%= rp.getPropertiesData("config.properties", "interface.","ip") %>+":8883/interfaceFileDF";
+                document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF";
+                document.mainForm.submit();
                 
                 document.getElementById("messageModal").style.display = "block";
                 document.getElementById('msgBody').textContent = "Please Wait..";
@@ -106,12 +102,8 @@
                 document.getElementsByClassName("close")[0].onclick = function() {
                 	document.getElementById("messageModal").style.display = "none";
                 }
-                /* window.onclick = function(event) {
-                	  if (event.target == modal) {
-                	    modal.style.display = "none";
-                	  }
-                } */
-                document.mainForm.submit();
+                
+                
                 return true;
 			}
             
