@@ -8,7 +8,7 @@
 <%@page import="df.bean.obj.util.JDate"%>
 <%@page import="df.bean.db.DBMgr"%>
 <%@ include file="../../_global.jsp"%>
-
+<%@page import="df.bean.obj.util.ReadProperties"%>
 <%
 	if (session.getAttribute("LANG_CODE") == null) {
 		session.setAttribute("LANG_CODE", LabelMap.LANG_EN);
@@ -89,6 +89,8 @@
 	String report = "";
 	request.setAttribute("labelMap", labelMap.getHashMap());
 	String startDateStr = JDate.showDate(JDate.getDate()); 
+	
+	ReadProperties rp = new ReadProperties();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -140,7 +142,9 @@
                     }					
                 }else{
        				document.mainForm.method = "POST"
-       				document.mainForm.action = "http://192.168.2.111:8883/exportFileDF"
+       				/* document.mainForm.action = "http://192.168.2.111:8883/exportFileDF" */
+       				/* document.mainForm.action = "http://localhost:8883/exportFileDF" */
+       				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF"
        				document.mainForm.submit();
 				}
 			}

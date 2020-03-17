@@ -41,7 +41,7 @@
             labelMap.add("PAYOR_OFFICE_CATEGORY_CODE", "Payor Cate. Code", "Payor Cate. Code");
             labelMap.add("ORDER_ITEM_CODE", "Order Item Code", "Order Item Code");
             labelMap.add("MAX_CASE", "Max Case", "เคสสูงสุด");
-            labelMap.add("AMOUNT_PER_CASE", "Amount Per Case", "จำนวนเงินต่อเคสที่เกิน");
+            labelMap.add("AMOUNT_PER_CASE", "Over Per Case", "จำนวนเงินต่อเคสที่เกิน");
             labelMap.add("AMOUNT", "Amount", "จำนวนเงิน");
             labelMap.add("HOUR", "Hour", "จำนวนชั่วโมง");
             labelMap.add("EPISODE", "Episode", "Episode");
