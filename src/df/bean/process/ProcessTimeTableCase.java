@@ -427,7 +427,7 @@ public class ProcessTimeTableCase {
 				
 				//check over case for pay
 				if(stpMaxCase < allCase ) {
-					overCase = stpMaxCase - allCase;
+					overCase = allCase - stpMaxCase;
 					stpAmount = mstAmount + (overCase * mstAmountPerCase);
 				}else {
 					stpAmount = mstAmount;

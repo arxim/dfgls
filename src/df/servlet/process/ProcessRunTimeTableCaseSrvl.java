@@ -47,6 +47,7 @@ public class ProcessRunTimeTableCaseSrvl extends HttpServlet {
 		        PrintWriter out = response.getWriter();
 		        out.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		        request.setCharacterEncoding("UTF-8");
+		        
 		        String hospitalCode = request.getSession().getAttribute("HOSPITAL_CODE").toString();
 		        String userId = request.getParameter("USER");
 		        String yyyy = request.getParameter("YYYY");
