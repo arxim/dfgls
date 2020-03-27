@@ -34,7 +34,7 @@
             Batch b = new Batch(session.getAttribute("HOSPITAL_CODE").toString(), c);
             c.Close();
             LabelMap labelMap = new LabelMap(session.getAttribute("LANG_CODE").toString());
-            labelMap.add("TITLE_MAIN", "Time Table Case Process", "Time Table Case Process");
+            labelMap.add("TITLE_MAIN", "Count and Compare Case", "Count and Compare Case");
             labelMap.add("START_DATE", "Start Date", "วันที่เริ่มต้น");
             labelMap.add("END_DATE", "End Date", "วันที่สิ้นสุด");
             labelMap.add("MM", "Month", "เดือน");
@@ -90,10 +90,10 @@
                     
                     if (xmlDoc.getElementsByTagName("SUCCESS")[0].firstChild.nodeValue == "false") {
                         table.rows[currentRowID].cells[2].innerHTML = '<img src="../../images/failed_icon.gif" alt="" />';
-                        alert("Process Mapping Case Incomplete");
+                        alert("Process Count and Compare Case Incomplete");
                     }else {
                         table.rows[currentRowID].cells[2].innerHTML = '<img src="../../images/succeed_icon.gif" alt="" />';
-                        alert("Process Mapping case Complete");
+                        alert("Process Count and Compare Case Complete");
                     }
 
                     document.getElementById("PROGRESS").innerHTML = (currentRowID - 1) + " / " + numRow;
@@ -191,7 +191,7 @@
 %>
                 <tr>
                     <td class="row<%=i % 2%> alignCenter"><%="1"%></td>
-                    <td class="row<%=i % 2%> alignCenter"><%="Time Table Case Process"%></td>
+                    <td class="row<%=i % 2%> alignCenter"><%="Count and Compare Calculate"%></td>
                     <td class="row<%=i % 2%> alignCenter"><img src="../../images/waiting_icon.gif" alt="" /></td>
                 </tr>
 <%

@@ -1,21 +1,20 @@
 package df.bean.process;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import df.bean.db.conn.DBConn;
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConnection;
 import df.bean.db.table.TRN_Error;
 import df.bean.obj.util.JDate;
 
 public class ProcessTimeTableCase {
 	
-	private DBConn cn = new DBConn();
-//	private DBConnection conn = new DBConnection();
+	final static Logger logger = Logger.getLogger(ProcessTimeTableCase.class);
+	
+	private DBConnection conn;
 	private String hospitalCode;
 	private String userId;
 	String sqlCommand="";
@@ -36,6 +35,16 @@ public class ProcessTimeTableCase {
 		this.userId = userId;
 	}
 	
+	public ProcessTimeTableCase(){
+		this.conn = new DBConnection();
+		try {
+			conn.connectToLocal();
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error(e.getMessage());
+		}
+    }
+	
 	public void initProcessMappingCase(String hospitalCode, String userId) {
 		this.hospitalCode=hospitalCode;
 		this.userId=userId;
@@ -43,32 +52,33 @@ public class ProcessTimeTableCase {
 	
 	public boolean runTimeTableCase(String yyyy, String mm) {
 		boolean status = false;
-		
-		status = updateGuaranteeNote(yyyy, mm);
-		if(status) {
-			status = updatePackageCase(yyyy, mm);
-		}
-		if(status) {
-			status = updateOverCase(yyyy, mm);
-		}
-		if(status) {
-			status = updateCompareCase(yyyy, mm);
-		}
-		if(status) {
-			status = updateCalculateAmount(yyyy, mm);
-		}
-		if(status) {
-			status = insertMappingCaseExpenseDetail(yyyy, mm);
+		if(doRollback(yyyy, mm)) {
+			status = updateGuaranteeNote(yyyy, mm);
+			if(status) {
+				status = updatePackageCase(yyyy, mm);
+			}
+			if(status) {
+				status = updateOverCase(yyyy, mm);
+			}
+			if(status) {
+				status = updateCompareCase(yyyy, mm);
+			}
+			if(status) {
+				status = updateCalculateAmount(yyyy, mm);
+			}
+			if(status) {
+				status = insertMappingCaseExpenseDetail(yyyy, mm);
+			}
 		}
 		return status;
 	}
 	
 	public boolean updateGuaranteeNote(String yyyy, String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		boolean status = false;
 		String sqlUpdate ="";
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			sqlUpdate = "UPDATE TD SET TD.GUARANTEE_NOTE='MAPPING_CASE'\r\n" + 
 					"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
 					"LEFT JOIN STP_PACKAGE_ITEM_MAPPING SPIM ON STTC.HOSPITAL_CODE=SPIM.HOSPITAL_CODE AND STTC.PACKAGE_CODE=SPIM.PACKAGE_CODE\r\n" + 
@@ -132,12 +142,12 @@ public class ProcessTimeTableCase {
 	}
 	
 	public boolean updatePackageCase(String yyyy,String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		boolean status = false;
 		String sqlSelect = "";
 		String sqlUpdate = "";
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			sqlSelect = "SELECT STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE,MP.NUM_CASE,MP.PAY_CASE, COUNT(*) COUNT_CASE\r\n" + 
 					"FROM STP_TIME_TABLE_CASE STTC\r\n" + 
 					"LEFT JOIN STP_PACKAGE_ITEM_MAPPING SPIM ON STTC.HOSPITAL_CODE=SPIM.HOSPITAL_CODE AND STTC.PACKAGE_CODE=SPIM.PACKAGE_CODE\r\n" + 
@@ -203,12 +213,12 @@ public class ProcessTimeTableCase {
 	}
 	
 	public boolean updateOverCase(String yyyy,String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		boolean status = false;
 		String sqlSelect = "";
 		String sqlUpdate = "";
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			// OVER CASE
 			sqlSelect = "SELECT  STTC.START_DATE,TD.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
 					",MSC.MAX_CASE,MSC.AMOUNT,MSC.AMOUNT_PER_CASE, COUNT(*) COUNT_OVER_CASE\r\n" + 
@@ -279,12 +289,12 @@ public class ProcessTimeTableCase {
 	}
 	
 	public boolean updateCompareCase(String yyyy,String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		boolean status = false;
 		String sqlSelect = "";
 		String sqlUpdate = "";
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			 sqlSelect = "SELECT START_DATE,DOCTOR_CODE\r\n" + 
 		        		",CASE_CODE,PACKAGE_CODE\r\n" + 
 		        		",CAL_TYPE,CASE_TYPE,AMOUNT\r\n" + 
@@ -360,12 +370,12 @@ public class ProcessTimeTableCase {
 	}
 	
 	public boolean updateCalculateAmount(String yyyy,String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		boolean status = false;
 		String sqlSelect = "";
 		String sqlUpdate = "";
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			sqlSelect = "SELECT STTC.START_DATE,STTC.DOCTOR_CODE,STTC.CASE_CODE,STTC.PACKAGE_CODE\r\n" + 
 	        		",MSC.START_TIME MST_START_TIME,MSC.END_TIME MST_END_TIME,STTC.START_TIME,STTC.END_TIME\r\n" + 
 	        		",MSC.AMOUNT,MSC.MAX_CASE,AMOUNT_PER_CASE,NUM_CASE,NUM_PACKAGE_CASE\r\n" + 
@@ -451,12 +461,12 @@ public class ProcessTimeTableCase {
 	
 
 	public boolean insertMappingCaseExpenseDetail(String yyyy,String mm) {
-		DBConnection conn = new DBConnection();
+//		DBConnection conn = new DBConnection();
 		String sqlDelete = "";
 		String sqlInsert = "";
 		boolean status = false;
 		try {
-			conn.connectToLocal();
+//			conn.connectToLocal();
 			sqlDelete = "DELETE TRN_EXPENSE_DETAIL WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND YYYY+MM='"+yyyy+mm+"' AND EXPENSE_CODE='ADD_CASE' AND ( BATCH_NO = '' OR BATCH_NO IS NULL )";
 			conn.executeUpdate(sqlDelete);
 			System.out.println("Delete time table case to STP_EXPENSE_DETAIL complete");
@@ -479,6 +489,29 @@ public class ProcessTimeTableCase {
 			TRN_Error.setHospital_code(this.hospitalCode);
 			TRN_Error.setUser_name(this.userId);
 			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Insert TRN_EXPENSE_DETAIL Error", e.getMessage(), sqlInsert,"");
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
+	public boolean doRollback(String yyyy,String mm) {
+//		DBConnection conn = new DBConnection();
+		boolean status = false;
+		String sqlUpdate = "";
+		try {
+//			conn.connectToLocal();
+		sqlUpdate = "UPDATE TRN_DAILY SET GUARANTEE_NOTE='' " + 
+				"WHERE HOSPITAL_CODE='"+this.hospitalCode+"' AND GUARANTEE_NOTE = 'MAPPING_CASE'  " + 
+				"AND SUBSTRING(VERIFY_DATE,1,6) ='"+yyyy+mm+"' AND ( BATCH_NO = '' OR BATCH_NO IS NULL)";
+		status = conn.executeUpdate(sqlUpdate) >= 0 ? true : false;
+		logger.info("Run Time Table Case Process Method:Rollback");
+		
+		}catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+			TRN_Error.setHospital_code(this.hospitalCode);
+			TRN_Error.setUser_name(this.userId);
+			TRN_Error.writeErrorLog(conn.getConnection(), "Run Time Table Case Process",  "Rollback process Error", e.getMessage(), sqlUpdate,"");
 			e.printStackTrace();
 		}
 		return status;

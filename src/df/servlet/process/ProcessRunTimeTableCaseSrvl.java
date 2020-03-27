@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import df.bean.db.conn.DBConn;
+import df.bean.guarantee.ProcessGuaranteeBeanNew;
 import df.bean.process.ProcessTimeTableCase;
 
 /**
@@ -52,22 +54,19 @@ public class ProcessRunTimeTableCaseSrvl extends HttpServlet {
 		        String userId = request.getParameter("USER");
 		        String yyyy = request.getParameter("YYYY");
 		        String mm = request.getParameter("MM");
-		        try {
-		            ProcessTimeTableCase processTimeTableCase = new ProcessTimeTableCase();
-		            try {
-		                Thread.sleep(20);
-		                processTimeTableCase.initProcessMappingCase(hospitalCode, userId);
-		                if(processTimeTableCase.runTimeTableCase(yyyy,mm)){
-		                    out.print("<RESULT><SUCCESS>SUCCESS</SUCCESS></RESULT>");
-		                }else{
-		                    out.print("<RESULT><SUCCESS>FALSE</SUCCESS></RESULT>");
-		                }
-		            }
-		            catch (Exception  e) {
-		                out.print("<RESULT><SUCCESS>Error</SUCCESS></RESULT>");
-		                e.printStackTrace(out);
-		            }
-		        } finally {
+		        
+		        ProcessTimeTableCase pttc = null;
+		        boolean st = true;
+	            try {
+	                pttc = new ProcessTimeTableCase();
+	                pttc.initProcessMappingCase(hospitalCode, userId);
+	                st = pttc.runTimeTableCase(yyyy,mm);
+	                out.print("<RESULT><SUCCESS>"+st+"</SUCCESS></RESULT>");
+	            }catch (Exception  e) {
+	            	st = false;
+	                out.print("<RESULT><SUCCESS>"+st+"</SUCCESS></RESULT>");
+	                e.printStackTrace(out);
+	            }finally {
 		            out.close();
 		        }
 		    } 

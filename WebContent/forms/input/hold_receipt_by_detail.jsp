@@ -302,7 +302,7 @@
                     </td>
                     <td class="input" colspan="3">
                         <input name="ORDER_ITEM_CODE" type="text" class="short" id="ORDER_ITEM_CODE" maxlength="20" value="<%= DBMgr.getRecordValue(orderCode, "CODE") %>" onkeypress="return ORDER_ITEM_CODE_KeyPress(event);" onblur="AJAX_Refresh_ORDER_ITEM_CODE();" />
-                        <input type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=ORDER_ITEM_CODE&DISPLAY_FIELD=DESCRIPTION_<%= labelMap.getFieldLangSuffix() %>&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=ORDER_ITEM_CODE&HANDLE=AJAX_Refresh_ORDER_ITEM_CODE'); return false;" />
+                        <input type="image" class="image_button" src="../../images/search_button.png" alt="" onclick="openSearchForm('../search.jsp?TABLE=ORDER_ITEM&DISPLAY_FIELD=DESCRIPTION_<%= labelMap.getFieldLangSuffix() %>&BEINSIDEHOSPITAL=1&BEACTIVE=1&TARGET=ORDER_ITEM_CODE&HANDLE=AJAX_Refresh_ORDER_ITEM_CODE'); return false;" />
                         <input name="ORDER_ITEM_NAME" type="text" class="long" id="ORDER_ITEM_NAME" readonly="readonly" value="<%= DBMgr.getRecordValue(orderCode, "DESCRIPTION_"+labelMap.getFieldLangSuffix()) %>" maxlength="255" />                    
                     </td>
                 </tr>
