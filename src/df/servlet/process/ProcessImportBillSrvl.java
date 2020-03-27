@@ -133,6 +133,15 @@ public class ProcessImportBillSrvl extends ProcessServlet {
         	//if(processImportOnWard.importOnward(hospitalCode, startDate, endDate)){
         }
         
+        if (type.equals("Mapping SSO Department")) {
+            if(true){
+                if (pi.mappingSSODepartment(hospitalCode, startDate, endDate)) {
+                	numAffRec = 1;
+                } else numAffRec = 0;
+            }else numAffRec = 0;
+        }
+
+        
         if (numAffRec == 1){ 
         	conn.commitTrans();
             //ProcessTranferRevenue objRevenueDf = new  ProcessTranferRevenue(hospitalCode, user , startDate, endDate);
