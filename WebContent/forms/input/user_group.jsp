@@ -41,11 +41,10 @@
 
             request.setCharacterEncoding("UTF-8");
             DataRecord userGroupRec = null;
-
-            if (request.getParameter("USER_GROUP") != null) {
+			if(session.getAttribute("USER_GROUP_CODE") != null){
+            //if (request.getParameter("USER_GROUP") != null) {
             	
-            	String sqlCommand =  " SELECT * FROM USER_GROUP WHERE USER_GROUP = " + request.getParameter("USER_GROUP") + " AND HOSPITAL_CODE =  '"+ session.getAttribute("HOSPITAL_CODE")+"'";
-            	
+            	String sqlCommand =  " SELECT * FROM USER_GROUP WHERE USER_GROUP = " + session.getAttribute("USER_GROUP_CODE") + " AND HOSPITAL_CODE =  '"+ session.getAttribute("HOSPITAL_CODE")+"'";
                 userGroupRec = DBMgr.getRecord(sqlCommand);
                 
                 if (userGroupRec == null) {
@@ -85,7 +84,8 @@
                 <%
                 String menusql = "SELECT  * FROM USER_GROUP WHERE HOSPITAL_CODE  = '" + session.getAttribute("HOSPITAL_CODE") + "'";
                 DBConnection con = new DBConnection();
-                con.connectToServer();
+                con.connectToLocal();
+                //con.connectToServer();
                 ResultSet rs = con.executeQuery(menusql);
                 String linkEdit = "";
                 while (rs.next()) {
