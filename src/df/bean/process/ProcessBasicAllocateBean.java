@@ -68,13 +68,11 @@ public class ProcessBasicAllocateBean {
 							continue methodStepDoctor;
 						}else{
 							//match = true;
-							
 							//check set time range (new condition)
 							try{
 								//System.out.println(methodStepDoctorList.get(x).get("TIME_START"));
 								if( methodStepDoctorList.get(x).get("TIME_START") == null || methodStepDoctorList.get(x).get("TIME_START").equals("")){
 									//if not set time range
-									//System.out.println("Time Start - End not in database");
 									match = true;
 								}else{
 									int timeStart = Integer.parseInt(methodStepDoctorList.get(x).get("TIME_START").toString());
