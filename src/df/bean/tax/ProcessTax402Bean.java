@@ -3,6 +3,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConn;
 import df.bean.expense.ExpenseSummaryBean;
 import df.bean.obj.util.JDate;
@@ -11,6 +13,7 @@ import df.bean.obj.util.Utils;
 import df.bean.obj.util.Variables;
 
 public class ProcessTax402Bean {
+	final static Logger logger = Logger.getLogger(ProcessTax402Bean.class);
     DBConn cdb;
     String[][] tax_rate = null;
     String[][] temp_table = null;
@@ -56,7 +59,7 @@ public class ProcessTax402Bean {
 		try{
 			tax_rate = cdb.query(sqNormal);
 		} catch (Exception e){
-		    System.out.println(e);
+		    logger.error(e);
 		}
 		return tax_rate;
     }
@@ -116,17 +119,17 @@ public class ProcessTax402Bean {
 //	                    "AJ.DOCTOR_CODE, "+
 	                    "DOCTOR.TAX_402_METHOD, DOCTOR.IS_LEGAL_ENTITY "+
 	                    ") Q "+
-	                    //"WHERE SUM_TAX_402+EXDR_402-EXCR_402 > 0 "+
+	                    "WHERE SUM_TAX_402+EXDR_402-EXCR_402 <> 0 "+
 	                    "GROUP BY HOSPITAL_CODE, DOCTOR_TAX_402_CODE, TAX_402_METHOD, IS_LEGAL_ENTITY ";
 	                    //"HAVING SUM((SUM_TAX_402+EXDR_402)-EXCR_402) > 0 ";	                    
         try {
         	if(Variables.IS_TEST){
-            	System.out.println(stm);        		
+            	logger.info(stm);        		
         	}
             cdb.insert(stm);
             cdb.commitDB();
         } catch (Exception e) {
-            System.out.println("Error insert income to summary_tax_402 : "+e);
+            logger.error("Error insert income to summary_tax_402 : "+e);
             status = false;
             cdb.rollDB();
         }
@@ -180,8 +183,8 @@ public class ProcessTax402Bean {
                     }
                 }
         } catch (Exception f) {
-        	System.out.println("Exception from ProcessTax402 : "+f);
-        	System.out.println(stm);
+        	logger.error("Exception from ProcessTax402 : "+f);
+        	logger.error(stm);
             inform = "False"+f;
         }
         return inform;
@@ -201,7 +204,7 @@ public class ProcessTax402Bean {
     		cdb.closeStatement("");
     		cdb.closeDB("");
     	}catch(Exception err){
-    		System.out.println(err.getMessage());
+    		logger.error(err.getMessage());
     	}
     	return data;
     }
@@ -224,7 +227,7 @@ public class ProcessTax402Bean {
             status = true;			 
         } catch (Exception e) {
         	cdb.rollDB();
-            System.out.println("Error while insert income to summary_tax_402 : "+e);
+            logger.error("Error while insert income to summary_tax_402 : "+e);
         }
         return status;
     }
@@ -305,7 +308,7 @@ public class ProcessTax402Bean {
                 income = Double.parseDouble(""+temp[0][0]);                
             }
         } catch (Exception e){
-            System.out.println(e);
+            logger.error(e);
         }
         return income;
     }
@@ -331,7 +334,7 @@ public class ProcessTax402Bean {
         try{
             temp = cdb.query(sqNormal);
         } catch (Exception e){
-            System.out.println(e);
+            logger.error(e);
         }
         if(temp.length == 0){
             taxAmount = 0;
@@ -510,11 +513,11 @@ public class ProcessTax402Bean {
     		"AND YYYY = '"+year+"' AND MM = '"+month+"' AND HOSPITAL_CODE = '"+hospital+"'";
     	try{
     		cdb.insert(s);
-    		System.out.println("Roll back Tax 402 Processing.");
+    		logger.info("Roll back Tax 402 Processing.");
     		cdb.insert(e);
-    		System.out.println("Roll back Expense for Tax 402 Processing.");
+    		logger.info("Roll back Expense for Tax 402 Processing.");
     		cdb.commitDB();
-    		System.out.println("Roll back Tax 402 Complete.");
+    		logger.info("Roll back Tax 402 Complete.");
     	}catch(Exception ee){
     		cdb.rollDB();
     		status = false;

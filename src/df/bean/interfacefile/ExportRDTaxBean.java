@@ -8,6 +8,9 @@ package df.bean.interfacefile;
 import df.bean.db.conn.DBConnection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import org.apache.log4j.Logger;
+
 import df.bean.db.conn.DBConn;
 import df.bean.obj.util.*;
 
@@ -15,6 +18,7 @@ import df.bean.obj.util.*;
  * @author nopphadon
  */
 public class ExportRDTaxBean extends InterfaceTextFileBean {
+	final static Logger logger = Logger.getLogger(ExportRDTaxBean.class);
     private ResultSet rs;
     private Statement stm;
     private String payment_date = "";
@@ -43,7 +47,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         //if(Variables.phase.equals("test")){}
         String cond = "";
         
-        System.out.println(type);
+        logger.info(type);
         //type "00" ภงด.1ก
         if(type.equals("00")){
         	tax_month = "00";
@@ -51,12 +55,12 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         }else{
         	tax_month = month;
         }
-        System.out.println(month);
+        logger.info(month);
         if(type.equals("00")) {
         	cond = "AND D.TAX_402_METHOD LIKE (CASE WHEN S.HOSPITAL_CODE = '00019' THEN '%' ELSE 'STP' END) ";
         }
         else if(type.equals("01")){
-        	cond = "AND S.TAX_402_METHOD IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY <> 'Y' ";
+        	cond = "AND D.TAX_402_METHOD LIKE (CASE WHEN S.HOSPITAL_CODE = '00019' THEN '%' ELSE 'STP' END) AND S.IS_LEGAL_ENTITY <> 'Y' ";
         }
         else if(type.equals("03")) {
         	cond = "AND S.TAX_402_METHOD NOT IN ('STP', 'SUM') AND S.IS_LEGAL_ENTITY <> 'Y' ";
@@ -80,12 +84,12 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
         			 "ON D.CODE = S.DOCTOR_CODE AND D.HOSPITAL_CODE = S.HOSPITAL_CODE "+
         			 "WHERE S.HOSPITAL_CODE = '"+hp+"' AND "+
         			 "S.YYYY = '"+year+"' AND S.ACTIVE = '1' AND "+
-        			 "S.MM = '"+month+"' "+cond;  
+        			 "S.MM = '"+month+"' AND SUM_NORMAL_TAX_AMT > 0 "+cond;  
         
         //if(type.equals("R00")){
         //	dat = dat.replaceAll("S.MM = '"+month+"'", "S.MM = '13'");
         //}
-        System.out.println(dat);
+        logger.info(dat);
         try {
             setFileName(path);//set filename read
             temp_data = d.query(dat);//get data            
@@ -98,14 +102,14 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
             	}
             	//writeFileNew(setFormatFile(temp_data, type));
             }else{
-            	System.out.println("Data is null");
-            	System.out.println(dat);
+            	logger.info("Data is null");
+            	logger.info(dat);
             	this.message = "There is no data.";
             	status = false;
             }
         }catch(Exception e){
         	status = false;
-            System.out.println(e);
+            logger.error(e);
         }
 
         return status;
@@ -157,7 +161,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
 	    		JDate.saveTaxDate(this.payment_date);//Pay Date;
 	    	}
     	}catch (Exception e){
-    		System.out.println("RD Tax Write : "+e);
+    		logger.error("RD Tax Write : "+e);
     	}
     	return dt;
     }
@@ -203,7 +207,7 @@ public class ExportRDTaxBean extends InterfaceTextFileBean {
 	    		"1";//Tax Condition
 	    	}
     	}catch (Exception e){
-    		System.out.println("RD Tax Write : "+e);
+    		logger.error("RD Tax Write : "+e);
     	}
     	return dt;
     }
