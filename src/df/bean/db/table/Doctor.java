@@ -342,7 +342,8 @@ static private String SQL_DOCTOR = "select distinct DOCTOR.CODE as DOCTOR_CODE, 
         return rows;
     } 
     
-    //update receipt by doctor
+    //update receipt by doctor no handicraft filter
+    /*
     public int updateReceipt(String YYYY, String MM, String hospitalCode, String tableName, String doctorCode) {
         int rows = -1;
         String sql = "";
@@ -366,7 +367,37 @@ static private String SQL_DOCTOR = "select distinct DOCTOR.CODE as DOCTOR_CODE, 
                 e.printStackTrace();
         }
         return rows;
-    } 
+    }
+    */
+    
+    public int updateReceipt(String YYYY, String MM, String hospitalCode, String tableName, String doctorCode) {
+        int rows = -1;
+        String sql = "";
+        try {
+            sql = "UPDATE " + tableName + " SET " + tableName + ".PAY_BY_DOCTOR = 'Y' "
+                    + " ,YYYY = '" + YYYY + "'"
+                    + " ,MM = '" + MM + "'"
+                    + " FROM TRN_DAILY "
+                    + " INNER JOIN ORDER_ITEM ON TRN_DAILY.HOSPITAL_CODE = ORDER_ITEM.HOSPITAL_CODE "
+                    + " AND TRN_DAILY.ORDER_ITEM_CODE = ORDER_ITEM.CODE "
+                    + " AND (HANDICRAFT <> 1 OR HANDICRAFT IS NULL) "
+                    + " WHERE " + tableName + ".PAY_BY_DOCTOR = 'N' "
+                    + " AND IS_ONWARD != 'Y' "
+                    + " AND (BATCH_NO IS NULL OR BATCH_NO = '') "
+                    + " AND " + tableName + ".HOSPITAL_CODE='" + hospitalCode + "'" 
+                    + " AND " + tableName + ".DOCTOR_CODE = '" + doctorCode + "'"
+                    + " AND (TRANSACTION_DATE BETWEEN '" + YYYY + MM + "00' AND '" + YYYY + MM + "31')";
+            rows = this.getDBConnection().executeUpdate(sql);
+
+        } catch (Exception e) {
+                TRN_Error.writeErrorLog(this.getDBConnection().getConnection(), 
+                                TRN_Error.PROCESS_RECEIPT_BY_DOCTOR, 
+                                "Receipt By Doctor is Error.", 
+                                e.getMessage(), sql);
+                e.printStackTrace();
+        }
+        return rows;
+    }
     
     public boolean rollBackUpdate(String YYYY, String MM, String hospitalCode, String tableName) {
         List sqlCommand = new ArrayList();

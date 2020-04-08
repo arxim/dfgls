@@ -259,8 +259,8 @@ public class ProcessPartialPayment {
 						" OLD_DR_AMT," +
 						" DR_TAX_400," +
 						" DR_TAX_401," +
-						" DR_TAX_402," +
-						//----DR_TAX_406
+						//----DR_TAX_402
+						" CASE WHEN T.TAX_TYPE_CODE = '402' THEN "+
 						" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
 						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
 						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
@@ -279,7 +279,31 @@ public class ProcessPartialPayment {
 						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
 						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
 						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
-						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END,"+ 
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END "+
+						" ELSE DR_TAX_402 END,"+ 
+						//----DR_TAX_402
+						//----DR_TAX_406
+						" CASE WHEN T.TAX_TYPE_CODE = '406' THEN "+
+						" CASE WHEN (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.DR_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P " + 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') > DR_AMT " +
+						" THEN DR_TAX_406" + //IF Partial allocate > amount for payment then use that amount
+						" ELSE (SELECT ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT)*P.TAX_AMT)/100)" +
+						" FROM TRN_DAILY T, INT_ERP_AR_RECEIPT I, TRN_PARTIAL P "+ 
+						" WHERE T.INVOICE_NO = I.BILL_NO AND T.HOSPITAL_CODE = I.HOSPITAL_CODE" +
+						" AND T.INVOICE_NO = P.INVOICE_NO AND T.HOSPITAL_CODE = P.HOSPITAL_CODE AND T.LINE_NO = P.LINE_NO AND T.INVOICE_TYPE = P.INVOICE_TYPE"+
+						" AND T.LINE_NO = '"+hashData.get("LINE_NO")+"' AND I.IS_LOADED = 'N'" +
+						" AND T.INVOICE_TYPE = '"+hashData.get("INVOICE_TYPE")+"'" +
+						" AND I.RECEIPT_DATE = '"+hashData.get("RECEIPT_DATE")+"'" +
+						" AND T.BATCH_NO = '' AND T.YYYY = '' "+
+						" AND I.RECEIPT_NO = '"+hashData.get("RECEIPT_NO")+"' AND T.IS_PARTIAL ='N') END "+
+						" ELSE DR_TAX_406 END,"+ 
 						//----DR_TAX_406
 						" TAX_TYPE_CODE," +
 						" DR_PREMIUM," +
@@ -360,9 +384,15 @@ public class ProcessPartialPayment {
 					+ "THEN 0 "
 					+ "ELSE T.DR_AMT_BEF_PARTIAL - ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.DR_AMT) / 100) END, "
 					
-					+ "DR_TAX_406 = CASE WHEN ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.DR_AMT) / 100) > T.DR_AMT "
-					+ "THEN 0 "
-					+ "ELSE T.DR_TAX_BEF_PARTIAL-((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.TAX_AMT) / 100) END, "
+					+ "DR_TAX_406 = CASE WHEN T.TAX_TYPE_CODE = '406' THEN "
+					+ "CASE WHEN ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.DR_AMT) / 100) > T.DR_AMT THEN 0 "
+					+ "ELSE T.DR_TAX_BEF_PARTIAL-((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.TAX_AMT) / 100) END "
+					+ "ELSE 0 END, "
+					
+					+ "DR_TAX_402 = CASE WHEN T.TAX_TYPE_CODE = '402' THEN "
+					+ "CASE WHEN ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.DR_AMT) / 100) > T.DR_AMT THEN 0 "
+					+ "ELSE T.DR_TAX_BEF_PARTIAL-((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.TAX_AMT) / 100) END "
+					+ "ELSE 0 END, "
 					
 					+ "AMOUNT_AFT_DISCOUNT = CASE WHEN ((((100*I.PAYMENT_AMOUNT)/I.BILL_AMOUNT) * P.DR_AMT) / 100) > T.DR_AMT "
 					+ "THEN 0 "
@@ -447,7 +477,7 @@ public class ProcessPartialPayment {
 					} catch (SQLException e) {
 						logger.error("Partial Payment Process Error on statement : "+this.sql);
 					}
-		}else{}
+		}else{ System.out.println("No combine bill"); }
 		return arrData;
 	}
 	
@@ -465,10 +495,15 @@ public class ProcessPartialPayment {
 		
 		//Insert Combind bill case N/N or N in month
 		String sqlCombineBillNew = "INSERT INTO INT_ERP_AR_RECEIPT "
+			  + "SELECT HOSPITAL_CODE,BILL_NO,RECEIPT_NO,RECEIPT_DATE,RECEIPT_TYPE_CODE,"
+			  + "BILL_AMOUNT,CREDIT_NOTE_AMOUNT, DEBIT_NOTE_AMOUNT, PAYMENT_AMT, "
+			  + "WRITE_OFF_AMOUNT,DOC_TYPE,IS_LAST_RECEIPT,TRANSACTION_DATE,UPDATE_DATE, "
+			  + "UPDATE_TIME,'COMBINE' AS USER_ID,IS_LOADED FROM ("
 			  +	"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,"
 			  + "IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, IAR.DEBIT_NOTE_AMOUNT, PAYMENT_AMT, "
 			  + "IAR.WRITE_OFF_AMOUNT,IAR.DOC_TYPE,IAR.IS_LAST_RECEIPT,I3.TRANSACTION_DATE, IAR.UPDATE_DATE, "
 			  + "IAR.UPDATE_TIME,'COMBINE' AS USER_ID,IAR.IS_LOADED "
+			  + ",ROW_NUMBER() OVER(PARTITION BY I3.BILL_NO ORDER BY I3.BILL_NO, I3.RECEIPT_NO ) AS IT_NUM "
 			  + "FROM INT_ERP_AR_RECEIPT IAR JOIN ( "
 			  + "SELECT I.HOSPITAL_CODE, I.BILL_NO, I2.RECEIPT_DATE, I2.RECEIPT_NO, I2.TRANSACTION_DATE, PAYMENT_AMT "
 			  + "FROM INT_ERP_AR_RECEIPT I JOIN ( "
@@ -483,7 +518,8 @@ public class ProcessPartialPayment {
 			  + "ON I.HOSPITAL_CODE =I2.HOSPITAL_CODE AND I.BILL_NO = I2.BILL_NO AND I.RECEIPT_NO = I2.RECEIPT_NO WHERE PT_NUM = 1) I3 "
 			  + "ON I3.HOSPITAL_CODE = IAR.HOSPITAL_CODE and I3.BILL_NO = IAR.BILL_NO AND I3.RECEIPT_DATE = IAR.RECEIPT_DATE "
 			  + "WHERE IAR.TRANSACTION_DATE BETWEEN '"+startDate+"' AND '"+endDate+"' AND IS_LAST_RECEIPT = 'N' "
-			  + "AND IAR.HOSPITAL_CODE = '"+this.hospitalCode+"'"; 
+			  + "AND IAR.HOSPITAL_CODE = '"+this.hospitalCode+"' "
+			  + ") B WHERE B.IT_NUM = '1'";
 		/*
 		String sqlCombineBill = "INSERT INTO INT_ERP_AR_RECEIPT "
 				 +"SELECT IAR.HOSPITAL_CODE,IAR.BILL_NO, I3.RECEIPT_NO,I3.RECEIPT_DATE,IAR.RECEIPT_TYPE_CODE,IAR.BILL_AMOUNT,IAR.CREDIT_NOTE_AMOUNT, " 
@@ -525,19 +561,20 @@ public class ProcessPartialPayment {
 		
 		try { 
 			this.dbConn.setStatement(); 
-			dbConn.insert(sqlUpdatePartial); 
 			qMessage =sqlUpdatePartial;	
-			dbConn.insert(sqlCombineBillNew); 
+			dbConn.insert(sqlUpdatePartial); 
 			qMessage =sqlCombineBillNew;	
-			dbConn.insert(sqlDeleteBeforeCombineBill);
+			dbConn.insert(sqlCombineBillNew); 
 			qMessage =sqlDeleteBeforeCombineBill;	
-			dbConn.insert(sqlDeleteDupBill);
+			dbConn.insert(sqlDeleteBeforeCombineBill);
 			qMessage =sqlDeleteDupBill;	
+			dbConn.insert(sqlDeleteDupBill);
 			this.dbConn.commitDB();
 			result = true; 
 		} catch (Exception e1) { 
 			dbConn.rollDB(); 
 			result = false; 
+			logger.error(e1);
 			logger.error("SQLException in stetment : "+qMessage); 
 		}	
 		//dbConn.closeDB("Close Connection from Partial Process"); 
@@ -582,7 +619,7 @@ public class ProcessPartialPayment {
 				   "AND TRANSACTION_DATE BETWEEN '"+this.startDate+"' AND '"+this.endDate+"' "+
 				   ") "+
 				   "AND INVOICE_NO+LINE_NO NOT IN (SELECT INVOICE_NO+LINE_NO FROM TRN_PARTIAL WHERE HOSPITAL_CODE = '"+this.hospitalCode+"')";
-		//logger.info("TRN_PARTIAL : "+qn );
+		logger.info("Backup TRN_PARTIAL Script : "+qn );
 		return qn;
 	}
 	private String clearTransactionMaster(){
