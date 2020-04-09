@@ -35,7 +35,7 @@ public class CheckSummaryMonthlySrvl extends HttpServlet  {
         	conn = new DBConn();
         	conn.setStatement();
         	        	
-        	String qCheck = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+ hospital_code +"' AND YYYY='"+ _arr[2] +"' AND MM='"+ _arr[1] +"' GROUP BY MM;";
+        	String qCheck = "SELECT MM FROM SUMMARY_PAYMENT WHERE HOSPITAL_CODE='"+ hospital_code +"' AND BATCH_NO = '' AND YYYY='"+ _arr[2] +"' AND MM='"+ _arr[1] +"' GROUP BY MM;";
         	String[][] result = conn.query(qCheck);
         	
         	String qCheckG = "SELECT MM FROM SUMMARY_GUARANTEE WHERE HOSPITAL_CODE='"+ hospital_code +"' AND YYYY='"+ _arr[2] +"' AND MM='"+ _arr[1] +"' GROUP BY MM;";
