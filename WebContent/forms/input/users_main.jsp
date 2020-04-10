@@ -379,9 +379,8 @@
     function FuncPassword(){
         window.location.href = 'user_changepass.jsp?HOSPITAL_CODE=<%=DBMgr.getRecordValue(usersRec, "HOSPITAL_CODE") %>&LOGIN_NAME=<%=DBMgr.getRecordValue(usersRec, "LOGIN_NAME") %>';
     }
-    
-    if('1'=='<%=session.getAttribute("USER_GROUP_CODE").toString()%>'){
-        //document.mainForm.USER_GROUP_CODE.disabled = true;
+    if("1".equalsIgnoreCase(session.getAttribute("USER_GROUP_CODE").toString()) ||
+       "3".equalsIgnoreCase(session.getAttribute("USER_GROUP_CODE").toString()) ){
     }else{
         document.mainForm.USER_GROUP_CODE.disabled = true;
         document.mainForm.HOSPITAL_CODE.disabled = true;
