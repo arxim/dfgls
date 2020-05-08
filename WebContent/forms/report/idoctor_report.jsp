@@ -213,6 +213,7 @@
                  		document.getElementById('block_doctor_type').style.display = 'none';
                  	}
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
+                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
                  	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"){
                     	document.getElementById('block_save_file').style.display = '';
                     	document.mainForm.SAVE.disabled = false;

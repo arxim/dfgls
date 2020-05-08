@@ -41,8 +41,11 @@
             labelMap.add("IS_STEP_COMPUTE_0", "No", "ไม่ใช่");
             labelMap.add("IS_STEP_COMPUTE_1", "Yes", "ใช่");
             labelMap.add("PAYMENT_TIME", "Time to Payment", "ทำจ่ายสิ้นเดือน");
-            labelMap.add("PAYMENT_TIME_0", "2 Time", "2 ครั้ง");
-            labelMap.add("PAYMENT_TIME_1", "1 Time ", "1 ครั้ง ");
+            labelMap.add("PAYMENT_TIME_0", "2nd", "2 ครั้ง");
+            labelMap.add("PAYMENT_TIME_1", "1st ", "1 ครั้ง ");
+            labelMap.add("PAY_BY_DOCTOR","Receipt by doctor","จ่ายด้วยเงื่อนไขแพทย์");
+            labelMap.add("PAY_BY_DOCTOR_0","No","รอรับชำระ");
+            labelMap.add("PAY_BY_DOCTOR_1","Yes","จ่าย");
             labelMap.add("ORDER_ITEM_CATEGORY_CODE", "Order Item Category", "กลุ่มรายการรักษา");
             labelMap.add("ACCOUNT_CODE", "Account Code", "รหัสลงบัญชี");
             labelMap.add("IS_COMPUTE", "Allocate Revenue", "คำนวณจ่ายค่าแพทย์");
@@ -99,7 +102,7 @@
                 orderItemRec.addField("UPDATE_DATE", Types.VARCHAR, JDate.getDate());
                 orderItemRec.addField("UPDATE_TIME", Types.VARCHAR, JDate.getTime());
                 orderItemRec.addField("USER_ID", Types.VARCHAR, session.getAttribute("USER_ID").toString());
-/*                 orderItemRec.addField("IS_PROCEDURE", Types.VARCHAR, request.getParameter("IS_PROCEDURE")); */
+                orderItemRec.addField("HANDICRAFT", Types.VARCHAR, request.getParameter("PAY_BY_DOCTOR"));
                 
                 //for log
                 orderItemRecLog.addField("HOSPITAL_CODE", Types.VARCHAR, session.getAttribute("HOSPITAL_CODE").toString(), true);
@@ -130,7 +133,7 @@
                 } else if (MODE == DBMgr.MODE_UPDATE) {
                 	DataRecord orderItem = DBMgr.getRecord("SELECT HOSPITAL_CODE, CODE, DESCRIPTION_THAI, DESCRIPTION_ENG, "+
                 			"PAYMENT_TIME, ORDER_ITEM_CATEGORY_CODE, ACCOUNT_CODE, IS_COMPUTE, IS_STEP_COMPUTE, IS_ALLOC_FULL_TAX, IS_GUARANTEE, "+
-                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID, IS_PROCEDURE "+
+                			"EXCLUDE_TREATMENT, ACTIVE, TAX_TYPE_CODE, UPDATE_DATE, UPDATE_TIME, USER_ID, IS_PROCEDURE, HANDICRAFT "+
                				"FROM ORDER_ITEM WHERE CODE = '" + request.getParameter("CODE") + "' AND HOSPITAL_CODE='" + session.getAttribute("HOSPITAL_CODE") + "' " );
              		
                		remark = "แก้ไข ";
@@ -359,34 +362,14 @@
                 </tr>
                 <tr>
                     <td class="label"><label for="PAYMENT_TIME"><span class="style1">${labelMap.PAYMENT_TIME}*</span></label></td>
-                    <td colspan="3" class="input">
+                    <td colspan="" class="input">
                         <input type="radio" id="PAYMENT_TIME_1" name="PAYMENT_TIME" value="1"<%= DBMgr.getRecordValue(orderItemRec, "PAYMENT_TIME").equalsIgnoreCase("1") || DBMgr.getRecordValue(orderItemRec, "PAYMENT_TIME")=="" ? " checked=\"checked\"" : ""%> />
                                <label for="PAYMENT_TIME_1">${labelMap.PAYMENT_TIME_1}</label>
                         <input type="radio" id="PAYMENT_TIME_0" name="PAYMENT_TIME" value="2"<%= DBMgr.getRecordValue(orderItemRec, "PAYMENT_TIME").equalsIgnoreCase("2") ? " checked=\"checked\"" : ""%> />
                                <label for="PAYMENT_TIME_0">${labelMap.PAYMENT_TIME_0}</label>
 					</td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="IS_STEP_COMPUTE"><span class="style1">${labelMap.IS_STEP_COMPUTE}*</span></label></td>
-                    <td colspan="3" class="input">
-                        <input type="radio" id="IS_STEP_COMPUTE_1" name="IS_STEP_COMPUTE" value="1"<%= DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE").equalsIgnoreCase("1") || DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE")=="" ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_STEP_COMPUTE_1">${labelMap.IS_STEP_COMPUTE_1}</label>
-                        <input type="radio" id="IS_STEP_COMPUTE_0" name="IS_STEP_COMPUTE" value="0"<%= DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE").equalsIgnoreCase("0") ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_STEP_COMPUTE_0">${labelMap.IS_STEP_COMPUTE_0}</label>
-					</td>
-                </tr>
-                <tr>
-                    <td class="label"><label for="IS_COMPUTE_1"><span class="style1">${labelMap.IS_COMPUTE}*</span></label></td>
-                    <td colspan="3" class="input">
-                        <input type="radio" id="IS_COMPUTE_1" name="IS_COMPUTE" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE")=="" ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_COMPUTE_1">${labelMap.IS_COMPUTE_1}</label>
-                        <input type="radio" id="IS_COMPUTE_0" name="IS_COMPUTE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
-                               <label for="IS_COMPUTE_0">${labelMap.IS_COMPUTE_0}</label>
-                    </td>
-               </tr>
-               <tr>
-                    <td class="label"><label for="IS_GUARANTEE_1"><span class="style1">${labelMap.IS_GUARANTEE}*</span></label></td>
-                    <td colspan="3" class="input">
+					<td class="label"><label for="IS_GUARANTEE_1"><span class="style1">${labelMap.IS_GUARANTEE}*</span></label></td>
+                    <td colspan="" class="input">
                         <input type="radio" id="IS_GUARANTEE_1" name="IS_GUARANTEE" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_GUARANTEE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_GUARANTEE")=="" ? " checked=\"checked\"" : ""%> />
                                <label for="IS_GUARANTEE_1">${labelMap.IS_GUARANTEE_1} </label>
                         <input type="radio" id="IS_GUARANTEE_0" name="IS_GUARANTEE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_GUARANTEE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
@@ -394,18 +377,41 @@
 					</td>
                 </tr>
                 <tr>
+                    <td class="label"><label for="IS_STEP_COMPUTE"><span class="style1">${labelMap.IS_STEP_COMPUTE}*</span></label></td>
+                    <td colspan="" class="input">
+                        <input type="radio" id="IS_STEP_COMPUTE_1" name="IS_STEP_COMPUTE" value="1"<%= DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE").equalsIgnoreCase("1") || DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE")=="" ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_STEP_COMPUTE_1">${labelMap.IS_STEP_COMPUTE_1}</label>
+                        <input type="radio" id="IS_STEP_COMPUTE_0" name="IS_STEP_COMPUTE" value="0"<%= DBMgr.getRecordValue(orderItemRec, "IS_STEP_COMPUTE").equalsIgnoreCase("0") ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_STEP_COMPUTE_0">${labelMap.IS_STEP_COMPUTE_0}</label>
+					</td>
+					<td class="label"><label for="IS_COMPUTE_1"><span class="style1">${labelMap.IS_COMPUTE}*</span></label></td>
+                    <td colspan="" class="input">
+                        <input type="radio" id="IS_COMPUTE_1" name="IS_COMPUTE" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE")=="" ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_COMPUTE_1">${labelMap.IS_COMPUTE_1}</label>
+                        <input type="radio" id="IS_COMPUTE_0" name="IS_COMPUTE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_COMPUTE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
+                               <label for="IS_COMPUTE_0">${labelMap.IS_COMPUTE_0}</label>
+                    </td>
+               </tr>
+                <tr>
                     <td class="label"><label for="IS_PROCEDURE_1"><span class="style1">${labelMap.IS_PROCEDURE}*</span></label></td>
-                    <td colspan="3" class="input">
+                    <td colspan="" class="input">
                         <input type="radio" id="IS_PROCEDURE_1" name="IS_PROCEDURE" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE")=="" ? " checked=\"checked\"" : ""%> />
                                <label for="IS_PROCEDURE_1">${labelMap.IS_PROCEDURE_1} </label>
                         <input type="radio" id="IS_PROCEDURE_0" name="IS_PROCEDURE" value="N"<%= DBMgr.getRecordValue(orderItemRec, "IS_PROCEDURE").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
                                <label for="IS_PROCEDURE_0"> ${labelMap.IS_PROCEDURE_0}</label>
 					</td>
+					<td class="label"><label for="PAY_BY_DOCTOR_1"><span class="style1">${labelMap.PAY_BY_DOCTOR}*</span></label></td>
+                    <td colspan="" class="input">
+                        <input type="radio" id="PAY_BY_DOCTOR_1" name="PAY_BY_DOCTOR" value="Y"<%= DBMgr.getRecordValue(orderItemRec, "HANDICRAFT").equalsIgnoreCase("Y") || DBMgr.getRecordValue(orderItemRec, "HANDICRAFT")=="" ? " checked=\"checked\"" : ""%> />
+                               <label for="PAY_BY_DOCTOR_1">${labelMap.PAY_BY_DOCTOR_1} </label>
+                        <input type="radio" id="PAY_BY_DOCTOR_0" name="PAY_BY_DOCTOR" value="N"<%= DBMgr.getRecordValue(orderItemRec, "HANDICRAFT").equalsIgnoreCase("N") ? " checked=\"checked\"" : ""%> />
+                               <label for="PAY_BY_DOCTOR_0"> ${labelMap.PAY_BY_DOCTOR_0}</label>
+					</td>
+					
                 </tr>
                 <tr>
                     <td class="label"><label for="ACTIVE_1"><span class="style1">${labelMap.ACTIVE}*</span></label></td>
                     <td colspan="3" class="input">
-                        <%-- <input type="radio" id="ACTIVE_1" name="ACTIVE" value="1"<%= DBMgr.getRecordValue(orderItemRec, "ACTIVE").equalsIgnoreCase("1") || DBMgr.getRecordValue(orderItemRec, "ACTIVE").equalsIgnoreCase("") ? " checked=\"checked\"" : ""%> /> --%>
                   	    <input type="radio" id="ACTIVE_1" name="ACTIVE" value="1"<%= DBMgr.getRecordValue(orderItemRec, "ACTIVE").equalsIgnoreCase("1") ? " checked=\"checked\"" : ""%>/>           
                                <label for="ACTIVE_1">${labelMap.ACTIVE_1}</label>
                         <input type="radio" id="ACTIVE_0" name="ACTIVE" value="0"<%= DBMgr.getRecordValue(orderItemRec, "ACTIVE").equalsIgnoreCase("0") ? " checked=\"checked\"" : ""%> />

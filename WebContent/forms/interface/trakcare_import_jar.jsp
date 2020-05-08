@@ -104,7 +104,7 @@
                 	document.getElementById("messageModal").style.display = "none";
                 }
                <%--  var target = "http://<% rp.getPropertiesData("config.properties", "interface.","ip").get("ip"); %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value; --%>
-               var target = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;  
+               var target = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;
                AJAX_Request(target, AJAX_Result_Message);
                 return true;
 			}
