@@ -1155,8 +1155,10 @@
                     <td class="label"><label for="TRANSACTION_TYPE"><span class="style1">${labelMap.TRANSACTION_TYPE} *</span></label></td>
                     <td class="input">
                         <select id="TRANSACTION_TYPE" name="TRANSACTION_TYPE"<%= MODE != MODE_INSERT_MASTER_DETAIL && MODE != MODE_UPDATE_MASTER ? " disabled=\"disabled\"" : ""%> onchange="changeTransactionType()">
-                            <option value="INV" <% if("INV".equals(DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_TYPE"))){ out.println("selected");} %>>Invoice</option>
-                            <option value="REV" <% if("REV".equals(DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_TYPE"))){ out.println("selected");} %>>Receipt</option>
+                           <%--  <option value="INV" <% if("INV".equals(DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_TYPE"))){ out.println("selected");} %>>Invoice</option>
+                            <option value="REV" <% if("REV".equals(DBMgr.getRecordValue(trnDailyRec, "TRANSACTION_TYPE"))){ out.println("selected");} %>>Receipt</option> --%>
+                        	<option value="INV" <% if("".equals(DBMgr.getRecordValue(trnDailyRec, "RECEIPT_NO"))){ out.println("selected");}else {} %>>Invoice</option>
+                            <option value="REV" <% if("".equals(DBMgr.getRecordValue(trnDailyRec, "RECEIPT_NO"))){}else{out.println("selected");} %>>Receipt</option>
                         </select>
                         <%
                             if(MODE != MODE_INSERT_MASTER_DETAIL && MODE != MODE_UPDATE_MASTER ){
