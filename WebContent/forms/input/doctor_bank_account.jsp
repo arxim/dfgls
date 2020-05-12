@@ -93,8 +93,7 @@
 
                 response.sendRedirect("../message.jsp");
                 return;
-            }
-            else if (request.getParameter("DOCTOR_CODE") != null) {
+            }else if (request.getParameter("DOCTOR_CODE") != null) {
             	doctorBankAccountRec = DBMgr.getRecord("SELECT * FROM DOCTOR_BANK_ACCOUNT WHERE DOCTOR_CODE = '" + request.getParameter("DOCTOR_CODE") +  "' AND HOSPITAL_CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'");
             	
             	MODE = DBMgr.MODE_INSERT;
@@ -106,7 +105,7 @@
                 	MODE = DBMgr.MODE_UPDATE;
                 	readonlyCheck = "readonly=\"readonly\"";
                 }
-            }     
+            }
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -309,7 +308,7 @@
                         <label for="DOCTOR_CODE">${labelMap.DOCTOR_CODE}*</label>                    
                     </td>
                     <td class="input" colspan="3">
-                    	<input type="text" id="DOCTOR_CODE" name="DOCTOR_CODE" class="short" maxlength="20" readonly="readonly" value="<%= DBMgr.getRecordValue(doctorBankAccountRec, "DOCTOR_CODE") %>" />
+                    	<input type="text" id="DOCTOR_CODE" name="DOCTOR_CODE" class="short" maxlength="20" readonly="readonly" value="<%= DBMgr.getRecordValue(doctorBankAccountRec, "DOCTOR_CODE").equals("") ? request.getParameter("DOCTOR_CODE") : DBMgr.getRecordValue(doctorBankAccountRec, "DOCTOR_CODE").equals("") %>" />
                     </td>
                 </tr>
                 <tr>

@@ -45,6 +45,7 @@
 	labelMap.add("REPORT_PAYMENT_VOUCHER", "Payment Voucher", "เอกสารการจ่ายเงินแพทย์");
 	labelMap.add("REPORT_EXPENSE", "Adjust Revenue", "รายงานรายได้ค่าใช้จ่ายแพทย์");
 	labelMap.add("REPORT_SUMMARY_REVENUE", "Summary Revenue Payment", "รายงานสรุปรายได้แพทย์ทำจ่าย");
+	labelMap.add("REPORT_SUMMARY_REVENUE_GROUP_TYPE", "Summary Revenue Payment by Type", "รายงานสรุปรายได้แพทย์ทำจ่ายตามกลุ่มแพทย์");
 	labelMap.add("REPORT_BEHIND_PAYMENT_SUMMARY","Behind in Payment Summary","รายงานสรุปค่าแพทย์ค้างจ่าย");
 	labelMap.add("REPORT_BEHIND_PAYMENT_DETAIL","Behind in Payment Detail","รายงานรายการค่าแพทย์ค้างจ่าย");
 
@@ -200,7 +201,8 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment" 
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
+                	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentGroupType"
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
@@ -688,6 +690,7 @@
 						<option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
 						<option value="None">--------- Monthly Payment ---------</option>
 						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
+						<option value="SummaryRevenuePaymentGroupType">${labelMap.REPORT_SUMMARY_REVENUE_GROUP_TYPE}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 						<option value="SummaryRevenueByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_DETAIL_DF}</option>
 						<option value="SummaryRevenueByDetailForDoctorVCH">${labelMap.REPORT_DETAIL_BY_ADMISSION}</option>
