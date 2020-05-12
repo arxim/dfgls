@@ -213,6 +213,7 @@
                  	}else{
                      	document.getElementById('block_doctor_code').style.display = '';
                  		document.getElementById('block_doctor_type').style.display = 'none';
+                 		document.mainForm.DOCTOR_TYPE_CODE.value = '';
                  	}
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
                  	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
