@@ -201,13 +201,13 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>" 
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
             		|| document.mainForm.REPORT_FILE_NAME.value == "DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
-            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"
                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentGroupType"
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
-                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"){
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"){
                      	document.getElementById('block_doctor_code').style.display = 'none';
                  		document.getElementById('block_doctor_type').style.display = '';
                  	}else{
@@ -216,7 +216,7 @@
                  		document.mainForm.DOCTOR_TYPE_CODE.value = '';
                  	}
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
-                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePayment"
+                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"
                  	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"){
                     	document.getElementById('block_save_file').style.display = '';
                     	document.mainForm.SAVE.disabled = false;
@@ -690,7 +690,7 @@
 						<option value="GuaranteeSetup">${labelMap.REPORT_GUARANTEE_TRANSACTION}</option>
 						<option value="SummaryRevenueByDetailInMonthVCH">${labelMap.REPORT_DETAIL_IN_MONTH}</option>
 						<option value="None">--------- Monthly Payment ---------</option>
-						<option value="SummaryRevenuePayment">${labelMap.REPORT_SUMMARY_REVENUE}</option>
+						<option value="SummaryRevenuePaymentOrder">${labelMap.REPORT_SUMMARY_REVENUE}</option>
 						<option value="SummaryRevenuePaymentGroupType">${labelMap.REPORT_SUMMARY_REVENUE_GROUP_TYPE}</option>
 						<option value="PaymentVoucher<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_PAYMENT_VOUCHER}</option>
 						<option value="SummaryRevenueByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_DETAIL_DF}</option>
