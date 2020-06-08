@@ -20,13 +20,14 @@
             
             DBConn conn = new DBConn();
             conn.setStatement();
-            //String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +", 'forms/report/df_report.jsp' FROM HOSPITAL WHERE CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'";
-
-            String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +",  STP_MENU.LINK_PAGE FROM HOSPITAL LEFT OUTER JOIN STP_MENU ON HOSPITAL.CODE = STP_MENU.HOSPITAL_CODE "+
-            "WHERE HOSPITAL.CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' AND STP_MENU.MENU_ENG = 'Doctorfee Report'";
-            
             //String qHos = "SELECT DESCRIPTION_"+ labelMap.getFieldLangSuffix() +",  STP_MENU.LINK_PAGE FROM HOSPITAL LEFT OUTER JOIN STP_MENU ON HOSPITAL.CODE = STP_MENU.HOSPITAL_CODE "+
-            //"WHERE HOSPITAL.CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"'";
+            //"WHERE HOSPITAL.CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' AND STP_MENU.MENU_ENG = 'Doctorfee Report'";
+
+            String qHos = "SELECT TOP 1 DESCRIPTION_"+ labelMap.getFieldLangSuffix() +",  STP_MENU.LINK_PAGE FROM HOSPITAL "
+            		+ "LEFT OUTER JOIN STP_MENU ON HOSPITAL.CODE = STP_MENU.HOSPITAL_CODE "
+            		+ "LEFT OUTER JOIN STP_MENU_MATCH SM ON STP_MENU.HOSPITAL_CODE = SM.HOSPITAL_CODE AND STP_MENU.CODE = SM.MENU_CODE "
+                    + "WHERE HOSPITAL.CODE='"+ session.getAttribute("HOSPITAL_CODE").toString() +"' AND SM.USER_GROUP_CODE = '5' AND LINK_PAGE <> '' ";
+            
             String[][] arrHos = conn.query(qHos);
             //System.out.println(arrHos[0][1]);
 %>

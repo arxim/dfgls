@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../error.jsp"%>
+﻿<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="../error.jsp"%>
 
 <%@page import="df.jsp.Guard"%>
 <%@page import="df.jsp.LabelMap"%>
@@ -168,6 +168,20 @@
 				//alert(url);
 				openSearchForm(url);
 			}	
+            
+            function close(id)
+            {
+            	if(id==5)
+            	{
+					var url='../tax/stp_tax_reduce_main.jsp';
+				}
+				else
+				{
+					var url='../process/ProcessFlow.jsp';
+				}
+				//alert(url);
+				window.location(url);
+			}	
 	    </script>
     </head>    
     <body>
@@ -200,7 +214,7 @@
                     <th colspan="6" class="buttonBar">                        
                         <input type="button" id="SELECT" name="SELECT" class="button" value="${labelMap.SELECT}" onclick="window.location = 'stp_tax_reduce_main.jsp?DOCTOR_CODE=' + document.mainForm.DOCTOR_CODE_SEARCH.value+'&MM='+ document.mainForm.MM.value+'&YYYY='+ document.mainForm.YYYY.value ; return false;" />
                         <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" onclick="window.location='stp_tax_reduce_main.jsp'" />
-                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />                    </th>
+                        <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="close(<%=session.getAttribute("USER_GROUP_CODE").toString() %>); return false;"  />                    </th>
                 </tr>
             </table>
             <hr />
