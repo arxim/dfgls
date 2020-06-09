@@ -44,7 +44,7 @@
 	<parameter name="doctor_department" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT 1 AS CROW, SM.YYYY, SM.MM, SM.DOCTOR_CODE, DR.NAME_THAI, DR.DOCTOR_TYPE_CODE,
+	<queryString><![CDATA[SELECT 1 AS CROW, SM.YYYY, SM.MM, SM.DOCTOR_CODE, DR.NAME_THAI, DR.DOCTOR_TYPE_CODE,DT.DESCRIPTION,
 SM.SUM_AMT AS 'SUM_AMT', 
 SM.SUM_DR_AMT  AS DR_SUM_AMT, 
 SM.EXDR_400, SM.EXDR_401, SM.EXDR_402, SM.EXDR_406,
@@ -82,6 +82,7 @@ AND ED.DOCTOR_CODE = SM.DOCTOR_CODE AND EX.ADJUST_TYPE = 'EX'
 GROUP BY ED.DOCTOR_CODE),0) AS GUARANTEE_EXCLUDE_AMOUNT , HP.DESCRIPTION_THAI
 FROM SUMMARY_PAYMENT SM
 LEFT OUTER JOIN DOCTOR DR ON (SM.DOCTOR_CODE = DR.CODE AND SM.HOSPITAL_CODE = DR.HOSPITAL_CODE)
+LEFT OUTER JOIN DOCTOR_TYPE DT ON (DT.CODE = DR.DOCTOR_TYPE_CODE AND DT.HOSPITAL_CODE=DR.HOSPITAL_CODE)
 LEFT OUTER JOIN PAYMENT_MODE PM ON (SM.PAYMENT_MODE_CODE = PM.CODE)
 LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND
 DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
@@ -106,6 +107,7 @@ ORDER BY DR.DOCTOR_TYPE_CODE,DP.CODE, SM.DOCTOR_CODE]]></queryString>
 	<field name="DOCTOR_CODE" class="java.lang.String"/>
 	<field name="NAME_THAI" class="java.lang.String"/>
 	<field name="DOCTOR_TYPE_CODE" class="java.lang.String"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
 	<field name="SUM_AMT" class="java.math.BigDecimal"/>
 	<field name="DR_SUM_AMT" class="java.math.BigDecimal"/>
 	<field name="EXDR_400" class="java.math.BigDecimal"/>
@@ -113,7 +115,6 @@ ORDER BY DR.DOCTOR_TYPE_CODE,DP.CODE, SM.DOCTOR_CODE]]></queryString>
 	<field name="EXDR_402" class="java.math.BigDecimal"/>
 	<field name="EXDR_406" class="java.math.BigDecimal"/>
 	<field name="PAYMENT_MODE_CODE" class="java.lang.String"/>
-	<field name="DESCRIPTION" class="java.lang.String"/>
 	<field name="DR_NET_PAID_AMT" class="java.math.BigDecimal"/>
 	<field name="REF_PAID_NO" class="java.lang.String"/>
 	<field name="CODE" class="java.lang.String"/>
@@ -254,18 +255,18 @@ ORDER BY DR.DOCTOR_TYPE_CODE,DP.CODE, SM.DOCTOR_CODE]]></queryString>
 			<groupExpression><![CDATA[$F{DOCTOR_TYPE_CODE}]]></groupExpression>
 			<groupHeader>
 			<band height="15"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						x="60"
 						y="0"
-						width="111"
+						width="242"
 						height="15"
 						key="textField"/>
 					<box></box>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DOCTOR_TYPE_CODE}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement

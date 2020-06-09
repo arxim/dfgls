@@ -207,7 +207,7 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
-                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"){
+                 	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentGroupType"){
                      	document.getElementById('block_doctor_code').style.display = 'none';
                  		document.getElementById('block_doctor_type').style.display = '';
                  	}else{
