@@ -1,4 +1,4 @@
-﻿<%@page contentType="text/html" pageEncoding="UTF-8" import="df.jsp.LabelMap,java.util.*" errorPage="../error.jsp"%>
+﻿﻿<%@page contentType="text/html" pageEncoding="UTF-8" import="df.jsp.LabelMap,java.util.*" errorPage="../error.jsp"%>
 <%@page import="df.jsp.Guard"%>
 <%@page import="df.jsp.LabelMap"%>
 <%@page import="df.bean.db.DBMgr"%>
@@ -91,11 +91,6 @@
                 }
                 
                 document.mainForm.SOURCE_FILE.value = document.mainForm.FILE_INTERFACE.value;
-                <%-- document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF"; --%>
-                document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF";
-                
-                
-                
                 document.getElementById("messageModal").style.display = "block";
                 document.getElementById('msgBody').textContent = "Please Wait..";
                 
@@ -103,26 +98,24 @@
                 document.getElementsByClassName("close")[0].onclick = function() {
                 document.getElementById("messageModal").style.display = "none";
                 }
-               <%--  var target = "http://<% rp.getPropertiesData("config.properties", "interface.","ip").get("ip"); %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value; --%>
-               <%-- var target = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value; --%>
-              
-               if(get_type=="file"){
-            	   
-            	  /*  var form = document.mainForm.FILE_INTERFACE.files[0]; // You need to use standard javascript object here
-           		   var formData = new FormData(form); */
-           		 
-            	   var target = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/uploadFile";
-            	   /* ?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value; */  
-           		   document.mainForm.action = target;
-           		   document.mainForm.submit();
-            	  //document.mainForm.FILE_INTERFACE.files[0];
-            	   
-               }else{
-            	   var target = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceFileDF?INTERFACE_PROCESS="+document.mainForm.INTERFACE_PROCESS.value+"&INTERFACE_DATE=" + document.mainForm.INTERFACE_DATE.value + "&businessCode="+document.mainForm.businessCode.value;  
-            	   AJAX_Request(target, AJAX_Result_Message);
-               }
-               
-               
+                
+                if(get_type=="file"){
+                	document.mainForm.INTERFACE_TYPE.value = "uploadFile";
+                }else{
+                	document.mainForm.INTERFACE_TYPE.value = "<%= rp.getPropertiesData("config.properties", "interface.","type").get("type") %>";
+                }
+                fetch("http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/interfaceDFData",
+                	{ method: "POST", mode: "cors",
+					  body: new FormData(mainForm) })
+                		.then(res => res.text())
+                		.then(
+                		result => {
+                		console.log(result);
+                		},
+                		error => {
+
+                		}
+                		);                	
                 return true;
 			}
             
@@ -250,7 +243,9 @@
          </div>
         <form id="mainForm" name="mainForm" method="post" target="myiframe" enctype="multipart/form-data">
         <input type="hidden" id="SOURCE_FILE" name="SOURCE_FILE"/>
-        <input type="hidden" id="businessCode" name="businessCode" value=<%=session.getAttribute("HOSPITAL_CODE")%> />
+        <input type="hidden" id="BUSINESS_CODE" name="BUSINESS_CODE" value=<%=session.getAttribute("HOSPITAL_CODE")%> />
+        <input type="hidden" id="INTERFACE_TYPE" name="INTERFACE_TYPE"/>
+        
             <center>
                 <table width="800" border="0">
 				<tr><td align="left">
@@ -269,6 +264,7 @@
                     <option value="ImportTransaction">${labelMap.INTERFACE_TRANSACTION}</option>
                     <option value="ImportVerifyTransaction">${labelMap.INTERFACE_TRANSACTION_RESULT}</option>
                     <option value="ImportARTransaction">${labelMap.INTERFACE_AR_TRANSACTION}</option>
+                    <option value="ImportCOTransaction">${labelMap.INTERFACE_CO}</option>
                     <!-- 
                     <option value="ImportOnWard">${labelMap.INTERFACE_ONWARD}</option>
                     <option value="ImportOPDCheckup">${labelMap.INTERFACE_OPD_CHECKUP}</option>
