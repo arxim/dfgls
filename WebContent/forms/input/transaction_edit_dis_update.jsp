@@ -178,14 +178,31 @@
 		    	    }
 		    	    */
 			    //QUERY DATA FROM TRN_DAILY
-			    sqlData="SELECT INVOICE_NO, INVOICE_DATE, HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
+			    /* sqlData="SELECT INVOICE_NO, INVOICE_DATE, HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
 			    +" ORDER_ITEM_CODE, INVOICE_TYPE, DOCTOR_CODE, AMOUNT_BEF_DISCOUNT, AMOUNT_OF_DISCOUNT, "
 			    +" AMOUNT_AFT_DISCOUNT, YYYY, MM, ACTIVE, LINE_NO, "
 			    +" PATIENT_NAME, OLD_AMOUNT, DR_AMT, OLD_DR_AMT, DR_TAX_406, "
 			    +" OLD_TAX_AMT, AMOUNT_BEF_WRITE_OFF, OLD_DR_AMT_BEF_WRITE_OFF, DR_AMT_BEF_WRITE_OFF, DR_TAX_406_BEF_WRITE_OFF "
 			    +" FROM TRN_DAILY "
 			    +" WHERE INVOICE_NO='"+arrInvoiceNumber[0]+"'"
-			    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' ";
+			    +" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "; */
+			    sqlData="SELECT TD.INVOICE_NO, TD.INVOICE_DATE, TD.HN_NO, TD.PAYOR_OFFICE_CODE, TD.TRANSACTION_DATE, "
+					    +" TD.ORDER_ITEM_CODE, TD.INVOICE_TYPE, TD.DOCTOR_CODE, TD.AMOUNT_BEF_DISCOUNT, TD.AMOUNT_OF_DISCOUNT,  "
+					    +" TD.AMOUNT_AFT_DISCOUNT, TD.YYYY, TD.MM, TD.ACTIVE, TD.LINE_NO, "
+					    +" TD.PATIENT_NAME, TD.OLD_AMOUNT, TD.DR_AMT, TD.OLD_DR_AMT, TD.DR_TAX_406,  "
+					    +" TD.OLD_TAX_AMT, TD.AMOUNT_BEF_WRITE_OFF, TD.OLD_DR_AMT_BEF_WRITE_OFF, TD.DR_AMT_BEF_WRITE_OFF, "
+					    +" TD.DR_TAX_406_BEF_WRITE_OFF ,CASE WHEN MTD.DR_AMT_OLD IS NULL THEN TD.DR_AMT ELSE MTD.DR_AMT_OLD END AS DR_AMT_BASE, "
+					    +" TD.TAX_TYPE_CODE,TD.TAX_FROM_ALLOCATE "
+					    +" FROM ( "
+					    +" 	SELECT T.HOSPITAL_CODE,T.INVOICE_NO,T.LINE_NO,T.DIS_TYPE,T.DR_AMT_OLD FROM ( "
+					    +" 		SELECT  ROW_NUMBER() OVER(PARTITION BY INVOICE_NO,LINE_NO ORDER BY UPDATE_DATE+UPDATE_TIME ASC) AS NUM, *  "
+					    +" 		FROM MA_TRN_DAILY WHERE HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' AND INVOICE_NO='"+arrInvoiceNumber[0]+"' "
+					    +" 	)T WHERE T.NUM='1' "
+					    +" ) MTD "
+					    +" RIGHT JOIN TRN_DAILY TD ON TD.HOSPITAL_CODE = MTD.HOSPITAL_CODE "
+					    +" AND TD.INVOICE_NO=MTD.INVOICE_NO  AND TD.LINE_NO = MTD.LINE_NO  "
+					    +" WHERE TD.INVOICE_NO='"+arrInvoiceNumber[0]+"'"
+				    	+" AND TD.HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' ";
 				System.out.println("sqlData= "+sqlData);
 				String [][]arrData = conData.query(sqlData);
 				System.out.println("arrData="+arrData.length);
@@ -196,7 +213,7 @@
 					{
 						double amount_bef_discount=0, amount_of_discount=0, amount_aft_discount=0, getAftAmount=0, TotalAftAmount=0;
 						double oldAmount=0, drAmt=0, oldDrAmt=0, drTax406=0, oldTaxAmt=0, amountBefWriteOff=0,
-						oldDrAmtBefWriteOff=0, drAmtBefWriteOff=0, drTax406BefWriteOff=0;
+						oldDrAmtBefWriteOff=0, drAmtBefWriteOff=0, drTax406BefWriteOff=0, drAmtBase=0;
 						double oldAmountNew=0, drAmtNew=0, oldDrAmtNew=0, drTax406New=0, oldTaxAmtNew=0, amountBefWriteOffNew=0,
 						oldDrAmtBefWriteOffNew=0, drAmtBefWriteOffNew=0, drTax406BefWriteOffNew=0;
 						String updateData1="";
@@ -277,6 +294,13 @@
 						{
 							drTax406BefWriteOff			=Double.parseDouble(arrData[h][24]);
 						}
+						if(arrData[h][25] !=null)
+						{
+							drAmtBase			=Double.parseDouble(arrData[h][25]);
+						}
+						String taxTypeCode				=arrData[h][26];
+						String taxFromAllocate			=arrData[h][27];
+						
 						//Calculate
 						System.out.println("txttypepercent="+TxtTypePercent);
 						if(TxtTypePercent !=0)
@@ -284,7 +308,8 @@
 							System.out.println("TxtTypePercent !=0");
 							if(amount_of_discount !=0)
 							{
-								percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((amount_aft_discount*100)/amount_bef_discount)));
+								//percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((amount_aft_discount*100)/amount_bef_discount)));
+								percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((amount_bef_discount*100)/amount_bef_discount)));
 								if(percent_bef != TxtTypePercent)
 								{
 									if(percent_bef>TxtTypePercent)
@@ -333,17 +358,17 @@
 							}
 							if(percent_bef != TxtTypePercent)
 							{
-								if(drAmt !=0)
+								if(drAmtBase !=0) // drAmt -> drAmtBase
 								{
 									double numDrAmt=0;
-									numDrAmt=Double.parseDouble(JNumber.getSaveMoney((drAmt*percent_total)/100));
+									numDrAmt=Double.parseDouble(JNumber.getSaveMoney((drAmtBase*percent_total)/100)); // drAmt -> drAmtBase
 									if(percent_bef>TxtTypePercent)
 									{
-										drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmt+numDrAmt));
+										drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmtBase+numDrAmt)); // drAmt -> drAmtBase
 									}
 									else
 									{
-										drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmt-numDrAmt));
+										drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmtBase-numDrAmt)); // drAmt -> drAmtBase
 									}
 									if(drAmtNew<0)
 									{
@@ -351,18 +376,18 @@
 									}
 									oldDrAmtNew=drAmtNew;
 									updateData1+=" , DR_AMT="+drAmtNew;
-									updateData1+=" , OLD_DR_AMT="+oldDrAmtNew;
+									//updateData1+=" , OLD_DR_AMT="+oldDrAmtNew;
 									
 									if(drAmtBefWriteOff !=0)
 									{
 										drAmtBefWriteOffNew=drAmtNew;
 										oldDrAmtBefWriteOffNew=oldDrAmtNew;
 										updateData1+=" , OLD_DR_AMT_BEF_WRITE_OFF="+oldDrAmtBefWriteOffNew;
-										updateData1+=" , DR_AMT_BEF_WRITE_OFF="+drAmtBefWriteOffNew;
+										//updateData1+=" , DR_AMT_BEF_WRITE_OFF="+drAmtBefWriteOffNew;
 										
 									}
 								}
-								if(drTax406 !=0)
+								/* if(drTax406 !=0)
 								{
 									double numDrTax406=0;
 									numDrTax406=Double.parseDouble(JNumber.getSaveMoney((drTax406*percent_total)/100));
@@ -386,6 +411,34 @@
 									{
 										drTax406BefWriteOffNew=drTax406New;
 										updateData1+=" , DR_TAX_406_BEF_WRITE_OFF="+drTax406BefWriteOffNew;
+									}
+								} */
+								
+								System.out.println("taxTypeCode="+taxTypeCode);
+								System.out.println("taxFromAllocate="+taxFromAllocate);
+								if(taxTypeCode.equals("400")){
+									if(taxFromAllocate.equals("Y")){
+										updateData1+=" , DR_TAX_400="+drAmtNew;
+									}else{
+										updateData1+=" , DR_TAX_400="+TotalAftAmount;
+									}
+								}else if(taxTypeCode.equals("401")){
+									if(taxFromAllocate.equals("Y")){
+										updateData1+=" , DR_TAX_401="+drAmtNew;
+									}else{
+										updateData1+=" , DR_TAX_401="+TotalAftAmount;
+									}
+								}else if(taxTypeCode.equals("402")){
+									if(taxFromAllocate.equals("Y")){
+										updateData1+=" , DR_TAX_402="+drAmtNew;
+									}else{
+										updateData1+=" , DR_TAX_402="+TotalAftAmount;
+									}
+								}else if(taxTypeCode.equals("406")){
+									if(taxFromAllocate.equals("Y")){
+										updateData1+=" , DR_TAX_406="+drAmtNew;
+									}else{
+										updateData1+=" , DR_TAX_406="+TotalAftAmount;
 									}
 								}
 							}
@@ -578,7 +631,7 @@
 							//======================================================================================	
 								//Delete Data from table MA_TRN_DAILY
 								
-								String deleteData="DELETE FROM MA_TRN_DAILY WHERE "
+								/* String deleteData="DELETE FROM MA_TRN_DAILY WHERE "
 							        +" HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "
 							        +" AND LINE_NO='"+getLineNo+"'"
 							        +" AND INVOICE_NO='"+getInvoiceNumber+"'"
@@ -594,10 +647,10 @@
 						    	    {
 						    	       System.out.println("DELETE Transaction inactive, discount, change Excepiton : "+e+"query="+deleteData);
 						    	       conData.rollDB();
-						    	    }
+						    	    } */
 									
 							    //QUERY DATA FROM TRN_DAILY
-							    sqlData="SELECT INVOICE_NO, INVOICE_DATE, HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
+							    /* sqlData="SELECT INVOICE_NO, INVOICE_DATE, HN_NO, PAYOR_OFFICE_CODE, TRANSACTION_DATE, "
 								    +" ORDER_ITEM_CODE, INVOICE_TYPE, DOCTOR_CODE, AMOUNT_BEF_DISCOUNT, AMOUNT_OF_DISCOUNT, "
 								    +" AMOUNT_AFT_DISCOUNT, YYYY, MM, ACTIVE, LINE_NO, "
 								    +" PATIENT_NAME, OLD_AMOUNT, DR_AMT, OLD_DR_AMT, DR_TAX_406, "
@@ -605,7 +658,21 @@
 								    +" FROM TRN_DAILY "
 								    +" WHERE LINE_NO='"+getLineNo+"'"
 								    +" AND INVOICE_NO='"+getInvoiceNumber+"'"
-							    	+" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' ";
+							    	+" AND HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "; */
+							    	sqlData="SELECT TOP 1 TD.INVOICE_NO, TD.INVOICE_DATE, TD.HN_NO, TD.PAYOR_OFFICE_CODE, TD.TRANSACTION_DATE, "
+										    +" TD.ORDER_ITEM_CODE, TD.INVOICE_TYPE, TD.DOCTOR_CODE, TD.AMOUNT_BEF_DISCOUNT, TD.AMOUNT_OF_DISCOUNT,  "
+										    +" TD.AMOUNT_AFT_DISCOUNT, TD.YYYY, TD.MM, TD.ACTIVE, TD.LINE_NO, "
+										    +" TD.PATIENT_NAME, TD.OLD_AMOUNT, TD.DR_AMT, TD.OLD_DR_AMT, TD.DR_TAX_406,  "
+										    +" TD.OLD_TAX_AMT, TD.AMOUNT_BEF_WRITE_OFF, TD.OLD_DR_AMT_BEF_WRITE_OFF, TD.DR_AMT_BEF_WRITE_OFF, "
+										    +" TD.DR_TAX_406_BEF_WRITE_OFF ,CASE WHEN MTD.DR_AMT_OLD IS NULL THEN TD.DR_AMT ELSE MTD.DR_AMT_OLD END AS DR_AMT_BASE, "
+										    +" TD.TAX_TYPE_CODE,TD.TAX_FROM_ALLOCATE "
+										    +" FROM TRN_DAILY TD "
+										    +" LEFT JOIN MA_TRN_DAILY MTD ON TD.HOSPITAL_CODE = MTD.HOSPITAL_CODE "
+										    +" AND TD.INVOICE_NO=MTD.INVOICE_NO  AND TD.LINE_NO = MTD.LINE_NO  "
+										    +" WHERE TD.LINE_NO='"+getLineNo+"'"
+										    +" AND TD.INVOICE_NO='"+getInvoiceNumber+"'"
+									    	+" AND TD.HOSPITAL_CODE='"+session.getAttribute("HOSPITAL_CODE").toString()+"' "
+									    	+" ORDER BY MTD.UPDATE_DATE+MTD.UPDATE_TIME ASC ";
 								System.out.println("sqlData= "+sqlData);
 								String [][]arrData = conData.query(sqlData);
 								System.out.println("arrData="+arrData.length);
@@ -614,7 +681,7 @@
 								double oldAmount=0, drAmt=0, oldDrAmt=0, drTax406=0, oldTaxAmt=0, amountBefWriteOff=0,
 								oldDrAmtBefWriteOff=0, drAmtBefWriteOff=0, drTax406BefWriteOff=0;
 								double oldAmountNew=0, drAmtNew=0, oldDrAmtNew=0, drTax406New=0, oldTaxAmtNew=0, amountBefWriteOffNew=0,
-								oldDrAmtBefWriteOffNew=0, drAmtBefWriteOffNew=0, drTax406BefWriteOffNew=0;
+								oldDrAmtBefWriteOffNew=0, drAmtBefWriteOffNew=0, drTax406BefWriteOffNew=0, drAmtBase=0;
 								String updateData="", updateData1="";
 								double getAftAmountBef=0,percentDis=0,percent_bef=0,percent_total=0,TotalAftAmount=0;
 								double getAftAmount=0;
@@ -685,6 +752,12 @@
 									{
 										drTax406BefWriteOff			=Double.parseDouble(arrData[0][24]);
 									}
+									if(arrData[0][25] !=null)
+									{
+										drAmtBase			=Double.parseDouble(arrData[0][25]);
+									}
+									String taxTypeCode				=arrData[0][26];
+									String taxFromAllocate			=arrData[0][27];
 									
 									if(MaType_inactive.equals("1"))//inactive
 									{
@@ -724,11 +797,13 @@
 											//discount amount, change doctor code
 											//หา % ที่ทำการลด
 											//(amount_aft_discount*100)/amount_bef_discount
-											getAftAmountBef=Double.parseDouble(JNumber.getSaveMoney(amount_bef_discount-getOfAmount));
+											TotalAftAmount =Double.parseDouble(JNumber.getSaveMoney(amount_bef_discount-getOfAmount));
+											//getAftAmountBef=Double.parseDouble(JNumber.getSaveMoney(amount_bef_discount-getOfAmount));
 											percentDis=Double.parseDouble(JNumber.getSaveMoney((getOfAmount*100)/amount_bef_discount));
 											if(amount_of_discount !=0)
 											{
-												percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((amount_aft_discount*100)/amount_bef_discount)));
+												//percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((TotalAftAmount*100)/amount_bef_discount))); // change amount_aft_discount -> TotalAftAmount 
+												percent_bef=Double.parseDouble(JNumber.getSaveMoney(100-((amount_bef_discount*100)/amount_bef_discount)));
 												if(percent_bef>percentDis)
 												{
 													percent_total=percent_bef-percentDis;
@@ -742,15 +817,15 @@
 											{
 												percent_total=percentDis;
 											}
-											System.out.println("amount_aft_discount="+amount_aft_discount);
+											System.out.println("amount_aft_discount="+TotalAftAmount); // change amount_aft_discount -> TotalAftAmount
 											System.out.println("amount_bef_discount="+amount_bef_discount);
 											System.out.println("percent_bef="+percent_bef);
 											System.out.println("getOfAmount="+getOfAmount);
 											System.out.println("percentDis="+percentDis);
-											System.out.println("percent_bef=100-((amount_aft_discount*100)/amount_bef_discount)");
+											System.out.println("percent_bef=100-((TotalAftAmount*100)/amount_bef_discount)"); // change amount_aft_discount -> TotalAftAmount
 											System.out.println("percentDis=(getOfAmount*100)/amount_bef_discount");
 											
-											TotalAftAmount			=Double.parseDouble(JNumber.getSaveMoney(amount_bef_discount-getOfAmount));
+											//TotalAftAmount			=Double.parseDouble(JNumber.getSaveMoney(amount_bef_discount-getOfAmount));
 											if(TotalAftAmount<0 || TotalAftAmount==0)
 											{
 												TotalAftAmount=0;
@@ -764,38 +839,39 @@
 												updateData1+=" , AMOUNT_BEF_WRITE_OFF="+amountBefWriteOffNew;
 											}
 											System.out.println("percent_bef="+percent_bef+"  percentDis="+percentDis);
-											if(percent_bef != percentDis)
+											if(percent_bef != percentDis || percent_bef == percentDis)
 											{
-												if(drAmt !=0)
+												if(drAmtBase !=0) // Edit formula drAmt -> drAmtBase
 												{
 													double numDrAmt=0;
-													numDrAmt=Double.parseDouble(JNumber.getSaveMoney((drAmt*percent_total)/100));
+													numDrAmt=Double.parseDouble(JNumber.getSaveMoney((drAmtBase*percent_total)/100)); // drAmt -> drAmtBase
 													if(percent_bef>percentDis)
 													{
-														drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmt+numDrAmt));
+														drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmtBase+numDrAmt));  // drAmt -> drAmtBase
 													}
 													else
 													{
-														drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmt-numDrAmt));
+														drAmtNew=Double.parseDouble(JNumber.getSaveMoney(drAmtBase-numDrAmt));  // drAmt -> drAmtBase
 													}
+													
 													if(drAmtNew<0)
 													{
 														drAmtNew=0;
 													}
 													oldDrAmtNew=drAmtNew;
 													updateData1+=" , DR_AMT="+drAmtNew;
-													updateData1+=" , OLD_DR_AMT="+oldDrAmtNew;
+													//updateData1+=" , OLD_DR_AMT="+oldDrAmtNew;
 													
 													if(drAmtBefWriteOff !=0)
 													{
 														drAmtBefWriteOffNew=drAmtNew;//drAmt
 														oldDrAmtBefWriteOffNew=oldDrAmtNew;//oldDrAmt
 														updateData1+=" , OLD_DR_AMT_BEF_WRITE_OFF="+oldDrAmtBefWriteOffNew;
-														updateData1+=" , DR_AMT_BEF_WRITE_OFF="+drAmtBefWriteOffNew;
+														//updateData1+=" , DR_AMT_BEF_WRITE_OFF="+drAmtBefWriteOffNew;
 														
 													}
 												}
-												if(drTax406 !=0)
+												/* if(drTax406 !=0)
 												{
 													double numDrTax=0;
 													numDrTax=Double.parseDouble(JNumber.getSaveMoney((drTax406*percent_total)/100));
@@ -819,6 +895,34 @@
 														drTax406BefWriteOffNew=drTax406New;
 														updateData1+=" , DR_TAX_406_BEF_WRITE_OFF="+drTax406BefWriteOffNew;
 														
+													}
+												} */
+												
+												System.out.println("taxTypeCode="+taxTypeCode);
+												System.out.println("taxFromAllocate="+taxFromAllocate);
+												if(taxTypeCode.equals("400")){
+													if(taxFromAllocate.equals("Y")){
+														updateData1+=" , DR_TAX_400="+drAmtNew;
+													}else{
+														updateData1+=" , DR_TAX_400="+TotalAftAmount;
+													}
+												}else if(taxTypeCode.equals("401")){
+													if(taxFromAllocate.equals("Y")){
+														updateData1+=" , DR_TAX_401="+drAmtNew;
+													}else{
+														updateData1+=" , DR_TAX_401="+TotalAftAmount;
+													}
+												}else if(taxTypeCode.equals("402")){
+													if(taxFromAllocate.equals("Y")){
+														updateData1+=" , DR_TAX_402="+drAmtNew;
+													}else{
+														updateData1+=" , DR_TAX_402="+TotalAftAmount;
+													}
+												}else if(taxTypeCode.equals("406")){
+													if(taxFromAllocate.equals("Y")){
+														updateData1+=" , DR_TAX_406="+drAmtNew;
+													}else{
+														updateData1+=" , DR_TAX_406="+TotalAftAmount;
 													}
 												}
 												
@@ -1083,7 +1187,7 @@
 				}//for
 			}//else
 				
-            session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/transaction_edit.jsp"));
+            session.setAttribute("MSG", labelMap.get(LabelMap.MSG_SAVE_SUCCESS).replace("[HREF]", "input/transaction_edit_dis.jsp"));
             con.Close();
             //con.freeConnection();
             response.sendRedirect("../message.jsp");
