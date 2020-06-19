@@ -89,7 +89,14 @@
             </div>
             <div id="submit">
                 <input id="LOGIN" name="LOGIN" type="image" class="image" src="images/login_button.png" alt="Log In" onclick="LOGIN_Click()"/>
-            </div> <!--  
+            </div> 
+            
+            <div id="input">
+             <br><br><br><br>
+                   <h1 style="color:#003d99;margin-left: 35px;">iDoctor  V.4.5.5</h1>
+            </div>
+            
+            <!--  
             <div id="intro">
                 <p>Please fill your username and password to login to Doctor Fee Application.</p>
                 <p>If you do not have an account, please contact administrator.</p>
