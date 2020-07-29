@@ -111,7 +111,7 @@
             }
             
 			function changeDropDownType(){
-				if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.REPORT_FILE_NAME.value == "SummaryDailyOrderCate" || document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction"){
+				if(document.mainForm.REPORT_FILE_NAME.value == "None" || document.mainForm.REPORT_FILE_NAME.value == "DailyGuaranteeChecklist" || document.mainForm.REPORT_FILE_NAME.value == "SummaryDailyOrderCate" || document.mainForm.REPORT_FILE_NAME.value == "DailyChecklist" || document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction" || document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction"){
                 }else{
                 	if(document.mainForm.FILE_TYPE.value == "txt"){
 						alert("Report doesn't Support Text File");
@@ -139,8 +139,7 @@
                     document.mainForm.TRANSACTION_TYPE.disabled = false;
                     document.mainForm.ADMISSION_TYPE_CODE.disabled = false;
                     document.mainForm.DOCUMENT_TYPE.disabled = false;
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction"){
+                }else if(document.mainForm.REPORT_FILE_NAME.value == "ImportTransaction"){
 					document.mainForm.INVOICE_NO.value = "";
 					document.mainForm.INVOICE_NO.disabled = true;
 					document.getElementById('SEARCH_INVOICE_NO').style.display = "none";
@@ -160,8 +159,7 @@
                     document.mainForm.TRANSACTION_TYPE.disabled = false;
                     document.mainForm.ADMISSION_TYPE_CODE.disabled = false;
                     document.mainForm.DOCUMENT_TYPE.disabled = true;
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "OnwardOutOfSystem"){
+                }else if(document.mainForm.REPORT_FILE_NAME.value == "OnwardOutOfSystem"){
 					document.mainForm.INVOICE_NO.disabled = true;
 					document.getElementById('SEARCH_INVOICE_NO').style.display = "none";
                     document.mainForm.DOCTOR_CODE.disabled = false;
@@ -201,8 +199,7 @@
                     document.mainForm.TRANSACTION_TYPE.disabled = true;
                     document.mainForm.ADMISSION_TYPE_CODE.disabled = true;
                     document.mainForm.DOCUMENT_TYPE.disabled = true;
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "ImportARTransaction"){
+                }else if(document.mainForm.REPORT_FILE_NAME.value == "ImportARTransaction"){
 					document.mainForm.INVOICE_NO.value = "";
 					document.mainForm.INVOICE_NO.disabled = true;
 					document.getElementById('SEARCH_INVOICE_NO').style.display = "none";
@@ -222,8 +219,7 @@
                     document.mainForm.TRANSACTION_TYPE.disabled = true;
                     document.mainForm.ADMISSION_TYPE_CODE.disabled = true;
                     document.mainForm.DOCUMENT_TYPE.disabled = false;
-                }else
-                if(document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction"){
+                }else if(document.mainForm.REPORT_FILE_NAME.value == "NoVerifyTransaction"){
 					document.mainForm.INVOICE_NO.value = "";
 					document.mainForm.INVOICE_NO.disabled = true;
 					document.getElementById('SEARCH_INVOICE_NO').style.display = "none";

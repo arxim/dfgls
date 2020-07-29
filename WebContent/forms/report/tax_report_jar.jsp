@@ -123,7 +123,7 @@
 				var term = document.getElementById('term');
 				var year = document.getElementById('Tax402Year');
 				var d = document.getElementById('Tax402');
-                if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406'){
+                if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406' || document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406<%= session.getAttribute("HOSPITAL_CODE")%>'){
                     e.style.display = "";
                 	d.style.display = 'none';
                 	term.style.display = 'none';
@@ -279,10 +279,11 @@
                         <option value="rd53_monthly_cover">ใบปะหน้า ภ.ง.ด.53 รายเดือน</option>
                         <option value="rd53_monthly">รายงาน ภ.ง.ด.53 รายเดือน (นิติบุคคล)</option>
                         <option value="rd_wht_monthly">หนังสือหัก ณ ที่จ่าย รายเดือน</option>
+                        <option value="<%=session.getAttribute("HOSPITAL_CODE").equals("050") ? "TaxLetter406_050":"TaxLetter406"+session.getAttribute("HOSPITAL_CODE")%>">หนังสือรับรองรายได้ 40(6)</option>
                         <option value="rd1a_yearly_cover">ใบปะหน้า ภ.ง.ด.1ก รายปี</option>
                         <option value="rd1a_yearly">รายงาน ภ.ง.ด.1ก รายปี</option>
                         <option value="rd_summary_yearly">หนังสือรับรองรายได้ (1,3,53) รายปี</option>
-						<option value="rd406_summary_period">หนังสือรับรองรายได้ 40(6) รายปี</option>
+						<!-- <option value="rd406_summary_period">หนังสือรับรองรายได้ 40(6) รายปี</option> -->
                     </select>
                 </tr>
                 <tbody id='year_term'>

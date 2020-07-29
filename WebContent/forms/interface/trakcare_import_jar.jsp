@@ -110,7 +110,7 @@
                 		.then(res => res.text())
                 		.then(
                 		result => {
-                		console.log(result);
+                			resultMessage(result);
                 		},
                 		error => {
 
@@ -118,22 +118,13 @@
                 		);                	
                 return true;
 			}
-            
-            function AJAX_Result_Message(){
-            	
-            	if (AJAX_IsComplete()) {
-            		var xmlDoc = AJAX.responseText;
-            		
-            		document.getElementById('messageModal').style.display = 'none';
-            		document.getElementById('msgBody').textContent = xmlDoc;
-            		document.getElementById('messageModal').style.display = 'block';
-            		document.getElementById('btnClose').style.display = 'block';
-            		
-                    
-                    //Data found
-					//alert(xmlDoc);
-                }
-            }
+	        
+	        function resultMessage(result){
+          		document.getElementById('messageModal').style.display = 'none';
+          		document.getElementById('msgBody').textContent = result;
+          		document.getElementById('messageModal').style.display = 'block';
+          		document.getElementById('btnClose').style.display = 'block';
+	        }
                 
             function changeDropDownList(){
 				var e = document.getElementById('excel');

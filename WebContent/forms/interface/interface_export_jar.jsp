@@ -102,7 +102,14 @@
         					document.mainForm.action = "http://localhost:8883/exportFileDF";
         				}
         				document.mainForm.submit();
-        				
+        			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
+        				document.mainForm.method = "POST"
+        				if(hosp=="VCH"){
+        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        				}else{
+        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        				}
+        				document.mainForm.submit();        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
         				document.mainForm.method = "POST"
         					if(hosp=="CHC00"){
@@ -182,11 +189,11 @@
                             <option value="Unpaid">Export DF Unpaid Detail</option>
                             <!-- <option value="ExportPayroll">${labelMap.EXPORT_PAYROLL}</option> -->
                             <option value="ExportGL">${labelMap.EXPORT_GL}</option>
-                             <%-- <option value="ExportAC">${labelMap.EXPORT_AC}</option>
-                            <option value="ExportGLSAP">${labelMap.EXPORT_GLSAP}</option>
-                            <option value="ExportGLSAPR2C">${labelMap.EXPORT_GLSAPR2C}</option>
-                            <option value="ExportACSAP">${labelMap.EXPORT_ACSAP}</option> --%>
-                            <option value="ExportRD">${labelMap.EXPORT_RD}</option>
+                            <option value="ExportAC">${labelMap.EXPORT_AC}</option>
+                            <!-- <option value="ExportGLSAP">${labelMap.EXPORT_GLSAP}</option> -->
+                            <!-- <option value="ExportGLSAPR2C">${labelMap.EXPORT_GLSAPR2C}</option> -->
+                            <!-- <option value="ExportACSAP">${labelMap.EXPORT_ACSAP}</option> -->
+                            <!-- <option value="ExportRD">${labelMap.EXPORT_RD}</option> -->
                     </select>
 					</td>
 					<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>

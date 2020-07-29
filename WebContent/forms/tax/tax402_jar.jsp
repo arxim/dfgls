@@ -7,11 +7,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<script type="text/javascript">
 		function load(){
-			
-			location.href =  "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8882/tax/initProcess/<%=session.getAttribute("HOSPITAL_CODE").toString()%>";
-	    		 
+			location.href =  "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8082/tax/initProcess/<%=session.getAttribute("HOSPITAL_CODE").toString()%>";
 		}
-		
 	</script>
     <body onload="load();"></body>
 </html>
