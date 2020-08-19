@@ -24,6 +24,8 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8883/exportFileDF";
 	}else if(menuRequest.equals("DFTransaction")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/invoiceSearchPage";
+	}else if(menuRequest.equals("TimeTable")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/guaranteeTimeTablePage";
 	}else{
 	}
 	logger.info(linkPage);
