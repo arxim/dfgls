@@ -148,7 +148,7 @@ public class Utils {
         String parentcode = "";
         ResultSet rs =  null;
         try{
-            String sql_get_menu = "select PARENT_CODE, MENU_"+language+" from STP_MENU where LINK_PAGE like '%"+filenameage+"' and HOSPITAL_CODE = '"+conn.getHospitalCode()+"';";
+            String sql_get_menu = "select PARENT_CODE, MENU_"+language+" from STP_MENU where LINK_PAGE like '%/"+filenameage+"' and HOSPITAL_CODE = '"+conn.getHospitalCode()+"';";
             rs = conn.executeQuery(sql_get_menu);
             while(rs.next()){
                 menu = rs.getString("MENU_"+language);
