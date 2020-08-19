@@ -9,12 +9,21 @@
     String userCode = session.getAttribute("USER_ID").toString();
     String userGroupCode = session.getAttribute("USER_GROUP_CODE").toString();
     String menuRequest = request.getParameter("MENU");
+    String year = request.getParameter("YYYY");
+    String month = request.getParameter("MM");
+    String transactionDate = request.getParameter("TRANSACTION_DATE");
+    String targetFile = request.getParameter("target_file");
+    String processName = request.getParameter("PROCESS_NAME");
 	String linkPage = "";
+	System.out.println(request.getParameter("MENU"));
 	if(menuRequest.equals("MasterTimeTable")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/masterTimeTablePage";
 	}else if(menuRequest.equals("SetupBasicAllocate")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/stpMethodAllocateMainPage";
 	}else if(menuRequest.equals("InterfaceAccrual")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8883/exportFileDF";
+	}else if(menuRequest.equals("DFTransaction")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/invoiceSearchPage";
 	}else{
 	}
 	logger.info(linkPage);
@@ -28,10 +37,15 @@
 	</script>
 	</head>
     <body onload="load();">
-		<form id="mainForm" name="mainForm" method="get" action="<%= linkPage %>">
+		<form id="mainForm" name="mainForm" method="post" action="<%= linkPage %>">
             <input type="hidden" id="USER_ID" name="USER_ID" value="<%= userCode %>"/>
             <input type="hidden" id="user_group_code" name="USER_GROUP_CODE" value="<%= userGroupCode %>"/>
             <input type="hidden" id="HOSPITAL_CODE" name="HOSPITAL_CODE" value="<%= hospitalCode %>"/>
+            <input type="hidden" id="USER_ID" name="USER_ID" value="<%= userCode %>"/>
+            <input type="hidden" id="PROCESS_NAME" name="PROCESS_NAME" value="<%= processName %>"/>
+            <input type="hidden" id="YYYY" name="YYYY" value="<%= year %>"/>
+            <input type="hidden" id="MM" name="MM" value="<%= month %>"/>
+            <input type="hidden" id="target_file" name="target_file" value="<%= targetFile %>"/>
 		</form>
     </body>
 </html>
