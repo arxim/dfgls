@@ -28,6 +28,14 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/guaranteeTimeTablePage";
 	}else if(menuRequest.equals("WithHoldingTax")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8082/tax/initProcessTax";
+	}else if(menuRequest.equals("RadiologyShiftFactor")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/radiologyShiftFactorPage";
+	}else if(menuRequest.equals("MasterRadiologyTimetable")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/masterRadiologyTimetablePage";
+	}else if(menuRequest.equals("RadiologyTimetable")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/radiologyTimetablePage";
+	}else if(menuRequest.equals("RadiologyPoolProcess")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/allocatePoolFactorPage";
 	}else{}
 	logger.info(linkPage);
 %>
