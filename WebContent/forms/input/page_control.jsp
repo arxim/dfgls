@@ -36,6 +36,12 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/radiologyTimetablePage";
 	}else if(menuRequest.equals("RadiologyPoolProcess")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/allocatePoolFactorPage";
+	}else if(menuRequest.equals("SetupCaseMapping")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/caseMappingMainPage";
+	}else if(menuRequest.equals("SetupCaseTimetable")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/caseTimeTablePage";
+	}else if(menuRequest.equals("SetupDoctor")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/doctorMainPage";
 	}else{}
 	logger.info(linkPage);
 %>
