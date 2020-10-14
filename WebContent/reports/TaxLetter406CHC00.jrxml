@@ -1,0 +1,1381 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="TaxLetter406CHC00"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="595"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="doctor_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="term" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yyyy" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["2018"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mm" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["%"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="signature" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["\\\\Mac\\Home\\Documents\\Workspace\\DF_Report\\logo\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["058"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="print_date" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["20150109"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT ST.YYYY, ST.MM, ST.DOCTOR_CODE, ST.HOSPITAL_CODE, DR.NAME_THAI, ST.SUM_TAX_DR_AMT, ST.SUM_DR_AMT,
+HOS.DESCRIPTION_THAI, ST.SUM_TAX_DR_AMT, ST.TEXT_SUM_TAX_DR_AMT,
+DP.NATION_ID, DR.TAX_ID, HOS.DESCRIPTION_THAI AS HOSPITAL_NAME,
+HOS.COMPANY_NAME, HOS.ADDRESS1, HOS.ADDRESS2, HOS.ADDRESS3, HOS.ZIP,
+HOS.TAXNO, CASE WHEN DR.TAX_ID <> '' THEN DR.TAX_ID ELSE DP.NATION_ID END AS DR_TAX,
+DR.ADDRESS1 AS DR_ADDRESS1, DR.ADDRESS2 AS DR_ADDRESS2,
+DR.ADDRESS3 AS DR_ADDRESS3, DR.ZIP AS DR_ZIP, DP.CODE AS PROFILE_CODE, ST.PRINT_DATE,
+HOS.AUTHORITY_NAME, HOS.AUTHORITY_POSITION
+FROM SUMMARY_TAX_406 ST
+LEFT OUTER JOIN DOCTOR DR ON ST.DOCTOR_CODE = DR.CODE 
+AND ST.HOSPITAL_CODE = DR.HOSPITAL_CODE
+LEFT OUTER JOIN DOCTOR_PROFILE DP on DR.DOCTOR_PROFILE_CODE = DP.CODE
+AND DR.HOSPITAL_CODE = DP.HOSPITAL_CODE
+LEFT OUTER JOIN HOSPITAL HOS on ST.HOSPITAL_CODE = HOS.CODE
+where ST.DOCTOR_CODE like $P{doctor_code}
+AND ST.HOSPITAL_CODE = $P{hospital_code}
+AND MM LIKE $P{term} AND YYYY = $P{yyyy}
+AND SUM_TAX_DR_AMT > 0
+order by DR.DOCTOR_PROFILE_CODE,ST.DOCTOR_CODE]]></queryString>
+
+	<field name="YYYY" class="java.lang.String"/>
+	<field name="MM" class="java.lang.String"/>
+	<field name="DOCTOR_CODE" class="java.lang.String"/>
+	<field name="HOSPITAL_CODE" class="java.lang.String"/>
+	<field name="NAME_THAI" class="java.lang.String"/>
+	<field name="SUM_TAX_DR_AMT" class="java.math.BigDecimal"/>
+	<field name="SUM_DR_AMT" class="java.math.BigDecimal"/>
+	<field name="DESCRIPTION_THAI" class="java.lang.String"/>
+	<field name="TEXT_SUM_TAX_DR_AMT" class="java.lang.String"/>
+	<field name="NATION_ID" class="java.lang.String"/>
+	<field name="TAX_ID" class="java.lang.String"/>
+	<field name="HOSPITAL_NAME" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="ADDRESS1" class="java.lang.String"/>
+	<field name="ADDRESS2" class="java.lang.String"/>
+	<field name="ADDRESS3" class="java.lang.String"/>
+	<field name="ZIP" class="java.lang.String"/>
+	<field name="TAXNO" class="java.lang.String"/>
+	<field name="DR_TAX" class="java.lang.String"/>
+	<field name="DR_ADDRESS1" class="java.lang.String"/>
+	<field name="DR_ADDRESS2" class="java.lang.String"/>
+	<field name="DR_ADDRESS3" class="java.lang.String"/>
+	<field name="DR_ZIP" class="java.lang.String"/>
+	<field name="PROFILE_CODE" class="java.lang.String"/>
+	<field name="PRINT_DATE" class="java.lang.String"/>
+	<field name="AUTHORITY_NAME" class="java.lang.String"/>
+	<field name="AUTHORITY_POSITION" class="java.lang.String"/>
+
+
+		<group  name="doctor" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{DOCTOR_CODE}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="YYYY" isStartNewPage="true" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{YYYY}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="MM" isStartNewPage="true" isReprintHeaderOnEachPage="true" >
+			<groupExpression><![CDATA[$F{MM}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="670"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="170"
+						y="503"
+						width="327"
+						height="18"
+						key="staticText-22">
+							<printWhenExpression><![CDATA[Boolean.valueOf(!$P{hospital_code}.equals("00019"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ขอรับรองว่าเป็นข้อมูลที่ถูกต้องทุกประการ]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="324"
+						y="595"
+						width="162"
+						height="0"
+						key="line-2">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("00019"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="331"
+						y="558"
+						width="148"
+						height="36"
+						key="image-1"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Signature.png"]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="324"
+						y="643"
+						width="162"
+						height="18"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["ลงวันที่ "+( $P{print_date}.length() != 8 ? ( $F{PRINT_DATE}.length() != 8 ? "Date?" : $F{PRINT_DATE}.substring( 6, 8 )+"/"+$F{PRINT_DATE}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($F{PRINT_DATE}.substring( 0, 4 ))+543))) : ( $P{print_date}.length() != 8 ? "Date?" : $P{print_date}.substring( 6, 8 )+"/"+$P{print_date}.substring( 4, 6 )+"/"+(Integer.toString(Integer.parseInt($P{print_date}.substring( 0, 4 ))+543))))]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="324"
+						y="598"
+						width="162"
+						height="18"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? "( "+ $F{AUTHORITY_NAME} +" )" :
+$F{HOSPITAL_CODE}.equals("00002") ? "( นางพงษ์แก้ว  ทิพนาค )" : 
+$F{HOSPITAL_CODE}.equals("004") ? "( นางสาวชฎาพร ประสานทอง )" : 
+$F{HOSPITAL_CODE}.equals("00005") || $F{HOSPITAL_CODE}.equals("051")? "( นางสาวขวัญตา รักษ์ธรรมกิจ )" : 
+$F{HOSPITAL_CODE}.equals("006") ? "( นางสาวจันทรา  วรรณรัตน์ )" : 
+$F{HOSPITAL_CODE}.equals("007") ? "( กุลชญา  เมธาธีรกูล )" : 
+$F{HOSPITAL_CODE}.equals("00009") ? "( นางสาวรัตนา  มาโนชญ์ภิญโญ )"  : 
+$F{HOSPITAL_CODE}.equals("011") || $F{HOSPITAL_CODE}.equals("012")? "( สุภัคนิต ลิ่มวงค์สวัสดิ์ )" : 
+$F{HOSPITAL_CODE}.equals("00018") ? "( นางสาวประทุมวรรณ นพรัตน์ )" : 
+$F{HOSPITAL_CODE}.equals("00019") ? "( วิปภา บุญนาถพิทักษ์ )" : 
+$F{HOSPITAL_CODE}.equals("015")||$F{HOSPITAL_CODE}.equals("039")  ? "( นางอัฑฒนันท์ เณรทอง )" : 
+$F{HOSPITAL_CODE}.equals("00029") ? "( ณัฐพัชร์  เชยโอนะนันทน์ )" : 
+$F{HOSPITAL_CODE}.equals("036") ? "( คุณวลัยลักษณ์ ปิยะนาวิน )" : 
+$F{HOSPITAL_CODE}.equals("048") ? "( นายสิทธิศักดิ์ ตรากลาง )" : 
+$F{HOSPITAL_CODE}.equals("045") ? "( นายอรรถพันธ์ บุญตา )" : 
+$F{HOSPITAL_CODE}.equals("050") ? "( นางสาวมณีรัตน์ ศรีบุศกร )" : 
+$F{HOSPITAL_CODE}.equals("058") ? "( น.ส.ธนานิษฐ์ กิตติธนาวิโรจน์)" : 
+$F{HOSPITAL_CODE}.equals("CHC00") ? "( นางชมพูนุท ดำรงค์เกียรติ)" : 
+$F{HOSPITAL_CODE}.equals("063") ? "( นายสุธี โพธิ์พันธ์ )" : "( นางปราณี  เจือเพ็ชร์ )"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="324"
+						y="618"
+						width="162"
+						height="18"
+						key="textField-12"/>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{AUTHORITY_POSITION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="124"
+						y="503"
+						width="364"
+						height="18"
+						key="staticText-45">
+							<printWhenExpression><![CDATA[Boolean.valueOf($P{hospital_code}.equals("00019"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ขอรับรองว่าข้อมูลและตัวเลขดังกล่าวข้างต้นถูกต้องตามความจริงทุกประการ]]></text>
+				</staticText>
+				<image  hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="228"
+						y="521"
+						width="120"
+						height="94"
+						key="image-5"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Stamp.png"]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="369"
+						y="411"
+						width="98"
+						height="18"
+						key="textField-2">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_TAX_DR_AMT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="468"
+						y="413"
+						width="29"
+						height="18"
+						key="staticText-26">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[บาท]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="317"
+						y="390"
+						width="35"
+						height="18"
+						key="staticText-20">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[สิ้นสุด]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="413"
+						width="280"
+						height="18"
+						key="staticText-21">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เป็นจำนวนเงินได้พึงประเมิน 100% ทั้งสิ้นเป็นจำนวนเงิน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="367"
+						width="407"
+						height="18"
+						key="staticText-30">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ตามมาตรา  40 (6)      ว่าด้วยเงินได้จากการประกอบโรคศิลปะ ตามประมวลรัษฎากร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="390"
+						width="86"
+						height="18"
+						key="staticText-31">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[สำหรับระยะเวลา]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="90"
+						y="436"
+						width="407"
+						height="18"
+						key="textField-3">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["( "+$F{TEXT_SUM_TAX_DR_AMT}+" )"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="240"
+						y="252"
+						width="147"
+						height="18"
+						key="staticText-37">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เลขประจำตัวผู้เสียภาษี เลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="387"
+						y="266"
+						width="110"
+						height="0"
+						key="line-3">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="275"
+						width="63"
+						height="18"
+						key="staticText-38">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ขอรับรองว่า]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="152"
+						y="289"
+						width="345"
+						height="0"
+						key="line-4">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="298"
+						width="234"
+						height="18"
+						key="staticText-39">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เลขประจำตัวผู้เสียภาษี/เลขบัตรประชาชนเลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="323"
+						y="312"
+						width="174"
+						height="0"
+						key="line-5">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="29"
+						y="143"
+						width="535"
+						height="29"
+						key="staticText-40"/>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="18" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[หนังสือรับรอง]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="117"
+						y="335"
+						width="380"
+						height="0"
+						key="line-6">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="321"
+						width="28"
+						height="18"
+						key="staticText-41">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ที่อยู่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="117"
+						y="358"
+						width="282"
+						height="0"
+						key="line-7">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="399"
+						y="344"
+						width="97"
+						height="18"
+						key="staticText-42">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[มีเงินได้พึงประเมิน]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="353"
+						y="405"
+						width="143"
+						height="0"
+						key="line-8">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="176"
+						y="405"
+						width="133"
+						height="0"
+						key="line-9">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="459"
+						width="208"
+						height="18"
+						key="staticText-43">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เพื่อประกอบการยื่นภาษี ต่อกรมสรรพากร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="229"
+						width="74"
+						height="18"
+						key="staticText-44">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ตั้งอยู่ที่ เลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="164"
+						y="243"
+						width="333"
+						height="0"
+						key="line-10">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="90"
+						y="266"
+						width="145"
+						height="0"
+						key="line-11">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="170"
+						y="206"
+						width="327"
+						height="18"
+						key="textField">
+							<printWhenExpression><![CDATA[Boolean.valueOf(!$F{HOSPITAL_CODE}.equals("00019"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{HOSPITAL_CODE}.equals( "00002" ) || $F{HOSPITAL_CODE}.equals( "00005" ) || $F{HOSPITAL_CODE}.equals( "007" ) ? $F{COMPANY_NAME} : $F{COMPANY_NAME}+" ("+$F{HOSPITAL_NAME}+")" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="90"
+						y="250"
+						width="145"
+						height="18"
+						key="textField-4">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ADDRESS3}+" "+$F{ZIP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="164"
+						y="227"
+						width="333"
+						height="18"
+						key="textField-5">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ADDRESS1}+" "+$F{ADDRESS2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="392"
+						y="250"
+						width="105"
+						height="18"
+						key="textField-6">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TAXNO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="152"
+						y="273"
+						width="345"
+						height="18"
+						key="textField-7">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NAME_THAI}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="324"
+						y="296"
+						width="173"
+						height="18"
+						key="textField-8">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DR_TAX}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="122"
+						y="319"
+						width="375"
+						height="18"
+						key="textField-9">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DR_ADDRESS1}+" "+$F{DR_ADDRESS2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="122"
+						y="343"
+						width="269"
+						height="18"
+						key="textField-10">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DR_ADDRESS3}+" "+$F{DR_ZIP}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="369"
+						y="427"
+						width="98"
+						height="0"
+						key="line-12">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="90"
+						y="451"
+						width="407"
+						height="0"
+						key="line-13">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch">
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+</graphicElement>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="176"
+						y="389"
+						width="133"
+						height="18"
+						key="textField">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) || $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) : "เดือนกรกฎาคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="352"
+						y="390"
+						width="145"
+						height="18"
+						key="textField-11">
+							<printWhenExpression><![CDATA[new Boolean(!$F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) : "เดือนธันวาคม "+(Integer.toString(Integer.parseInt($P{yyyy})+543)) )]]></textFieldExpression>
+				</textField>
+				<image  scaleImage="FillFrame" vAlign="Bottom" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="31"
+						y="16"
+						width="535"
+						height="87"
+						key="image-2">
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.png"]]></imageExpression>
+				</image>
+				<image  vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2"
+						y="35"
+						width="590"
+						height="76"
+						key="image-4">
+							<printWhenExpression><![CDATA[Boolean.valueOf(!$F{HOSPITAL_CODE}.equals("045"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Header.jpg"]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="90"
+						y="206"
+						width="408"
+						height="18"
+						key="textField-13">
+							<printWhenExpression><![CDATA[Boolean.valueOf($F{HOSPITAL_CODE}.equals("00019"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="14" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{HOSPITAL_CODE}.equals( "00002" ) || $F{HOSPITAL_CODE}.equals( "00005" ) || $F{HOSPITAL_CODE}.equals( "007" ) || $F{HOSPITAL_CODE}.equals( "00019" ) ? $F{COMPANY_NAME} : $F{COMPANY_NAME}+" ("+$F{HOSPITAL_NAME}+")" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="369"
+						y="396"
+						width="98"
+						height="18"
+						key="textField-14">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{SUM_TAX_DR_AMT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="468"
+						y="397"
+						width="29"
+						height="18"
+						key="staticText-46">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[บาท]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="373"
+						y="371"
+						width="30"
+						height="18"
+						key="staticText-47">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[สิ้นสุด]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="397"
+						width="280"
+						height="18"
+						key="staticText-48">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เป็นจำนวนเงินได้พึงประเมิน 100% ทั้งสิ้นเป็นจำนวนเงิน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="371"
+						width="183"
+						height="18"
+						key="staticText-49">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ตามประมวลรัษฎากร สำหรับระยะเวลา]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="90"
+						y="422"
+						width="407"
+						height="18"
+						key="textField-15">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["( "+$F{TEXT_SUM_TAX_DR_AMT}+" )"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="90"
+						y="251"
+						width="147"
+						height="18"
+						key="staticText-50">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เลขประจำตัวผู้เสียภาษี เลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="237"
+						y="266"
+						width="260"
+						height="1"
+						key="line-15">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="274"
+						width="63"
+						height="18"
+						key="staticText-51">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ขอรับรองว่า]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="152"
+						y="290"
+						width="345"
+						height="1"
+						key="line-16">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="297"
+						width="234"
+						height="18"
+						key="staticText-52">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เลขประจำตัวผู้เสียภาษี/เลขบัตรประชาชนเลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="323"
+						y="311"
+						width="174"
+						height="1"
+						key="line-17">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="117"
+						y="336"
+						width="380"
+						height="1"
+						key="line-18">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="320"
+						width="28"
+						height="18"
+						key="staticText-53">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ที่อยู่]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="345"
+						width="407"
+						height="18"
+						key="staticText-54">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[มีเงินได้พึงประเมิน ตามมาตรา 40(6)ว่าด้วยเงินได้จากการประกอบโรคศิลปะ]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="403"
+						y="388"
+						width="94"
+						height="1"
+						key="line-19">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="273"
+						y="388"
+						width="100"
+						height="1"
+						key="line-20">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="90"
+						y="445"
+						width="208"
+						height="18"
+						key="staticText-55">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[เพื่อประกอบการยื่นภาษี ต่อกรมสรรพากร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="90"
+						y="228"
+						width="74"
+						height="18"
+						key="staticText-56">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="12" isBold="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<text><![CDATA[ตั้งอยู่ที่ เลขที่]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="164"
+						y="244"
+						width="333"
+						height="1"
+						key="line-21">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="164"
+						y="228"
+						width="333"
+						height="18"
+						key="textField-16">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ADDRESS1}+" "+$F{ADDRESS2}+" "+$F{ADDRESS3}+" "+$F{ZIP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="242"
+						y="250"
+						width="255"
+						height="18"
+						key="textField-17">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TAXNO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="152"
+						y="274"
+						width="345"
+						height="18"
+						key="textField-18">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NAME_THAI}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="324"
+						y="295"
+						width="173"
+						height="18"
+						key="textField-19">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DR_TAX}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="117"
+						y="318"
+						width="380"
+						height="18"
+						key="textField-20">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="10" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DR_ADDRESS1}+" "+$F{DR_ADDRESS2}+" "+$F{DR_ADDRESS3}+" "+$F{DR_ZIP}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="369"
+						y="412"
+						width="98"
+						height="1"
+						key="line-22">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="90"
+						y="437"
+						width="407"
+						height="1"
+						key="line-23">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="273"
+						y="370"
+						width="103"
+						height="18"
+						key="textField-21">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+(Integer.parseInt($P{yyyy})+543) : "เดือนกรกฎาคม "+(Integer.parseInt($P{yyyy})+543) ): ( $F{MM}.equals( "01" )|| $F{MM}.equals( "12" ) ? "เดือนมกราคม "+$P{yyyy} : "เดือนกรกฎาคม "+$P{yyyy}))]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="399"
+						y="370"
+						width="98"
+						height="18"
+						key="textField-22">
+							<printWhenExpression><![CDATA[new Boolean($F{HOSPITAL_CODE}.equals("050"))]]></printWhenExpression>
+						</reportElement>
+					<box></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[($P{hospital_code}.equals("00018") || $P{hospital_code}.equals("050")? ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+(Integer.parseInt($P{yyyy})+543) : "เดือนธันวาคม "+(Integer.parseInt($P{yyyy})+543) ): ( $F{MM}.equals( "01" ) ? "เดือนมิถุนายน "+$P{yyyy} : "เดือนธันวาคม "+$P{yyyy}))]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="166"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="30"
+						y="82"
+						width="302"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{HOSPITAL_CODE}.equals( "00019" ) || $F{HOSPITAL_CODE}.equals( "063" ) ? "" : "Profile : "+$F{PROFILE_CODE}+"/ Doctor Code : "+$F{DOCTOR_CODE}]]></textFieldExpression>
+				</textField>
+				<image  vAlign="Top" hAlign="Center" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="2"
+						y="87"
+						width="590"
+						height="76"
+						key="image-6"/>
+					<box></box>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{signature}+$F{HOSPITAL_CODE}+"Footer.png"]]></imageExpression>
+				</image>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -282,7 +282,7 @@
                         <option value="rd_wht_monthly">หนังสือหัก ณ ที่จ่าย รายเดือน 40(2)</option>
                         <option value="rd_wht_monthly_406">หนังสือหัก ณ ที่จ่าย รายเดือน 40(6)</option>
                         <option value="">---------------Yearly (รายปี /รอบปีภาษี) ---------------</option>
-                        <option value="TaxLetter406">หนังสือรับรองสรุปรายได้ 40(6) (จดหมาย)</option>
+                        <option value="TaxLetter406<%=session.getAttribute("HOSPITAL_CODE") %>">หนังสือรับรองสรุปรายได้ 40(6) (จดหมาย)</option>
                         <option value="rd_summary_406">หนังสือรับรองสรุปรายได้  40(6) 50ทวิ ตามรอบภาษี</option>
                         <option value="rd1a_yearly_cover">ใบปะหน้า ภ.ง.ด.1ก รายปี</option>
                         <option value="rd1a_yearly">รายงาน ภ.ง.ด.1ก รายปี</option>
