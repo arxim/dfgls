@@ -142,7 +142,7 @@
                     document.getElementById('FILLING_DATE').disabled = "";
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover' ){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover'|| document.mainForm.REPORT_FILE_NAME.value=='rd3_monthly_cover'  ){
                 	d.style.display = "";
                     term.style.display = "";
                 	e.style.display = 'none';
@@ -275,15 +275,19 @@
                         <option value="None">-- Select Tax Report --</option>
                         <option value="rd1_monthly_cover">ใบปะหน้า ภ.ง.ด.1 รายเดือน</option>
 						<option value="rd1_monthly">รายงาน ภ.ง.ด.1 รายเดือน (บุคคล)</option>
-                        <!-- <option value="rd3_monthly">รายงาน ภ.ง.ด.3 รายเดือน (บุคคล)</option> -->
+						<option value="rd3_monthly_cover">ใบปะหน้า รายงาน ภ.ง.ด.3 รายเดือน (406)</option>
+                        <option value="rd3_monthly">รายงาน ภ.ง.ด.3 รายเดือน (406)</option>
                         <option value="rd53_monthly_cover">ใบปะหน้า ภ.ง.ด.53 รายเดือน</option>
                         <option value="rd53_monthly">รายงาน ภ.ง.ด.53 รายเดือน (นิติบุคคล)</option>
-                        <option value="rd_wht_monthly">หนังสือหัก ณ ที่จ่าย รายเดือน</option>
-                        <option value="<%=session.getAttribute("HOSPITAL_CODE").equals("050") ? "TaxLetter406_050":"TaxLetter406"+session.getAttribute("HOSPITAL_CODE")%>">หนังสือรับรองรายได้ 40(6)</option>
+                        <option value="rd_wht_monthly">หนังสือหัก ณ ที่จ่าย รายเดือน 40(2)</option>
+                        <option value="rd_wht_monthly_406">หนังสือหัก ณ ที่จ่าย รายเดือน 40(6)</option>
+                        <option value="">---------------Yearly (รายปี /รอบปีภาษี) ---------------</option>
+                        <option value="TaxLetter406">หนังสือรับรองสรุปรายได้ 40(6) (จดหมาย)</option>
+                        <option value="rd_summary_406">หนังสือรับรองสรุปรายได้  40(6) 50ทวิ ตามรอบภาษี</option>
                         <option value="rd1a_yearly_cover">ใบปะหน้า ภ.ง.ด.1ก รายปี</option>
                         <option value="rd1a_yearly">รายงาน ภ.ง.ด.1ก รายปี</option>
-                        <option value="rd_summary_yearly">หนังสือรับรองรายได้ (1,3,53) รายปี</option>
-						<!-- <option value="rd406_summary_period">หนังสือรับรองรายได้ 40(6) รายปี</option> -->
+                        <option value="rd_summary_yearly">หนังสือรับรองสรุปรายได้ (1,3,53) 50ทวิ  รายปี</option>
+						
                     </select>
                 </tr>
                 <tbody id='year_term'>
