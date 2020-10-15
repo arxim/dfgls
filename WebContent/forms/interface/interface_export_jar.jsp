@@ -4,6 +4,7 @@
 <%@page import="df.bean.obj.util.Utils"%>
 <%@page import="df.bean.obj.util.JDate"%>
 <%@page import="df.bean.db.table.Batch"%>
+<%@page import="df.bean.obj.util.ReadProperties"%>
 
 <%    if (session.getAttribute("LANG_CODE") == null)
         session.setAttribute("LANG_CODE", LabelMap.LANG_EN);
@@ -60,6 +61,7 @@
     request.setAttribute("labelMap", labelMap.getHashMap());
     
     String BankTransferDate = JDate.showDate(JDate.getDate());
+    ReadProperties rp = new ReadProperties();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -89,33 +91,33 @@
         			if(document.mainForm.PROCESS_NAME.value == "ExportBank" && ( document.mainForm.BANK_TYPE.value == "014_SMART" || document.mainForm.BANK_TYPE.value == "014_COSMECEUTICAL")){
         				document.mainForm.method = "POST"
         					if(hosp=="CHC00"){
-            					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+            					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}else{
-            					document.mainForm.action = "http://localhost:8883/exportFileDF";
+            					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportGL"){
         				document.mainForm.method = "POST"
         				if(hosp=="CHC00"){
-        					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}else{
-        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
         				document.mainForm.method = "POST"
         				if(hosp=="VCH"){
-        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}else{
-        					document.mainForm.action = "http://localhost:8883/exportFileDF";
+        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}
         				document.mainForm.submit();        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
         				document.mainForm.method = "POST"
         					if(hosp=="CHC00"){
-            					document.mainForm.action = "http://192.168.1.24:8883/exportFileDF";
+            					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}else{
-            					document.mainForm.action = "http://localhost:8883/exportFileDF";
+            					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}
         				document.mainForm.submit();
         			}else{
