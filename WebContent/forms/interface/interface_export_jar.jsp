@@ -107,11 +107,9 @@
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
         				document.mainForm.method = "POST";
         				document.mainForm.MENU.value = "InterfaceAccrual";
-        				if(hosp=="VCH"){
+        				
         					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
-        				}else{
-        					document.mainForm.action = "http://localhost:8883/exportFileDF";
-        				}
+        				
         				document.mainForm.submit();        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
         				document.mainForm.method = "POST";
