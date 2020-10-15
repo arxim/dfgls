@@ -89,7 +89,7 @@
                     console.log("Hello world!  "+hosp);
                     
         			if(document.mainForm.PROCESS_NAME.value == "ExportBank" && ( document.mainForm.BANK_TYPE.value == "014_SMART" || document.mainForm.BANK_TYPE.value == "014_COSMECEUTICAL")){
-        				document.mainForm.method = "POST"
+        				document.mainForm.method = "POST";
         					if(hosp=="CHC00"){
             					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}else{
@@ -97,7 +97,7 @@
             				}
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportGL"){
-        				document.mainForm.method = "POST"
+        				document.mainForm.method = "POST";
         				if(hosp=="CHC00"){
         					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}else{
@@ -105,15 +105,16 @@
         				}
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
-        				document.mainForm.method = "POST"
+        				document.mainForm.method = "POST";
+        				document.mainForm.MENU.value = "InterfaceAccrual";
         				if(hosp=="VCH"){
         					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				}else{
-        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
+        					document.mainForm.action = "http://localhost:8883/exportFileDF";
         				}
         				document.mainForm.submit();        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
-        				document.mainForm.method = "POST"
+        				document.mainForm.method = "POST";
         					if(hosp=="CHC00"){
             					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}else{
@@ -177,6 +178,8 @@
 		<table class="form">
                 <input type="hidden" id="REPORT_DISPLAY" name="REPORT_DISPLAY"/>
 				<input type="hidden" id="REPORT_MODULE" name="REPORT_MODULE" value="checklist"/>
+				<input type="hidden" id="MENU" name="MENU"/>
+				<input type="hidden" class="medium" id="HOSPITAL_CODE" name="HOSPITAL_CODE" value="<%=session.getAttribute("HOSPITAL_CODE").toString()%>"/>
                 <tr>
                 	<th colspan="4"><div style="float: left;">${labelMap.TITLE_MAIN}</div></th>
                 </tr>
@@ -186,15 +189,10 @@
                     <td colspan="" class="input">
 					<select class="medium" id="PROCESS_NAME" name="PROCESS_NAME" onChange="changeDropDownList();">
                             <option value="">-- Select Report --</option>
-                            <!-- <option value="ExportAP">${labelMap.EXPORT_AP}</option> -->
                             <option value="ExportBank">${labelMap.EXPORT_BANK}</option>
                             <option value="Unpaid">Export DF Unpaid Detail</option>
-                            <!-- <option value="ExportPayroll">${labelMap.EXPORT_PAYROLL}</option> -->
                             <option value="ExportGL">${labelMap.EXPORT_GL}</option>
                             <option value="ExportAC">${labelMap.EXPORT_AC}</option>
-                            <!-- <option value="ExportGLSAP">${labelMap.EXPORT_GLSAP}</option> -->
-                            <!-- <option value="ExportGLSAPR2C">${labelMap.EXPORT_GLSAPR2C}</option> -->
-                            <!-- <option value="ExportACSAP">${labelMap.EXPORT_ACSAP}</option> -->
                             <!-- <option value="ExportRD">${labelMap.EXPORT_RD}</option> -->
                     </select>
 					</td>
@@ -283,7 +281,6 @@
 	                </tr>
                 </tbody>
                  --> 
-                <tr><td class="input"><input type="hidden" class="medium" id="HOSPITAL_CODE" name="HOSPITAL_CODE" value="<%=session.getAttribute("HOSPITAL_CODE").toString()%>"/></td></tr>       
                 <tr>
                     <th colspan="4" class="buttonBar">
 					<input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="Report_Save();" />
