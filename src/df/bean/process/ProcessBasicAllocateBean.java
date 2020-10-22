@@ -63,7 +63,7 @@ public class ProcessBasicAllocateBean {
 			methodStepDoctor:
 			for(int x = 0; x<methodStepDoctorList.size(); x++){
 				for(int icon = 0; icon<orderConditionList.size(); icon++){ //check for each field in condition
-						if(!methodStepDoctorList.get(x).get(orderConditionList.get(icon).toString()).equals("")){
+					if(!methodStepDoctorList.get(x).get(orderConditionList.get(icon).toString()).equals("")){
 						if(!methodStepDoctorList.get(x).get(orderConditionList.get(icon).toString()).equals(trnDailyList.get(i).get(orderConditionList.get(icon).toString()))){
 							continue methodStepDoctor;
 						}else{
@@ -135,7 +135,7 @@ public class ProcessBasicAllocateBean {
 					trnDailyList.get(i).put("COMPUTE_DAILY_USER_ID", this.userID);
 					trnDailyList.get(i).put("NOR_ALLOCATE_AMT", allocateAmt);
 					trnDailyList.get(i).put("NOR_ALLOCATE_PCT", allocatePct);
-					trnDailyList.get(i).put("DR_AMT", df+"");
+					trnDailyList.get(i).put("DR_AMT", df);
 					trnDailyList.get(i).put("HP_AMT", amountAftDiscount - df);
 					trnDailyList.get(i).put("TAX_TYPE_CODE", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString());
 					trnDailyList.get(i).put("DR_TAX_400", methodStepDoctorList.get(x).get("TAX_TYPE_CODE").toString().equals("400") ? taxAmt : "0" );

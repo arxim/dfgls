@@ -216,10 +216,10 @@ public class TrnDailyDAO {
 	public void updatePrepareCalculate(Map<String, Object> m){
 		String taxAmount = m.get("TAX_FROM_ALLOCATE").toString().equals("BF") ? m.get("AMOUNT_AFT_DISCOUNT").toString() : m.get("DR_AMT").toString();
 		try{
-			conn.getPrepareStatement().setDouble(1, Double.parseDouble(m.get("DR_AMT").toString()));
-			conn.getPrepareStatement().setDouble(2, Double.parseDouble(m.get("HP_AMT").toString()));
+			conn.getPrepareStatement().setString(1, m.get("DR_AMT").toString());
+			conn.getPrepareStatement().setString(2, m.get("HP_AMT").toString());
 			conn.getPrepareStatement().setString(3, m.get("SEQ_STEP").toString());
-			conn.getPrepareStatement().setDouble(4, Double.parseDouble(m.get("DR_AMT").toString()));
+			conn.getPrepareStatement().setString(4, m.get("DR_AMT").toString());
 			conn.getPrepareStatement().setString(5, m.get("TAX_TYPE_CODE").toString());
 			conn.getPrepareStatement().setString(6, m.get("TAX_TYPE_CODE").toString().equals("406") ? taxAmount : "0" );
 			conn.getPrepareStatement().setString(7, m.get("TAX_TYPE_CODE").toString().equals("402") ? taxAmount : "0" );
