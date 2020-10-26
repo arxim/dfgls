@@ -291,7 +291,7 @@
         </tr>
         <tr>
             <th colspan="4" class="buttonBar">
-            <input type="button" id="LOAD" name="LOAD" class="button" value="Load" onclick="Interface_Save();"  />
+            <!-- <input type="button" id="LOAD" name="LOAD" class="button" value="Load" onclick="Interface_Save();"  /> -->
             <input type="button" id="SAVE" name="SAVE" class="button" value="${labelMap.SAVE}" onclick="Interface_Save();" />
             <input type="reset" id="RESET" name="RESET" class="button" value="${labelMap.RESET}" />
             <input type="button" id="CLOSE" name="CLOSE" class="button" value="${labelMap.CLOSE}" onclick="window.location='../process/ProcessFlow.jsp'" />				  	</th>
