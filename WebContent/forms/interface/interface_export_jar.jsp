@@ -107,9 +107,7 @@
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
         				document.mainForm.method = "POST";
         				document.mainForm.MENU.value = "InterfaceAccrual";
-        				
-        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
-        				
+        				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				document.mainForm.submit();        				
         			}else if(document.mainForm.PROCESS_NAME.value == "Unpaid"){
         				document.mainForm.method = "POST";
@@ -119,10 +117,13 @@
             					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
             				}
         				document.mainForm.submit();
+        			}else if(document.mainForm.PROCESS_NAME.value == "ExportRD"){
+        				document.mainForm.method = "POST";
+        				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
+        				document.mainForm.submit();
         			}else{
         				document.mainForm.submit();
         			}
-        			
             	}
 			}
 			function changeDropDownList(){
@@ -191,7 +192,7 @@
                             <option value="Unpaid">Export DF Unpaid Detail</option>
                             <option value="ExportGL">${labelMap.EXPORT_GL}</option>
                             <option value="ExportAC">${labelMap.EXPORT_AC}</option>
-                            <!-- <option value="ExportRD">${labelMap.EXPORT_RD}</option> -->
+                            <option value="ExportRD">${labelMap.EXPORT_RD}</option>
                     </select>
 					</td>
 					<td class="label"><label for="SAVE_FILE">${labelMap.SAVE_FILE}</label></td>
