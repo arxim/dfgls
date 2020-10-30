@@ -98,11 +98,7 @@
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportGL"){
         				document.mainForm.method = "POST";
-        				if(hosp=="CHC00"){
-        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
-        				}else{
-        					document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
-        				}
+        				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				document.mainForm.submit();
         			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
         				document.mainForm.method = "POST";
