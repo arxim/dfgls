@@ -653,6 +653,74 @@
 			//document.mainForm.INVOICE_DESCRIPTION.value = toShowDate(getXMLNodeValue(xmlDoc, "INVOICE_DATE"));
 		}
 	}
+	
+	function EXPENSE_CODE_KeyPress(e) {
+	     var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+	
+	     if (key == 13) {
+	         document.mainForm.EXPENSE_CODE.blur();
+	         return false;
+	     }
+	     else {
+	         return true;
+	     }
+	 }
+		
+	function AJAX_Refresh_EXPENSE_CODE() {
+	    var target = "../../RetrieveData?TABLE=EXPENSE&COND=CODE='" + document.mainForm.EXPENSE_CODE.value + "'";
+	    AJAX_Request(target, AJAX_Handle_Refresh_EXPENSE_CODE);
+	}
+	
+	function AJAX_Handle_Refresh_EXPENSE_CODE() {
+	    if (AJAX_IsComplete()) {
+	
+	        var xmlDoc = AJAX.responseXML;
+	
+	        // Data not found
+	        if (!isXMLNodeExist(xmlDoc, "DESCRIPTION")) {			         
+	            //document.mainForm.ORDER_ITEM_CODE.value = "";
+	            document.mainForm.EXPENSE_CODE_DESCRIPTION.value = "";
+	            return;
+	        }
+	
+	        // Data found
+	        document.mainForm.EXPENSE_CODE_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+	    }
+	}
+	
+	function EXPENSE_ACCOUNT_CODE_KeyPress(e) {
+	    var key = window.event ? window.event.keyCode : e.which;    // ? IE : Firefox
+	
+	    if (key == 13) {
+	        document.mainForm.EXPENSE_ACCOUNT_CODE.blur();
+	        return false;
+	    }
+	    else {
+	        return true;
+	    }
+	}
+	
+	function AJAX_Refresh_EXPENSE_ACCOUNT_CODE() {
+	    var target = "../../RetrieveData?TABLE=ACCOUNT&COND=CODE='" + document.mainForm.EXPENSE_ACCOUNT_CODE.value + "'";
+	    AJAX_Request(target, AJAX_Handle_Refresh_EXPENSE_ACCOUNT_CODE);
+	}
+	
+	function AJAX_Handle_Refresh_EXPENSE_ACCOUNT_CODE() {
+	    if (AJAX_IsComplete()) {
+	
+	        var xmlDoc = AJAX.responseXML;
+	
+	        // Data not found
+	        if (!isXMLNodeExist(xmlDoc, "DESCRIPTION")) {			         
+	            //document.mainForm.ORDER_ITEM_CODE.value = "";
+	            document.mainForm.EXPENSE_ACCOUNT_CODE_DESCRIPTION.value = "";
+	            return;
+	        }
+	
+	        // Data found
+	        document.mainForm.EXPENSE_ACCOUNT_CODE_DESCRIPTION.value = getXMLNodeValue(xmlDoc, "DESCRIPTION");
+	    }
+	}
 </script>
 </head>
 <body leftmargin="0"  onload='changeDropDownList()'>
