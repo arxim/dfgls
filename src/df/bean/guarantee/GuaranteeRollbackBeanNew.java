@@ -74,8 +74,8 @@ public class GuaranteeRollbackBeanNew {
             	c.insert(this.getRollbackSummary(hospital_code, year, month));
             	c.insert(this.getRollbackExpenseDetail(hospital_code, year, month));
                 c.insert(sq);
-                c.insert("UPDATE STP_GUARANTEE SET DF_ABSORB_AMOUNT = OLD_ABSORB_AMOUNT"+
-                " WHERE HOSPITAL_CODE = '"+hospital_code+"' AND DF_ABSORB_AMOUNT != OLD_ABSORB_AMOUNT");
+                c.insert("UPDATE STP_GUARANTEE SET ABSORB_REMAIN_AMOUNT = OLD_ABSORB_REMAIN_AMOUNT"+
+                " WHERE HOSPITAL_CODE = '"+hospital_code+"' AND ABSORB_REMAIN_AMOUNT != OLD_ABSORB_REMAIN_AMOUNT");
                 c.commitDB();
                 logger.info("Rollback Setup Finish time : "+JDate.getTime());
                 logger.info("Rollback Guarantee Process Finished");
