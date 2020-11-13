@@ -42,6 +42,8 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/caseTimeTablePage";
 	}else if(menuRequest.equals("SetupDoctor")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/doctorMainPage";
+	}else if(menuRequest.equals("AdjustRevenue")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/adjustRevenueMainPage";
 	}else if(menuRequest.equals("ProcessRollback")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/processRollbackPage";
 	}else{}
