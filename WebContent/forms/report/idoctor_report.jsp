@@ -270,8 +270,8 @@
                  	document.getElementById('block_payment_term').style.display = 'none';
                  	document.getElementById('block_doctor_type').style.display = 'none';
                  	document.getElementById('block_payment_mode').style.display = 'none';
-                 	document.getElementById('block_save_file').style.display = 'none';
-                	document.mainForm.SAVE.disabled = true;
+                 	document.getElementById('block_save_file').style.display = '';
+                	document.mainForm.SAVE.disabled = false;
                 } else {
                 	document.getElementById('block_from_to_date').style.display = 'none';
                 	document.getElementById('block_payor_office_code').style.display = 'none';

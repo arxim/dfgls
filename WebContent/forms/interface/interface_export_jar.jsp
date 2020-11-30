@@ -25,10 +25,11 @@
 	labelMap.add("EXPORT_AP", "Export AP Transaction", "นำส่งรายได้แพทย์เพื่อออกเช็ค");
 	labelMap.add("EXPORT_BANK", "Export Bank Transaction", "นำส่งรายได้แพทย์โอนเข้าธนาคาร");
 	labelMap.add("EXPORT_PAYROLL", "Export Payroll Transaction", "นำส่งข้อมูลเงินเดือนแพทย์");
-    labelMap.add("EXPORT_GL", "Export GL Transaction", "นำส่งข้อมูล GL");
+    labelMap.add("EXPORT_GL", "Export GL (Oracle)", "นำส่งข้อมูล GL (Oracle)");
     labelMap.add("EXPORT_GLSAP", "Export SAP GL", "นำส่งข้อมูล GL ระบบ SAP");
     labelMap.add("EXPORT_GLSAPR2C", "Export SAP GL (R2C)", "นำส่งข้อมูล GL ระบบ SAP (R2C)");
-    labelMap.add("EXPORT_AC", "Export Accu Transaction", "นำส่งข้อมูล Accu");
+    labelMap.add("EXPORT_AC", "Export Accu (Oracle)", "นำส่งข้อมูล Ac (Oracle)");
+    labelMap.add("EXPORT_AC_DETAIL", "Export Accu Detail", "นำส่งข้อมูลรายละเอียด Accu");
     labelMap.add("EXPORT_ACSAP", "Export SAP Accrue", "นำส่งข้อมูล Accu ระบบ SAP");
 	labelMap.add("SAVE_FILE", "Save as filename", "จัดเก็บไฟล์ชื่อ");
 	labelMap.add("PAY_TYPE", "Revenue Type", "ประเภทรายได้");
@@ -100,7 +101,7 @@
         				document.mainForm.method = "POST";
         				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
         				document.mainForm.submit();
-        			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC"){
+        			}else if(document.mainForm.PROCESS_NAME.value == "ExportAC" || document.mainForm.PROCESS_NAME.value == "ExportACDetail"){
         				document.mainForm.method = "POST";
         				document.mainForm.MENU.value = "InterfaceAccrual";
         				document.mainForm.action = "http://<%= rp.getPropertiesData("config.properties", "interface.","ip").get("ip") %>:8883/exportFileDF";
@@ -187,6 +188,7 @@
                             <option value="ExportBank">${labelMap.EXPORT_BANK}</option>
                             <option value="Unpaid">Export DF Unpaid Detail</option>
                             <option value="ExportGL">${labelMap.EXPORT_GL}</option>
+                            <option value="ExportACDetail">${labelMap.EXPORT_AC_DETAIL}</option>
                             <option value="ExportAC">${labelMap.EXPORT_AC}</option>
                             <option value="ExportRD">${labelMap.EXPORT_RD}</option>
                     </select>

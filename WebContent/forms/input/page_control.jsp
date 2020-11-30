@@ -46,6 +46,8 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/adjustRevenueMainPage";
 	}else if(menuRequest.equals("ProcessRollback")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/processRollbackPage";
+	}else if(menuRequest.equals("EditTransaction")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/EditTransactionPage";
 	}else{}
 	logger.info(linkPage);
 %>
