@@ -251,7 +251,7 @@ public class ImportTimeTableBean extends InterfaceTextFileBean {
 						//AMOUNT_DIFF_TIME
 						sql_insert += "0.00,";
 						//AMOUNT_PER_TIME
-						sql_insert +="0.00,";
+						sql_insert +="'0',";
 						//GUARANTEE_PERIOD
 						sql_insert +="'',";
 						//IS_INCLUDE_LOCATION
