@@ -204,7 +204,8 @@
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"
                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentGroupType"
             		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailInMonthVCH"
-            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"){
+            		|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
+            		|| document.mainForm.REPORT_FILE_NAME.value == "REPORT_M06" ){
                 	document.getElementById('block_from_to_date').style.display = 'none';
                  	document.getElementById('block_payor_office_code').style.display = 'none';
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentGroupType"){
@@ -217,7 +218,8 @@
                  	}
                  	if(document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenueByDetailForDoctorVCH"
                  	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryRevenuePaymentOrder"
-                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"){
+                 	|| document.mainForm.REPORT_FILE_NAME.value == "SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>"
+                 	|| document.mainForm.REPORT_FILE_NAME.value == "REPORT_M06" ){
                     	document.getElementById('block_save_file').style.display = '';
                     	document.mainForm.SAVE.disabled = false;
                  	}else{
@@ -764,6 +766,7 @@
 						<option value="SummaryRevenueByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_DETAIL_DF}</option>
 						<option value="SummaryRevenueByDetailForDoctorVCH">${labelMap.REPORT_DETAIL_BY_ADMISSION}</option>
 						<option value="ExpenseDetail">${labelMap.REPORT_EXPENSE}</option>
+						<%= session.getAttribute("HOSPITAL_CODE").toString().equals("WMC01") ? "<option value='REPORT_M06'>REPORT_M06 </option>" : "" %>
 						<option value="None">--------- DF Unpaid ---------</option>
 						<option value="SummaryDFUnpaidByDetail<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_DETAIL}</option>
                      	<option value="DFUnpaidSum<%=session.getAttribute("HOSPITAL_CODE").toString()%>">${labelMap.REPORT_BEHIND_PAYMENT_SUMMARY}</option>	
