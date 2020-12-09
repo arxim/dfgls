@@ -48,6 +48,8 @@
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/processRollbackPage";
 	}else if(menuRequest.equals("EditTransaction")){
 		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/EditTransactionPage";
+	}else if(menuRequest.equals("FileService")){
+		linkPage = "http://"+rp.getPropertiesData("config.properties", "interface.","ip").get("ip")+":8989/mainApp/fileMainPage";
 	}else{}
 	logger.info(linkPage);
 %>

@@ -110,7 +110,7 @@ body{
 			            con.Close();
  			            %>                     
             		<a href=<%=session.getAttribute("USER_GROUP_CODE").toString().equals("5")? "doctor_manual.pdf" : "user_manual.pdf" %> target="_blank">
-            			<img width='34px' height='34px' src="images/help_button.png" class="helpButton" title="Manual" onmouseover="src='images/help_hover_button.png'" onmouseout="src='images/help_button.png'" />
+            			<img width='34px' height='34px' src="images/help_button_new.png" class="helpButton" title="Manual" onmouseover="src='images/help_button_new.png'" onmouseout="src='images/help_button_new.png'" />
             		</a>
             
         	</div>
