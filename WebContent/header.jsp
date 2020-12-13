@@ -119,7 +119,7 @@ body{
        		 	
 			<div class="floatright">
 				<div class="floatleft">
-					<img src="template/img/img-profile.jpg" alt="Profile Pic" />
+					<!-- <img src="template/img/img-profile.png" alt="Profile Pic" /> -->
 				</div>
 				<div class="floatleft marginleft10">
 					<ul class="inline-ul floatleft" style="padding-right: 20px;">
@@ -146,7 +146,7 @@ body{
 			        		%>
 						</li>
 						<li>|</li>
-						<li><a href="forms/input/users_profile.jsp" target="mainFrame">Profile</a></li>
+						<li><a href="forms/input/users_main.jsp" target="mainFrame">Profile</a></li>
 						<li>|</li>
 						<li><a href="logout.jsp" onclick="return confirm('คุณ <%=session.getAttribute("USER_ID")%> ต้องการออกจากระบบหรือไม่ ?')"  target="_top">Logout</a></li>
 					</ul>
