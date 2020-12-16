@@ -85,6 +85,10 @@
     <servlet-class>df.servlet.guarantee.ProcessImportGuaranteeSrvl</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>ProcessGuaranteeCalculateSrvl</servlet-name>
+    <servlet-class>df.servlet.guarantee.ProcessGuaranteeCalculateSrvl</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>ProcessRollbackSrvl</servlet-name>
     <servlet-class>df.servlet.process.ProcessRollbackSrvl</servlet-class>
   </servlet>
@@ -204,6 +208,11 @@
     <servlet-name>ProcessImportGuaranteeSrvl</servlet-name>
     <url-pattern>/ProcessImportGuaranteeSrvl</url-pattern>
   </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>ProcessGuaranteeCalculateSrvl</servlet-name>
+    <url-pattern>/ProcessGuaranteeCalculateSrvl</url-pattern>
+  </servlet-mapping>
+ 
   <servlet-mapping>
     <servlet-name>ProcessRollbackSrvl</servlet-name>
     <url-pattern>/ProcessRollbackSrvl</url-pattern>
