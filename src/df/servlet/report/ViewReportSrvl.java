@@ -278,7 +278,7 @@ public class ViewReportSrvl extends HttpServlet {
         	hm.put("yyyy", Integer.parseInt(year));        	
         }else if("rd1_monthly_cover".equalsIgnoreCase(reportfilename) || "rd53_monthly_cover".equalsIgnoreCase(reportfilename)){
         	hm.put("yyyy", Integer.parseInt(year));        	
-        }else if("Tax402SummaryYearly".equalsIgnoreCase(reportfilename)){
+        }else if("rd_summary_yearly".equalsIgnoreCase(reportfilename)){
         	hm.put("doctor", doctor_code_to);
         	hm.put("year", year);
            	hm.put("month", month);
