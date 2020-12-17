@@ -123,7 +123,7 @@
 				var term = document.getElementById('term');
 				var year = document.getElementById('Tax402Year');
 				var d = document.getElementById('Tax402');
-                if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406' || document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406<%= session.getAttribute("HOSPITAL_CODE")%>'){
+                if(document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406' || document.mainForm.REPORT_FILE_NAME.value=='Tax406SummaryYearly' || document.mainForm.REPORT_FILE_NAME.value=='TaxLetter406<%= session.getAttribute("HOSPITAL_CODE")%>'){
                     e.style.display = "";
                 	d.style.display = 'none';
                 	term.style.display = 'none';
@@ -132,7 +132,7 @@
                     document.getElementById('YEAR').disabled = "";
                     document.getElementById('PRINT_DATE').disabled = "";
                     document.getElementById('DOCTOR_CODE_FROM').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly' || document.mainForm.REPORT_FILE_NAME.value=='rd3_monthly' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly' || document.mainForm.REPORT_FILE_NAME.value=='rd3_monthly' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly' || document.mainForm.REPORT_FILE_NAME.value=='rd1a_yearly' ){
                     d.style.display = "";
                     term.style.display = "";
                 	e.style.display = 'none';
@@ -142,7 +142,7 @@
                     document.getElementById('FILLING_DATE').disabled = "";
                     document.getElementById('MM').disabled = "";
                     document.getElementById('YYYY').disabled = "";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover'|| document.mainForm.REPORT_FILE_NAME.value=='rd3_monthly_cover'  ){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd1_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd53_monthly_cover'|| document.mainForm.REPORT_FILE_NAME.value=='rd3_monthly_cover' || document.mainForm.REPORT_FILE_NAME.value=='rd1a_yearly_cover'   ){
                 	d.style.display = "";
                     term.style.display = "";
                 	e.style.display = 'none';
@@ -152,7 +152,7 @@
                     document.getElementById('YYYY').disabled = "";
                     document.getElementById('LABEL_PAYDATE').style.display = "none";
 					document.getElementById('INPUT_PAYDATE').style.display = "none";
-                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd_summary_yearly' || mainForm.REPORT_FILE_NAME.value=='rd_wht_monthly'){
+                }else if(document.mainForm.REPORT_FILE_NAME.value=='rd_summary_yearly' || mainForm.REPORT_FILE_NAME.value=='rd_wht_monthly' || mainForm.REPORT_FILE_NAME.value=='rd_wht_monthly_406'){
                     year.style.display = "";
                 	e.style.display = 'none';
                 	d.style.display = 'none';
@@ -283,7 +283,7 @@
                         <option value="rd_wht_monthly_406">หนังสือหัก ณ ที่จ่าย รายเดือน 40(6)</option>
                         <option value="">---------------Yearly (รายปี /รอบปีภาษี) ---------------</option>
                         <option value="TaxLetter406<%=session.getAttribute("HOSPITAL_CODE") %>">หนังสือรับรองสรุปรายได้ 40(6) (จดหมาย)</option>
-                        <option value="rd_summary_406">หนังสือรับรองสรุปรายได้  40(6) 50ทวิ ตามรอบภาษี</option>
+                        <option value="rd_summary_406 Tax406SummaryYearly">หนังสือรับรองสรุปรายได้  40(6) 50ทวิ ตามรอบภาษี</option>
                         <option value="rd1a_yearly_cover">ใบปะหน้า ภ.ง.ด.1ก รายปี</option>
                         <option value="rd1a_yearly">รายงาน ภ.ง.ด.1ก รายปี</option>
                         <option value="rd_summary_yearly">หนังสือรับรองสรุปรายได้ (1,3,53) 50ทวิ  รายปี</option>
