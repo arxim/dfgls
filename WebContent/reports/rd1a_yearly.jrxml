@@ -1662,63 +1662,6 @@ ORDER BY SEQ, ST.NET_TAX_MONTH DESC]]></queryString>
 						key="line-72"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="589"
-						y="43"
-						width="140"
-						height="13"
-						key="textField-29"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_NAME}.equals("") ? $F{AUTHORITY_NAME} : 
-$P{hospital_code}.equals("00002") ? "นางพงษ์แก้ว  ทิพนาค" : 
-$P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051")? "นางสาวขวัญตา รักษ์ธรรมกิจ" : 
-$P{hospital_code}.equals("007") ? "กุลชญา  เมธาธีรกูล" : 
-$P{hospital_code}.equals("00009") ? "นางสาวพจนา   รัตนประชา"  : 
-$P{hospital_code}.equals("011") || $P{hospital_code}.equals("012")? "สุภัคนิต ลิ่มวงค์สวัสดิ์" :
-$P{hospital_code}.equals("015")||$P{hospital_code}.equals("039") ? "นางอัฑฒนันท์ เณรทอง": 
-$P{hospital_code}.equals("00018") ? "นางสาวสายทิพย์  สาเรือง" : 
-$P{hospital_code}.equals("00019") ? "วิปภา บุญนาถพิทักษ์" : 
-$P{hospital_code}.equals("00029") ? "ณัฐพัชร์  เชยโอนะนันทน์" : 
-$P{hospital_code}.equals("036") ? "คุณวลัยลักษณ์ ปิยะนาวิน" : 
-$P{hospital_code}.equals("048") ? "นายสิทธิศักดิ์ ตรากลาง" : 
-$P{hospital_code}.equals("045") ? "นายอรรถพันธ์ บุญตา" : 
-$P{hospital_code}.equals("050") ? "นางสาวมณีรัตน์ ศรีบุศกร" : 
-$P{hospital_code}.equals("054") ? "นางสาวนลินี ก่อคุณากร" : 
-$P{hospital_code}.equals("058") ? " น.ส.ธนานิษฐ์ กิตติธนาวิโรจน" : 
-$P{hospital_code}.equals("063") ? "นายสุธี โพธิ์พันธ์" : 
-$P{hospital_code}.equals("067") ? "นางสาวแก้วกาญจน์ หงอสกุล" : "นางปราณี  เจือเพ็ชร์"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="590"
-						y="53"
-						width="150"
-						height="13"
-						key="textField-30"/>
-					<box></box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahoma.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[!$F{AUTHORITY_POSITION}.equals("") ? $F{AUTHORITY_POSITION} : 
-$P{hospital_code}.equals("00002") ? "ผู้จัดการฝ่ายบริหารการเงิน" : 
-$P{hospital_code}.equals("00005") || $P{hospital_code}.equals("051") || $P{hospital_code}.equals("007") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
-$P{hospital_code}.equals("00009") ? "หัวหน้าแผนกบัญชี " : $P{hospital_code}.equals("011") || $P{hospital_code}.equals("012") ? " ผู้จัดการฝ่ายบัญชี " : 
-$P{hospital_code}.equals("015") || $P{hospital_code}.equals("039") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
-$P{hospital_code}.equals("00018") ? "หัวหน้าแผนกบัญชี" : 
-$P{hospital_code}.equals("00019") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
-$P{hospital_code}.equals("00029") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
-$P{hospital_code}.equals("036") ? "ผู้จัดการแผนกบัญชีและการเงิน" : 
-$P{hospital_code}.equals("045") || $P{hospital_code}.equals("048") ? "ผู้จัดการฝ่ายบัญชีและการเงิน" : 
-$P{hospital_code}.equals("050") ? "หัวหน้าแผนกบัญชีและงบประมาณ" : 
-$P{hospital_code}.equals("054") ? "( ผู้จัดการฝ่ายบัญชีและการเงิน )" :
-$P{hospital_code}.equals("058") ? "เจ้าหน้าที่แผนกบัญชี" : 
-$P{hospital_code}.equals("063") ? "พนักงานบัญชีค่าธรรมเนียมแพทย์ " :  
-$P{hospital_code}.equals("063") ? "ผู้ช่วยผู้จัดการฝ่ายบัญชีและการเงิน" : "ผู้จัดการแผนกบัญชี"]]></textFieldExpression>
-				</textField>
 				<line direction="TopDown">
 					<reportElement
 						x="633"
