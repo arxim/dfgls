@@ -449,4 +449,34 @@
     <servlet-name>ServletTest</servlet-name>
     <url-pattern>/ServletTest</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SetupMappingCaseSrvl</display-name>
+    <servlet-name>SetupMappingCaseSrvl</servlet-name>
+    <servlet-class>df.servlet.process.SetupMappingCaseSrvl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SetupMappingCaseSrvl</servlet-name>
+    <url-pattern>/SetupMappingCaseSrvl</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProcessRunTimeTableCaseSrvl</display-name>
+    <servlet-name>ProcessRunTimeTableCaseSrvl</servlet-name>
+    <servlet-class>df.servlet.process.ProcessRunTimeTableCaseSrvl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessRunTimeTableCaseSrvl</servlet-name>
+    <url-pattern>/ProcessRunTimeTableCaseSrvl</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProcessGroupSharingRevenueSrvl</display-name>
+    <servlet-name>ProcessGroupSharingRevenueSrvl</servlet-name>
+    <servlet-class>df.servlet.process.ProcessGroupSharingRevenueSrvl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcessGroupSharingRevenueSrvl</servlet-name>
+    <url-pattern>/ProcessGroupSharingRevenueSrvl</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -5,6 +5,7 @@
 
 package df.servlet.process;
 
+import df.bean.process.ProcessTransferTable;
 import df.bean.process.ProcressMatchTable;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,7 +37,8 @@ public class ProcessMatchTableSrvl extends HttpServlet {
         String y = request.getParameter("YYYY");
         String m = request.getParameter("MM");
         try {
-            ProcressMatchTable p = new ProcressMatchTable();
+//        	ProcressMatchTable p = new ProcressMatchTable();
+        	ProcessTransferTable p = new ProcessTransferTable();
             try {
                 Thread.sleep(20);
                 if(p.ProcessMain(hos, m, y)){
