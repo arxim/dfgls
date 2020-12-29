@@ -30,10 +30,10 @@
 		<defaultValueExpression ><![CDATA["99999999"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["11930099"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["14025"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["012"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["MCH2"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="as_of_date" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["99999999"]]></defaultValueExpression>
@@ -53,7 +53,7 @@ SD.VERIFY_TIME AS 'START_TIME',
 SD.YYYY AS 'YYYY', 
 SD.MM AS 'MM', 
 DR.NAME_THAI AS 'NAME_THAI', 
-SD.INVOICE_NO AS 'INVOICE_NO', 
+SD.INVOICE_NO+CASE WHEN SD.ACTIVE = '0' AND SD.IS_PAID = 'N' AND SD.GUARANTEE_TYPE = 'MYY' THEN ' (HOLD GMY)' ELSE '' END AS 'INVOICE_NO', 
 SD.INVOICE_DATE AS 'INVOICE_DATE',
 SD.PATIENT_NAME AS 'PATIENT_NAME', 
 SD.HN_NO AS 'HN_NO',
@@ -73,7 +73,7 @@ CASE WHEN SD.GUARANTEE_NOTE IS NULL THEN '' ELSE SD.GUARANTEE_NOTE END AS GUARAN
 OI.DESCRIPTION_THAI AS 'DESCRIPTION_THAI',
 SD.DR_TAX_406 AS 'DR_TAX_AMT',
 DR.DOCTOR_CATEGORY_CODE AS 'DOCTOR_CATEGORY_CODE',
-SD.IS_DISCHARGE_SUMMARY
+CASE WHEN SD.ACTIVE = '0' AND SD.GUARANTEE_NOTE LIKE 'OVER%' AND SD.GUARANTEE_TYPE = 'MYY' THEN 'H' ELSE SD.IS_DISCHARGE_SUMMARY END AS IS_DISCHARGE_SUMMARY
 FROM TRN_DAILY SD LEFT OUTER JOIN DOCTOR DR ON (SD.DOCTOR_CODE = DR.CODE
 AND SD.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE
@@ -83,10 +83,10 @@ AND OI.HOSPITAL_CODE = SD.HOSPITAL_CODE)
 WHERE (SD.INVOICE_DATE BETWEEN $P{from_date} AND $P{to_date}) AND
 DP.CODE LIKE $P{doctor} AND 
 SD.PATIENT_DEPARTMENT_CODE LIKE $P{department_code} AND
-SD.PAYOR_OFFICE_CODE LIKE $P{payor_code} AND
-SD.ACTIVE = '1' AND DR.ACTIVE = '1' AND SD.ORDER_ITEM_ACTIVE = '1' AND
-SD.YYYY = '' AND SD.MM = '' AND
---(SD.BATCH_NO = '' OR SD.BATCH_NO IS NULL) AND 
+SD.PAYOR_OFFICE_CODE LIKE $P{payor_code}
+AND (SD.ACTIVE = '1' OR  (SD.ACTIVE = '0' AND SD.IS_PAID = 'N' AND SD.GUARANTEE_TYPE = 'MYY'))
+AND DR.ACTIVE = '1' AND SD.ORDER_ITEM_ACTIVE = '1' AND
+SD.YYYY+SD.MM LIKE CASE WHEN SD.ACTIVE = '0' AND SD.IS_PAID = 'N' AND SD.GUARANTEE_TYPE = 'MYY' THEN '%' ELSE '' END AND
 SD.INVOICE_TYPE <> 'ORDER' AND 
 SD.GUARANTEE_NOTE NOT LIKE '%FIX%' AND --SD.IS_PAID <> 'N' AND
 SD.HOSPITAL_CODE LIKE $P{hospital_code} AND
@@ -323,23 +323,36 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAYOR_OFFICE_CODE,INVOICE
 		<group  name="discharge_summary" >
 			<groupExpression><![CDATA[$F{IS_DISCHARGE_SUMMARY}]]></groupExpression>
 			<groupHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupHeader>
-			<groupFooter>
 			<band height="15"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="32"
+						x="0"
 						y="0"
-						width="313"
+						width="626"
 						height="15"
-						key="textField"/>
+						key="textField-24"/>
 					<box></box>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{IS_DISCHARGE_SUMMARY}.equals("N") ? "Total Hold by Discharge Summary" : "Total Hold by Payor" )]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{IS_DISCHARGE_SUMMARY}.equals("N") ? "Hold by Discharge Summary" : ($F{IS_DISCHARGE_SUMMARY}.equals("H") ? "Hold by Guarantee" : "Hold by Payor" ))]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="626"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{IS_DISCHARGE_SUMMARY}.equals("N") ? "Total Hold by Discharge Summary" : ($F{IS_DISCHARGE_SUMMARY}.equals("H") ? "Total Hold by Guarantee" : "Total Hold by Payor" ))]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
@@ -380,6 +393,17 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAYOR_OFFICE_CODE,INVOICE
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_AMOUNT_AFT_DISCOUNT_2}]]></textFieldExpression>
 				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="16"
+						width="802"
+						height="0"
+						forecolor="#999999"
+						key="line-4"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
 			</band>
 			</groupFooter>
 		</group>
@@ -395,11 +419,11 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAYOR_OFFICE_CODE,INVOICE
 					<reportElement
 						x="60"
 						y="0"
-						width="376"
+						width="566"
 						height="15"
 						key="textField-20"/>
 					<box></box>
-					<textElement verticalAlignment="Middle">
+					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{PAYOR_OFFICE_NAME}+" รหัส : "+$F{PAYOR_OFFICE_CODE}+" รายได้ค้างชำระรวม"]]></textFieldExpression>

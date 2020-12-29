@@ -24,16 +24,16 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 	<parameter name="year" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["2016"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["2020"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="month" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["10"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["11"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="from_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["001140664"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["0117050"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="to_doctor" isForPrompting="false" class="java.lang.String">
-		<defaultValueExpression ><![CDATA["001140664"]]></defaultValueExpression>
+		<defaultValueExpression ><![CDATA["0117050"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="hospital_code" isForPrompting="false" class="java.lang.String">
 		<defaultValueExpression ><![CDATA["00001"]]></defaultValueExpression>
@@ -92,7 +92,7 @@
 		END AS 'DR_AMT',
 		SD.GUARANTEE_NOTE,
 		SD.IS_WRITE_OFF AS 'IS_WRITE_OFF', 
-		CASE WHEN SD.PAY_BY_AR = 'Y' THEN 'A' ELSE 'B' END AS PAY_METHOD,
+		CASE WHEN SD.PAY_BY_AR = 'Y' THEN 'A' ELSE CASE WHEN SD.NOTE NOT LIKE 'UNHOLD%' AND SD.GUARANTEE_TYPE = 'MYY' THEN 'B' ELSE 'C' END END AS PAY_METHOD,
 		CASE WHEN SD.MM = $P{month}
 	 	     THEN 
 		     CASE WHEN SD.GUARANTEE_NOTE = 'ABSORB GUARANTEE' AND SD.GUARANTEE_TERM_MM != $P{month} THEN 0 ELSE SD.DR_TAX_406 END 
@@ -133,10 +133,7 @@ UNION
 		STP.START_TIME AS 'START_TIME',
 		STP.END_DATE AS 'END_DATE',
 		STP.END_TIME AS 'END_TIME',
-		CASE WHEN HP402_ABSORB_AMOUNT > 0 
-			THEN (HP402_ABSORB_AMOUNT)
-			ELSE DF402_CASH_AMOUNT
-		END AS 'ABSORB_AMOUNT',
+		ABSORB_AMOUNT AS 'ABSORB_AMOUNT',
 		'' AS 'YYYY', 
 		'' AS 'MM', 
 		DR.NAME_THAI AS 'NAME_THAI', 
@@ -169,7 +166,7 @@ UNION
 	LEFT OUTER JOIN DOCTOR DR ON (STP.GUARANTEE_DR_CODE = DR.CODE AND STP.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND
 	DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
-	WHERE (STP.DF402_CASH_AMOUNT+STP.HP402_ABSORB_AMOUNT+STP.DF406_HOLD_AMOUNT >0)
+	WHERE ABSORB_AMOUNT >0
 	AND STP.GUARANTEE_TYPE_CODE = 'DLY'
 	AND (DR.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 	AND STP.YYYY LIKE $P{year}
@@ -187,10 +184,7 @@ UNION
 		'000000' AS 'START_TIME',
 		STP.YYYY+STP.MM+'01' AS 'END_DATE',
 		'000000' AS 'END_TIME',
-		CASE WHEN HP402_ABSORB_AMOUNT > 0 
-			THEN (HP402_ABSORB_AMOUNT)
-			ELSE DF402_CASH_AMOUNT
-		END AS 'ABSORB_AMOUNT',
+		ABSORB_AMOUNT AS 'ABSORB_AMOUNT',
 		'' AS 'YYYY', 
 		'' AS 'MM', 
 		DR.NAME_THAI AS 'NAME_THAI', 
@@ -223,7 +217,7 @@ UNION
 	LEFT OUTER JOIN DOCTOR DR ON (STP.GUARANTEE_DR_CODE = DR.CODE AND STP.HOSPITAL_CODE = DR.HOSPITAL_CODE)
 	LEFT OUTER JOIN DOCTOR_PROFILE DP ON (DR.DOCTOR_PROFILE_CODE = DP.CODE AND
 	DR.HOSPITAL_CODE = DP.HOSPITAL_CODE)
-	WHERE (STP.DF402_CASH_AMOUNT+STP.HP402_ABSORB_AMOUNT+STP.DF406_HOLD_AMOUNT >0)
+	WHERE ABSORB_AMOUNT >0
 	AND STP.GUARANTEE_TYPE_CODE <> 'DLY'
 	AND (DR.DOCTOR_PROFILE_CODE BETWEEN $P{from_doctor} AND $P{to_doctor})
 	AND STP.YYYY LIKE $P{year}
@@ -587,6 +581,69 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAY_METHOD,VERIFY_DATE,IN
 			</band>
 			</groupFooter>
 		</group>
+		<group  name="pay_mode" >
+			<groupExpression><![CDATA[$F{PAY_METHOD}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="15"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="382"
+						height="15"
+						key="textField-21"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{PAY_METHOD}.equals("A" ) ? "รายได้แพทย์ปลดจ่าย "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" รวม [DF "+$V{CNT_DF_BY_PAYMODE}+" รายการ]" : "รายได้แพทย์ในเดือน "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" รวม [DF "+$V{CNT_DF_BY_PAYMODE}+" รายการ]" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="382"
+						y="0"
+						width="55"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_OLD_AMOUNT_5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="437"
+						y="0"
+						width="58"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isItalic="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_DR_TAX_AMT_5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="495"
+						y="0"
+						width="60"
+						height="15"
+						key="textField"/>
+					<box></box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isItalic="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_DR_AMT_6}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupFooter>
+		</group>
 		<group  name="pay_mode2" >
 			<groupExpression><![CDATA[$F{PAY_METHOD}]]></groupExpression>
 			<groupHeader>
@@ -673,69 +730,6 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAY_METHOD,VERIFY_DATE,IN
 						positionType="Float"/>
 					<graphicElement stretchType="NoStretch"/>
 				</line>
-			</band>
-			</groupFooter>
-		</group>
-		<group  name="pay_mode" >
-			<groupExpression><![CDATA[$F{PAY_METHOD}]]></groupExpression>
-			<groupHeader>
-			<band height="0"  isSplitAllowed="true" >
-			</band>
-			</groupHeader>
-			<groupFooter>
-			<band height="15"  isSplitAllowed="true" >
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="0"
-						y="0"
-						width="382"
-						height="15"
-						key="textField-21"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[( $F{PAY_METHOD}.equals("A" ) ? "รายได้แพทย์ปลดจ่าย "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" รวม [DF "+$V{CNT_DF_BY_PAYMODE}+" รายการ]" : "รายได้แพทย์ในเดือน "+$F{DOCTOR_CODE}+" : "+$F{NAME_THAI}+" รวม [DF "+$V{CNT_DF_BY_PAYMODE}+" รายการ]" )]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="382"
-						y="0"
-						width="55"
-						height="15"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_OLD_AMOUNT_5}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="437"
-						y="0"
-						width="58"
-						height="15"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isItalic="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_DR_TAX_AMT_5}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="false" pattern="#,##0.00" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="495"
-						y="0"
-						width="60"
-						height="15"
-						key="textField"/>
-					<box></box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="tahomabd.ttf" size="8" isBold="true" isItalic="false" isPdfEmbedded ="true" pdfEncoding ="Identity-H"/>
-					</textElement>
-				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_DR_AMT_6}]]></textFieldExpression>
-				</textField>
 			</band>
 			</groupFooter>
 		</group>
@@ -990,17 +984,6 @@ ORDER BY PROFILE_CODE,DOCTOR_CODE,IS_DISCHARGE_SUMMARY,PAY_METHOD,VERIFY_DATE,IN
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA["" + $V{PAGE_NUMBER} + ""]]></textFieldExpression>
 				</textField>
-				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
-					<reportElement
-						x="443"
-						y="0"
-						width="112"
-						height="25"
-						key="image-1"/>
-					<box></box>
-					<graphicElement stretchType="NoStretch"/>
-					<imageExpression class="java.lang.String"><![CDATA[$P{hospital_logo}+$P{hospital_code}+"logo.gif"]]></imageExpression>
-				</image>
 			</band>
 		</pageHeader>
 		<columnHeader>
