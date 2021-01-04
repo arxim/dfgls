@@ -1249,9 +1249,11 @@
 				<tr><th colspan="4">${labelMap.SUBTITLE_BANK_ACCOUNT_INFORMATION}</th></tr>
                 <tr>
                     <td class="label">
-                        <label id="BANK_ACCOUNT_LABEL" for="BANK_ACCOUNT_NO">${labelMap.BANK_ACCOUNT_NO}</label>                    </td>
+                        <label id="BANK_ACCOUNT_LABEL" for="BANK_ACCOUNT_NO">${labelMap.BANK_ACCOUNT_NO}</label></td>
                     <td class="input" colspan="3">
-                        <input name="BANK_ACCOUNT_NO" type="text" class="medium" id="BANK_ACCOUNT_NO" value="<%= DBMgr.getRecordValue(doctorRec, "BANK_ACCOUNT_NO")%>" maxlength="11"  <%=dfuserLoginReadonly%> <%=readonlyManagerV2%> onkeypress="return isNumberKey(event)"/>                    </td>
+                        <input name="BANK_ACCOUNT_NO" type="text" class="medium" id="BANK_ACCOUNT_NO" value="<%= DBMgr.getRecordValue(doctorRec, "BANK_ACCOUNT_NO")%>" maxlength="20"  <%=dfuserLoginReadonly%> <%=readonlyManagerV2%> onkeypress="return isNumberKey(event)"/>                    
+                		<input type="button" value="..." onclick="window.location.href='doctor_bank_account.jsp?DOCTOR_PROFILE_CODE=<%=request.getParameter("DOCTOR_PROFILE_CODE")%>&DOCTOR_CODE=<%=DBMgr.getRecordValue(doctorRec, "CODE")%>'" />
+                	</td>
                 </tr>
                 <tr>
                     <td class="label">
@@ -1340,7 +1342,7 @@
 				            alert("${labelMap.ALERT_BANK}");
 				            document.mainForm.BANK_CODE.focus();
 				        }else{
-				            openSearchForm('../search.jsp?TABLE=BANK_BRANCH&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&COND=[ and BANK_CODE=\''+ document.mainForm.BANK_CODE.value+'\'+ and BANK_COUNTRY_CODE=\''+ document.mainForm.BANK_COUNTRY_CODE.value +'\']&TARGET=BANK_BRANCH_CODE&HANDLE=AJAX_Refresh_BANK_BRANCH');
+				            openSearchForm('../search.jsp?TABLE=BANK_BRANCH&BEACTIVE=1&DISPLAY_FIELD=DESCRIPTION_<%=labelMap.getFieldLangSuffix()%>&COND= and BANK_CODE=\''+ document.mainForm.BANK_CODE.value+'\'+ and BANK_COUNTRY_CODE=\''+ document.mainForm.BANK_COUNTRY_CODE.value +'\' &TARGET=BANK_BRANCH_CODE&HANDLE=AJAX_Refresh_BANK_BRANCH');
 				        }
 				        return false;
 					}

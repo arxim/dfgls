@@ -110,7 +110,9 @@ public class InterfaceExportGLWMCBean {
 	            	  "ELSE T.AMOUNT_AFT_DISCOUNT - T.GUARANTEE_PAID_AMT END " +
 	            "ELSE CASE WHEN T.AMOUNT_AFT_DISCOUNT < T.DR_AMT THEN T.DR_AMT ELSE T.AMOUNT_AFT_DISCOUNT END " +
 	            "END AS AMOUNT_AFT_DISCOUNT, "+
-                "H.EARNING_ACCOUNT AS ACCOUNT_CODE, T.FIRST_LOCATION_CODE, T.RECEIPT_LOCATION_CODE, T.PATIENT_LOCATION_CODE,'TH', '+', " +
+	            
+	            "OI.ACCOUNT_CODE AS ACCOUNT_CODE, T.FIRST_LOCATION_CODE, T.RECEIPT_LOCATION_CODE, T.PATIENT_LOCATION_CODE,'TH', '+', " +
+               // "H.EARNING_ACCOUNT AS ACCOUNT_CODE, T.FIRST_LOCATION_CODE, T.RECEIPT_LOCATION_CODE, T.PATIENT_LOCATION_CODE,'TH', '+', " +
                 "'"+this.MM+"', '"+this.YYYY+"', '"+ this.Hospital_code +"', 'AC' " +
                 "FROM TRN_DAILY T " +
                 "LEFT OUTER JOIN DOCTOR D ON (T.DOCTOR_CODE = D.CODE AND T.HOSPITAL_CODE = D.HOSPITAL_CODE) "+
@@ -120,7 +122,7 @@ public class InterfaceExportGLWMCBean {
                 "AND T.INVOICE_TYPE <> 'ORDER' AND D.ACTIVE = '1' AND T.ACTIVE = '1' "+
                 "AND T.HOSPITAL_CODE = '"+this.Hospital_code+"' AND T.IS_PAID <> 'N' "+
                 "AND T.ORDER_ITEM_ACTIVE = '1'";
-    	//System.out.println("accu602105DebitGuatantee Process : "+stm);
+    	System.out.println("accu602105DebitGuatantee Process Sarunyoo: "+stm);
         return stm;
     }
     
@@ -323,7 +325,8 @@ public class InterfaceExportGLWMCBean {
 		            "ELSE CASE WHEN SD.AMOUNT_AFT_DISCOUNT < SD.DR_AMT THEN SD.DR_AMT ELSE SD.AMOUNT_AFT_DISCOUNT END " +
 		            "END AS AMOUNT_AFT_DISCOUNT, "+
 
-		            "H.EARNING_ACCOUNT AS ACCOUNT_CODE, SD.FIRST_LOCATION_CODE, SD.RECEIPT_LOCATION_CODE, SD.PATIENT_LOCATION_CODE,'TH', '+', " +
+ 					"OI.ACCOUNT_CODE AS ACCOUNT_CODE, SD.FIRST_LOCATION_CODE, SD.RECEIPT_LOCATION_CODE, SD.PATIENT_LOCATION_CODE,'TH', '+', " +
+		          //  "H.EARNING_ACCOUNT AS ACCOUNT_CODE, SD.FIRST_LOCATION_CODE, SD.RECEIPT_LOCATION_CODE, SD.PATIENT_LOCATION_CODE,'TH', '+', " +
 	                "'"+this.MM+"', '"+this.YYYY+"', '"+ this.Hospital_code +"', 'GL' " +
 	                "FROM TRN_DAILY SD " +
 	                "LEFT OUTER JOIN DOCTOR DR ON (SD.DOCTOR_CODE = DR.CODE AND SD.HOSPITAL_CODE = DR.HOSPITAL_CODE) "+
@@ -492,7 +495,9 @@ public class InterfaceExportGLWMCBean {
                 "FROM TEMP_GL WHERE ADMISSION_TYPE_CODE <>'U' AND MM='"+this.MM+"' AND YYYY='"+this.YYYY+"' " +
                 "AND HOSPITAL_CODE='"+this.Hospital_code+"' AND PROCESS = '"+this.TypeData+"' "+
                 "GROUP BY HOSPITAL_CODE, ADMISSION_TYPE_CODE, PATIENT_DEPARTMENT_CODE, " +
-                "ACCOUNT_CODE, RECEIPT_LOCATION, PATIENT_LOCATION, NATIONALITY_CODE, AMOUNT_SIGN ";
+                //"ACCOUNT_CODE, RECEIPT_LOCATION, PATIENT_LOCATION, NATIONALITY_CODE, AMOUNT_SIGN ";
+        		"ACCOUNT_CODE, FIRST_LOCATION, RECEIPT_LOCATION, PATIENT_LOCATION, NATIONALITY_CODE, AMOUNT_SIGN ";
+
         String sqlInsert = "";
         String Type = "";
 
@@ -549,9 +554,11 @@ public class InterfaceExportGLWMCBean {
             conn.insert("DELETE TEMP_GL WHERE YYYY='"+this.YYYY+"' AND HOSPITAL_CODE = '"+this.Hospital_code+"' AND PROCESS = 'AC'");
             conn.insert("DELETE INT_ERP_GL WHERE TYPE='AC' AND YYYY='"+this.YYYY+"' AND MM='"+this.MM+"' AND HOSPITAL_CODE = '"+this.Hospital_code+"'");
             //System.out.print(Variables.IS_TEST ? "\nDelete AC complete : "+this.Hospital_code : "");
-            conn.insert(this.accuDfDeditNoGuanrantee());
+            //conn.insert(this.accuDfDeditNoGuanrantee());
+            
+            conn.insert(this.accuDfDebitGuarantee());
             conn.insert(this.accuDfCreditSharing());
-            conn.insert(this.accuDfDebitGuatantee());
+           // conn.insert(this.accuDfDebitGuatantee());
             conn.insert(this.accuDfCredit());
             conn.insert(this.accuCostExpense());
             conn.insert(this.accuExpense());
@@ -575,8 +582,9 @@ public class InterfaceExportGLWMCBean {
             conn.setStatement();
             conn.insert("DELETE TEMP_GL WHERE YYYY='"+this.YYYY+"' AND HOSPITAL_CODE = '"+this.Hospital_code+"' AND PROCESS = 'GL'");
             conn.insert("DELETE INT_ERP_GL WHERE TYPE='GL' AND YYYY='"+this.YYYY+"' AND MM='"+this.MM+"' AND HOSPITAL_CODE = '"+this.Hospital_code+"'");
-            conn.insert(this.glDfDebitNoGuatantee());
-            conn.insert(this.glDfDebitGuarantee());
+//            conn.insert(this.glDfDebitNoGuatantee());
+//            conn.insert(this.glDfDebitGuarantee());
+            conn.insert(this.glDfDebit());
             conn.insert(this.glDfCreditSharing());
             conn.insert(this.glDfCredit());
             conn.insert(this.glCostExpense());

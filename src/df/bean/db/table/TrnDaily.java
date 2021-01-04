@@ -1340,9 +1340,12 @@ public class TrnDaily extends ABSTable {
     public boolean rollBackImportBillUpdate(String hospitalCode, String startDate, String endDate) {
         List sqlCommand = new ArrayList();
         boolean ret = false;
-        String sql = "UPDATE INT_HIS_BILL SET AMOUNT_BEF_DISCOUNT = OLD_AMOUNT"
-                    + " WHERE TRANSACTION_DATE >= '" + startDate + "' AND TRANSACTION_DATE <= '" + endDate + "'"
-                    + " AND HOSPITAL_CODE = '" + hospitalCode + "'";
+        //String sql = "UPDATE INT_HIS_BILL SET AMOUNT_BEF_DISCOUNT = OLD_AMOUNT"
+        String sql = "UPDATE INT_HIS_BILL SET AMOUNT_BEF_DISCOUNT = "
+        			+"CASE WHEN H.IS_JOIN_BILL = 'Y' THEN  OLD_AMOUNT ELSE AMOUNT_BEF_DISCOUNT END "
+        			+"FROM INT_HIS_BILL LEFT OUTER JOIN HOSPITAL H ON INT_HIS_BILL.HOSPITAL_CODE = H.CODE "
+                    +"WHERE TRANSACTION_DATE >= '" + startDate + "' AND TRANSACTION_DATE <= '" + endDate + "' "
+                    +"AND HOSPITAL_CODE = '" + hospitalCode + "'";
         sqlCommand.add( sql );
         ret = super.rollBack(sqlCommand);
         return ret;

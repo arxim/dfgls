@@ -90,7 +90,7 @@
 		SD.GUARANTEE_NOTE,
 		SD.IS_WRITE_OFF AS 'IS_WRITE_OFF', 
 		SD.IS_PARTIAL, SD.GUARANTEE_PAID_AMT,
-		CASE WHEN (SD.PAY_BY_AR = 'Y' AND SD.IS_PARTIAL = 'N' AND GUARANTEE_NOTE = '') THEN 'A' ELSE CASE WHEN (SD.PAY_BY_AR = 'Y' AND SD.IS_PARTIAL = 'Y' AND SD.GUARANTEE_NOTE = '') THEN 'B' ELSE 'C' END END AS PAY_METHOD,
+		CASE WHEN (SD.PAY_BY_AR = 'Y' AND SD.IS_PARTIAL = 'N') THEN 'A' ELSE CASE WHEN (SD.PAY_BY_AR = 'Y' AND SD.IS_PARTIAL = 'Y') THEN 'B' ELSE 'C' END END AS PAY_METHOD,
 		SD.DR_TAX_406 AS DR_TAX_AMT, SD.DR_TAX_402, SD.OLD_DR_AMT ,
 		CASE WHEN SD.GUARANTEE_NOTE LIKE '%EXTRA%' THEN 'EXT' ELSE CASE WHEN SD.GUARANTEE_TERM_YYYY+SD.GUARANTEE_TERM_MM <> $P{year}+$P{month} THEN '' ELSE SD.GUARANTEE_TYPE END END AS GUARANTEE_TYPE_CODE , 
 		SD.GUARANTEE_CODE AS GUARANTEE_CODE , 
@@ -138,10 +138,7 @@ UNION ALL
 		STP.END_DATE AS 'END_DATE',
 		STP.END_TIME AS 'END_TIME',
 		STP.START_DATE+STP.START_TIME AS 'DATE_TIME',
-		CASE WHEN HP402_ABSORB_AMOUNT > 0 
-			THEN (HP402_ABSORB_AMOUNT)
-			ELSE DF402_CASH_AMOUNT
-		END AS 'ABSORB_AMOUNT',
+		STP.ABSORB_AMOUNT AS 'ABSORB_AMOUNT',
 		'' AS 'YYYY', 
 		'' AS 'MM', 
 		DR.NAME_THAI AS 'NAME_THAI', 
@@ -153,12 +150,7 @@ UNION ALL
 		'' AS 'IS_PAID', 
 		0.00 AS 'OLD_AMOUNT', 
 		0.00 AS 'WRITE_OFF_AMOUNT',
-		CASE WHEN STP.GUARANTEE_EXCLUDE_AMOUNT > 0 
-			THEN STP.GUARANTEE_TYPE_CODE+' : Special Consult'
-			ELSE CASE WHEN STP.HOSPITAL_CODE = '00002' 
-				  THEN STP.GUARANTEE_TYPE_CODE+' : Special Doctorfee'
-				  ELSE STP.GUARANTEE_TYPE_CODE+' : Absorb Guarantee' END
-		END AS 'INVOICE_TYPE',
+		'Absorb Guarantee' AS 'INVOICE_TYPE',
 		'' AS 'LINE_NO',
 		'' AS 'ORDER_ITEM_CODE', 
 		'' AS 'ORDER_ITEM_NAME',
@@ -225,8 +217,8 @@ UNION ALL
 		STP.YYYY+STP.MM+'01' AS 'END_DATE',
 		'000000' AS 'END_TIME',
 		STP.START_DATE+STP.START_TIME AS 'DATE_TIME',
-		CASE WHEN HP402_ABSORB_AMOUNT > 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE,STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN (HP402_ABSORB_AMOUNT)
-		WHEN HP402_ABSORB_AMOUNT < 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE,STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN DF402_CASH_AMOUNT
+		CASE WHEN ABSORB_AMOUNT > 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE,STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN (ABSORB_AMOUNT)
+		WHEN ABSORB_AMOUNT < 0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE,STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN 0
 		ELSE 0 END AS 'ABSORB_AMOUNT',
 		'' AS 'YYYY', 
 		'' AS 'MM', 
@@ -254,7 +246,7 @@ UNION ALL
 		'N' AS 'IS_PARTIAL',
 		0.00 AS 'GUARANTEE_PAID_AMT',
 		'C' AS 'PAY_METHOD',
-		CASE WHEN HP402_ABSORB_AMOUNT>0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE, STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
+		CASE WHEN ABSORB_AMOUNT>0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE, STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
 			(SELECT SUM(CASE WHEN TAX_TYPE_CODE = '406' THEN
 			ISNULL(TAX_AMOUNT , 0)
 			ELSE 0 END)
@@ -264,7 +256,7 @@ UNION ALL
 			AND TED.DOCTOR_CODE = STP.GUARANTEE_DR_CODE
 			AND TED.YYYY + TED.MM = STP.YYYY + STP.MM)
 		ELSE 0 END AS 'DR_TAX_AMT',
-		CASE WHEN HP402_ABSORB_AMOUNT>0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE, STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
+		CASE WHEN ABSORB_AMOUNT>0 AND ROW_NUMBER ( ) OVER ( PARTITION BY STP.GUARANTEE_CODE, STP.GUARANTEE_DR_CODE ORDER BY STP.START_DATE+STP.START_TIME) =1 THEN
 			(SELECT SUM(CASE WHEN TAX_TYPE_CODE = '402' THEN
 			ISNULL(TAX_AMOUNT , 0)
 			ELSE 0 END)
@@ -532,7 +524,7 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_T
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_Deduct_4}]]></textFieldExpression>
 				</textField>
@@ -634,7 +626,7 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_T
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_Deduct_3}]]></textFieldExpression>
 				</textField>
@@ -725,7 +717,7 @@ ORDER BY PROFILE_CODE, DOCTOR_CODE DESC, PAY_METHOD, GUARANTEE_TYPE_CODE, DATE_T
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_Deduct_2}]]></textFieldExpression>
 				</textField>
@@ -882,7 +874,7 @@ $F{GUARANTEE_END_DATE}.substring( 6, 8 ) + "/" + $F{GUARANTEE_END_DATE}.substrin
 						key="textField"/>
 					<box></box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+						<font fontName="Tahoma" pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
 					</textElement>
 				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$V{SUM_Deduct_1}]]></textFieldExpression>
 				</textField>

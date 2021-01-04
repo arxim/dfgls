@@ -143,7 +143,8 @@ public class ProcessSummaryMonthlyDF implements ProcessMaster{
                "TRN_DAILY.RECEIPT_DATE BETWEEN '"+this.year+this.month+"01' AND '"+this.year+this.month+endDate+"') OR (TRN_DAILY.YYYY+TRN_DAILY.MM = '"+this.year+this.month+"'))"+
                trnCon+termCon+
                "AND TRN_DAILY.YYYY = '"+this.year+"' AND TRN_DAILY.MM = '"+this.month+"' AND TRN_DAILY.INVOICE_TYPE <> 'ORDER' "+
-               "AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1'";
+               "AND TRN_DAILY.ORDER_ITEM_ACTIVE = '1' AND DOCTOR.ACTIVE = '1' "+
+               "AND (TRN_DAILY.ACTIVE = '1' OR  (TRN_DAILY.ACTIVE = '0' AND TRN_DAILY.IS_PAID <> 'N' AND TRN_DAILY.GUARANTEE_TYPE <> 'MYY'))";
          return sql;		
 	}
 	

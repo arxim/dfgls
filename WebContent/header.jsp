@@ -65,10 +65,10 @@ body{
 </style>
 
 </head>
-<body style="background-color: #204562;">
- <div class="container_12" style="background-color: #204562;">
+<body style="background-color: #7e91bc;">
+ <div class="container_12" style="background-color: #7e91bc;">
 	<div class="grid_12 header-repeat">
-		<div id="branding" style="background-color: #204562;">
+		<div id="branding" style="background-color: #7e91bc;">
 			<div class="floatleft">
 
 				<!-- <img src="img/logo.png" alt="Logo" /> -->

@@ -449,4 +449,21 @@ public class TrnDailyDAO {
 		}
 		return true;
 	}
+	public boolean rollbackBasicCalculateByLine(String hospitalCode, String transactionDate, String invoiceNo, String lineNo){
+		String sql = getTemplateForRollbackBasicCalculate()+
+			         "WHERE HOSPITAL_CODE = '"+hospitalCode+"' "+
+			         "AND TRANSACTION_DATE = '"+transactionDate+"' "+
+			         "AND INVOICE_NO = '"+invoiceNo+"' AND LINE_NO = '"+lineNo+"' "+
+			         "AND COMPUTE_DAILY_DATE != ''";
+		try{
+			conn = new DBConn(true);
+			conn.setStatement();
+			conn.insert(sql);
+			logger.info("rollback basic calculate complete ");
+		}catch(Exception e){
+			logger.error("rollback basic calculate error = "+e);
+		}
+		return true;
+	}
+
 }

@@ -416,7 +416,7 @@ label.error
 ----------------------------------------------- */
 #site_info {
 	color:#fff;
-	background:#204562;
+	background:#7e91bc;
 	border-top:1px solid #1d3b53;
 	padding-left:20px;
 
@@ -424,7 +424,7 @@ label.error
 
 #site_info p{line-height:30px; margin-bottom:0px;}
 #site_info a {
-	color:#9ab6cc;
+	color:#195483;
 }
 #site_info a:hover {
 	color:#000;

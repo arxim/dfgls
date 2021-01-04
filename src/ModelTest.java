@@ -1,5 +1,5 @@
 
-public class ModelTest {
+public class ModelTest implements MasterModel {
 	private String count;
 
 	public String getCount() {
@@ -9,5 +9,4 @@ public class ModelTest {
 	public void setCount(String count) {
 		this.count = count;
 	}
-	
 }

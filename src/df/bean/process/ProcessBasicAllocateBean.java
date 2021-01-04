@@ -22,6 +22,9 @@ public class ProcessBasicAllocateBean {
 		methodStepDoctorList = new ArrayList<Map<String, Object>>();
 		trnDailyList = new ArrayList<Map<String, Object>>();
 		orderConditionList = new ArrayList<String>();
+		trn = new TrnDailyDAO();
+		upTrn = new TrnDailyDAO();
+		mth = new StpMethodAllocateDAO();
 	}
 	private void prepareCondition(){
 		// define condition
@@ -39,21 +42,19 @@ public class ProcessBasicAllocateBean {
 	
 	//----- Functional -----
 	public String processRequest(String MAX_ROW, String curRow, String HOSPITAL_CODE, String START_DATE, String END_DATE, String INVOICE_NO, String LINE_NO, String TRANSACTION_DATE, String userId) {
+		this.userID = userId;
 		if(curRow.equals("0")){
-			trn = new TrnDailyDAO();
 			trn.prepareSelectCalculate();
-			upTrn = new TrnDailyDAO();
 			upTrn.prepareUpdateCalculate();
-			mth = new StpMethodAllocateDAO();
 			methodStepDoctorList = mth.getBasicAllocateMethod(HOSPITAL_CODE);
     		prepareCondition();
     	}
-		this.userID = userId;
 		trnDailyList = this.trn.getPsTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // PrepareStatement
 		//trnDailyList = this.trn.getTrnDailyForBasicCalculate(HOSPITAL_CODE, START_DATE, END_DATE, INVOICE_NO, LINE_NO); // Statement
     	return this.calculateBasicAllocate();
 	}
-	public String calculateBasicAllocate(){
+	
+	private String calculateBasicAllocate(){
 		double amountStart=0.00, amountEnd=0.00, amountAftDiscount = 0.00;
 		double allocatePct = 0.00, allocateAmt = 0.00, taxRate = 0.00, taxAmt = 0.00;
 		String status = "0";
@@ -156,27 +157,12 @@ public class ProcessBasicAllocateBean {
 		return status;
 	} // End Method Basic Allocate
 	
-	
-	//----- Test -----
-	public static void main(String[] args) {
-		ProcessBasicAllocateBean t = new ProcessBasicAllocateBean();
-		t.calculateTest();
-		t.rollbackTest();
-	}
-	private void rollbackTest(){
-		TrnDailyDAO trn = new TrnDailyDAO();
-		trn.setHospital("11750");
-		trn.setStartDate("20151001");
-		trn.setEndDate("20151010");
-		trn.rollbackBasicCalculate();
-	}
-	private void calculateTest(){
-		trn = new TrnDailyDAO();
-		trn.prepareSelectCalculate();
-		trnsaction = new ArrayList<Map<String, Object>>();
-		trnsaction = trn.getTrnDaily("11750", "20151001", "20151001");
-		for (int i = 0; i<trnsaction.size(); i++){
-			//this.processRequest("", i+"", "11750", "20151001", "20151001", trnsaction.get(i).get("INVOICE_NO").toString(), trnsaction.get(i).get("LINE_NO").toString(), "");			
+	public boolean doRecalculate(String hospitalCode, String invoiceNo, String lineNo, String transactionDate, String userId){
+		boolean status = true;
+		status = trn.rollbackBasicCalculateByLine(hospitalCode, transactionDate, invoiceNo, lineNo);
+		if(status){
+			this.processRequest("0", "0", hospitalCode, transactionDate, transactionDate, invoiceNo, lineNo, transactionDate, userId);
 		}
+		return status;
 	}
 }

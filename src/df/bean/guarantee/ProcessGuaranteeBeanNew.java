@@ -112,7 +112,6 @@ public class ProcessGuaranteeBeanNew {
         	}else{
         		status = false;
         	}
-        	
         }
         
         if(status && process_type.equals("Set Guarantee Transaction")){
@@ -129,12 +128,10 @@ public class ProcessGuaranteeBeanNew {
         
         if(status && process_type.equals("Summary Guarantee Transaction")){
         	status = true;
-            //status = sumAmountGuarantee();
         }
         
         if(status && process_type.equals("Summary Guarantee Tax")){
         	status = true;
-            //status = sumTaxGuarantee();
         }
         
         if(status && process_type.equals("Summary Guarantee Monthly")){
@@ -1082,7 +1079,6 @@ public class ProcessGuaranteeBeanNew {
         return status;
         
     }
-    
     private boolean paidAbsorbByHospital(int index, String[][] g){
     	boolean status = true;
     	double hpPaidAmount = Double.parseDouble(g[index][7])+Double.parseDouble(g[index][8]);
@@ -1228,6 +1224,7 @@ public class ProcessGuaranteeBeanNew {
             		}else{
             			this.dr_amt = this.trn_guarantee_amt;
             		}
+            		this.trn_guarantee_paid_amt = trn_in_guarantee_amount;
 
             		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
             	}else{
@@ -1276,11 +1273,6 @@ public class ProcessGuaranteeBeanNew {
             		}else{
             			this.dr_amt = this.trn_guarantee_amt;
             		}
-                	//if(!t[t_index][5].equals("")){
-                	//	this.guarantee_note = "OVER GUARANTEE "+t[t_index][16]+" to "+this.percent_over_allocate;
-                	//}else{
-                	//	this.guarantee_note = "";
-                	//}
             		this.guarantee_note = "OVER GUARANTEE "+t[t_index][16]+" to "+this.percent_over_allocate;
                 }else{
                     if(this.guarantee_balance > 0 && this.guarantee_balance < (this.trn_guarantee_amt * (this.percent_in_allocate/100))){
@@ -1300,11 +1292,12 @@ public class ProcessGuaranteeBeanNew {
                     			//this.dr_amt = trn_in_guarantee_amount * percent_in_allocate/100;
                     			this.dr_amt = this.trn_guarantee_amt;
                     		}
-                    		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
+                    		this.trn_guarantee_paid_amt = trn_in_guarantee_amount * percent_in_allocate/100;
+                    		this.guarantee_note = "IN/OVER GUARANTEE="+JNumber.getSaveMoney(trn_in_guarantee_amount * percent_in_allocate/100)+"/"+JNumber.getSaveMoney(over_guarantee_amount);
                     		this.guarantee_balance = 0;
                     	}else{ //if Invoice transaction
                         	if(this.guarantee_balance <= 0){
-                        		this.guarantee_note = "";
+                        		this.guarantee_note = "OVER GUARANTEE";
                         	}else{
                         		this.guarantee_note = "ABSORB SOME GUARANTEE";
                         		this.dr_amt = over_guarantee_amount;
@@ -1539,7 +1532,7 @@ public class ProcessGuaranteeBeanNew {
                             	this.inGuaranteeAllocate(i, x, guarantee_table, transaction_table);
                     			//messageWrite(i,guarantee_table, x, transaction_table,"In Guarantee ");
                             	this.guarantee_note = transaction_table[x][5].equals("") ? 
-                            		"ABSORB GUARANTEE" : 
+                            		"ABSORB GUARANTEE " : 
                             		"IN GUARANTEE "+transaction_table[x][16]+" to "+guarantee_table[i][13];
                                 transaction_table[x][16] = ""+this.percent_in_allocate; //normal_alloc_pct
                     		}else{//--------------------------------------------------in/over || over guarantee
@@ -1776,7 +1769,6 @@ public class ProcessGuaranteeBeanNew {
     	+ "AND T.VERIFY_DATE+T.VERIFY_TIME BETWEEN G.START_DATE+G.START_TIME AND G.END_DATE+G.END_TIME "; 
     	return sql;
     }
-    
     private boolean calculatePreviousGuarantee(){
         boolean status = true;
         boolean admis_status = true;
@@ -2116,7 +2108,7 @@ public class ProcessGuaranteeBeanNew {
             "WHERE S.HOSPITAL_CODE = '"+this.hospital_code+"' AND "+
             "S.ABSORB_REMAIN_AMOUNT > 0 AND "+
             "S.GUARANTEE_FIX_AMOUNT = 0 AND "+
-            "S.GUARANTEE_TYPE_CODE IN ( 'MLY' , 'MMY' ) AND "+
+            "S.GUARANTEE_TYPE_CODE IN ( 'MLY' , 'MMY', 'MYY' ) AND "+
             "LEN(S.GUARANTEE_CODE) = 6 AND "+
             "S.GUARANTEE_DR_CODE = '"+transaction_table[i][6]+"' AND " +
         	"S.ACTIVE = '1' AND " +
@@ -2246,7 +2238,6 @@ public class ProcessGuaranteeBeanNew {
         logger.info("Finish Process Previous Absorb Guarantee");
         return status;
     }
-    
     /**
      * @author CEO-FreeAlife
      * @return true
@@ -2292,7 +2283,7 @@ public class ProcessGuaranteeBeanNew {
     						 " AND SG.YYYY+SG.MM = TD.GUARANTEE_TERM_YYYY+TD.GUARANTEE_TERM_MM " + 
     						 " AND TD.GUARANTEE_TYPE = SG.GUARANTEE_TYPE_CODE AND SG.ACTIVE = 1 " + 
     						 " WHERE TD.HOSPITAL_CODE = '"+this.hospital_code+"' "  + 
-    						 " AND TD.GUARANTEE_TYPE  = 'MMY' " + 
+    						 " AND TD.GUARANTEE_TYPE  IN ( 'MMY', 'MYY' ) " + 
     						 " AND TD.GUARANTEE_TERM_YYYY+TD.GUARANTEE_TERM_MM = '" + this.year + this.month + "' " + 
     						 " AND TD.ACTIVE = 1 " + 
     						 " AND TD.YYYY+TD.MM = '" + this.year + this.month + "' " +
@@ -2313,7 +2304,7 @@ public class ProcessGuaranteeBeanNew {
         				"WHERE HOSPITAL_CODE = '"+this.hospital_code+"' " +
         				"AND GUARANTEE_DR_CODE = '"+drOverGuarantee[i][0]+"' " +
         				"AND YYYY = '"+this.year+"' AND ACTIVE = '1' "+
-        				"AND GUARANTEE_TYPE_CODE = 'MMY' "+
+        				"AND GUARANTEE_TYPE_CODE IN ( 'MMY', 'MYY' ) "+
         				"HAVING SUM(ABSORB_AMOUNT-DEDUCT_ABSORB_AMOUNT) > 0 ";
         			double sumAbsorbRemain = 0;
         			double deductAbsorbAmount = 0;
@@ -2339,7 +2330,7 @@ public class ProcessGuaranteeBeanNew {
         											" WHERE HOSPITAL_CODE  = '"+ this.hospital_code+ "' " +
         											" AND YYYY+MM = '"+ this.year+this.month + "'" + 
         											" AND GUARANTEE_DR_CODE = '"+ drOverGuarantee[i][0]+"' " + 
-        											" AND GUARANTEE_TYPE_CODE =  'MMY' " +
+        											" AND GUARANTEE_TYPE_CODE IN ( 'MMY', 'MYY' ) " +
         											//" AND ( OVER_GUARANTEE_AMOUNT = 0 OR OVER_GUARANTEE_AMOUNT IS NULL )" + 
         											" AND ACTIVE = 1 " ;        			
         			try {
@@ -2370,7 +2361,7 @@ public class ProcessGuaranteeBeanNew {
 					" LEFT OUTER JOIN EXPENSE EP ON DR.HOSPITAL_CODE = EP.HOSPITAL_CODE " + 
 					" WHERE SG.HOSPITAL_CODE = '" + this.hospital_code + "' AND EP.ADJUST_TYPE = 'MY' " + //   -- ABS MONTHLY TO YEAR " + 
 					" AND SG.YYYY+SG.MM = '" + (this.year + this.month) + "' " +
-					" AND SG.GUARANTEE_TYPE_CODE  = 'MMY' " + 
+					" AND SG.GUARANTEE_TYPE_CODE  IN ( 'MMY','MYY' ) " + 
 					" AND SG.DEDUCT_ABSORB_AMOUNT > 0 " +
 					" AND SG.ACTIVE = 1 " + 
 					" AND DR.ACTIVE = 1 " +
@@ -2588,7 +2579,6 @@ public class ProcessGuaranteeBeanNew {
         logger.info("FINISH STEP CALCULATE");
         return status;
     }
-    
     /*
     private boolean sumAmountGuarantee(){
     
@@ -2639,7 +2629,6 @@ public class ProcessGuaranteeBeanNew {
         return status;
     }
     */
-
     /*
     private boolean sumTaxGuarantee(){
 
@@ -2682,7 +2671,6 @@ public class ProcessGuaranteeBeanNew {
         return status;
     }
     */
-    
     private boolean sumMonthGuarantee(){
         boolean status = true;
         try {
@@ -2888,6 +2876,168 @@ public class ProcessGuaranteeBeanNew {
 		de.closeDB("Close DB Update Absorb some Guarantee");
     	return status;
     }
+    
+    //Yearly Guarantee
+    private boolean insertSomeOverGuarantee(){
+    	boolean status = true;
+    	DBConn d = new DBConn();
+    	DBConn de = new DBConn();
+    	HashMap<String,String> hm = new HashMap<String,String>();
+        ArrayList<HashMap<String,String>> al = new ArrayList<HashMap<String,String>>();
+        ArrayList<HashMap<String,String>> up = new ArrayList<HashMap<String,String>>();
+        double amtAftDis = 0;
+        /*
+        HP_PREMIUM = backup for AMOUNT_AFT_DISCOUNT rollback
+        */
+    	try { d.setStatement(); } catch (SQLException e) {}
+    	
+		up = d.getMultiData(
+				"SELECT STP_GUARANTEE.GUARANTEE_ALLOCATE_PCT, STP_GUARANTEE.GUARANTEE_SOURCE, "+
+				"STP_GUARANTEE.OVER_ALLOCATE_PCT, "+
+				"HOSPITAL.GUARANTEE_ALL_ALLOC, TRN_DAILY.* "+
+				"FROM TRN_DAILY "+
+				"LEFT OUTER JOIN HOSPITAL ON TRN_DAILY.HOSPITAL_CODE = HOSPITAL.CODE "+
+				"LEFT OUTER JOIN STP_GUARANTEE ON "+
+				"TRN_DAILY.HOSPITAL_CODE = STP_GUARANTEE.HOSPITAL_CODE "+
+				"AND TRN_DAILY.GUARANTEE_DR_CODE = STP_GUARANTEE.GUARANTEE_DR_CODE "+
+				"AND TRN_DAILY.GUARANTEE_CODE = STP_GUARANTEE.GUARANTEE_CODE "+
+				"AND TRN_DAILY.GUARANTEE_TERM_YYYY = STP_GUARANTEE.YYYY "+
+				"AND TRN_DAILY.GUARANTEE_TERM_MM = STP_GUARANTEE.MM "+
+				"AND STP_GUARANTEE.ACTIVE = '1' "+
+				"WHERE TRN_DAILY.HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' "+
+				"AND GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE LIKE 'IN/OVER%' AND GUARANTEE_TYPE = 'MYY' "+ 
+				"AND TRN_DAILY.ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' "+
+				"AND BATCH_NO = '' AND COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' "+
+				"AND IS_PAID = 'Y' "
+		);
+    	
+		al = d.getMultiData("SELECT * FROM TRN_DAILY WHERE "+
+		"HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' AND " +
+		"GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE LIKE 'IN/OVER%' AND GUARANTEE_TYPE = 'MYY' AND " +
+		"ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND BATCH_NO = '' AND "+
+        "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
+        "IS_PAID = 'Y'");
+		
+		if(al.size()>0){
+			for(int i = 0; i < al.size(); i++){
+			//New Payment Transaction for Absorb Some
+				double percenAft = 0;
+				if( Double.parseDouble(al.get(i).get("OLD_DR_AMT")) < Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) ){
+					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100) / Double.parseDouble(al.get(i).get("GUARANTEE_AMT"));
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
+				}else{
+					if(up.get(i).get("GUARANTEE_ALLOCATE_PCT").equals("100")){
+						percenAft = 100;
+					}else{
+						percenAft = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(al.get(i).get("OLD_DR_AMT"));						
+					}
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
+				}
+				if( up.get(i).get("GUARANTEE_SOURCE").equals("BF") && Double.parseDouble( up.get(i).get("GUARANTEE_ALLOCATE_PCT") ) == 100 ){
+					amtAftDis = Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT"));
+				}
+				if( up.get(i).get("GUARANTEE_ALL_ALLOC").equals("A") ){
+					percenAft = (Double.parseDouble(al.get(i).get("GUARANTEE_PAID_AMT")) * 100 / Double.parseDouble(up.get(i).get("GUARANTEE_ALLOCATE_PCT")))
+							    * 100 / Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"));
+					amtAftDis = (Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100;
+				}
+				al.get(i).put("LINE_NO", al.get(i).get("LINE_NO")+"ADV");
+				al.get(i).put("RECEIPT_NO", al.get(i).get("INVOICE_NO"));
+				al.get(i).put("RECEIPT_DATE", al.get(i).get("INVOICE_DATE"));
+				//al.get(i).put("TRANSACTION_MODULE", "AR");
+				al.get(i).put("BATCH_NO", "  "); //assign value because system insert null value into row
+				al.get(i).put("YYYY", this.year);
+				al.get(i).put("MM", this.month);
+				//al.get(i).put("PAY_BY_CASH_AR", "Y");
+				//al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+(Double.parseDouble(al.get(i).get("AMOUNT_AFT_DISCOUNT"))*percenAft)/100);
+				al.get(i).put("AMOUNT_AFT_DISCOUNT", ""+amtAftDis);
+				al.get(i).put("DR_AMT", al.get(i).get("GUARANTEE_PAID_AMT"));
+				if( al.get(i).get("TAX_TYPE_CODE").equals("402") ){
+					if( al.get(i).get("TAX_FROM_ALLOCATE").equals("Y")){
+						al.get(i).put("DR_TAX_402", al.get(i).get("GUARANTEE_PAID_AMT"));					
+						al.get(i).put("DR_TAX_406", "0");					
+					}else{
+						//al.get(i).put("DR_TAX_402", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_402", ""+amtAftDis);					
+						al.get(i).put("DR_TAX_406", "0");					
+					}
+				}else if( al.get(i).get("TAX_TYPE_CODE").equals("406") ){
+					if( al.get(i).get("TAX_FROM_ALLOCATE").equals("Y")){
+						al.get(i).put("DR_TAX_406", al.get(i).get("GUARANTEE_PAID_AMT"));			
+						al.get(i).put("DR_TAX_402", "0");			
+					}else{
+						//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);					
+						al.get(i).put("DR_TAX_406", ""+amtAftDis);					
+						al.get(i).put("DR_TAX_402", "0");			
+					}
+				}
+				//al.get(i).put("DR_TAX_406", ""+(Double.parseDouble(al.get(i).get("OLD_TAX_AMT"))*percenAft)/100);
+			}
+			logger.info(d.addData(al, "TRN_DAILY"));
+			d.closeDB("Close Db Select Absorb Some Guarantee");
+		}else{
+			logger.info("Insert Some Over : "+al.size());
+		}
+    	try {
+    		//Old Credit Transaction for some over guarantee
+    		de.setStatement(); 
+    		String s = "UPDATE TRN_DAILY SET BATCH_NO = '', AMOUNT_AFT_DISCOUNT=T.AMOUNT_AFT_DISCOUNT-Q.AMOUNT_AFT_DISCOUNT, "+
+				   "DR_TAX_400 = CASE WHEN TAX_TYPE_CODE = '400' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN T.DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+				   "DR_TAX_401 = CASE WHEN TAX_TYPE_CODE = '401' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN T.DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+				   "DR_TAX_402 = CASE WHEN TAX_TYPE_CODE = '402' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN T.DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+				   "DR_TAX_406 = CASE WHEN TAX_TYPE_CODE = '406' THEN CASE WHEN TAX_FROM_ALLOCATE = 'Y' THEN T.DR_AMT ELSE T.OLD_TAX_AMT-Q.DR_TAX_AMT END ELSE '0.0' END, "+
+				   "DR_AMT = T.DR_AMT-Q.DR_AMT, "+
+				   "GUARANTEE_NOTE = 'OVER GUARANTEE', IS_PAID = 'N', ACTIVE = '0' "+
+ 				   "FROM TRN_DAILY AS T INNER JOIN "+
+ 				   "(SELECT HOSPITAL_CODE, INVOICE_NO, GUARANTEE_TERM_YYYY, GUARANTEE_TERM_MM, LINE_NO, AMOUNT_AFT_DISCOUNT, DR_TAX_406+DR_TAX_402 AS DR_TAX_AMT, DR_AMT "+
+ 				   "FROM TRN_DAILY WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' AND "+
+ 				   "GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE LIKE 'IN/OVER%' AND GUARANTEE_TYPE = 'MYY' AND "+
+ 				   "ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND ( BATCH_NO = '' OR BATCH_NO IS NULL) AND "+
+ 				   "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
+ 				   "IS_PAID = 'Y') AS Q "+
+ 				   "ON T.HOSPITAL_CODE = Q.HOSPITAL_CODE AND T.INVOICE_NO = Q.INVOICE_NO AND T.LINE_NO+'ADV' = Q.LINE_NO "+
+ 				   "WHERE T.HOSPITAL_CODE = '"+this.hospital_code+"' AND T.GUARANTEE_TERM_YYYY = '"+this.year+"' AND "+
+ 				   "T.GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE LIKE 'IN/OVER%' AND GUARANTEE_TYPE = 'MYY' AND "+
+ 				   "ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' AND INVOICE_TYPE <> 'ORDER' AND ( BATCH_NO = '' OR BATCH_NO IS NULL) AND "+
+ 				   "COMPUTE_DAILY_DATE is not null AND COMPUTE_DAILY_DATE != '' AND "+
+ 				   "IS_PAID = 'Y'";
+    		logger.info(s);
+    		de.insert(s);
+    		de.commitDB();
+    		updateYearlyOverGuarantee();
+    	} catch (SQLException e) {
+    		logger.error("Update Absorb some Guarantee Error : "+e);
+    	}
+		de.closeDB("Close DB Update Absorb some Guarantee");
+    	return status;
+    }
+    private boolean updateYearlyOverGuarantee(){
+    	boolean status = true;
+    	DBConn de = new DBConn();
+    	try {
+    		//Update Hold for yearly over guarantee
+    		de.setStatement(); 
+    		String s = "UPDATE TRN_DAILY SET IS_PAID = 'N', ACTIVE = '0' "+
+ 				   "WHERE HOSPITAL_CODE = '"+this.hospital_code+"' AND GUARANTEE_TERM_YYYY = '"+this.year+"' AND "+
+ 				   "GUARANTEE_TERM_MM = '"+this.month+"' AND GUARANTEE_NOTE LIKE 'OVER%' AND GUARANTEE_TYPE = 'MYY'";
+    		logger.info(s);
+    		de.insert(s);
+    		de.commitDB();
+    	} catch (SQLException e) {
+    		logger.error("Update Hold for yearly over guarantee Error : "+e);
+    	}
+		de.closeDB("Close DB Update yearly over Guarantee");
+    	return status;
+    }
+    private boolean holdYealyOverPreviousGuarantee(){
+    	//case guarantee previous for Yearly Guarantee
+    	//update status hold for over guarantee after previous guarantee process is finished
+    	return true;
+    }
+    private boolean paidYearlyHoldOverGuarantee(){
+    	return true;
+    }
+    
     private boolean insertExpenseGuaranteeHP(){
     	boolean status = true;
         /*

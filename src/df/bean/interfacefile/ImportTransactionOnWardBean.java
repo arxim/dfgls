@@ -170,7 +170,7 @@ public class ImportTransactionOnWardBean extends InterfaceTextFileBean{
         try {
         	rs.updateString("HOSPITAL_CODE",sub_data[0].trim());
 			rs.updateString("EPISODE_TYPE", sub_data[1].trim());
-			rs.updateString("BILL_NO", sub_data[5].trim()+sub_data[7].trim());
+			rs.updateString("BILL_NO", sub_data[5].trim()+sub_data[7].trim()+sub_data[8].trim());
 	        rs.updateString("BILL_DATE", billDate);
 	        rs.updateString("RECEIPT_TYPE_CODE", "AR");
 	        rs.updateString("TRANSACTION_TYPE", "INV");

@@ -74,7 +74,7 @@
        
        <style type="text/css">
           body   { 
-            background: none repeat scroll 0 0 #2E5E79;
+            background: none repeat scroll 0 0 #b7c6e1;
 			color: #333;
 			padding: 0 0 0px;
 			font-size:12px;

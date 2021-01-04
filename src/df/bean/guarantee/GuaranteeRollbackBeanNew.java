@@ -7,7 +7,11 @@ package df.bean.guarantee;
 
 import df.bean.db.conn.DBConn;
 import df.bean.obj.util.JDate;
+
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 
 
@@ -103,6 +107,7 @@ public class GuaranteeRollbackBeanNew {
         "GUARANTEE_NOTE = '', IS_GUARANTEE = '', "+
         "IS_PAID = 'Y', ORDER_ITEM_ACTIVE = '0', "+
         "GUARANTEE_PAID_AMT = 0, "+
+        "ACTIVE = CASE WHEN GUARANTEE_TYPE = 'MYY' AND GUARANTEE_NOTE LIKE 'OVER%' THEN '1' ELSE ACTIVE END, "+
         "GUARANTEE_AMT = CASE WHEN COMPUTE_DAILY_USER_ID NOT LIKE 'ALLOC%' THEN 0 ELSE GUARANTEE_AMT END, "+
         "DR_AMT = OLD_DR_AMT, "+
         "HP_AMT = HP_PREMIUM - OLD_DR_AMT, "+
@@ -113,7 +118,22 @@ public class GuaranteeRollbackBeanNew {
         "WHERE TRANSACTION_DATE LIKE '"+year+month+"%' "+//change by nop 20100706
         "AND HOSPITAL_CODE = '"+hospital_code+"' AND BATCH_NO = ''";
 
-		String sq4 = "UPDATE TRN_DAILY SET  YYYY = '', MM = '', PAY_BY_CASH = 'N', RECEIPT_NO = '', RECEIPT_DATE = '' "
+    	String sq2 = ""+
+		"UPDATE TRN_DAILY SET "+
+    	"ACTIVE = '0', "+
+		//"ACTIVE = CASE WHEN GUARANTEE_TYPE = 'MYY' AND GUARANTEE_TERM_YYYY+GUARANTEE_TERM_MM <> '"+year+month+"' THEN '1' ELSE '0' END, "+
+		"BATCH_NO = CASE WHEN YYYY <> '' AND GUARANTEE_TYPE = 'MYY' AND GUARANTEE_TERM_YYYY+GUARANTEE_TERM_MM <> '"+year+month+"' "+
+		"THEN SUBSTRING(RECEIPT_DATE,1,4)+SUBSTRING(RECEIPT_DATE,5,2) ELSE '' END, "+
+		"IS_PAID = 'N', NOTE = '', "+
+    	"YYYY = CASE WHEN YYYY <> '' AND GUARANTEE_TYPE = 'MYY' THEN SUBSTRING(RECEIPT_DATE,1,4) ELSE '' END, "+
+    	"MM = CASE WHEN MM <> '' AND GUARANTEE_TYPE = 'MYY' THEN SUBSTRING(RECEIPT_DATE,5,2) ELSE '' END "+
+    	"WHERE HOSPITAL_CODE = '"+hospital_code+"' AND GUARANTEE_TYPE = 'MYY' "+
+    	"AND NOTE = 'UNHOLD OVERGUARANTEE "+year+month+"'";
+        
+        String sq3 = "DELETE TRN_DAILY WHERE LINE_NO LIKE '%ADV' AND TRANSACTION_DATE LIKE '"+year+month+"%' "+
+        "AND HOSPITAL_CODE = '"+hospital_code+"'";
+
+		String sq4 = "UPDATE TRN_DAILY SET YYYY = '', MM = '', PAY_BY_CASH = 'N', RECEIPT_NO = '', RECEIPT_DATE = '' "
 		+ "WHERE  TRANSACTION_DATE LIKE '"+year+""+month+"%' "
 		+ "AND (RECEIPT_NO = 'DISCHARGE' OR RECEIPT_NO = 'ADVANCE') "
 		+ "AND GUARANTEE_TERM_MM = '" + month + "' "
@@ -124,19 +144,15 @@ public class GuaranteeRollbackBeanNew {
 		//+ "AND ACTIVE = '1' AND ORDER_ITEM_ACTIVE = '1' " 
 		+ "AND (BATCH_NO IS NULL OR BATCH_NO = '') ";
 		
-		//CANCEL THIS SCRIPT TO BE USE sq4 SCRIPT
-        //String sq2 = "UPDATE TRN_DAILY SET YYYY = '', MM = '', PAY_BY_CASH = 'N', RECEIPT_NO = '', RECEIPT_DATE = '' "+
-        //"WHERE RECEIPT_NO = 'ADVANCE' AND YYYY = '"+year+"' AND MM = '"+month+"' AND HOSPITAL_CODE = '"+hospital_code+"'";
-        
-        String sq3 = "DELETE TRN_DAILY WHERE LINE_NO LIKE '%ADV' AND TRANSACTION_DATE LIKE '"+year+month+"%' "+
-        "AND HOSPITAL_CODE = '"+hospital_code+"'";
-
         if(c.countRow(q_check)>0){
         //if(true){
 	        try {
 	            mess = sq4;
 	            c.insert(sq4);
 	            logger.info("Rollback Transaction Step 2 Discharge & Advance Complete");
+	            mess = sq2;
+	            c.insert(sq2);
+	            logger.info("Rollback Transaction Step 5 Unhold Over Guarantee MYY");
 	            mess = sq1;
 	            c.insert(sq1);
 	            logger.info("Rollback Transaction Step 3 Guarantee&Tax Complete");
