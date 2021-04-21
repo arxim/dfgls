@@ -268,7 +268,7 @@
 
 					String cond = "";
 					if (request.getParameter("GROUP_CODE") != null && request.getParameter("TYPE") != null) {
-						cond += "WHERE GROUP_CODE LIKE '" + group_code + "' AND TYPE LIKE '" + select_type + "' ORDER BY GROUP_CODE  ";
+						cond += "AND GROUP_CODE LIKE '" + group_code + "' AND TYPE LIKE '" + select_type + "' ORDER BY GROUP_CODE  ";
 						//System.out.println("cond = "+cond);	 
 					}
 
@@ -276,6 +276,7 @@
 							+ " AS DOCTOR_NAME , PERCENT_DF, AMOUNT " 
 							+ " FROM STP_SHARING_REVENUE SR left join "
 							+ " DOCTOR D on SR.DOCTOR_CODE = D.CODE " 
+							+ " WHERE SR.HOSPITAL_CODE = '" +session.getAttribute("HOSPITAL_CODE").toString()+"'"
 							+ cond;
 
 					//System.out.println("query = " + query);

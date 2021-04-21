@@ -63,6 +63,7 @@
             labelMap.add("TAX_TYPE_CODE", "Tax Type", "ประเภทภาษี");
             labelMap.add("MAPPING_CASE", "Mapping Case", "Mapping Case");
             labelMap.add("GA_SS", "Social Security Guarantee", "การันตีประกันสังคม");
+            labelMap.add("SR", "Pool Physical", "กระจายรายได้กายภาพ");
             
             request.setAttribute("labelMap", labelMap.getHashMap());
 
@@ -348,6 +349,7 @@
 		                    <option value="MY"<%= DBMgr.getRecordValue(record, "ADJUST_TYPE").equalsIgnoreCase("MY") ? " selected=\"selected\"" : "" %>>${labelMap.EXPENSE_MONTOYEAR}</option>
 		                    <option value="GS"<%= DBMgr.getRecordValue(record, "ADJUST_TYPE").equalsIgnoreCase("GS") ? " selected=\"selected\"" : "" %>>${labelMap.GA_SS}</option>
 		                    <option value="MC"<%= DBMgr.getRecordValue(record, "ADJUST_TYPE").equalsIgnoreCase("MC") ? " selected=\"selected\"" : "" %>>${labelMap.MAPPING_CASE}</option>
+		                    <option value="SR"<%= DBMgr.getRecordValue(record, "ADJUST_TYPE").equalsIgnoreCase("SR") ? " selected=\"selected\"" : "" %>>${labelMap.SR}</option>
 		                    </select>
                     </td>
                 </tr>
